@@ -5,15 +5,15 @@ The V8Power project is being designed in cooperation with [Jim Hall](http://www.
 * * *
 ## Compiling V8Power
 
-> #### Prerequisites ######
+####    Prerequisites ######
 
-> >[FreeDOS 1.1 or higher](http://www.freedos.org)<br>
-> >[NASM for DOS version 2.11.08](http://wwww.nasm.us])<br>
-> >NASM must be in your path spec.<br>
+  [FreeDOS 1.1 or higher](http://www.freedos.org) <br>
+  [NASM for DOS version 2.11.08](http://wwww.nasm.us]) <br>
+  NASM must be in your path spec. <br>
 
-> #### Compiling ######
+####    Compiling ######
 
-> > Run the mkV8.bat script.<br>
-> > All executibles will be placed in newly created BIN directory.<br>
+  Run the mkV8.bat script. <br>
+  All executibles will be placed in newly created BIN directory. <br>
 
 * * *
