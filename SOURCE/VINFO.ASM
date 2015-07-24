@@ -1,3 +1,3 @@
 ; NASM for DOS 
 
-%include "MACROS.INC"
+%include "COMMON.INC"
