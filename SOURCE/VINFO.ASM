@@ -3,3 +3,7 @@
 ; NASM for DOS 
 
 %include "COMMON.INC"
+
+PlaceHolder 
+
+Terminate 0
