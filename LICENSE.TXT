@@ -1,2 +1,1 @@
-# V8Power
-Putting 8-cylinder power under the hood of DOS batch files.
+V8Power will be licensed as open source. Probably, it will be GPL v2 or v3.
