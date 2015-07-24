@@ -1,4 +1,4 @@
-; Copyright Â© 2015 Jerome Shidel
+; Copyright ¸ 2015 Jerome Shidel
 
 ; NASM for DOS 
 
