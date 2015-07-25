@@ -4,6 +4,4 @@
 
 %include "COMMON.INC"
 
-PlaceHolder 
-
 Terminate 0
