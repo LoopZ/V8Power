@@ -26,5 +26,3 @@ functionality.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Run the mkV8.bat script. <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;All executibles will be placed in newly
 created BIN directory. <br>
-
-* * *
