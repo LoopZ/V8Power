@@ -1,5 +1,5 @@
 # V8Power
-Putting the power of an 8-cylinder engine under the hood of DOS batch files. x
+Putting the power of an 8-cylinder engine under the hood of DOS batch files.
 
 * * *
 
