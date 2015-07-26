@@ -6,8 +6,8 @@ Putting the power of an 8-cylinder engine under the hood of DOS batch files.
 The V8Power project is being designed in cooperation with
 [Jim Hall](http://www.freedos.org/jhall) for the [FreeDOS™](http://www.freedos.org) 
 operating system. It is intended to expand the functionality of scripts written 
-using batch files and provide them with a better looking user interface and increased
-functionality.
+using batch files and to provide them with a better looking user interface and
+increased functionality.
 
 * * *
 
