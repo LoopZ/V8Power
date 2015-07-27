@@ -56,32 +56,32 @@ WhereXYProc:
     mov         bh, [VideoPage]
     int         0x10
     ; mov       [CursorXY], dx
-	ret
-	
+    ret
+    
 %imacro WhereXY 0
-	call		WhereXYProc
+    call        WhereXYProc
 %endmacro
 
 ; move cursor to absolute position
 GotoXYProc:
     mov         ah, 0x02
     mov         bh, [VideoPage]
-    ; 			dx is position
+    ;           dx is position
     int         0x10
-	ret
-	
+    ret
+    
 %imacro GotoXY 1-2
     %if %0 = 2
         mov     dl, %1
         mov     dh, %2
     %elif %0 = 0 
-    	; ignore no params
+        ; ignore no params
     %elifidni %1 = dx
         ; ok ignore it
     %else
         mov     dx, %1
     %endif
-    call	GotoXYProc
+    call    GotoXYProc
 %endmacro
 
 ; Move cursor to next position
@@ -108,7 +108,7 @@ WriteCharProc:
     GotoNextXY
     ret
 %imacro WriteChar 0
-	call		WriteCharProc
+    call        WriteCharProc
 %endmacro
 
 ; Write a ASCIIZ String and display control codes as characters
@@ -170,11 +170,11 @@ WriteStrProc:
 .NoChar:
     jmp         .WriteStrLoop
 .WriteStrDone:
-	ret
-	
+    ret
+    
 %imacro WriteStr 1
     mov         si, %1
-    call		WriteStrProc
+    call        WriteStrProc
 %endmacro
 
 ; Write Word in AX
