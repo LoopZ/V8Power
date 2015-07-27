@@ -405,58 +405,58 @@ WriteStrProc:
 
 %imacro NumberParameters 0-1 NumberParam
 %1:
- 	xor			ax, ax
- 	push 		di
+    xor         ax, ax
+    push        di
  %%NumLoop:
-	cmp         cx, 0
-	je			%%Done
-	mov			bl, [di]
- 	inc			di
- 	cmp			bl, 'x'
- 	je			%%ForceHex
- 	cmp			bl, 'X'
- 	je			%%ForceHex
- 	
+    cmp         cx, 0
+    je          %%Done
+    mov         bl, [di]
+    inc         di
+    cmp         bl, 'x'
+    je          %%ForceHex
+    cmp         bl, 'X'
+    je          %%ForceHex
+    
     cmp         bl, 0x41
     jl          %%NotUpperCase
     cmp         bl, 0x5a
     jg          %%NotUpperCase
- 	jmp			%%IsHex
+    jmp         %%IsHex
 %%NotUpperCase:
     cmp         bl, 0x61
     jl          %%NotLowerCase
     cmp         bl, 0x7a
     jg          %%NotLowerCase
-    jmp			%%IsHex
+    jmp         %%IsHex
 %%NotLowerCase:
- 	push		cx
- 	sub			bl, 0x30
- 	mov			cx, 10
- 	mul			cx
- 	xor			bh, bh
- 	add			ax, bx
- 	pop			cx
- 	loop		%%NumLoop
- 	jmp			%%Done
+    push        cx
+    sub         bl, 0x30
+    mov         cx, 10
+    mul         cx
+    xor         bh, bh
+    add         ax, bx
+    pop         cx
+    loop        %%NumLoop
+    jmp         %%Done
  %%ForceHex:
- 	pop			bx			; discard di
- 	dec			cx
- 	jmp			%%DoAsHex
+    pop         bx          ; discard di
+    dec         cx
+    jmp         %%DoAsHex
  %%IsHex:
- 	pop			di
- 	mov			cx, si
- 	sub			cx, di
- 	jmp			%%DoAsHex
+    pop         di
+    mov         cx, si
+    sub         cx, di
+    jmp         %%DoAsHex
  %%Done:
- 	pop			di
- 	ret
+    pop         di
+    ret
 %%DoAsHex:
     xor         ax, ax
     cmp         cx, 0
     je          %%BadHex
     ; cmp         cx, 4
     ; jle         %%MakeHex
-    jmp			%%MakeHex
+    jmp         %%MakeHex
 %%BadHex:
     WriteStr    %%ErrorMsg
     Terminate   100
@@ -487,7 +487,7 @@ WriteStrProc:
     jg          %%BadHex
     sub         bl, 0x57
 %%Adjusted:
-	xor			bh, bh
+    xor         bh, bh
     add         ax, bx
     loop        %%MakeHex
     ret     
@@ -497,31 +497,31 @@ WriteStrProc:
 
 %imacro ColorTableData 0
 ColorTable:
-	DB "BLACK",0
-	DB "BLUE",1
-	DB "GREEN",2
-	DB "CYAN",3
-	DB "RED",4
-	DB "MAGENTA",5
-	DB "BROWN",6
-	DB "GRAY",7
-	DB "LIGHTGRAY",7
-;	DB "LIGHT GRAY",7
-	DB "DARKGRAY",8
-	DB "DARK GRAY",8
-	DB "LIGHTBLUE",9
-;	DB "LIGHT BLUE",9
-	DB "LIGHTGREEN",10
-;	DB "LIGHT GREEN",10
-	DB "LIGHTCYAN",11
-;	DB "LIGHT CYAN",11
-	DB "LIGHTRED",12
-;	DB "LIGHT RED",12
-	DB "LIGHTMAGENTA",13
-;	DB "LIGHT MAGENTA",13
-	DB "YELLOW",14
-	DB "WHITE",15
-	DB	0
+    DB "BLACK",0
+    DB "BLUE",1
+    DB "GREEN",2
+    DB "CYAN",3
+    DB "RED",4
+    DB "MAGENTA",5
+    DB "BROWN",6
+    DB "GRAY",7
+    DB "LIGHTGRAY",7
+;   DB "LIGHT GRAY",7
+    DB "DARKGRAY",8
+    DB "DARK GRAY",8
+    DB "LIGHTBLUE",9
+;   DB "LIGHT BLUE",9
+    DB "LIGHTGREEN",10
+;   DB "LIGHT GREEN",10
+    DB "LIGHTCYAN",11
+;   DB "LIGHT CYAN",11
+    DB "LIGHTRED",12
+;   DB "LIGHT RED",12
+    DB "LIGHTMAGENTA",13
+;   DB "LIGHT MAGENTA",13
+    DB "YELLOW",14
+    DB "WHITE",15
+    DB  0
 %endmacro
 
 ; Common Data Section

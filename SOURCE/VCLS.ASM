@@ -30,7 +30,7 @@
 %include "COMMON.INC"
 
 
-    CommandLineParser		; insert code for command line parsing
+    CommandLineParser       ; insert code for command line parsing
     
     mov         ax, 0x0600
     mov         bh, [TextAttr]
@@ -38,18 +38,18 @@
     mov         dx, [WindMax]
     int         0x10
     GotoXY      cx
-    mov			al, [TextAttr]
-    xor			ah, ah
+    mov         al, [TextAttr]
+    xor         ah, ah
 
     Terminate 0
 
-	NumberParameters		; insert code for number based CmdLn Params    
+    NumberParameters        ; insert code for number based CmdLn Params    
      
 NoSwitch:
 SwitchA:
-	call		NumberParam	
-	mov         [TextAttr], al
-	ret
+    call        NumberParam 
+    mov         [TextAttr], al
+    ret
     
 SwitchB:
 SwitchF:
@@ -57,7 +57,7 @@ SwitchP:
 SwitchT:
     CommandLineDebug
     
-ColorTableData		; insert color name table
+ColorTableData      ; insert color name table
     
 CommandLineSwitches:
     CmdSwitch  0,  0, NoSwitch  
