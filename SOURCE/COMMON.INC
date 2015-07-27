@@ -35,30 +35,6 @@ jmp BasicInitialize
     jmp         ProgramTerminate
 %endmacro
 
-; Return a single byte in AL from a memory location
-%imacro MemByte 2
-    push        es
-    push        bx
-    mov         bx, %1
-    mov         es, bx
-    mov         bx, %2
-    mov         al, [es:bx]
-    pop         bx
-    pop         es 
-%endmacro
-
-; Return a single word in AX from a memory location
-%imacro MemWord 2
-    push        es
-    push        bx
-    mov         bx, %1
-    mov         es, bx
-    mov         bx, %2
-    mov         ax, [es:bx]
-    pop         bx
-    pop         es 
-%endmacro
-
 ; Macro for Placeholder "dummy" programs not yet developed
 %imacro PlaceHolder 0
     push        cs
@@ -75,26 +51,37 @@ Done:
 %endmacro
 
 ; get cursor position and size
-%imacro WhereXY 0
+WhereXYProc:
     mov         ah, 0x03
     mov         bh, [VideoPage]
     int         0x10
     ; mov       [CursorXY], dx
+	ret
+	
+%imacro WhereXY 0
+	call		WhereXYProc
 %endmacro
 
 ; move cursor to absolute position
+GotoXYProc:
+    mov         ah, 0x02
+    mov         bh, [VideoPage]
+    ; 			dx is position
+    int         0x10
+	ret
+	
 %imacro GotoXY 1-2
     %if %0 = 2
         mov     dl, %1
         mov     dh, %2
+    %elif %0 = 0 
+    	; ignore no params
     %elifidni %1 = dx
         ; ok ignore it
     %else
         mov     dx, %1
     %endif
-    mov         ah, 0x02
-    mov         bh, [VideoPage]
-    int         0x10
+    call	GotoXYProc
 %endmacro
 
 ; Move cursor to next position
@@ -112,13 +99,16 @@ Done:
 %endmacro
 
 ; Write a single character
-%imacro WriteChar 0
+WriteCharProc:
     mov         ah, 0x09
     mov         bh, [VideoPage]
     mov         bl, [TextAttr]
     mov         cx, 0x0001
     int         0x10
     GotoNextXY
+    ret
+%imacro WriteChar 0
+	call		WriteCharProc
 %endmacro
 
 ; Write a ASCIIZ String and display control codes as characters
@@ -135,52 +125,56 @@ Done:
 %endmacro
 
 ; Write a ASCIIZ String using control codes
-%imacro WriteStr 1
-    mov         si, %1
+WriteStrProc:
     cld
-%%WriteStrLoop:
+.WriteStrLoop:
     lodsb
     cmp         al, 0x00
-    je          %%WriteStrDone
+    je          .WriteStrDone
     cmp         al, 0x0d
-    je          %%Return
+    je          .Return
     cmp         al, 0x0a
-    je          %%LineFeed
+    je          .LineFeed
 ;   cmp         al, 0x08
-;   je          %%BackSpace
+;   je          .BackSpace
 ;   cmp         al, 0x09
-;   je          %%HTab
+;   je          .HTab
 ;   cmp         al, 0x0b
-;   je          %%VTab
+;   je          .VTab
 ;   cmp         al, 0x0c
-;   je          %%FormFeed
+;   je          .FormFeed
 ;   cmp         al, 0x07
-;   je          %%Bell
+;   je          .Bell
 ;   cmp         al, 0x7F
-;   je          %%Delete
+;   je          .Delete
     cmp         al, 0x20
-    jl          %%NoChar
+    jl          .NoChar
     WriteChar
-    jmp         %%WriteStrLoop
-%%Return:
+    jmp         .WriteStrLoop
+.Return:
     WhereXY
     mov         dl, [WindMin]
     GotoXY      dx
-    jmp         %%WriteStrLoop
-%%LineFeed:
+    jmp         .WriteStrLoop
+.LineFeed:
     WhereXY
     inc         dh
     GotoXY      dx
-    jmp         %%WriteStrLoop
-%%BackSpace:
-%%HTab:
-%%VTab:
-%%FormFeed:
-%%Bell:
-%%Delete:
-%%NoChar:
-    jmp         %%WriteStrLoop
-%%WriteStrDone:
+    jmp         .WriteStrLoop
+.BackSpace:
+.HTab:
+.VTab:
+.FormFeed:
+.Bell:
+.Delete:
+.NoChar:
+    jmp         .WriteStrLoop
+.WriteStrDone:
+	ret
+	
+%imacro WriteStr 1
+    mov         si, %1
+    call		WriteStrProc
 %endmacro
 
 ; Write Word in AX
@@ -362,10 +356,8 @@ Done:
     mov         dl, al
     mov         di, si
     jmp         %%Loop
-%%ErrorMsg: 
-    DB          "Error parsing command-line options.",CRLF,0
 %%Error:
-    WriteStr    %%ErrorMsg
+    WriteStr    ErrorMsg
     Terminate   100
 %%Done:
     cmp         bx, 0
@@ -424,6 +416,8 @@ WindMin:        DW 0
 WindMax:        DW 0
 TextAttr:       DB 0x07
 
+ErrorMsg: 
+    DB          "Error parsing command-line options.",CRLF,0
 
 ; Just Prefixing Here
 SECTION _TEXT

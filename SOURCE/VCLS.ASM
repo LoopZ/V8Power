@@ -104,5 +104,5 @@ CommandLineSwitches:
 	CmdSwitch 'P', 0, SwitchP
 	CmdSwitch  0,  0, 0
 	
-; MsgInvalidHex:
-;	DB	"Invalid hexidecimal number for color attribute.",CRLF,0
+MsgInvalidHex:
+	DB	"Invalid hexidecimal number for color attribute.",CRLF,0
