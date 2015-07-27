@@ -26,8 +26,19 @@ jmp	BasicInitialize
 
 ; common macros
 
+%idefine CRLF 0x0d,0x0a
+
 ; Exit program and return to DOS with or without errorcode
 %imacro Terminate 0-1 0
+	push		ax
+	WhereXY		
+	cmp			cx, [CursorShape]
+	je			.Done
+    mov			ah, 0x01
+	mov			cx, [CursorShape]
+    int			0x10
+.Done:
+	pop			ax
     mov  		ah, 4ch  
     mov  		al, %1
     int  		0x21
@@ -72,23 +83,158 @@ Message:
 Done:
 %endmacro
 
+; get cursor position and size
 %imacro WhereXY 0
 	mov			ah, 0x03
-    mov			bh, al
+    mov			bh, [VideoPage]
     int			0x10
 	; mov		[CursorXY], dx
 %endmacro
 
+; move cursor to absolute position
 %imacro GotoXY 1-2
-	mov 	ah, 0x02
-	%if %0 = 1
+	mov 		ah, 0x02
+	%if %0 = 2
 		mov		dl, %1
 		mov		dh, %2
 	%else
 		mov		dx, %1
 	%endif
-    mov		bh, [VideoPage]
-    int		0x10
+    mov			bh, [VideoPage]
+    int			0x10
+%endmacro
+
+; Move cursor to next position
+%imacro GotoNextXY 0
+	WhereXY
+	inc			dl
+	GotoXY		dx
+%endmacro
+
+; Read char/attribute at cursor location
+%imacro ReadChar 0
+	mov			ah, 0x08
+	mov			bh, [VideoPage]
+	int			0x10
+%endmacro
+
+; Write a single character
+%imacro WriteChar 0
+	mov			ah, 0x09
+	mov			bh, [VideoPage]
+	mov			bl, [TextAttr]
+	mov			cx, 0x0001
+	int			0x10
+	GotoNextXY
+%endmacro
+; Write a ASCIIZ String and display control codes as characters
+ %imacro WriteRawStr 1
+	mov			si, %1
+	cld
+.WriteRawLoop:
+	lodsb
+	cmp			al, 0
+	je			.WriteRawDone
+	WriteChar
+	jmp			.WriteRawLoop
+.WriteRawDone:
+%endmacro
+
+; Write a ASCIIZ String using control codes
+%imacro WriteStr 1
+	mov			si, %1
+	cld
+.WriteStrLoop:
+	lodsb
+	cmp			al, 0x00
+	je			.WriteStrDone
+	cmp			al, 0x0d
+	je			.Return
+	cmp			al, 0x0a
+	je			.LineFeed
+	cmp			al, 0x08
+	je			.BackSpace
+	cmp			al, 0x09
+	je			.HTab
+;	cmp			al, 0x0b
+;	je			.VTab
+;	cmp			al, 0x0c
+;	je			.FormFeed
+;	cmp			al, 0x07
+;	je			.Bell
+;	cmp			al, 0x7F
+;	je			.Delete
+	cmp			al, 0x20
+	jl			.NoChar
+	WriteChar
+	jmp			.WriteStrLoop
+.Return:
+	jmp			.WriteStrLoop
+.LineFeed:
+	jmp			.WriteStrLoop
+.BackSpace:
+	jmp			.WriteStrLoop
+.HTab:
+	jmp			.WriteStrLoop
+.VTab:
+.FormFeed:
+.Bell:
+.Delete:
+.NoChar:
+	jmp			.WriteStrLoop
+.WriteStrDone:
+%endmacro
+
+; Write Word in AX
+%imacro WriteInt 1
+	mov			ax, %1
+	mov  		bx, 0x000A
+	mov			cx, 0x0001
+.WriteIntLoop:
+	cmp			ax, bx
+	jge			.WayTooBig
+	push		ax
+.IsJustRight:
+	pop			ax
+	add			ax, 0x0030
+	push		ax
+	push		bx
+	push		cx
+	WriteChar	
+	pop			cx
+	pop			bx
+	pop			ax
+	loop		.IsJustRight
+	jmp			.WriteIntDone
+.WayTooBig:   
+	inc			cx
+	xor 		dx, dx
+	div			bx
+	push		dx
+	jmp			.WriteIntLoop
+.WriteIntDone:
+%endmacro
+
+; Pre-286 High bits of flags are always set to 1
+%imacro	Is286 0
+Test286:
+	pushf
+	pushf
+	pop			ax
+	and			ax, 0x0fff
+	push 		ax
+	popf
+	pushf		
+	pop			ax
+	and			ax, 0xf000
+	cmp			ax, 0xf000
+	je			.IsNot286
+	mov			al, 0x01
+	jmp			.Test286Done
+.IsNot286:
+	xor			al, al
+.Test286Done:
+	popf
 %endmacro
 
 ; Common Data Section
@@ -100,7 +246,7 @@ ScreenMax:		DW 0
 CursorShape:	DW 0
 WindMin:		DW 0
 WindMax:		DW 0
-TextAttr:		DB 0
+TextAttr:		DB 0x07
 
 ; Just Prefixing Here
 SECTION _TEXT
@@ -114,6 +260,11 @@ BasicInitialize:
 	mov			al, [es:0x0049]
 	mov			[VideoMode], al
 	xor			ah, ah
+	cmp			al, 0x03
+	jg			.NoTextAttr
+	ReadChar	
+	mov			[TextAttr], ah
+.NoTextAttr:	
 	
 	; detect active video page
 	mov			al, [es:0x0062]
@@ -132,7 +283,11 @@ BasicInitialize:
 	xchg		bl, bh
 	mov			[ScreenMax], bx		
 	mov			[WindMax], bx
-		
+
+	mov			ah, 0x01
+    mov			cx, 0x2000
+    int			0x10
+			
 	pop			es
 	
 	; CX is Cursor Shape

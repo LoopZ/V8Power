@@ -14,8 +14,26 @@
 ;	with this program; if not, write to the Free Software Foundation, Inc.,
 ;	51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-; NASM for DOS 
+; NASM for DOS
+
+; PROJECTED -- Some options have not been implemented
+; Clears screen 
+; usage: vcls [options]
+; 
+; /F color		Set Foreground Color.
+; /B color		Set Background Color.
+; /A n			Set Text Attribute.
+; /T			Clear text only, leave colors.
+; /P			Only clear current area, not entire screen.
 
 %include "COMMON.INC"
 
-Terminate 0
+	mov			ax, 0x0600
+	mov			bh, [TextAttr]
+	mov			cx, [WindMin]
+	mov			dx, [WindMax]
+	int			0x10
+	GotoXY		cx
+
+	Terminate 0
+
