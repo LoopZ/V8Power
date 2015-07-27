@@ -362,7 +362,27 @@ WriteStrProc:
     jne         %%Error
 %endmacro
 
-; macro that shows command line switch and data, mostly for debuging the
+; macro to print a character for debugging
+%imacro DebugChar 0-1 al
+	pushf
+	push	ax
+	push	bx
+	push	cx
+	push	dx
+	push	di
+	push	si
+	mov		al, %1
+	WriteChar
+	pop		si
+	pop		di
+	pop		dx
+	pop		cx
+	pop		bx
+	pop		ax
+	popf
+%endmacro
+ 
+ ; macro that shows command line switch and data, mostly for debuging the
 ; command line parser
 %imacro CommandLineDebug 0
     push        cx
@@ -492,36 +512,88 @@ WriteStrProc:
     loop        %%MakeHex
     ret     
 %%ErrorMsg:
-    DB  "Parameter contains an invalid number or hexidecimal.",CRLF,0
+    DB  "Parameter contains an invalid value.",CRLF,0
 %endmacro
 
 %imacro ColorTableData 0
 ColorTable:
-    DB "BLACK",0
-    DB "BLUE",1
-    DB "GREEN",2
-    DB "CYAN",3
-    DB "RED",4
-    DB "MAGENTA",5
-    DB "BROWN",6
-    DB "GRAY",7
-    DB "LIGHTGRAY",7
-;   DB "LIGHT GRAY",7
-    DB "DARKGRAY",8
-    DB "DARK GRAY",8
-    DB "LIGHTBLUE",9
-;   DB "LIGHT BLUE",9
-    DB "LIGHTGREEN",10
-;   DB "LIGHT GREEN",10
-    DB "LIGHTCYAN",11
-;   DB "LIGHT CYAN",11
-    DB "LIGHTRED",12
-;   DB "LIGHT RED",12
-    DB "LIGHTMAGENTA",13
-;   DB "LIGHT MAGENTA",13
-    DB "YELLOW",14
-    DB "WHITE",15
-    DB  0
+    DB "BLACK",0,0,0
+    DB "BLUE",0,1,0
+    DB "GREEN",0,2,0
+    DB "CYAN",0,3,0
+    DB "RED",0,4,0
+    DB "MAGENTA",0,5,0
+    DB "BROWN",0,6,0
+    DB "GRAY",0,7,0
+;    DB "LIGHTGRAY",0,7,0
+;   DB "LIGHT GRAY",0,7,0
+    DB "DARKGRAY",0,8,0
+    DB "DARK GRAY",0,8,0
+    DB "LIGHTBLUE",0,9,0
+;   DB "LIGHT BLUE",0,9,0
+    DB "LIGHTGREEN",0,10,0
+;   DB "LIGHT GREEN",0,10,0
+    DB "LIGHTCYAN",0,11,0
+;   DB "LIGHT CYAN",0,11,0
+    DB "LIGHTRED",0,12,0
+;   DB "LIGHT RED",0,12,0
+    DB "LIGHTMAGENTA",0,13,0
+;   DB "LIGHT MAGENTA",0,13,0
+    DB "YELLOW",0,14,0
+    DB "WHITE",0,15,0
+    DB  0, 0xff, 0xff
+%endmacro
+
+%imacro LookupParameters 0-1 LookupParam
+%1:
+	cmp			cx, 0
+	je			%%NoValue
+%%Repeating:
+	push		cx
+	push		di
+	cld
+%%Checking:
+	lodsb
+	cmp			al, 0
+	je			%%EndOfKey
+	mov			ah, [di]
+	inc			di
+	cmp			ah, 0x61
+	jl			%%NotLowerCase
+	cmp			ah, 0x7a
+	jg			%%NotLowerCase
+	sub			ah, 0x20
+%%NotLowerCase:
+	cmp			al, ah
+	jne			%%Different
+	loop		%%Checking
+	lodsb		
+	cmp			al, 0
+	je			%%EndOfKey
+%%Different:
+	cmp			al, 0
+	je			%%NotThisOne
+	lodsb		
+	jmp			%%Different
+%%EndOfKey:
+	cmp			cl, 0
+	je			%%Matched
+%%NotThisOne:
+	pop			di
+	pop			cx
+	lodsw
+	cmp			ax, 0xffff
+	jne			%%Repeating
+	jmp			%%Done
+%%Matched:
+	pop			di
+	pop			cx
+	lodsw
+	jmp			%%Done
+%%NoValue:
+	mov			ax, 0xffff
+%%Done:
+	ret
 %endmacro
 
 ; Common Data Section
