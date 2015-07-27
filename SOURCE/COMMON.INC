@@ -27,6 +27,7 @@ jmp BasicInitialize
 ; common macros
 
 %idefine CRLF 0x0d,0x0a
+%idefine SwitchChar '/'
     
 ; Exit program and return to DOS with or without errorcode
 %imacro Terminate 0-1 0
@@ -250,6 +251,7 @@ Done:
     cld
     xor         bx, bx
     mov         di, si
+    xor			dh, dh
 %%Loop:
     lodsb
     cmp         al, 0x0d
@@ -268,6 +270,7 @@ Done:
 %%Quote:
     mov         ah, al
 %%QuoteLoop:
+	inc			dh
     lodsb
     cmp         al, 0x0d
     je          %%Error
@@ -275,7 +278,6 @@ Done:
     jne         %%QuoteLoop
     jmp         %%Loop
 %%Next:
-    push        ax
     mov         cx, si
     sub         cx, di
     cmp         cx, 1
@@ -297,12 +299,20 @@ Done:
     mov         bx, [CommandLineSwitches + 2]
     xor         dl, dl
 %%NotDefault:
+	push		ax
+	cmp			dh, 0
+	je			%%NotQuoted
+	inc			di
+	dec			si
+	sub			cx, 2
+%%NotQuoted:
     call        bx
+    xor			dh, dh
+    pop			ax
     xor         bx, bx
     pop         si
 %%Skip:
     pop         cx
-    pop         ax
     cmp         al, 0x0d
     je          %%Done
     cmp         al, 0x20
@@ -318,7 +328,7 @@ Done:
 %%Switch:
     mov         di, si
     lodsb
-    cmp         al, '/'
+    cmp         al, SwitchChar
     jl          %%Error
     cmp         al, 0x61
     jl          %%CaseOK
@@ -342,11 +352,13 @@ Done:
     push        si
     mov         dl, al
     call        bx
+    xor			dh, dh
     xor         bx,bx   
     pop         si
     mov         di, si
     jmp         %%Loop
 %%NeedsParam:
+    xor			dh, dh
     mov         dl, al
     mov         di, si
     jmp         %%Loop
@@ -371,7 +383,7 @@ Done:
     cmp         dl, 0
     je          %%NoSwitch
     push        dx
-    mov         al, '-'
+    mov         al, SwitchChar
     WriteChar
     pop         dx
     mov         al, dl
@@ -386,6 +398,8 @@ Done:
     mov         al, '('
     WriteChar
     pop         cx
+    cmp			cx, 0
+    je			%%NoText
 %%Repeat:
     push        cx
     mov         al, [di]
@@ -393,6 +407,7 @@ Done:
     pop         cx
     inc         di
     loop        %%Repeat
+%%NoText:
     mov         al, ')'
     WriteChar
     ret
