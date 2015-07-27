@@ -27,21 +27,11 @@ jmp	BasicInitialize
 ; common macros
 
 %idefine CRLF 0x0d,0x0a
-
+    
 ; Exit program and return to DOS with or without errorcode
 %imacro Terminate 0-1 0
-	push		ax
-	WhereXY		
-	cmp			cx, [CursorShape]
-	je			.Done
-    mov			ah, 0x01
-	mov			cx, [CursorShape]
-    int			0x10
-.Done:
-	pop			ax
-    mov  		ah, 4ch  
-    mov  		al, %1
-    int  		0x21
+	mov			al, %1
+	jmp			ProgramTerminate
 %endmacro
 
 ; Return a single byte in AL from a memory location
@@ -93,13 +83,15 @@ Done:
 
 ; move cursor to absolute position
 %imacro GotoXY 1-2
-	mov 		ah, 0x02
 	%if %0 = 2
 		mov		dl, %1
 		mov		dh, %2
+	%elifidni %1 = dx
+		; ok ignore it
 	%else
 		mov		dx, %1
 	%endif
+	mov 		ah, 0x02
     mov			bh, [VideoPage]
     int			0x10
 %endmacro
@@ -127,62 +119,67 @@ Done:
 	int			0x10
 	GotoNextXY
 %endmacro
+
 ; Write a ASCIIZ String and display control codes as characters
  %imacro WriteRawStr 1
 	mov			si, %1
 	cld
-.WriteRawLoop:
+%%WriteRawLoop:
 	lodsb
 	cmp			al, 0
-	je			.WriteRawDone
+	je			%%WriteRawDone
 	WriteChar
-	jmp			.WriteRawLoop
-.WriteRawDone:
+	jmp			%%WriteRawLoop
+%%WriteRawDone:
 %endmacro
 
 ; Write a ASCIIZ String using control codes
 %imacro WriteStr 1
 	mov			si, %1
 	cld
-.WriteStrLoop:
+%%WriteStrLoop:
 	lodsb
 	cmp			al, 0x00
-	je			.WriteStrDone
+	je			%%WriteStrDone
 	cmp			al, 0x0d
-	je			.Return
+	je			%%Return
 	cmp			al, 0x0a
-	je			.LineFeed
-	cmp			al, 0x08
-	je			.BackSpace
-	cmp			al, 0x09
-	je			.HTab
+	je			%%LineFeed
+;	cmp			al, 0x08
+;	je			%%BackSpace
+;	cmp			al, 0x09
+;	je			%%HTab
 ;	cmp			al, 0x0b
-;	je			.VTab
+;	je			%%VTab
 ;	cmp			al, 0x0c
-;	je			.FormFeed
+;	je			%%FormFeed
 ;	cmp			al, 0x07
-;	je			.Bell
+;	je			%%Bell
 ;	cmp			al, 0x7F
-;	je			.Delete
+;	je			%%Delete
 	cmp			al, 0x20
-	jl			.NoChar
+	jl			%%NoChar
 	WriteChar
-	jmp			.WriteStrLoop
-.Return:
-	jmp			.WriteStrLoop
-.LineFeed:
-	jmp			.WriteStrLoop
-.BackSpace:
-	jmp			.WriteStrLoop
-.HTab:
-	jmp			.WriteStrLoop
-.VTab:
-.FormFeed:
-.Bell:
-.Delete:
-.NoChar:
-	jmp			.WriteStrLoop
-.WriteStrDone:
+	jmp			%%WriteStrLoop
+%%Return:
+	WhereXY
+	mov			dl, [WindMin]
+	GotoXY		dx
+	jmp			%%WriteStrLoop
+%%LineFeed:
+	WhereXY
+	inc			dh
+	GotoXY		dx
+	jmp			%%WriteStrLoop
+%%BackSpace:
+%%HTab:
+%%VTab:
+%%FormFeed:
+%%Bell:
+%%Delete:
+%%NoChar:
+	jmp			%%WriteStrLoop
+%%WriteStrDone:
 %endmacro
 
 ; Write Word in AX
@@ -190,11 +187,11 @@ Done:
 	mov			ax, %1
 	mov  		bx, 0x000A
 	mov			cx, 0x0001
-.WriteIntLoop:
+%%WriteIntLoop:
 	cmp			ax, bx
-	jge			.WayTooBig
+	jge			%%WayTooBig
 	push		ax
-.IsJustRight:
+%%IsJustRight:
 	pop			ax
 	add			ax, 0x0030
 	push		ax
@@ -204,20 +201,19 @@ Done:
 	pop			cx
 	pop			bx
 	pop			ax
-	loop		.IsJustRight
-	jmp			.WriteIntDone
-.WayTooBig:   
+	loop		%%IsJustRight
+	jmp			%%WriteIntDone
+%%WayTooBig:   
 	inc			cx
 	xor 		dx, dx
 	div			bx
 	push		dx
-	jmp			.WriteIntLoop
-.WriteIntDone:
+	jmp			%%WriteIntLoop
+%%WriteIntDone:
 %endmacro
 
 ; Pre-286 High bits of flags are always set to 1
 %imacro	Is286 0
-Test286:
 	pushf
 	pushf
 	pop			ax
@@ -228,13 +224,19 @@ Test286:
 	pop			ax
 	and			ax, 0xf000
 	cmp			ax, 0xf000
-	je			.IsNot286
+	je			%%IsNot286
 	mov			al, 0x01
-	jmp			.Test286Done
-.IsNot286:
+	jmp			%%Test286Done
+%%IsNot286:
 	xor			al, al
-.Test286Done:
+%%Test286Done:
 	popf
+%endmacro
+
+%imacro CmdSwitch 3
+	DB	%1
+	DB  %2
+	DW	%3
 %endmacro
 
 ; Common Data Section
@@ -248,8 +250,25 @@ WindMin:		DW 0
 WindMax:		DW 0
 TextAttr:		DB 0x07
 
+
 ; Just Prefixing Here
 SECTION _TEXT
+
+; Terminate with exit code and return to DOS
+ProgramTerminate:
+	push		ax
+	WhereXY		
+	cmp			cx, [CursorShape]
+	je			.Done
+    mov			ah, 0x01
+	mov			cx, [CursorShape]
+    int			0x10
+.Done:
+	pop			ax
+    mov  		ah, 4ch  
+    int  		0x21
+
+; Basic Initialization Stuff
 BasicInitialize:
 	push 		es
 	mov			bx, 0x0040
@@ -290,7 +309,10 @@ BasicInitialize:
 			
 	pop			es
 	
+	mov			si, 0x0081
+	
 	; CX is Cursor Shape
 	; DX is Cursor Position
 	; BX is Screen Max
+	; SI is Pointed to Command Line
 	
