@@ -30,7 +30,7 @@
 %include "COMMON.INC"
 
 
-    CommandLineParser
+    CommandLineParser		; insert code for command line parsing
     
     mov         ax, 0x0600
     mov         bh, [TextAttr]
@@ -38,51 +38,18 @@
     mov         dx, [WindMax]
     int         0x10
     GotoXY      1, 1
-
+    mov			al, [TextAttr]
+    xor			ah, ah
+	WriteInt	ax
     Terminate 0
-    
+
+	NumberParameters		; insert code for number based CmdLn Params    
+     
 NoSwitch:
 SwitchA:
-    xor         bh, bh
-    xor         ax, ax
-    cmp         cx, 0
-    je          .BadHex
-    cmp         cx, 2
-    jle         .MakeHex
-.BadHex:
-    WriteStr    MsgInvalidHex
-    Terminate   100
-.MakeHex:
-    push        cx
-    mov         cl, 4
-    shl         ax, cl
-    pop         cx
-    mov         bl, [di]
-    inc         di
-    cmp         bl, 0x30
-    jl          .BadHex
-    cmp         bl, 0x39
-    jg          .NotNumber
-    sub         bl, 0x30
-    jmp         .Adjusted
-.NotNumber:
-    cmp         bl, 0x41
-    jl          .BadHex
-    cmp         bl, 0x46 ; 5a is Z
-    jg          .NotUpper
-    sub         bl, 0x37
-    jmp         .Adjusted
-.NotUpper:
-    cmp         bl, 0x61
-    jl          .BadHex
-    cmp         bl, 0x66 ; 7a is z
-    jg          .BadHex
-    sub         bl, 0x57
-.Adjusted:
-    add         ax, bx
-    loop        .MakeHex
-    mov         [TextAttr], al
-    ret     
+	call		NumberParam	
+	mov         [TextAttr], al
+	ret
     
 SwitchB:
 SwitchF:
@@ -104,5 +71,3 @@ CommandLineSwitches:
     CmdSwitch 'P', 0, SwitchP
     CmdSwitch  0,  0, 0
     
-MsgInvalidHex:
-    DB  "Invalid hexidecimal number for color attribute.",CRLF,0

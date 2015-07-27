@@ -357,8 +357,10 @@ WriteStrProc:
     mov         di, si
     jmp         %%Loop
 %%Error:
-    WriteStr    ErrorMsg
+    WriteStr    %%ErrorMsg
     Terminate   100
+%%ErrorMsg: 
+    DB          "Error parsing command-line options.",CRLF,0
 %%Done:
     cmp         bx, 0
     jne         %%Error
@@ -405,6 +407,97 @@ WriteStrProc:
     ret
 %endmacro
 
+%imacro NumberParameters 0-1 NumberParam
+%1:
+ 	xor			ax, ax
+ 	push 		di
+ %%NumLoop:
+	cmp         cx, 0
+	je			%%Done
+	mov			bl, [di]
+ 	inc			di
+ 	cmp			bl, 'x'
+ 	je			%%ForceHex
+ 	cmp			bl, 'X'
+ 	je			%%ForceHex
+ 	
+    cmp         bl, 0x41
+    jl          %%NotUpperCase
+    cmp         bl, 0x5a
+    jg          %%NotUpperCase
+ 	jmp			%%IsHex
+%%NotUpperCase:
+    cmp         bl, 0x61
+    jl          %%NotLowerCase
+    cmp         bl, 0x7a
+    jg          %%NotLowerCase
+    jmp			%%IsHex
+%%NotLowerCase:
+ 	push		cx
+ 	sub			bl, 0x30
+ 	mov			cx, 10
+ 	mul			cx
+ 	xor			bh, bh
+ 	add			ax, bx
+ 	pop			cx
+ 	loop		%%NumLoop
+ 	jmp			%%Done
+ %%ForceHex:
+ 	pop			bx			; discard di
+ 	dec			cx
+ 	jmp			%%DoAsHex
+ %%IsHex:
+ 	pop			di
+ 	mov			cx, si
+ 	sub			cx, di
+ 	jmp			%%DoAsHex
+ %%Done:
+ 	pop			di
+ 	ret
+%%DoAsHex:
+    xor         ax, ax
+    cmp         cx, 0
+    je          %%BadHex
+    ; cmp         cx, 4
+    ; jle         %%MakeHex
+    jmp			%%MakeHex
+%%BadHex:
+    WriteStr    %%ErrorMsg
+    Terminate   100
+%%MakeHex:
+    push        cx
+    mov         cl, 4
+    shl         ax, cl
+    pop         cx
+    mov         bl, [di]
+    inc         di
+    cmp         bl, 0x30
+    jl          %%BadHex
+    cmp         bl, 0x39
+    jg          %%NotNumber
+    sub         bl, 0x30
+    jmp         %%Adjusted
+%%NotNumber:
+    cmp         bl, 0x41
+    jl          %%BadHex
+    cmp         bl, 0x46 ; 5a is Z
+    jg          %%NotUpper
+    sub         bl, 0x37
+    jmp         %%Adjusted
+%%NotUpper:
+    cmp         bl, 0x61
+    jl          %%BadHex
+    cmp         bl, 0x66 ; 7a is z
+    jg          %%BadHex
+    sub         bl, 0x57
+%%Adjusted:
+	xor			bh, bh
+    add         ax, bx
+    loop        %%MakeHex
+    ret     
+%%ErrorMsg:
+    DB  "Parameter contains an invalid number or hexidecimal.",CRLF,0
+%endmacro
 ; Common Data Section
 SECTION _DATA
 
@@ -415,9 +508,6 @@ CursorShape:    DW 0
 WindMin:        DW 0
 WindMax:        DW 0
 TextAttr:       DB 0x07
-
-ErrorMsg: 
-    DB          "Error parsing command-line options.",CRLF,0
 
 ; Just Prefixing Here
 SECTION _TEXT
