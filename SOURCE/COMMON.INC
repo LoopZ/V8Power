@@ -74,11 +74,7 @@ GotoXYProc:
     %if %0 = 2
         mov     dl, %1
         mov     dh, %2
-    %elif %0 = 0 
-        ; ignore no params
-    %elifidni %1 = dx
-        ; ok ignore it
-    %else
+    %elif %0 = 1
         mov     dx, %1
     %endif
     call    GotoXYProc
@@ -498,6 +494,36 @@ WriteStrProc:
 %%ErrorMsg:
     DB  "Parameter contains an invalid number or hexidecimal.",CRLF,0
 %endmacro
+
+%imacro ColorTableData 0
+ColorTable:
+	DB "BLACK",0
+	DB "BLUE",1
+	DB "GREEN",2
+	DB "CYAN",3
+	DB "RED",4
+	DB "MAGENTA",5
+	DB "BROWN",6
+	DB "GRAY",7
+	DB "LIGHTGRAY",7
+;	DB "LIGHT GRAY",7
+	DB "DARKGRAY",8
+	DB "DARK GRAY",8
+	DB "LIGHTBLUE",9
+;	DB "LIGHT BLUE",9
+	DB "LIGHTGREEN",10
+;	DB "LIGHT GREEN",10
+	DB "LIGHTCYAN",11
+;	DB "LIGHT CYAN",11
+	DB "LIGHTRED",12
+;	DB "LIGHT RED",12
+	DB "LIGHTMAGENTA",13
+;	DB "LIGHT MAGENTA",13
+	DB "YELLOW",14
+	DB "WHITE",15
+	DB	0
+%endmacro
+
 ; Common Data Section
 SECTION _DATA
 

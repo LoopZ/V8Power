@@ -37,10 +37,10 @@
     mov         cx, [WindMin]
     mov         dx, [WindMax]
     int         0x10
-    GotoXY      1, 1
+    GotoXY      cx
     mov			al, [TextAttr]
     xor			ah, ah
-	WriteInt	ax
+
     Terminate 0
 
 	NumberParameters		; insert code for number based CmdLn Params    
@@ -57,10 +57,7 @@ SwitchP:
 SwitchT:
     CommandLineDebug
     
-NoSwitchMsg:
-    DB  "Plain Text"
-NewLine:
-    DB  CRLF,0
+ColorTableData		; insert color name table
     
 CommandLineSwitches:
     CmdSwitch  0,  0, NoSwitch  
@@ -70,4 +67,5 @@ CommandLineSwitches:
     CmdSwitch 'T', 0, SwitchT
     CmdSwitch 'P', 0, SwitchP
     CmdSwitch  0,  0, 0
+    
     
