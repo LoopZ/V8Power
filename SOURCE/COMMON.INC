@@ -364,22 +364,22 @@ WriteStrProc:
 
 ; macro to print a character for debugging
 %imacro DebugChar 0-1 al
-	pushf
-	push	ax
-	push	bx
-	push	cx
-	push	dx
-	push	di
-	push	si
-	mov		al, %1
-	WriteChar
-	pop		si
-	pop		di
-	pop		dx
-	pop		cx
-	pop		bx
-	pop		ax
-	popf
+    pushf
+    push    ax
+    push    bx
+    push    cx
+    push    dx
+    push    di
+    push    si
+    mov     al, %1
+    WriteChar
+    pop     si
+    pop     di
+    pop     dx
+    pop     cx
+    pop     bx
+    pop     ax
+    popf
 %endmacro
  
  ; macro that shows command line switch and data, mostly for debuging the
@@ -546,54 +546,54 @@ ColorTable:
 
 %imacro LookupParameters 0-1 LookupParam
 %1:
-	cmp			cx, 0
-	je			%%NoValue
+    cmp         cx, 0
+    je          %%NoValue
 %%Repeating:
-	push		cx
-	push		di
-	cld
+    push        cx
+    push        di
+    cld
 %%Checking:
-	lodsb
-	cmp			al, 0
-	je			%%EndOfKey
-	mov			ah, [di]
-	inc			di
-	cmp			ah, 0x61
-	jl			%%NotLowerCase
-	cmp			ah, 0x7a
-	jg			%%NotLowerCase
-	sub			ah, 0x20
+    lodsb
+    cmp         al, 0
+    je          %%EndOfKey
+    mov         ah, [di]
+    inc         di
+    cmp         ah, 0x61
+    jl          %%NotLowerCase
+    cmp         ah, 0x7a
+    jg          %%NotLowerCase
+    sub         ah, 0x20
 %%NotLowerCase:
-	cmp			al, ah
-	jne			%%Different
-	loop		%%Checking
-	lodsb		
-	cmp			al, 0
-	je			%%EndOfKey
+    cmp         al, ah
+    jne         %%Different
+    loop        %%Checking
+    lodsb       
+    cmp         al, 0
+    je          %%EndOfKey
 %%Different:
-	cmp			al, 0
-	je			%%NotThisOne
-	lodsb		
-	jmp			%%Different
+    cmp         al, 0
+    je          %%NotThisOne
+    lodsb       
+    jmp         %%Different
 %%EndOfKey:
-	cmp			cl, 0
-	je			%%Matched
+    cmp         cl, 0
+    je          %%Matched
 %%NotThisOne:
-	pop			di
-	pop			cx
-	lodsw
-	cmp			ax, 0xffff
-	jne			%%Repeating
-	jmp			%%Done
+    pop         di
+    pop         cx
+    lodsw
+    cmp         ax, 0xffff
+    jne         %%Repeating
+    jmp         %%Done
 %%Matched:
-	pop			di
-	pop			cx
-	lodsw
-	jmp			%%Done
+    pop         di
+    pop         cx
+    lodsw
+    jmp         %%Done
 %%NoValue:
-	mov			ax, 0xffff
+    mov         ax, 0xffff
 %%Done:
-	ret
+    ret
 %endmacro
 
 ; Common Data Section

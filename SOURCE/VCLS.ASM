@@ -36,13 +36,13 @@
     mov         bh, [TextAttr]
     mov         cx, [WindMin]
     mov         dx, [WindMax]
-   	int         0x10
-   	GotoXY      cx
+    int         0x10
+    GotoXY      cx
 
     Terminate 0
 
     NumberParameters        ; insert code for number based CmdLn Params    
-  	LookupParameters		; insert table lookup code for params    
+    LookupParameters        ; insert table lookup code for params    
      
 NoSwitch:
 SwitchA:
@@ -52,36 +52,36 @@ SwitchA:
     
     
 SwitchColor:
-	mov			si, ColorTable
-	call		LookupParam
-	cmp			ax, 0xffff
-	jne			.Found
-	call		NumberParam
+    mov         si, ColorTable
+    call        LookupParam
+    cmp         ax, 0xffff
+    jne         .Found
+    call        NumberParam
 .Found:
-	ret
-	
+    ret
+    
 SwitchF:
-	call		SwitchColor
-	mov			ah, [TextAttr]
-	and			ah, 0xf0
-	or			ah, al
-	mov			[TextAttr], ah
-	ret
+    call        SwitchColor
+    mov         ah, [TextAttr]
+    and         ah, 0xf0
+    or          ah, al
+    mov         [TextAttr], ah
+    ret
 
 SwitchB:
-	call		SwitchColor
-	mov			ah, [TextAttr]
-	mov			cl, 4
-	shl			al, cl
-	and			ah, 0x0f
-	or			ah, al
-	mov			[TextAttr], ah
-	ret
+    call        SwitchColor
+    mov         ah, [TextAttr]
+    mov         cl, 4
+    shl         al, cl
+    and         ah, 0x0f
+    or          ah, al
+    mov         [TextAttr], ah
+    ret
 
 SwitchP:
 SwitchT:
  ;   CommandLineDebug
- 	ret
+    ret
     
 ColorTableData      ; insert color name table
     
