@@ -251,7 +251,7 @@ Done:
     cld
     xor         bx, bx
     mov         di, si
-    xor			dh, dh
+    xor         dh, dh
 %%Loop:
     lodsb
     cmp         al, 0x0d
@@ -270,7 +270,7 @@ Done:
 %%Quote:
     mov         ah, al
 %%QuoteLoop:
-	inc			dh
+    inc         dh
     lodsb
     cmp         al, 0x0d
     je          %%Error
@@ -299,16 +299,16 @@ Done:
     mov         bx, [CommandLineSwitches + 2]
     xor         dl, dl
 %%NotDefault:
-	push		ax
-	cmp			dh, 0
-	je			%%NotQuoted
-	inc			di
-	dec			si
-	sub			cx, 2
+    push        ax
+    cmp         dh, 0
+    je          %%NotQuoted
+    inc         di
+    dec         si
+    sub         cx, 2
 %%NotQuoted:
     call        bx
-    xor			dh, dh
-    pop			ax
+    xor         dh, dh
+    pop         ax
     xor         bx, bx
     pop         si
 %%Skip:
@@ -352,13 +352,13 @@ Done:
     push        si
     mov         dl, al
     call        bx
-    xor			dh, dh
+    xor         dh, dh
     xor         bx,bx   
     pop         si
     mov         di, si
     jmp         %%Loop
 %%NeedsParam:
-    xor			dh, dh
+    xor         dh, dh
     mov         dl, al
     mov         di, si
     jmp         %%Loop
@@ -398,8 +398,8 @@ Done:
     mov         al, '('
     WriteChar
     pop         cx
-    cmp			cx, 0
-    je			%%NoText
+    cmp         cx, 0
+    je          %%NoText
 %%Repeat:
     push        cx
     mov         al, [di]
