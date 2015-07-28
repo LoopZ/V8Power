@@ -29,6 +29,8 @@ MainProgram:
 	mov		ah, 0x02
 	mov		dl, 0x0d
 	int		0x21
+	mov		dl, 0x0a
+	int		0x21
 .Done:
     Terminate 0
 
