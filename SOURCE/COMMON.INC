@@ -215,6 +215,42 @@ WriteStrProc:
 %%WriteIntDone:
 %endmacro
 
+; Write AX to standard output as HEX
+%imacro StdOutHexWord 0
+	push	ax
+	mov		ah, 0x02
+	mov		dl, '0'
+	int		0x21
+	mov		dl, 'x'
+	int 	0x21
+	pop		ax
+	mov		cx, 4
+%%Loopy:
+	push	cx
+	push	ax
+	dec		cx
+	mov		ax, 4
+	mul		cx
+	mov		cx, ax
+	pop		ax
+	push	ax
+	shr		ax, cl
+	and		ax, 0x0f
+	cmp		al, 9
+	jle		%%Digit
+	add		al, 0x57
+	jmp		%%Show
+%%Digit:
+	add		al, 0x30
+%%Show:
+	mov		ah, 0x02
+	mov		dl, al
+	int		0x21
+	pop		ax
+	pop		cx
+	loop	%%Loopy
+%endmacro
+
 ; Pre-286 High bits of flags are always set to 1
 %imacro Is286 0
     pushf
@@ -699,6 +735,7 @@ BasicInitialize:
     mov         [ScreenMax], bx     
     mov         [WindMax], bx
 
+	; Hide cursor while we run
     mov         ah, 0x01
     mov         cx, 0x2000
     int         0x10

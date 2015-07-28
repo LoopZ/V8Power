@@ -2,15 +2,18 @@
 
 if not exist BIN mkdir BIN
 
-echo Compiling V8Power!
-
+echo V8 Power!
 NASM.EXE -ISOURCE\ SOURCE\VCLS.ASM -fbin -O9 -o BIN\VCLS.COM
+echo Adjusting carburetor...
 NASM.EXE -ISOURCE\ SOURCE\VCURSOR.ASM -fbin -O9 -o BIN\VCURSOR.COM
+echo Verifying timing...
 NASM.EXE -ISOURCE\ SOURCE\VDELAY.ASM -fbin -O9 -o BIN\VDELAY.COM
+echo Checking spark-plugs...
 NASM.EXE -ISOURCE\ SOURCE\VGOTOXY.ASM -fbin -O9 -o BIN\VGOTOXY.COM
 
 goto Done
 
+NASM.EXE -ISOURCE\ SOURCE\VECHO.ASM -fbin -O9 -o BIN\VECHO.COM
 NASM.EXE -ISOURCE\ SOURCE\VINFO.ASM -fbin -O9 -o BIN\VINFO.COM
 NASM.EXE -ISOURCE\ SOURCE\VLINE.ASM -fbin -O9 -o BIN\VLINE.COM
 NASM.EXE -ISOURCE\ SOURCE\VFRAME.ASM -fbin -O9 -o BIN\VFRAME.COM
@@ -24,4 +27,4 @@ NASM.EXE -ISOURCE\ SOURCE\VASK.ASM -fbin -O9 -o BIN\VASK.COM
 NASM.EXE -ISOURCE\ SOURCE\VVIEW.ASM -fbin -O9 -o BIN\VVIEW.COM
 
 :Done
-echo Finished.
+echo Vroom, Vroom. Ready to roll!
