@@ -55,7 +55,12 @@ WhereXYProc:
     mov         ah, 0x03
     mov         bh, [VideoPage]
     int         0x10
-    ; mov       [CursorXY], dx
+    push		cx
+    ; [CursorXY], dx
+    mov			cx, [WindMin]
+    sub			dl, cl
+    sub			dh, ch
+    pop			cx
     ret
     
 %imacro WhereXY 0
@@ -66,8 +71,14 @@ WhereXYProc:
 GotoXYProc:
     mov         ah, 0x02
     mov         bh, [VideoPage]
-    ;           dx is position
+    push		dx
+    push		cx
+    mov			cx, [WindMin]
+    add			dh, ch
+    add			dl, cl
+    pop			cx
     int         0x10
+    pop			dx
     ret
     
 %imacro GotoXY 1-2
@@ -507,6 +518,10 @@ WriteStrProc:
     mov         ax, 0xffff
 %%Done:
     ret
+%endmacro
+
+%imacro UseFrameBounds 0
+	; Do Later
 %endmacro
 
 %imacro ColorTableData 0

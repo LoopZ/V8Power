@@ -20,7 +20,7 @@
 ; Clears screen 
 ; usage: vcls [options]
 ; 
-; /A nn         Set Text Attribute to hex value. (or no switch)
+; nn | /A nn    Set Text Attribute to hex value. (or no switch)
 ; /F color      Set Foreground Color.
 ; /B color      Set Background Color.
 ; /T            Clear text only, leave colors.
@@ -31,13 +31,41 @@
 
     CommandLineParser       ; insert code for command line parsing
 
-    mov         ax, 0x0600
-    mov         bh, [TextAttr]
+MainProgram:
     mov         cx, [WindMin]
     mov         dx, [WindMax]
+	mov			al, [TextOnly]
+	cmp			al, 1
+	je			.ClearTextOnly
+    mov         ax, 0x0600
+    mov         bh, [TextAttr]
     int         0x10
-    GotoXY      cx
-
+    jmp			.Done
+.ClearTextOnly:
+	sub			dh, ch
+	sub			dl, cl
+	xchg		cx, dx
+	inc 		cl
+	inc			ch
+	xor			dx, dx
+.ClearTextLoop:
+	GotoXY		dx
+	mov			ax, 0x0a20
+	mov			bh, [VideoPage]
+	xor			bl, bl
+	push		cx
+	xor			ch, ch
+	int			0x10
+	pop			cx
+	inc			dh
+	dec			ch
+	cmp			ch, 0
+	jne			.ClearTextLoop
+    mov         cx, [WindMin]
+	
+		
+.Done:
+    GotoXY      cx	
     Terminate 0
 
     NumberParameters        ; insert code for number based CmdLn Params    
@@ -78,8 +106,11 @@ SwitchB:
     ret
 
 SwitchP:
+	UseFrameBounds
+	ret
 SwitchT:
-    ; DebugCmdLn
+	mov			al, 1
+	mov			[TextOnly], al
     ret
     
 ColorTableData      ; insert color name table
@@ -93,4 +124,5 @@ CommandLineSwitches:
     CmdSwitch 'P', 0, SwitchP
     CmdSwitch  0,  0, 0
     
-    
+TextOnly: 
+	DB 0

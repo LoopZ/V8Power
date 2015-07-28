@@ -46,9 +46,9 @@ Clear screen.
 <tr><td ></td><td>Clear the screen with the current text attribute</td></tr>
 <tr><td >**n**</td><td>Set text attribute to n</td></tr>
 <tr><td>**/A n**</td><td>Set text attribute to n</td></tr>
-<tr><td>**/B color**</td><td>Set the background color (or value)</td></tr>
-<tr><td>**/F color**</td><td>Set the forground color (or value)</td></tr>
-<tr><td>**/T**</td><td>Clear only the text, leave all colors intact</td></tr>
+<tr><td>**/B color**</td><td>Set the background text attribute to color (or value)</td></tr>
+<tr><td>**/F color**</td><td>Set the forground text attribute to color (or value)</td></tr>
+<tr><td>**/T**</td><td>Clear the text only. Leave all colors intact and ignore attributes.</td></tr>
 <tr><td>**/P**</td><td>TBA</td></tr>
 <table>
 * * *
