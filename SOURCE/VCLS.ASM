@@ -26,7 +26,6 @@
 ; /T            Clear text only, leave colors.
 ; /P            Only clear current area, not entire screen.
 
-
 %include "COMMON.INC"
 
     CommandLineParser       ; insert code for command line parsing
@@ -61,8 +60,7 @@ MainProgram:
 	dec			ch
 	cmp			ch, 0
 	jne			.ClearTextLoop
-    mov         cx, [WindMin]
-	
+    mov         cx, [WindMin]	
 		
 .Done:
     GotoXY      cx	
@@ -76,8 +74,7 @@ SwitchA:
     call        NumberParam 
     mov         [TextAttr], al
     ret
-    
-    
+      
 SwitchColor:
     mov         si, ColorTable
     call        LookupParam
