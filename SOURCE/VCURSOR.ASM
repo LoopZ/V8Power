@@ -26,6 +26,9 @@ MainProgram:
 	je		.Done
 	mov		ax, [CursorShape]
 	StdOutHexWord
+	mov		ah, 0x02
+	mov		dl, 0x0d
+	int		0x21
 .Done:
     Terminate 0
 
