@@ -103,6 +103,7 @@ WriteCharProc:
     int         0x10
     GotoNextXY
     ret
+    
 %imacro WriteChar 0
     call        WriteCharProc
 %endmacro
@@ -362,67 +363,6 @@ WriteStrProc:
     jne         %%Error
 %endmacro
 
-; macro to print a character for debugging
-%imacro DebugChar 0-1 al
-    pushf
-    push    ax
-    push    bx
-    push    cx
-    push    dx
-    push    di
-    push    si
-    mov     al, %1
-    WriteChar
-    pop     si
-    pop     di
-    pop     dx
-    pop     cx
-    pop     bx
-    pop     ax
-    popf
-%endmacro
- 
- ; macro that shows command line switch and data, mostly for debuging the
-; command line parser
-%imacro CommandLineDebug 0
-    push        cx
-    push        dx
-    mov         al, ' '
-    WriteChar
-    pop         dx
-    cmp         dl, 0
-    je          %%NoSwitch
-    push        dx
-    mov         al, SwitchChar
-    WriteChar
-    pop         dx
-    mov         al, dl
-    WriteChar
-    pop         cx
-    push        cx
-    cmp         cx, 0
-    jne         %%NoSwitch
-    pop         cx
-    ret
-%%NoSwitch:
-    mov         al, '('
-    WriteChar
-    pop         cx
-    cmp         cx, 0
-    je          %%NoText
-%%Repeat:
-    push        cx
-    mov         al, [di]
-    WriteChar
-    pop         cx
-    inc         di
-    loop        %%Repeat
-%%NoText:
-    mov         al, ')'
-    WriteChar
-    ret
-%endmacro
-
 %imacro NumberParameters 0-1 NumberParam
 %1:
     xor         ax, ax
@@ -515,35 +455,6 @@ WriteStrProc:
     DB  "Parameter contains an invalid value.",CRLF,0
 %endmacro
 
-%imacro ColorTableData 0
-ColorTable:
-    DB "BLACK",0,0,0
-    DB "BLUE",0,1,0
-    DB "GREEN",0,2,0
-    DB "CYAN",0,3,0
-    DB "RED",0,4,0
-    DB "MAGENTA",0,5,0
-    DB "BROWN",0,6,0
-    DB "GRAY",0,7,0
-;    DB "LIGHTGRAY",0,7,0
-;   DB "LIGHT GRAY",0,7,0
-    DB "DARKGRAY",0,8,0
-    DB "DARK GRAY",0,8,0
-    DB "LIGHTBLUE",0,9,0
-;   DB "LIGHT BLUE",0,9,0
-    DB "LIGHTGREEN",0,10,0
-;   DB "LIGHT GREEN",0,10,0
-    DB "LIGHTCYAN",0,11,0
-;   DB "LIGHT CYAN",0,11,0
-    DB "LIGHTRED",0,12,0
-;   DB "LIGHT RED",0,12,0
-    DB "LIGHTMAGENTA",0,13,0
-;   DB "LIGHT MAGENTA",0,13,0
-    DB "YELLOW",0,14,0
-    DB "WHITE",0,15,0
-    DB  0, 0xff, 0xff
-%endmacro
-
 %imacro LookupParameters 0-1 LookupParam
 %1:
     cmp         cx, 0
@@ -593,6 +504,96 @@ ColorTable:
 %%NoValue:
     mov         ax, 0xffff
 %%Done:
+    ret
+%endmacro
+
+%imacro ColorTableData 0
+ColorTable:
+    DB "BLACK",0,0,0
+    DB "BLUE",0,1,0
+    DB "GREEN",0,2,0
+    DB "CYAN",0,3,0
+    DB "RED",0,4,0
+    DB "MAGENTA",0,5,0
+    DB "BROWN",0,6,0
+    DB "GRAY",0,7,0
+;    DB "LIGHTGRAY",0,7,0
+;   DB "LIGHT GRAY",0,7,0
+    DB "DARKGRAY",0,8,0
+    DB "DARK GRAY",0,8,0
+    DB "LIGHTBLUE",0,9,0
+;   DB "LIGHT BLUE",0,9,0
+    DB "LIGHTGREEN",0,10,0
+;   DB "LIGHT GREEN",0,10,0
+    DB "LIGHTCYAN",0,11,0
+;   DB "LIGHT CYAN",0,11,0
+    DB "LIGHTRED",0,12,0
+;   DB "LIGHT RED",0,12,0
+    DB "LIGHTMAGENTA",0,13,0
+;   DB "LIGHT MAGENTA",0,13,0
+    DB "YELLOW",0,14,0
+    DB "WHITE",0,15,0
+    DB  0, 0xff, 0xff
+%endmacro
+
+; macro to print a character for debugging
+%imacro DebugChar 0-1 al
+    pushf
+    push    ax
+    push    bx
+    push    cx
+    push    dx
+    push    di
+    push    si
+    mov     al, %1
+    WriteChar
+    pop     si
+    pop     di
+    pop     dx
+    pop     cx
+    pop     bx
+    pop     ax
+    popf
+%endmacro
+ 
+ ; macro that shows command line switch and data, mostly for debuging the
+; command line parser
+%imacro DebugCmdLn 0
+    push        cx
+    push        dx
+    mov         al, ' '
+    WriteChar
+    pop         dx
+    cmp         dl, 0
+    je          %%NoSwitch
+    push        dx
+    mov         al, SwitchChar
+    WriteChar
+    pop         dx
+    mov         al, dl
+    WriteChar
+    pop         cx
+    push        cx
+    cmp         cx, 0
+    jne         %%NoSwitch
+    pop         cx
+    ret
+%%NoSwitch:
+    mov         al, '('
+    WriteChar
+    pop         cx
+    cmp         cx, 0
+    je          %%NoText
+%%Repeat:
+    push        cx
+    mov         al, [di]
+    WriteChar
+    pop         cx
+    inc         di
+    loop        %%Repeat
+%%NoText:
+    mov         al, ')'
+    WriteChar
     ret
 %endmacro
 
