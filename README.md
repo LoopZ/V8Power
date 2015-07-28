@@ -40,7 +40,7 @@ created BIN directory. <br>
 > * Unless overriden, most utilities use the text attribute at the current cursor location.
 
 * * *
-#### vcls *[n]* *[options]* ######
+#### vcls *[options]* ######
 Clear screen.
 <table>
 <tr><td ></td><td>Clear the screen with the current text attribute</td></tr>
