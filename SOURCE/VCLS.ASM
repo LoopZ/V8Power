@@ -29,9 +29,8 @@
 
 %include "COMMON.INC"
 
-
     CommandLineParser       ; insert code for command line parsing
-    
+
     mov         ax, 0x0600
     mov         bh, [TextAttr]
     mov         cx, [WindMin]
@@ -80,7 +79,7 @@ SwitchB:
 
 SwitchP:
 SwitchT:
- ;   CommandLineDebug
+    ; DebugCmdLn
     ret
     
 ColorTableData      ; insert color name table

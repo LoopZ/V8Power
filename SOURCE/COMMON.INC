@@ -256,7 +256,7 @@ WriteStrProc:
     cmp         al, 0x20
     je          %%Next
     cmp         al, "/"
-    je          %%Switch
+    je          %%Next
     jmp         %%Loop
 %%Quote:
     mov         ah, al
@@ -290,6 +290,11 @@ WriteStrProc:
     mov         bx, [CommandLineSwitches + 2]
     xor         dl, dl
 %%NotDefault:
+    cmp         al, SwitchChar
+    jne         %%NotSwitched
+    dec         si
+    dec         cx
+%%NotSwitched:
     push        ax
     cmp         dh, 0
     je          %%NotQuoted
@@ -304,12 +309,13 @@ WriteStrProc:
     pop         si
 %%Skip:
     pop         cx
+    cmp         al, SwitchChar
+    je          %%Switch
     cmp         al, 0x0d
     je          %%Done
     cmp         al, 0x20
     jne         %%ResetBX
     cmp         cx, 1
-    push        cx
     jle         %%KeepBX
 %%ResetBX:  
     xor         bx, bx
@@ -354,10 +360,8 @@ WriteStrProc:
     mov         di, si
     jmp         %%Loop
 %%Error:
-    WriteStr    %%ErrorMsg
+    WriteStr    CommandLineErrorMsg
     Terminate   100
-%%ErrorMsg: 
-    DB          "Error parsing command-line options.",CRLF,0
 %%Done:
     cmp         bx, 0
     jne         %%Error
@@ -418,7 +422,7 @@ WriteStrProc:
     ; jle         %%MakeHex
     jmp         %%MakeHex
 %%BadHex:
-    WriteStr    %%ErrorMsg
+    WriteStr    CommandLineErrorMsg
     Terminate   100
 %%MakeHex:
     push        cx
@@ -451,8 +455,6 @@ WriteStrProc:
     add         ax, bx
     loop        %%MakeHex
     ret     
-%%ErrorMsg:
-    DB  "Parameter contains an invalid value.",CRLF,0
 %endmacro
 
 %imacro LookupParameters 0-1 LookupParam
@@ -555,6 +557,25 @@ ColorTable:
     pop     ax
     popf
 %endmacro
+
+; macro to print a character for debugging
+%imacro DebugInt 0-1 ax
+    pushf
+    push    ax
+    push    bx
+    push    cx
+    push    dx
+    push    di
+    push    si
+    WriteInt %1
+    pop     si
+    pop     di
+    pop     dx
+    pop     cx
+    pop     bx
+    pop     ax
+    popf
+%endmacro
  
  ; macro that shows command line switch and data, mostly for debuging the
 ; command line parser
@@ -607,6 +628,9 @@ CursorShape:    DW 0
 WindMin:        DW 0
 WindMax:        DW 0
 TextAttr:       DB 0x07
+
+CommandLineErrorMsg:
+    DB          "Parameter Error",0
 
 ; Just Prefixing Here
 SECTION _TEXT
