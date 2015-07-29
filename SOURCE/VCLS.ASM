@@ -16,16 +16,6 @@
 
 ; NASM for DOS
 
-; PROJECTED -- Some options have not been implemented
-; Clears screen 
-; usage: vcls [options]
-; 
-; nn | /A nn    Set Text Attribute to hex value. (or no switch)
-; /F color      Set Foreground Color.
-; /B color      Set Background Color.
-; /T            Clear text only, leave colors.
-; /P            Only clear current area, not entire screen.
-
 %include "COMMON.INC"
 
     CommandLineParser       ; insert code for command line parsing
