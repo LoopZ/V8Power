@@ -16,7 +16,7 @@
 
 ; NASM for DOS 
 
-; common macros
+; common code snippet macros
 
 ; Macro for Placeholder "dummy" programs not yet developed
 %imacro PlaceHolder 0
@@ -34,7 +34,8 @@ Done:
 %endmacro
     
 ; Write Word in AX
-%imacro WriteInt 1
+%imacro WriteIntProc 1
+WriteInt:
     mov         ax, %1
     mov         bx, 0x000A
     mov         cx, 0x0001
@@ -61,6 +62,7 @@ Done:
     push        dx
     jmp         %%WriteIntLoop
 %%WriteIntDone:
+	ret
 %endmacro
 
 ; Write AX to standard output as HEX
