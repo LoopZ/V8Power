@@ -42,7 +42,7 @@ created BIN directory. <br>
 * * *
 #### vcls *[options]* ######
 Clear screen.
-<table border="0">
+<table>
 <tr><td ></td><td>Clear the screen with the current text attribute</td></tr>
 <tr><td >**n**</td><td>Set text attribute to n</td></tr>
 <tr><td>**/A n**</td><td>Set text attribute to n</td></tr>
