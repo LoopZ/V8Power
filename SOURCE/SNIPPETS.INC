@@ -177,6 +177,20 @@ WriteInt:
 %%Done:
 %endmacro
 
+%imacro Delay 1
+	mov  		dx, %1
+	cmp			dx, 0x0000
+	je			%%NoDelay
+	Is286
+	cmp			ax, 0x0001
+	je			%%Delay286
+	DelayTicks	dx
+	jmp			%%NoDelay
+%%Delay286:
+	DelayTimer	dx
+%%NoDelay:
+%endmacro
+
 ; Complex Command line parser
 ; CommandLineSwitches label must exit
 ; it will call functions listed as DB Character, 0/1 Needs Param; DW Address

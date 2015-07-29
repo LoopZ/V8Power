@@ -19,24 +19,23 @@
 %include "COMMON.INC"
 
     CommandLineParser       ; insert code for command line parsing
-	Is286
 
-	mov  		dx, [DelayTime]
-	cmp			dx, 0x0000
-	je			NoDelay
-	cmp			ax, 0x0001
-	je			Delay286
-	DelayTicks	dx
-	jmp			NoDelay
-Delay286:
-	DelayTimer	dx
-NoDelay:
+ProgramMain:
+	mov		ax, [DelayTime]
+	call	DelayFunc
+
     Terminate 0
+    
+DelayFunc:
+	Delay	ax
+	ret
 
     NumberParameters        ; insert code for number based CmdLn Params    
      
 NoSwitch:
 	call		NumberParam
+	call 		DelayFunc
+	xor			ax, ax
 	mov			[DelayTime], ax
 	ret    
     
