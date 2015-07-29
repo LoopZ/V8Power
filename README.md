@@ -43,13 +43,12 @@ created BIN directory. <br>
 #### vcls *[options]* ######
 Clear screen.
 <table>
-<tr><td ></td><td>Clear the screen with the current text attribute</td></tr>
-<tr><td >**n**</td><td>Set text attribute to n</td></tr>
-<tr><td>**/A n**</td><td>Set text attribute to n</td></tr>
-<tr><td>**/B color**</td><td>Set the background text attribute to color (or value)</td></tr>
-<tr><td>**/F color**</td><td>Set the forground text attribute to color (or value)</td></tr>
-<tr><td>**/T**</td><td>Clear the text only. Leave all colors intact and ignore attributes.</td></tr>
-<tr><td>**/P**</td><td>TBA</td></tr>
+<tr><td></td><td>Clear the screen with the current text attribute</td></tr>
+<tr><td><b>n</b></td><td>Set text attribute to <b><i>n</i></b></td></tr>
+<tr><td><b>/A <i>n</i></a>**</td><td>Set text attribute to <b><i>n</i></b></td></tr>
+<tr><td><b>/B <i>color</i></b></td><td>Set the background text attribute to <b><i>color</i></b> (or value)</td></tr>
+<tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to <b><i>color</i></b> (or value)</td></tr>
+<tr><td><b>/T</b></td><td>Clear the text only. Leave all colors intact and ignore attributes.</td></tr>
 </table>
 * * *
 #### vcursor *[options]* ######
