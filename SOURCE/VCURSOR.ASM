@@ -79,8 +79,8 @@ NoSwitch:
 	ret
 	    
 CommandLineSwitches:
-    CmdSwitch  0,  0, NoSwitch  
-    CmdSwitch  0,  0, 0
+    SwitchData  0,  0, NoSwitch  
+    SwitchData  0,  0, 0
     
 CursorStyles:
 	db "HIDE",0,1,0

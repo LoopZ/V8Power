@@ -103,13 +103,13 @@ SwitchT:
 ColorTableData      ; insert color name table
     
 CommandLineSwitches:
-    CmdSwitch  0,  0, NoSwitch  
-    CmdSwitch 'A', 1, SwitchA
-    CmdSwitch 'F', 1, SwitchF
-    CmdSwitch 'B', 1, SwitchB
-    CmdSwitch 'T', 0, SwitchT
-    CmdSwitch 'P', 0, SwitchP
-    CmdSwitch  0,  0, 0
+    SwitchData  0,  0, NoSwitch  
+    SwitchData 'A', 1, SwitchA
+    SwitchData 'F', 1, SwitchF
+    SwitchData 'B', 1, SwitchB
+    SwitchData 'T', 0, SwitchT
+    SwitchData 'P', 0, SwitchP
+    SwitchData  0,  0, 0
     
 TextOnly: 
 	DB 0
