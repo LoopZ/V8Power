@@ -62,3 +62,39 @@ Change the cursor size and shape.
 <tr><td>**HALF**</td><td>Sets the cursor to 1/2 text height</td></tr>
 <tr><td>**FULL**</td><td>Sets the cursro to the full height of text</td></tr>
 <table>
+* * *
+#### vdelay *[duration]* ######
+TBA
+* * *
+#### vgotoxy ######
+TBA
+* * *
+#### vecho ######
+TBA
+* * *
+#### vframe ######
+TBA
+* * *
+#### vinfo ######
+TBA
+* * *
+#### vline ######
+TBA
+* * *
+#### vecho ######
+TBA
+* * *
+#### vmode ######
+TBA
+* * *
+#### vpause ######
+TBA
+* * *
+#### vpcspkr ######
+TBA
+* * *
+#### vprogress ######
+TBA
+* * *
+#### vview ######
+TBA
