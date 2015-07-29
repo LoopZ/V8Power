@@ -122,6 +122,61 @@ WriteInt:
     popf
 %endmacro
 
+%imacro DelayTicks 1
+	push		es
+	mov			ax, %1
+	xor  		dx, dx
+	mov  		cx, 55
+	div  		cx
+	cmp			dx, 23
+	jl			%%NoRoundUp
+	inc			ax
+%%NoRoundUp:	
+	cmp			ax, 0
+	je			%%Done
+	mov			cx, ax
+	mov  		dx, 0x0040
+	mov			es, dx
+	mov			di, 0x006C
+%%Loop:
+	mov			dx, [es:di]
+%%Wait:
+	mov			ax, [es:di]
+	cmp			dx, ax
+	je			%%Wait
+	loop		%%Loop
+%%Done:
+	pop			es
+%endmacro
+
+%imacro DelayTimer 1
+	mov  		ax, 0x8301
+	int  		0x15
+
+	mov			ax, %1
+	push		ax
+	mov			cl, 0x0a
+	shl			ax, cl
+	mov			dx, ax
+	pop			ax
+	mov			cl, 0x06
+	shr			ax, cl
+	mov			cx, ax	
+
+	mov			bx, %%DelayData
+	mov  		ax, 0x8300
+	mov  		[%%DelayData], al
+	int  		0x15
+%%Loop:
+	mov  		al, [%%DelayData]
+	test 		al, 0x80
+	jz   		%%Loop
+	jmp			%%Done
+%%DelayData:
+	DB			0
+%%Done:
+%endmacro
+
 ; Complex Command line parser
 ; CommandLineSwitches label must exit
 ; it will call functions listed as DB Character, 0/1 Needs Param; DW Address
