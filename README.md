@@ -44,8 +44,8 @@ created BIN directory. <br>
 Clear screen.
 <table>
 <tr><td></td><td>Clear the screen with the current text attribute</td></tr>
-<tr><td><b>n</b></td><td>Set text attribute to <b><i>n</i></b></td></tr>
-<tr><td><b>/A <i>n</i></a>**</td><td>Set text attribute to <b><i>n</i></b></td></tr>
+<tr><td><b><i>n>/i></b></td><td>Set text attribute to <b><i>n</i></b></td></tr>
+<tr><td><b>/A <i>n</i></a></td><td>Set text attribute to <b><i>n</i></b></td></tr>
 <tr><td><b>/B <i>color</i></b></td><td>Set the background text attribute to <b><i>color</i></b> (or value)</td></tr>
 <tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to <b><i>color</i></b> (or value)</td></tr>
 <tr><td><b>/T</b></td><td>Clear the text only. Leave all colors intact and ignore attributes.</td></tr>
@@ -54,19 +54,19 @@ Clear screen.
 #### vcursor *[options]* ######
 Change the cursor size and shape.
 <table border="0">
-<tr><td></td><td>Outputs the current cursor shape to STDOUT</td></tr>
-<tr><td>**n**</td><td>Set the current cursor shape as n</td></tr>
-<tr><td>**HIDE**</td><td>Hides the cursor.</td></tr>
-<tr><td>**SMALL**</td><td>Sets a small cursor</td></tr>
-<tr><td>**HALF**</td><td>Sets the cursor to 1/2 text height</td></tr>
-<tr><td>**FULL**</td><td>Sets the cursro to the full height of text</td></tr>
+<tr><td></td><td>Outputs the current cursor shape to <b>STDOUT</b></td></tr>
+<tr><td<b><i>n>/i></b></td><td>Set the current cursor shape as <b><i>n</i></b></td></tr>
+<tr><td><b>HIDE</b></td><td>Hides the cursor.</td></tr>
+<tr><td><b>SMALL</b></td><td>Sets a small cursor</td></tr>
+<tr><td><b>HALF</b></td><td>Sets the cursor to 1/2 text height</td></tr>
+<tr><td><b>FULL</b></td><td>Sets the cursro to the full height of text</td></tr>
 </table>
 * * *
 #### vdelay *[ms]* ######
 Simple delay.
 <table border="0">
 <tr><td></td><td>Default is 1000ms (1 second) delay.</td></tr>
-<tr><td>**ms**</td><td>Delay for *ms* milliseconds. (0-65535, 0x0000-0xffff) </td></tr>
+<tr><td><b><i>ms</i></b></td><td>Delay for <b><i>ms</i></b> milliseconds. (0-65535, 0x0000-0xffff) </td></tr>
 </table>
 * * *
 #### vgotoxy ######
