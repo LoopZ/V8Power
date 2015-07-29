@@ -74,6 +74,8 @@ GotoXYProc:
 %include "MACROS.INC"
 %include "SNIPPETS.INC"
 %include "DEBUG.INC"
+%include "SWITCHES.INC"
+%include "TABLES.INC"
 
 ; Write a single character
 WriteCharProc:

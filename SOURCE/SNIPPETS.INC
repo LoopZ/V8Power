@@ -471,32 +471,3 @@ WriteInt:
 %imacro UseFrameBounds 0
 	; Do Later
 %endmacro
-
-%imacro ColorTableData 0
-ColorTable:
-    DB "BLACK",0,0,0
-    DB "BLUE",0,1,0
-    DB "GREEN",0,2,0
-    DB "CYAN",0,3,0
-    DB "RED",0,4,0
-    DB "MAGENTA",0,5,0
-    DB "BROWN",0,6,0
-    DB "GRAY",0,7,0
-;    DB "LIGHTGRAY",0,7,0
-;   DB "LIGHT GRAY",0,7,0
-    DB "DARKGRAY",0,8,0
-    DB "DARK GRAY",0,8,0
-    DB "LIGHTBLUE",0,9,0
-;   DB "LIGHT BLUE",0,9,0
-    DB "LIGHTGREEN",0,10,0
-;   DB "LIGHT GREEN",0,10,0
-    DB "LIGHTCYAN",0,11,0
-;   DB "LIGHT CYAN",0,11,0
-    DB "LIGHTRED",0,12,0
-;   DB "LIGHT RED",0,12,0
-    DB "LIGHTMAGENTA",0,13,0
-;   DB "LIGHT MAGENTA",0,13,0
-    DB "YELLOW",0,14,0
-    DB "WHITE",0,15,0
-    DB  0, 0xff, 0xff
-%endmacro

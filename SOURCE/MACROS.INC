@@ -73,9 +73,3 @@
     mov         si, %1
     call        WriteStrProc
 %endmacro
-
-%imacro SwitchData 3
-	db 			%1
-	db 			%2
-	dw			%3
-%endmacro

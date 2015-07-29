@@ -60,41 +60,13 @@ MainProgram:
     LookupParameters        ; insert table lookup code for params    
      
 NoSwitch:
-SwitchA:
-    call        NumberParam 
-    mov         [TextAttr], al
-    ret
-      
-SwitchColor:
-    mov         si, ColorTable
-    call        LookupParam
-    cmp         ax, 0xffff
-    jne         .Found
-    call        NumberParam
-.Found:
-    ret
-    
-SwitchF:
-    call        SwitchColor
-    mov         ah, [TextAttr]
-    and         ah, 0xf0
-    or          ah, al
-    mov         [TextAttr], ah
-    ret
-
-SwitchB:
-    call        SwitchColor
-    mov         ah, [TextAttr]
-    mov         cl, 4
-    shl         al, cl
-    and         ah, 0x0f
-    or          ah, al
-    mov         [TextAttr], ah
-    ret
+	; NoSwitch falls through to SwitchA
+	ColorSwitchHandlers		; Procedures for handling color switches.
 
 SwitchP:
 	UseFrameBounds
 	ret
+	
 SwitchT:
 	mov			al, 1
 	mov			[TextOnly], al
@@ -103,10 +75,8 @@ SwitchT:
 ColorTableData      ; insert color name table
     
 CommandLineSwitches:
-    SwitchData  0,  0, NoSwitch  
-    SwitchData 'A', 1, SwitchA
-    SwitchData 'F', 1, SwitchF
-    SwitchData 'B', 1, SwitchB
+    SwitchData  0,  0, NoSwitch      
+    ColorSwitchData
     SwitchData 'T', 0, SwitchT
     SwitchData 'P', 0, SwitchP
     SwitchData  0,  0, 0

@@ -18,6 +18,20 @@
 
 %include "COMMON.INC"
 
-PlaceHolder 
+%include "COMMON.INC"
 
-Terminate 0
+    CommandLineParser       ; insert code for command line parsing
+
+ProgramMain:
+    Terminate 0
+    
+    NumberParameters        ; insert code for number based CmdLn Params    
+    LookupParameters        ; insert table lookup code for params    
+	ColorTableData      	; insert color name table    
+     
+NoSwitch:
+	ret
+    
+CommandLineSwitches:
+	SwitchData  0,  0, NoSwitch  
+    SwitchData  0,  0, 0
