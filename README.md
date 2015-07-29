@@ -69,6 +69,16 @@ Simple delay.
 <tr><td><b><i>ms</i></b></td><td>Delay for <b><i>ms</i></b> milliseconds. (0-65535, 0x0000-0xffff) </td></tr>
 </table>
 * * *
+#### vecho *[options]* *[text]* ######
+<table>
+<tr><td></td><td>Preforms a Carriage Return and Line Feed to the display</td></tr>
+<tr><td><b><i>text</i></b></td><td>Writes <b><i>text</i></b> to the display</td></tr>
+<tr><td><b>/A <i>n</i></a></td><td>Set text attribute to <b><i>n</i></b></td></tr>
+<tr><td><b>/B <i>color</i></b></td><td>Set the background text attribute to <b><i>color</i></b> (or <b><i>value</i></b>)</td></tr>
+<tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to <b><i>color</i></b> (or <b><i>value</i></b>)</td></tr>
+<tr><td><b>/N <i>n</i></a></td><td>Do not perform a CRLF when done.</td></tr>
+</table>
+* * *
 #### vgotoxy ######
 TBA
 * * *
@@ -82,9 +92,6 @@ TBA
 TBA
 * * *
 #### vline ######
-TBA
-* * *
-#### vecho ######
 TBA
 * * *
 #### vmode ######

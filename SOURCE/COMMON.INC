@@ -29,11 +29,17 @@ SECTION _DATA
 
 VideoMode:      DB 0
 VideoPage:      DB 0
-ScreenMax:      DW 0
 CursorShape:    DW 0
-WindMin:        DW 0
-WindMax:        DW 0
 TextAttr:       DB 0x07
+ScreenMax:
+	ScreenMaxX:	DB 0
+	ScreenMaxY	DB 0
+WindMin:        
+	WindMinX:	DB 0
+	WindMinY	DB 0
+WindMax:        
+	WindMaxX:	DB 0
+	WindMaxY	DB 0
 
 CommandLineErrorMsg:
     DB          "Parameter Error",0
@@ -122,7 +128,18 @@ WriteStrProc:
 .LineFeed:
     WhereXY
     inc         dh
+    mov			bh, [WindMaxY]
+    mov			bl, [WindMinY]
+    cmp			dh, bh
+    jg			.ScrollUp
     GotoXY      dx
+    jmp         .WriteStrLoop
+.ScrollUp:
+	mov			ax, 0x0601
+	mov			bh, [TextAttr]
+	mov			cx, [WindMin]
+	mov			dx, [WindMax]
+	int			0x10
     jmp         .WriteStrLoop
 .BackSpace:
 .HTab:

@@ -4,16 +4,18 @@ if not exist BIN mkdir BIN
 
 echo V8 Power!
 NASM.EXE -ISOURCE\ SOURCE\VCLS.ASM -fbin -O9 -o BIN\VCLS.COM
-echo Adjusting carburetor...
-NASM.EXE -ISOURCE\ SOURCE\VCURSOR.ASM -fbin -O9 -o BIN\VCURSOR.COM
-echo Verifying timing...
-NASM.EXE -ISOURCE\ SOURCE\VDELAY.ASM -fbin -O9 -o BIN\VDELAY.COM
-echo Checking spark-plugs...
+echo Inspecting tires...
+NASM.EXE -ISOURCE\ SOURCE\VECHO.ASM -fbin -O9 -o BIN\VECHO.COM
+bin\vecho "Checking " /f yellow spark-plugs /f Gray ...
 NASM.EXE -ISOURCE\ SOURCE\VGOTOXY.ASM -fbin -O9 -o BIN\VGOTOXY.COM
+bin\vecho /n "Adjusting "
+bin\vecho /f 13 carburetor /f gray ...
+NASM.EXE -ISOURCE\ SOURCE\VCURSOR.ASM -fbin -O9 -o BIN\VCURSOR.COM
+bin\vecho "Verifying " /f 12 timing /f gray ...
+NASM.EXE -ISOURCE\ SOURCE\VDELAY.ASM -fbin -O9 -o BIN\VDELAY.COM
 
 goto Done
 
-NASM.EXE -ISOURCE\ SOURCE\VECHO.ASM -fbin -O9 -o BIN\VECHO.COM
 NASM.EXE -ISOURCE\ SOURCE\VINFO.ASM -fbin -O9 -o BIN\VINFO.COM
 NASM.EXE -ISOURCE\ SOURCE\VLINE.ASM -fbin -O9 -o BIN\VLINE.COM
 NASM.EXE -ISOURCE\ SOURCE\VFRAME.ASM -fbin -O9 -o BIN\VFRAME.COM
