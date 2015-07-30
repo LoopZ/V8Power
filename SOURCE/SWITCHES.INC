@@ -88,19 +88,17 @@ CurrentXY:
 %imacro SizeSwitchHandlers 0
 SwitchW:
 	call		NumberParam
-	dec			al
 	mov			[CurrentW], al
 	ret
 	
 SwitchH:
 	call		NumberParam
-	dec			al
 	mov			[CurrentH], al
 	ret
 
 CurrentSize:
-	CurrentW: 	DB 0
-	CurrentH:	DB 0
+	CurrentW: 	DB 80
+	CurrentH:	DB 25
 %endmacro
 
 %imacro	XYSwitchData 0
