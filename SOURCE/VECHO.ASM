@@ -18,9 +18,12 @@
 
 %include "COMMON.INC"
 
+ProgramMain:
+
+	UseFrameBounds
+
     CommandLineParser       ; insert code for command line parsing
 
-ProgramMain:
 	mov			al, [NoNewLine]
 	cmp			al, 0
 	jne			Done
