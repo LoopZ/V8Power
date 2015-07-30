@@ -18,6 +18,47 @@
 
 %include "COMMON.INC"
 
-PlaceHolder 
+ProgramMain:
+	CommandLineParser       ; insert code for command line parsing
+	Terminate 0
 
-Terminate 0
+	NumberParameters        ; insert code for number based CmdLn Params    
+	LookupParameters        ; insert table lookup code for params    
+
+NoSwitch:
+	ret
+	
+SwitchQ:
+    mov         si, QueryTable
+    call        LookupParam
+    cmp         ax, 0xffff
+    je         	.NotFound
+    push		ax
+    WhereXY
+    pop			bx
+    jmp			bx
+.NotFound:
+	ret
+
+WhereXProc:
+	mov			al, dl
+	jmp			WhereOutProc
+WhereYProc:
+	mov			al, dh
+WhereOutProc:
+	StdOutHexByte
+	StdOutCRLF
+	ret
+	
+CommandLineSwitches:
+	SwitchData  0,  0, NoSwitch  
+	SwitchData 'Q', 1, SwitchQ
+    SwitchData  0,  0, 0
+    
+QueryTable:
+	TableData "X", WhereXProc
+	TableData "WHEREX", WhereXProc
+	TableData "Y", WhereYProc
+	TableData "WHEREY", WhereYProc
+	TableEnd	
+	

@@ -66,6 +66,42 @@ WriteInt:
 %endmacro
 
 ; Write AX to standard output as HEX
+%imacro StdOutHexByte 0
+	push	ax
+	mov		ah, 0x02
+	mov		dl, '0'
+	int		0x21
+	mov		dl, 'x'
+	int 	0x21
+	pop		ax
+	mov		cx, 2
+%%Loopy:
+	push	cx
+	push	ax
+	dec		cx
+	mov		ax, 4
+	mul		cx
+	mov		cx, ax
+	pop		ax
+	push	ax
+	shr		ax, cl
+	and		ax, 0x0f
+	cmp		al, 9
+	jle		%%Digit
+	add		al, 0x57
+	jmp		%%Show
+%%Digit:
+	add		al, 0x30
+%%Show:
+	mov		ah, 0x02
+	mov		dl, al
+	int		0x21
+	pop		ax
+	pop		cx
+	loop	%%Loopy
+%endmacro
+
+; Write AX to standard output as HEX
 %imacro StdOutHexWord 0
 	push	ax
 	mov		ah, 0x02
@@ -99,6 +135,14 @@ WriteInt:
 	pop		ax
 	pop		cx
 	loop	%%Loopy
+%endmacro
+
+%imacro StdOutCRLF 0
+	mov		ah, 0x02
+	mov		dl, 0x0d
+	int		0x21
+	mov		dl, 0x0a
+	int		0x21
 %endmacro
 
 ; Pre-286 High bits of flags are always set to 1

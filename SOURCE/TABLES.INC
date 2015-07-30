@@ -18,6 +18,17 @@
 
 ; common table macros
 
+%imacro TableData 2
+	DB %1
+	DB 0
+	DW %2
+%endmacro
+
+%imacro TableEnd 0
+	DB 0
+	DW 0xffff
+%endmacro
+
 %imacro ColorTableData 0
 ColorTable:
     DB "BLACK",0,0,0
@@ -44,5 +55,5 @@ ColorTable:
 ;   DB "LIGHT MAGENTA",0,13,0
     DB "YELLOW",0,14,0
     DB "WHITE",0,15,0
-    DB  0, 0xff, 0xff
+    TableEnd
 %endmacro
