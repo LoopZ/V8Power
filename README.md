@@ -91,9 +91,9 @@ Move or query cursor position.
 <tr><td></td><td>Preforms no action</td></tr>
 <tr><td><b>/Q <i>x</i></b> or <b><i>y</i></b></td><td>Queries the current <b><i>X</i></b>
  or <b><i>Y</i></b> position of the cursor and outputs it to <b>STDOUT</b></td></tr>
-<tr><td><i>tba</i></td><td><i>(Under development, to be announced)</i></td></tr>
 <tr><td><b>/X <i>column</i></b></td><td>Move cursor to <b><i>column</i></b></td></tr>
 <tr><td><b>/Y <i>row</i></b></td><td>Move cursor to <b><i>row</i></b></td></tr>
+<tr><td><i>tba</i></td><td><i>(Under development, to be announced)</i></td></tr>
 </table>
 * * *
 #### vframe ######
