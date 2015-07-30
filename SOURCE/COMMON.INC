@@ -76,7 +76,7 @@ GotoXYProc:
     int         0x10
     pop			dx
     ret
-    
+
 %include "MACROS.INC"
 %include "SNIPPETS.INC"
 %include "DEBUG.INC"
@@ -122,7 +122,7 @@ WriteStrProc:
     jmp         .WriteStrLoop
 .Return:
     WhereXY
-    mov         dl, [WindMin]
+    mov         dl, 0
     GotoXY      dx
     jmp         .WriteStrLoop
 .LineFeed:
@@ -130,6 +130,7 @@ WriteStrProc:
     inc         dh
     mov			bh, [WindMaxY]
     mov			bl, [WindMinY]
+    sub			bh, bl
     cmp			dh, bh
     jg			.ScrollUp
     GotoXY      dx

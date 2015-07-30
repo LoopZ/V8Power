@@ -25,20 +25,39 @@ vcursor hide
 
 pause
 vcls /b Red /f White
-vdelay 1000
+vdelay 500
 vcls /b Green /f LightCyan
-vdelay 1000
+vdelay 500
 vcls /b Blue /f Yellow
 vgotoxy /x20 /y20
 vecho /n "You have just experienced a blue screen. " 
-vdelay 1000
+vdelay 3000
 vecho /fGray "(" /fWhite "Of Life!" /fgray ')'
 vdelay 2000
-vframe /bGray /fBlack /x10/y5/w60/h10 SingleSides
+vframe /bGray /fBlack /x10/y5/w60/h8 Single
 vecho /fRed "There is a box on it!"
 vdelay 2000
 vecho /fBlue "You can write text to it!"
+vdelay 2000
+vecho /n /fBlue "and more text!"
 vdelay 1000
+vecho /fRed " and more!"
+vdelay 500
+vecho /fRed " and more!"
+vdelay 500
+vecho /fRed " and more!"
+vdelay 500
+vecho /fBrown "(Oops, I ran out of room. So, I had to scroll a little.)" /fred "and more!"
+vdelay 1000
+vecho /n /fRed " and more!"
+vdelay 1000
+vgotoxy /x 30 /y 15
+vecho /fRed /bWhite " Or not "
+vdelay  2000
+vecho "The text goes where you want it to!"
+vdelay  1000
+vecho "With very little effort."
+vdelay  1000
 vcls /b Green /f LightCyan
 vecho "This screen is environmently friendly."
 vdelay 2000

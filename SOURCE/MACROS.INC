@@ -42,6 +42,29 @@
 %imacro GotoNextXY 0
     WhereXY
     inc         dl
+    mov			bl, [WindMaxX]
+    sub			bl, [WindMinX]
+    cmp			dl, bl
+    jl			%%Done
+    mov			dl, 0
+    inc			dh
+    mov			bl, [WindMaxY]
+    sub			bl, [WindMinY]
+    cmp			dh, bl
+    jl			%%Done
+    dec			dh
+	push		ax
+	push		dx
+	push		cx
+	mov			ax, 0x0601
+	mov			bh, [TextAttr]
+	mov			cx, [WindMin]
+	mov			dx, [WindMax]
+	int			0x10
+    pop			cx
+    pop			dx
+    pop			ax
+%%Done:
     GotoXY      dx
 %endmacro
 
@@ -73,3 +96,4 @@
     mov         si, %1
     call        WriteStrProc
 %endmacro
+
