@@ -81,7 +81,7 @@ Simple delay.
 <b><i>color</i></b> (or <b><i>value</i></b>)</td></tr>
 <tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to 
 <b><i>color</i></b> (or <b><i>value</i></b>)</td></tr>
-<tr><td><b>/N <i>n</i></a></td><td>Do not perform a CRLF when done.</td></tr>
+<tr><td><b>/N</td><td>Do not perform a CRLF when done.</td></tr>
 <tr><td><i>tba</i></td><td><i>(Under development, to be announced)</i></td></tr>
 </table>
 * * *
