@@ -49,6 +49,7 @@ Clear screen.
 <tr><td><b>/B <i>color</i></b></td><td>Set the background text attribute to <b><i>color</i></b> (or <b><i>value</i></b>)</td></tr>
 <tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to <b><i>color</i></b> (or <b><i>value</i></b>)</td></tr>
 <tr><td><b>/T</b></td><td>Clear the text only. Leave all colors intact and ignore attributes.</td></tr>
+<tr><td>tba</td><td><i>(Under development, to be announced)</i></td></tr>
 </table>
 * * *
 #### vcursor *[options]* ######
@@ -77,6 +78,7 @@ Simple delay.
 <tr><td><b>/B <i>color</i></b></td><td>Set the background text attribute to <b><i>color</i></b> (or <b><i>value</i></b>)</td></tr>
 <tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to <b><i>color</i></b> (or <b><i>value</i></b>)</td></tr>
 <tr><td><b>/N <i>n</i></a></td><td>Do not perform a CRLF when done.</td></tr>
+<tr><td>tba</td><td><i>(Under development, to be announced)</i></td></tr>
 </table>
 * * *
 #### vgotoxy ######
