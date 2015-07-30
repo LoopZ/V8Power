@@ -46,8 +46,10 @@ Clear screen.
 <tr><td></td><td>Clear the screen with the current text attribute</td></tr>
 <tr><td><b><i>n</i></b></td><td>Set text attribute to <b><i>n</i></b></td></tr>
 <tr><td><b>/A <i>n</i></a></td><td>Set text attribute to <b><i>n</i></b></td></tr>
-<tr><td><b>/B <i>color</i></b></td><td>Set the background text attribute to <b><i>color</i></b> (or <b><i>value</i></b>)</td></tr>
-<tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to <b><i>color</i></b> (or <b><i>value</i></b>)</td></tr>
+<tr><td><b>/B <i>color</i></b></td><td>Set the background text attribute to 
+<b><i>color</i></b> (or <b><i>value</i></b>)</td></tr>
+<tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to 
+<b><i>color</i></b> (or <b><i>value</i></b>)</td></tr>
 <tr><td><b>/T</b></td><td>Clear the text only. Leave all colors intact and ignore attributes.</td></tr>
 <tr><td><i>tba</i></td><td><i>(Under development, to be announced)</i></td></tr>
 </table>
@@ -90,6 +92,8 @@ Move or query cursor position.
 <tr><td><b>/Q <i>x</i></b> or <b><i>y</i></b></td><td>Queries the current <b><i>X</i></b>
  or <b><i>Y</i></b> position of the cursor and outputs it to <b>STDOUT</b></td></tr>
 <tr><td><i>tba</i></td><td><i>(Under development, to be announced)</i></td></tr>
+<tr><td><b>/X <i>column</i></b></td><td>Move cursor to <b><i>column</i></b></td></tr>
+<tr><td><b>/Y <i>row</i></b></td><td>Move cursor to <b><i>row</i></b></td></tr>
 </table>
 * * *
 #### vframe ######

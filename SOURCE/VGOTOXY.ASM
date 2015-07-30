@@ -19,7 +19,10 @@
 %include "COMMON.INC"
 
 ProgramMain:
+	WhereXY
+	mov			[CurrentXY], dx
 	CommandLineParser       ; insert code for command line parsing
+	GotoXY 		[CurrentXY]
 	Terminate 0
 
 	NumberParameters        ; insert code for number based CmdLn Params    
@@ -33,18 +36,25 @@ SwitchQ:
     call        LookupParam
     cmp         ax, 0xffff
     je         	.NotFound
-    push		ax
-    WhereXY
-    pop			bx
-    jmp			bx
+    jmp			ax
 .NotFound:
+	ret
+	
+SwitchX:
+	call		NumberParam
+	mov			[CurrentXY], al
+	ret
+	
+SwitchY:
+	call		NumberParam
+	mov			[CurrentXY+1], al
 	ret
 
 WhereXProc:
-	mov			al, dl
+	mov			al, [CurrentXY]
 	jmp			WhereOutProc
 WhereYProc:
-	mov			al, dh
+	mov			al, [CurrentXY+1]
 WhereOutProc:
 	StdOutHexByte
 	StdOutCRLF
@@ -53,6 +63,8 @@ WhereOutProc:
 CommandLineSwitches:
 	SwitchData  0,  0, NoSwitch  
 	SwitchData 'Q', 1, SwitchQ
+	SwitchData 'X', 1, SwitchX
+	SwitchData 'Y', 1, SwitchY
     SwitchData  0,  0, 0
     
 QueryTable:
@@ -62,3 +74,5 @@ QueryTable:
 	TableData "WHEREY", WhereYProc
 	TableEnd	
 	
+CurrentXY:
+	DW 0
