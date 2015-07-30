@@ -4,8 +4,8 @@ if not exist BIN\NUL goto MakeDemo
 goto DoDemo
 
 :MakeDemo
-if not exist mkDemo.bat goto NoJoy
-call mkDemo.bat
+if not exist mkV8.bat goto NoJoy
+call mkV8.bat
 goto DoDemo
 
 :NoJoy
