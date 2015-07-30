@@ -50,6 +50,9 @@ SwitchB:
     or          ah, al
     mov         [TextAttr], ah
     ret
+	
+	ColorTableData      ; insert color name table
+
 %endmacro
 
 %imacro SwitchData 3
@@ -62,4 +65,50 @@ SwitchB:
 	SwitchData 'A', 1, SwitchA
     SwitchData 'F', 1, SwitchF
     SwitchData 'B', 1, SwitchB
+%endmacro
+
+%imacro XYSwitchHandlers 0
+SwitchX:
+	call		NumberParam
+	dec			al
+	mov			[CurrentX], al
+	ret
+	
+SwitchY:
+	call		NumberParam
+	dec			al
+	mov			[CurrentY], al
+	ret
+
+CurrentXY:
+	CurrentX: 	DB 0
+	CurrentY:	DB 0
+%endmacro
+
+%imacro SizeSwitchHandlers 0
+SwitchW:
+	call		NumberParam
+	dec			al
+	mov			[CurrentW], al
+	ret
+	
+SwitchH:
+	call		NumberParam
+	dec			al
+	mov			[CurrentH], al
+	ret
+
+CurrentSize:
+	CurrentW: 	DB 0
+	CurrentH:	DB 0
+%endmacro
+
+%imacro	XYSwitchData 0
+	SwitchData 'X', 1, SwitchX
+	SwitchData 'Y', 1, SwitchY
+%endmacro
+
+%imacro SizeSwitchData 0
+	SwitchData  'W', 1, SwitchW
+	SwitchData  'H', 1, SwitchH
 %endmacro

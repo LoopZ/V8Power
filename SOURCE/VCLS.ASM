@@ -71,9 +71,7 @@ SwitchT:
 	mov			al, 1
 	mov			[TextOnly], al
     ret
-    
-ColorTableData      ; insert color name table
-    
+        
 CommandLineSwitches:
     SwitchData  0,  0, NoSwitch      
     ColorSwitchData

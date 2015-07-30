@@ -30,7 +30,6 @@ Done:
     
     NumberParameters        ; insert code for number based CmdLn Params    
     LookupParameters        ; insert table lookup code for params    
-	ColorTableData      	; insert color name table    
      
 NoSwitch:
 	xor 		al, al

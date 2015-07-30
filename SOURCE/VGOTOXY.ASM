@@ -40,22 +40,15 @@ SwitchQ:
 .NotFound:
 	ret
 	
-SwitchX:
-	call		NumberParam
-	mov			[CurrentXY], al
-	ret
+XYSwitchHandlers
 	
-SwitchY:
-	call		NumberParam
-	mov			[CurrentXY+1], al
-	ret
-
 WhereXProc:
 	mov			al, [CurrentXY]
 	jmp			WhereOutProc
 WhereYProc:
 	mov			al, [CurrentXY+1]
 WhereOutProc:
+	inc			al
 	StdOutHexByte
 	StdOutCRLF
 	ret
@@ -63,8 +56,7 @@ WhereOutProc:
 CommandLineSwitches:
 	SwitchData  0,  0, NoSwitch  
 	SwitchData 'Q', 1, SwitchQ
-	SwitchData 'X', 1, SwitchX
-	SwitchData 'Y', 1, SwitchY
+	XYSwitchData
     SwitchData  0,  0, 0
     
 QueryTable:
@@ -74,5 +66,3 @@ QueryTable:
 	TableData "WHEREY", WhereYProc
 	TableEnd	
 	
-CurrentXY:
-	DW 0

@@ -18,6 +18,37 @@
 
 %include "COMMON.INC"
 
-PlaceHolder 
+ProgramMain:
+	; WhereXY
+	; mov			[CurrentXY], dx
+	CommandLineParser       ; insert code for command line parsing
+	
+	mov			cx, [CurrentXY]
+	mov			[WindMin], cx
+	mov			dx, [CurrentSize]
+	add			dx, cx
+	mov			[WindMax], dx
+    mov         ax, 0x0600
+    mov         bh, [TextAttr]
+    int         0x10	
+	mov			dx, 0x0000
+	GotoXY		dx
+	Terminate 0
 
-Terminate 0
+	NumberParameters        ; insert code for number based CmdLn Params    
+	LookupParameters        ; insert table lookup code for params    
+
+NoSwitch:
+	ret
+
+ColorSwitchHandlers
+XYSwitchHandlers
+SizeSwitchHandlers
+		
+CommandLineSwitches:
+	SwitchData  0,  0, NoSwitch  
+	ColorSwitchData
+	XYSwitchData
+	SizeSwitchData
+    SwitchData  0,  0, 0
+    	
