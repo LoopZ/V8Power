@@ -31,29 +31,29 @@
 
 %imacro ColorTableData 0
 ColorTable:
-    DB "BLACK",0,0,0
-    DB "BLUE",0,1,0
-    DB "GREEN",0,2,0
-    DB "CYAN",0,3,0
-    DB "RED",0,4,0
-    DB "MAGENTA",0,5,0
-    DB "BROWN",0,6,0
-    DB "GRAY",0,7,0
-;    DB "LIGHTGRAY",0,7,0
-;   DB "LIGHT GRAY",0,7,0
-    DB "DARKGRAY",0,8,0
-    DB "DARK GRAY",0,8,0
-    DB "LIGHTBLUE",0,9,0
-;   DB "LIGHT BLUE",0,9,0
-    DB "LIGHTGREEN",0,10,0
-;   DB "LIGHT GREEN",0,10,0
-    DB "LIGHTCYAN",0,11,0
-;   DB "LIGHT CYAN",0,11,0
-    DB "LIGHTRED",0,12,0
-;   DB "LIGHT RED",0,12,0
-    DB "LIGHTMAGENTA",0,13,0
-;   DB "LIGHT MAGENTA",0,13,0
-    DB "YELLOW",0,14,0
-    DB "WHITE",0,15,0
+    TableData "BLACK",0
+    TableData "BLUE", 1
+    TableData "GREEN",2
+    TableData "CYAN",3
+    TableData "RED",4
+    TableData "MAGENTA",5
+    TableData "BROWN",6
+    TableData "GRAY",7
+;    TableData "LIGHTGRAY",7
+;   TableData "LIGHT GRAY",7
+    TableData "DARKGRAY",8
+    TableData "DARK GRAY",8
+    TableData "LIGHTBLUE",9
+;   TableData "LIGHT BLUE",9
+    TableData "LIGHTGREEN",10
+;   TableData "LIGHT GREEN",10
+    TableData "LIGHTCYAN",11
+;   TableData "LIGHT CYAN",11
+    TableData "LIGHTRED",12
+;   TableData "LIGHT RED",12
+    TableData "LIGHTMAGENTA",13
+;   TableData "LIGHT MAGENTA",13
+    TableData "YELLOW",14
+    TableData "WHITE",15
     TableEnd
 %endmacro

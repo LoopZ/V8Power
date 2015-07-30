@@ -22,16 +22,40 @@ ProgramMain:
 	; WhereXY
 	; mov			[CurrentXY], dx
 	CommandLineParser       ; insert code for command line parsing
+		
+	
 	
 	mov			cx, [CurrentXY]
 	mov			[WindMin], cx
 	mov			dx, [CurrentSize]
+	cmp			dl, 1
+	jg			.WidthOK
+	mov			dl, 2
+.WidthOK:
+	cmp			dh, 1
+	jg			.HeightOK
+	mov			dh, 2
+.HeightOK:
+	mov			[CurrentSize], dx
 	push		dx
 	add			dx, cx
 	mov			[WindMax], dx
 	
+	mov			al, [TextAttr]
+	mov			[BoxAttr], al
 	mov			di, [BoxStyle]	
-	
+	cmp			di, BoxHidden
+	jne			.NotHiddenBox
+	mov			al, [TextAttr]
+	and			al, 0xf0
+	mov			ah, al
+	mov			cl, 4
+	shr			al, cl
+	or			al, ah
+	mov			[BoxAttr], al
+	mov			di, BoxSingle
+	mov			[BoxStyle], di
+.NotHiddenBox:	
 	mov			dx, 0x0000
 	GotoXY		dx
 	pop			dx
@@ -114,25 +138,12 @@ WriteRow:
 	LookupParameters        ; insert table lookup code for params    
 
 NoSwitch:
-    mov         si, ColorTable
+    mov         si, BoxStyleTable
     call        LookupParam
     cmp         ax, 0xffff
-    je	        .Error
-    call        NumberParam
+    jne	        .Found
+    jmp			.NotBox
 .Found:
-	cmp			ax, BoxHidden
-	jne			.NotHiddenBox
-	mov			al, [TextAttr]
-	and			al, 0xf0
-	mov			ah, al
-	mov			cl, 4
-	shr			al, cl
-	or			al, ah
-	mov			[BoxAttr], al
-	mov			ax, BoxSingle
-	mov			[BoxStyle], ax
-	ret
-.NotHiddenBox:
 	cmp			ax, BoxSingle
 	je			.NormalBox
 	cmp			ax, BoxDouble
@@ -143,12 +154,12 @@ NoSwitch:
 	je			.NormalBox
 .NormalBox:
 	mov			[BoxStyle], ax		
-	mov			al, [TextAttr]
-	mov			[BoxAttr], al
 	ret
 .NotBox:
+
 .Error:
-    ret
+	WriteStr 	CommandLineErrorMsg
+	Terminate   100
 	
 SwitchD:
 	
@@ -173,11 +184,12 @@ BoxAttr:
 	db 	0
 	
 BoxStyleTable:
-	TableData "Hidden",			BoxSingle
-	TableData "Single", 		BoxSingle
-	TableData "Double",			BoxDouble
-	TableData "SingleSides",	BoxSingleSides
-	TableData "DoubleSides",	BoxDoubleSides
+	TableData "HIDE",			BoxHidden
+	TableData "HIDDEN",			BoxHidden
+	TableData "SINGLE", 		BoxSingle
+	TableData "DOUBLE",			BoxDouble
+	TableData "SINGLESIDES",	BoxSingleSides
+	TableData "DOUBLESIDES",	BoxDoubleSides
 	TableEnd
 		
 CommandLineSwitches:
