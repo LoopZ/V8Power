@@ -25,12 +25,25 @@ vcursor hide
 
 pause
 vcls /b Red /f White
-pause
-vcls /b Blue /f Yellow
-pause
+vdelay 1000
 vcls /b Green /f LightCyan
-pause
+vdelay 1000
+vcls /b Blue /f Yellow
+vgotoxy /x20 /y20
+vecho /n "You have just experienced a blue screen. " 
+vdelay 1000
+vecho /fGray "(" /fWhite "Of Life!" /fgray ')'
+vdelay 2000
+vframe /bGray /fBlack /x10/y5/w60/h10 SingleSides
+vecho /fRed "There is a box on it!"
+vdelay 2000
+vecho /fBlue "You can write text to it!"
+vdelay 1000
+vcls /b Green /f LightCyan
+vecho "This screen is environmently friendly."
+vdelay 2000
 vcls /a 0x07
+vecho "Goodbye."
 
 vcursor %CURSOR%
 set CURSOR=
