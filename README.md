@@ -85,7 +85,7 @@ Simple delay.
 Move or query cursor position.
 <table>
 <tr><td></td><td>Preforms no action</td></tr>
-<tr><td><b>/Q <i>x|y</i></b></td><td>Queries the current <b><i>X</i></b> or <b><i>Y</i></b> position of the cursor and outputs to STDOUT</td></tr>
+<tr><td><b>/Q <i>x</i></b> or <b><i>y</i></b></td><td>Queries the current <b><i>X</i></b> or <b><i>Y</i></b> position of the cursor and outputs to STDOUT</td></tr>
 <tr><td><i>tba</i></td><td><i>(Under development, to be announced)</i></td></tr>
 </table>
 * * *
