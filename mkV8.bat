@@ -1,5 +1,6 @@
 @echo off
 
+call mkClean.bat
 if not exist BIN mkdir BIN
 
 echo V8 Power!

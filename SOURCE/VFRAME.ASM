@@ -30,7 +30,7 @@ ProgramMain:
 	add			dx, cx
 	mov			[WindMax], dx
 	
-	mov			di, [BoxStyle]
+	mov			di, [BoxStyle]	
 	
 	mov			dx, 0x0000
 	GotoXY		dx
@@ -71,7 +71,7 @@ WriteRow:
     mov         ah, 0x09
     mov			al, [di]
     mov         bh, [VideoPage]
-    mov         bl, [TextAttr]
+    mov         bl, [BoxAttr]
     mov         cx, 0x0001
     int         0x10
     ; Top Bar
@@ -83,7 +83,11 @@ WriteRow:
     mov         ah, 0x09
     mov			al, [di+1]
     mov         bh, [VideoPage]
+    cmp			al, 0x20
+    mov         bl, [BoxAttr]
+    jne			.NotCenter
     mov         bl, [TextAttr]
+.NotCenter:
     xor			ch, ch
     mov			cl, dl
     sub			cl, 2
@@ -100,7 +104,7 @@ WriteRow:
     mov         ah, 0x09
     mov			al, [di+2]
     mov         bh, [VideoPage]
-    mov         bl, [TextAttr]
+    mov         bl, [BoxAttr]
     mov         cx, 0x0001
     int         0x10
     pop			dx
@@ -110,6 +114,44 @@ WriteRow:
 	LookupParameters        ; insert table lookup code for params    
 
 NoSwitch:
+    mov         si, ColorTable
+    call        LookupParam
+    cmp         ax, 0xffff
+    je	        .Error
+    call        NumberParam
+.Found:
+	cmp			ax, BoxHidden
+	jne			.NotHiddenBox
+	mov			al, [TextAttr]
+	and			al, 0xf0
+	mov			ah, al
+	mov			cl, 4
+	shr			al, cl
+	or			al, ah
+	mov			[BoxAttr], al
+	mov			ax, BoxSingle
+	mov			[BoxStyle], ax
+	ret
+.NotHiddenBox:
+	cmp			ax, BoxSingle
+	je			.NormalBox
+	cmp			ax, BoxDouble
+	je			.NormalBox
+	cmp			ax, BoxDoubleSides
+	je			.NormalBox
+	cmp			ax, BoxSingleSides
+	je			.NormalBox
+.NormalBox:
+	mov			[BoxStyle], ax		
+	mov			al, [TextAttr]
+	mov			[BoxAttr], al
+	ret
+.NotBox:
+.Error:
+    ret
+	
+SwitchD:
+	
 	ret
 
 ColorSwitchHandlers
@@ -121,8 +163,22 @@ BoxSingleSides:		db 0xd5,0xcd,0xb8,0xb3,0x20,0xb3,0xd4,0xcd,0xbe
 BoxDoubleSides:		db 0xd6,0xc4,0xb7,0xba,0x20,0xba,0xd3,0xc4,0xbd
 BoxDouble:			db 0xc9,0xcd,0xbb,0xba,0x20,0xba,0xc8,0xcd,0xbc
 
+BoxHidden:			; dummy address to trip modification
+
 BoxStyle:
 	dw 	BoxDouble
+BoxShown:
+	db  0
+BoxAttr: 
+	db 	0
+	
+BoxStyleTable:
+	TableData "Hidden",			BoxSingle
+	TableData "Single", 		BoxSingle
+	TableData "Double",			BoxDouble
+	TableData "SingleSides",	BoxSingleSides
+	TableData "DoubleSides",	BoxDoubleSides
+	TableEnd
 		
 CommandLineSwitches:
 	SwitchData  0,  0, NoSwitch  
