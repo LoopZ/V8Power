@@ -26,7 +26,6 @@ increased functionality.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Run the mkV8.bat script. <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;All executibles will be placed in newly
 created BIN directory. <br>
-
 * * *
 
 ## V8Power Usage
@@ -39,7 +38,7 @@ created BIN directory. <br>
 > * Use multiple qoutes to use quotes. Like **"Jack's house"** or **'Say "What?"'**<br>
 > * Unless overriden, most utilities use the text attribute at the current cursor location.<br>
 > * Tab characters are not supported at present. Using them can cause issues. For instance,
-"vcls <tab>/L" will cause you problems.
+"vcls *&lt;tab&gt;*/L" will cause you problems.
 
 * * *
 #### vcls *[options]* ######
