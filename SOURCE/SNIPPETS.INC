@@ -542,7 +542,6 @@ Done:
 	pop		si
 %endmacro
 
-
 %imacro FrameBoundsProc 0
 	%ifndef FrameBoundsProc_Declared
 		%idefine FrameBoundsProc_Declared
@@ -611,20 +610,17 @@ Done:
 		mov				ah, 0x08
 		int				0x10
 
-		cmp				al, 0xc4
-		je				%%Frame
-		cmp				al, 0xcd
-		je				%%Frame
 		cmp				al, 0xb3
-		je				%%Frame
-		cmp				al, 0xba
-		je				%%Frame
+		jl				%%NotFrame
+		cmp				al, 0xda
+		jg				%%NotFrame
 
-		mov				ah, 0
-		cmp				ah, 0
-		ret
 	%%Frame:
 		mov				ah, 1
+		cmp				ah, 0
+		ret
+	%%NotFrame:
+		mov				ah, 0
 		cmp				ah, 0
 		ret
 	%%Done:

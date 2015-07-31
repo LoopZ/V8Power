@@ -37,7 +37,8 @@ SwitchQ:
 	ret
 	
 XYSwitchHandlers
-	
+LocalSwitchHandlers
+
 WhereXProc:
 	mov			al, [CurrentXY]
 	jmp			WhereOutProc
@@ -53,6 +54,7 @@ CommandLineSwitches:
 	SwitchData  0,  0, NoSwitch  
 	SwitchData 'Q', 1, SwitchQ
 	XYSwitchData
+	LocalSwitchData
     SwitchData  0,  0, 0
     
 QueryTable:

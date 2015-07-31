@@ -71,16 +71,43 @@ vdelay  3000
 vframe /bBlue /fWhite /x20/y10/w40/h6 DoubleSides
 vecho "This box has double sides and single top and bottom edges."
 vdelay  3000
-
-:current
-
 vframe /bBlue /fLightGreen /x20/y10/w40/h6 Hidden
 vecho "This hidden edge box. Great for making text areas with margins."
 vdelay 3000
-vcls	/fred /bblue /p
+vcls /l
+vdelay 2000
+vecho "That was a local clear screen."
+vdelay 2000
+vcls /g
 vdelay 1000
+vecho "That was a global clear screen."
+vdelay 2000
+
+vcls /bblue
+vframe /bGray /fWhite /x10/y5/w60/h15 Double
+vecho "This is another box."
+vdelay 1000
+vgotoxy	/l /x 3 /y 3
+vecho "This is Local position 3x3."
+vdelay 1000
+vgotoxy	/g /x 3 /y 3
+vecho "This is global position 3x3."
+vdelay 3000
+
+:current
+
+vcls /bblue
+vframe /bGray /fWhite /x15/y1/w10/h4 Double
+vframe /bGray /fWhite /x5/y5/w20/h5 Double
+vgotoxy /l /x2/y2
+vecho "Box characters cause interesting things with the vecho command"
+vgotoxy /g /x2/y2
+vecho "Box characters cause interesting things with the vecho command"
+
+vdelay 3000
+
 vcls /b Green /f LightCyan
-vecho "This screen is environmently friendly."
+vecho "This screen is environmentally friendly."
 vdelay 2000
 vcls /a 0x07
 vecho "Goodbye."

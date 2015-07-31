@@ -52,6 +52,7 @@
     mov         cx, [WindMin]	
 		
 .Done:
+	xor			cx, cx
     GotoXY      cx	
     Terminate 0
 
