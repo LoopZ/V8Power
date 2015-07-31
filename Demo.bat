@@ -100,7 +100,7 @@ vframe /bGray /fWhite /x15/y1/w10/h4 Double
 vframe /bGray /fWhite /x5/y7/w20/h5 Double
 vgotoxy /l /x1/y2
 vecho "Box characters cause interesting things with the vecho command"
-vgotoxy /g /x1/y2
+vgotoxy /g/x1/y1
 vecho "Box characters cause interesting things with the vecho command"
 vdelay 3000
 
