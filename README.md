@@ -51,7 +51,10 @@ Clear screen.
 <tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to 
 <b><i>color</i></b> (or <b><i>value</i></b>)</td></tr>
 <tr><td><b>/T</b></td><td>Clear the text only. Leave all colors intact and ignore attributes.</td></tr>
-<tr><td><i>tba</i></td><td><i>(Under development, to be announced)</i></td></tr>
+<tr><td><b>/G</a></td><td>Global Screen Clear. (Default)</b></td></tr>
+<tr><td><b>/L</a></td><td>Local Screen Clear. Detects its surroundings and only clears that.
+	Probably, a box or line or something. You don't really need this option. Because, 
+	you can just redraw the box probably.</b></td></tr>
 </table>
 * * *
 #### vcursor *[options]* ######
@@ -93,11 +96,18 @@ Move or query cursor position.
  or <b><i>Y</i></b> position of the cursor and outputs it to <b>STDOUT</b></td></tr>
 <tr><td><b>/X <i>column</i></b></td><td>Move cursor to <b><i>column</i></b></td></tr>
 <tr><td><b>/Y <i>row</i></b></td><td>Move cursor to <b><i>row</i></b></td></tr>
+<tr><td><b>/G</b></td><td>Move cursor based on entire screen. (default)</td></tr>
+<tr><td><b>/L</b></td><td>Move cursor based on its surroundings.</td></tr>
 <tr><td><i>tba</i></td><td><i>(Under development, to be announced)</i></td></tr>
 </table>
 * * *
-#### vframe ######
-TBA
+#### vframe *[options]* ######
+Draw a box windowing thingy.
+<tr><td></td><td>Draw a box that encloses the entire screen</td></tr>
+<tr><td><b>/X <i>column</i></b></td><td>Screen <b><i>column</i></b> to start box.</td></tr>
+<tr><td><b>/Y <i>row</i></b></td><td>Screen <b><i>row</i></b></td> to start box.</tr>
+<tr><td><i>tba</i></td><td><i>(Under development, to be announced)</i></td></tr>
+</table>
 * * *
 #### vinfo ######
 TBA
