@@ -100,6 +100,18 @@ CurrentSize:
 	CurrentH:	DB 25
 %endmacro
 
+%imacro LocalSwitchHandlers 0
+	SwitchL:
+		FrameBounds
+		ret
+	SwitchG:
+		mov		ax, 0x0000
+		mov		[WindMin], ax
+		mov		ax, [ScreenMax]
+		mov		[WindMax], ax
+		ret
+%endmacro
+
 %imacro	XYSwitchData 0
 	SwitchData 'X', 1, SwitchX
 	SwitchData 'Y', 1, SwitchY
@@ -108,4 +120,9 @@ CurrentSize:
 %imacro SizeSwitchData 0
 	SwitchData  'W', 1, SwitchW
 	SwitchData  'H', 1, SwitchH
+%endmacro
+
+%imacro LocalSwitchData 0
+    SwitchData 'L', 0, SwitchL
+    SwitchData 'G', 0, SwitchG
 %endmacro

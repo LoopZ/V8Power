@@ -18,7 +18,7 @@
 
 %include "COMMON.INC"
 
-	UseFrameBounds
+	FrameBounds
 
     CommandLineParser       ; insert code for command line parsing
 

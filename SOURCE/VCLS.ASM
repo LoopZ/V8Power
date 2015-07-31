@@ -58,10 +58,7 @@
 NoSwitch:
 	; NoSwitch falls through to SwitchA
 	ColorSwitchHandlers		; Procedures for handling color switches.
-
-SwitchP:
-	UseFrameBounds
-	ret
+	LocalSwitchHandlers		; Procedures for handling local and global relations.
 	
 SwitchT:
 	mov			al, 1
@@ -72,7 +69,7 @@ CommandLineSwitches:
     SwitchData  0,  0, NoSwitch      
     ColorSwitchData
     SwitchData 'T', 0, SwitchT
-    SwitchData 'P', 0, SwitchP
+    LocalSwitchData
     SwitchData  0,  0, 0
     
 TextOnly: 

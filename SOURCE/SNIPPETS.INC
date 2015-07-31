@@ -542,86 +542,98 @@ Done:
 	pop		si
 %endmacro
 
-%imacro UseFrameBounds 0
-	; current position
-	mov				ah,0x03
-	mov				bh, [VideoPage]
-	int 			0x10
-	; Save it for later
-	push			dx
-%%ScanUp:
-	call			%%Check
-	jnz				%%FrameTop
-	cmp				dh, 0
-	je				%%ScanLeft
-	dec				dh
-	jmp				%%ScanUp
-%%FrameTop:	
-	inc				dh
-%%ScanLeft:
-	call			%%Check
-	jnz				%%FrameLeft
-	cmp				dl, 0
-	je				%%StartMaxScan
-	dec				dl
-	jmp				%%ScanLeft
-%%FrameLeft:
-	inc				dl
-%%StartMaxScan:
-	mov				ax, dx
-	pop				dx
-	push			dx
-	mov				cx, dx
-	sub				ch, ah
-	sub				cl, al
-	mov				[WindMin], ax
-%%ScanDown:
-	call			%%Check
-	jnz				%%FrameBottom
-	cmp				dh, [ScreenMaxY]
-	je				%%ScanRight
-	inc				dh
-	jmp				%%ScanDown
-%%FrameBottom:	
-	dec				dh
-%%ScanRight:
-	call			%%Check
-	jnz				%%FrameRight
-	cmp				dl, [ScreenMaxX]
-	je				%%ScanDone
-	inc				dl
-	jmp				%%ScanRight
-%%FrameRight:
-	dec				dl
-%%ScanDone:
-	mov				[WindMax], dx
-	pop				dx
-	mov				ah, 0x02
-	int				0x10
+
+%imacro FrameBoundsProc 0
+	%ifndef FrameBoundsProc_Declared
+		%idefine FrameBoundsProc_Declared
+		jmp %%SkipOver
+	FrameBounds_Proc:
+		; current position
+		mov				ah,0x03
+		mov				bh, [VideoPage]
+		int 			0x10
+		; Save it for later
+		push			dx
+	%%ScanUp:
+		call			%%Check
+		jnz				%%FrameTop
+		cmp				dh, 0
+		je				%%ScanLeft
+		dec				dh
+		jmp				%%ScanUp
+	%%FrameTop:	
+		inc				dh
+	%%ScanLeft:
+		call			%%Check
+		jnz				%%FrameLeft
+		cmp				dl, 0
+		je				%%StartMaxScan
+		dec				dl
+		jmp				%%ScanLeft
+	%%FrameLeft:
+		inc				dl
+	%%StartMaxScan:
+		mov				ax, dx
+		pop				dx
+		push			dx
+		mov				cx, dx
+		sub				ch, ah
+		sub				cl, al
+		mov				[WindMin], ax
+	%%ScanDown:
+		call			%%Check
+		jnz				%%FrameBottom
+		cmp				dh, [ScreenMaxY]
+		je				%%ScanRight
+		inc				dh
+		jmp				%%ScanDown
+	%%FrameBottom:	
+		dec				dh
+	%%ScanRight:
+		call			%%Check
+		jnz				%%FrameRight
+		cmp				dl, [ScreenMaxX]
+		je				%%ScanDone
+		inc				dl
+		jmp				%%ScanRight
+	%%FrameRight:
+		dec				dl
+	%%ScanDone:
+		mov				[WindMax], dx
+		pop				dx
+		mov				ah, 0x02
+		int				0x10
 	
-	jmp				%%Done
-%%Check:
-	mov				ah, 0x02
-	int				0x10
-	mov				ah, 0x08
-	int				0x10
+		jmp				%%Done
+	%%Check:
+		mov				ah, 0x02
+		int				0x10
+		mov				ah, 0x08
+		int				0x10
 
-	cmp				al, 0xc4
-	je				%%Frame
-	cmp				al, 0xcd
-	je				%%Frame
-	cmp				al, 0xb3
-	je				%%Frame
-	cmp				al, 0xba
-	je				%%Frame
+		cmp				al, 0xc4
+		je				%%Frame
+		cmp				al, 0xcd
+		je				%%Frame
+		cmp				al, 0xb3
+		je				%%Frame
+		cmp				al, 0xba
+		je				%%Frame
 
-	mov				ah, 0
-	cmp				ah, 0
-	ret
-%%Frame:
-	mov				ah, 1
-	cmp				ah, 0
-	ret
+		mov				ah, 0
+		cmp				ah, 0
+		ret
+	%%Frame:
+		mov				ah, 1
+		cmp				ah, 0
+		ret
+	%%Done:
+		ret
+	%%SkipOver:
+	%endif
+%endmacro
 
-%%Done:
+%imacro FrameBounds 0
+	FrameBoundsProc
+	call	FrameBounds_Proc
 %endmacro

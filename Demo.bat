@@ -26,6 +26,9 @@ vcursor hide
 pause
 vcls /b Red /f White
 vdelay 500
+
+goto current
+
 vcls /b Green /f LightCyan
 vdelay 500
 vcls /b Blue /f Yellow
@@ -68,9 +71,14 @@ vdelay  3000
 vframe /bBlue /fWhite /x20/y10/w40/h6 DoubleSides
 vecho "This box has double sides and single top and bottom edges."
 vdelay  3000
+
+:current
+
 vframe /bBlue /fLightGreen /x20/y10/w40/h6 Hidden
 vecho "This hidden edge box. Great for making text areas with margins."
 vdelay 3000
+vcls	/fred /bblue /p
+vdelay 1000
 vcls /b Green /f LightCyan
 vecho "This screen is environmently friendly."
 vdelay 2000
