@@ -563,42 +563,46 @@ Done:
 	%%FrameTop:	
 		inc				dh
 	%%ScanLeft:
+		mov				[WindMinY], dh
+		pop				dx
+		push			dx
+	%%ScanLeftLoop:
 		call			%%Check
 		jnz				%%FrameLeft
 		cmp				dl, 0
-		je				%%StartMaxScan
+		je				%%ScanDown
 		dec				dl
-		jmp				%%ScanLeft
+		jmp				%%ScanLeftLoop
 	%%FrameLeft:
 		inc				dl
-	%%StartMaxScan:
-		mov				ax, dx
+	%%ScanDown:
+		mov				[WindMinX], dl
 		pop				dx
 		push			dx
-		mov				cx, dx
-		sub				ch, ah
-		sub				cl, al
-		mov				[WindMin], ax
-	%%ScanDown:
+	%%ScanDownLoop:
 		call			%%Check
 		jnz				%%FrameBottom
 		cmp				dh, [ScreenMaxY]
 		je				%%ScanRight
 		inc				dh
-		jmp				%%ScanDown
+		jmp				%%ScanDownLoop
 	%%FrameBottom:	
 		dec				dh
 	%%ScanRight:
+		mov				[WindMaxY], dh
+		pop				dx
+		push			dx
+	%%ScanRightLoop:
 		call			%%Check
 		jnz				%%FrameRight
 		cmp				dl, [ScreenMaxX]
 		je				%%ScanDone
 		inc				dl
-		jmp				%%ScanRight
+		jmp				%%ScanRightLoop
 	%%FrameRight:
 		dec				dl
 	%%ScanDone:
-		mov				[WindMax], dx
+		mov				[WindMaxX], dl
 		pop				dx
 		mov				ah, 0x02
 		int				0x10

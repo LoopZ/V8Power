@@ -27,7 +27,7 @@ pause
 vcls /b Red /f White
 vdelay 500
 
-goto current
+rem goto current
 
 vcls /b Green /f LightCyan
 vdelay 500
@@ -61,6 +61,7 @@ vecho "The text goes where you want it to!"
 vdelay  1000
 vecho "With very little effort."
 vdelay  2000
+
 vcls /b red
 vframe /bBlue /fCyan /x20/y10/w40/h6 Double
 vecho "This box has double sides box."
@@ -94,17 +95,16 @@ vgotoxy	/g /x 3 /y 3
 vecho "This is global position 3x3."
 vdelay 3000
 
-:current
-
 vcls /bblue
 vframe /bGray /fWhite /x15/y1/w10/h4 Double
-vframe /bGray /fWhite /x5/y5/w20/h5 Double
-vgotoxy /l /x2/y2
+vframe /bGray /fWhite /x5/y7/w20/h5 Double
+vgotoxy /l /x1/y2
 vecho "Box characters cause interesting things with the vecho command"
-vgotoxy /g /x2/y2
+vgotoxy /g /x1/y2
 vecho "Box characters cause interesting things with the vecho command"
-
 vdelay 3000
+
+:current
 
 vcls /b Green /f LightCyan
 vecho "This screen is environmentally friendly."
