@@ -114,7 +114,7 @@ Draw a box windowing thingy.
 <tr><td><b>/Y <i>row</i></b></td><td>Screen <b><i>row</i></b> to start the box.</td></tr>
 <tr><td><b>/W <i>width</i></b></td><td>Total <b><i>width</i></b> of the box.</td></tr>
 <tr><td><b>/H <i>height</i></b></td><td>Total <b><i>height</i></b> of the box.</td></tr>
-<tr><td><i>style</i></td><td>Box <i>styles</i> are <b><i>Single</i></b>, <b><i>Double</i></b>, 
+<tr><td><b><i>style</i></b></td><td>Box <i>styles</i> are <b><i>Single</i></b>, <b><i>Double</i></b>, 
 <b><i>SingleSides</i></b>, <b><i>DoubleSides</i></b> and <b><i>Hidden</i></b></td></tr>
 <tr><td><i>tba</i></td><td><i>(Under development, to be announced)</i></td></tr>
 </table>
