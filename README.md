@@ -37,7 +37,9 @@ created BIN directory. <br>
 > * Spaces are optional. **/B7/f0** is the same as **/B 7 /F 0**. But, not **/ B7 / F0**<br>
 > * To use a **/** or spaces in a value, put it in qoutes. Like **"Jack and/or Jill"**<br>
 > * Use multiple qoutes to use quotes. Like **"Jack's house"** or **'Say "What?"'**<br>
-> * Unless overriden, most utilities use the text attribute at the current cursor location.
+> * Unless overriden, most utilities use the text attribute at the current cursor location.<br>
+> * Tab characters are not supported at present. Using them can cause issues. For instance,
+"vcls <tab>/L" will cause you problems.
 
 * * *
 #### vcls *[options]* ######
