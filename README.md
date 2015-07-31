@@ -105,8 +105,15 @@ Move or query cursor position.
 Draw a box windowing thingy.
 <table>
 <tr><td></td><td>Draw a box that encloses the entire screen</td></tr>
-<tr><td><b>/X <i>column</i></b></td><td>Screen <b><i>column</i></b> to start box.</td></tr>
-<tr><td><b>/Y <i>row</i></b></td><td>Screen <b><i>row</i></b></td> to start box.</tr>
+<tr><td><b>/A <i>n</i></a></td><td>Set text attribute to <b><i>n</i></b></td></tr>
+<tr><td><b>/B <i>color</i></b></td><td>Set the background text attribute to 
+<b><i>color</i></b> (or <b><i>value</i></b>)</td></tr>
+<tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to 
+<b><i>color</i></b> (or <b><i>value</i></b>)</td></tr>
+<tr><td><b>/X <i>column</i></b></td><td>Screen <b><i>column</i></b> to start the box.</td></tr>
+<tr><td><b>/Y <i>row</i></b></td><td>Screen <b><i>row</i></b> to start the box.</td></tr>
+<tr><td><b>/W <i>width</i></b></td><td>Total <b><i>width</i></b> of the box.</td></tr>
+<tr><td><b>/H <i>height</i></b></td><td>Total <b><i>height</i></b> of the box.</td></tr>
 <tr><td><i>tba</i></td><td><i>(Under development, to be announced)</i></td></tr>
 </table>
 * * *
