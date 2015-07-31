@@ -54,7 +54,7 @@ Clear screen.
 <tr><td><b>/G</a></td><td>Global Screen Clear. (Default)</b></td></tr>
 <tr><td><b>/L</a></td><td>Local Screen Clear. Detects its surroundings and only clears that.
 	Probably, a box or line or something. You don't really need this option. Because, 
-	you can just redraw the box probably.</b></td></tr>
+	you can just redraw the box, maybe.</b></td></tr>
 </table>
 * * *
 #### vcursor *[options]* ######
@@ -103,6 +103,7 @@ Move or query cursor position.
 * * *
 #### vframe *[options]* ######
 Draw a box windowing thingy.
+<table>
 <tr><td></td><td>Draw a box that encloses the entire screen</td></tr>
 <tr><td><b>/X <i>column</i></b></td><td>Screen <b><i>column</i></b> to start box.</td></tr>
 <tr><td><b>/Y <i>row</i></b></td><td>Screen <b><i>row</i></b></td> to start box.</tr>
