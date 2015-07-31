@@ -25,15 +25,11 @@ ProgramMain:
 	GotoXY 		[CurrentXY]
 	Terminate 0
 
-	NumberParameters        ; insert code for number based CmdLn Params    
-	LookupParameters        ; insert table lookup code for params    
-
 NoSwitch:
 	ret
 	
 SwitchQ:
-    mov         si, QueryTable
-    call        LookupParam
+    LookupParam	QueryTable
     cmp         ax, 0xffff
     je         	.NotFound
     jmp			ax

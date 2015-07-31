@@ -30,10 +30,9 @@ DelayFunc:
 	Delay	ax
 	ret
 
-    NumberParameters        ; insert code for number based CmdLn Params    
      
 NoSwitch:
-	call		NumberParam
+	NumberParam
 	call 		DelayFunc
 	xor			ax, ax
 	mov			[DelayTime], ax

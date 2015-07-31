@@ -20,16 +20,15 @@
 
 %imacro ColorSwitchHandlers 0
 SwitchA:
-    call        NumberParam 
+    NumberParam 
     mov         [TextAttr], al
     ret
       
 SwitchColor:
-    mov         si, ColorTable
-    call        LookupParam
+    LookupParam ColorTable
     cmp         ax, 0xffff
     jne         .Found
-    call        NumberParam
+    NumberParam
 .Found:
     ret
     
@@ -69,7 +68,7 @@ SwitchB:
 
 %imacro XYSwitchHandlers 0
 SwitchX:
-	call		NumberParam
+	NumberParam
 	dec			al
 	mov			[CurrentX], al
 	ret
@@ -87,12 +86,12 @@ CurrentXY:
 
 %imacro SizeSwitchHandlers 0
 SwitchW:
-	call		NumberParam
+	NumberParam
 	mov			[CurrentW], al
 	ret
 	
 SwitchH:
-	call		NumberParam
+	NumberParam
 	mov			[CurrentH], al
 	ret
 

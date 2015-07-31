@@ -134,12 +134,8 @@ WriteRow:
     pop			dx
     ret
 
-	NumberParameters        ; insert code for number based CmdLn Params    
-	LookupParameters        ; insert table lookup code for params    
-
 NoSwitch:
-    mov         si, BoxStyleTable
-    call        LookupParam
+    LookupParam BoxStyleTable
     cmp         ax, 0xffff
     jne	        .Found
     jmp			.NotBox

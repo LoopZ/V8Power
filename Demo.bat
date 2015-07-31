@@ -41,15 +41,15 @@ vecho /fBlue "You can write text to it!"
 vdelay 2000
 vecho /n /fBlue "and more text!"
 vdelay 1000
-vecho /fRed " and more!"
+vecho /fRed "and more!"
 vdelay 500
-vecho /fRed " and more!"
+vecho /fRed "and more!"
 vdelay 500
-vecho /fRed " and more!"
+vecho /fRed "and more!"
 vdelay 500
 vecho /fBrown "(Oops, I ran out of room. So, I had to scroll a little.)" /fred "and more!"
 vdelay 1000
-vecho /n /fRed " and more!"
+vecho /n /fRed "and more!"
 vdelay 1000
 vgotoxy /x 30 /y 15
 vecho /fRed /bWhite " Or not "
@@ -57,7 +57,20 @@ vdelay  2000
 vecho "The text goes where you want it to!"
 vdelay  1000
 vecho "With very little effort."
-vdelay  1000
+vdelay  2000
+vcls /b red
+vframe /bBlue /fCyan /x20/y10/w40/h6 Double
+vecho "This box has double sides box."
+vdelay  3000
+vframe /bBlue /fYellow /x20/y10/w40/h6 SingleSides
+vecho "This box has single sides and double top and bottom edges."
+vdelay  3000
+vframe /bBlue /fWhite /x20/y10/w40/h6 DoubleSides
+vecho "This box has double sides and single top and bottom edges."
+vdelay  3000
+vframe /bBlue /fLightGreen /x20/y10/w40/h6 Hidden
+vecho "This hidden edge box. Great for making text areas with margins."
+vdelay 3000
 vcls /b Green /f LightCyan
 vecho "This screen is environmently friendly."
 vdelay 2000

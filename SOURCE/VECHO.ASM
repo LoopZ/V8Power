@@ -18,8 +18,6 @@
 
 %include "COMMON.INC"
 
-ProgramMain:
-
 	UseFrameBounds
 
     CommandLineParser       ; insert code for command line parsing
@@ -31,9 +29,6 @@ ProgramMain:
 Done:
     Terminate 0
     
-    NumberParameters        ; insert code for number based CmdLn Params    
-    LookupParameters        ; insert table lookup code for params    
-     
 NoSwitch:
 	xor 		al, al
 	mov			[si], al

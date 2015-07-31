@@ -37,38 +37,38 @@ Done:
 %imacro WriteInt 1
     mov         ax, %1
 	call		WriteIntProc    
-%ifndef WriteIntProc_Declared
-	%idefine 	WriteIntProc_Declared
-	jmp			%%Done
-WriteIntProc:
-    mov         bx, 0x000A
-    mov         cx, 0x0001
-%%WriteIntLoop:
-    cmp         ax, bx
-    jge         %%WayTooBig
-    push        ax
-%%IsJustRight:
-    pop         ax
-    add         ax, 0x0030
-    push        ax
-    push        bx
-    push        cx
-    WriteChar   
-    pop         cx
-    pop         bx
-    pop         ax
-    loop        %%IsJustRight
-    jmp         %%WriteIntDone
-%%WayTooBig:   
-    inc         cx
-    xor         dx, dx
-    div         bx
-    push        dx
-    jmp         %%WriteIntLoop
-%%WriteIntDone:
-	ret
-%%Done:
-%endif
+	%ifndef WriteIntProc_Declared
+		%idefine 	WriteIntProc_Declared
+		jmp			%%Done
+	WriteIntProc:
+		mov         bx, 0x000A
+		mov         cx, 0x0001
+	%%WriteIntLoop:
+		cmp         ax, bx
+		jge         %%WayTooBig
+		push        ax
+	%%IsJustRight:
+		pop         ax
+		add         ax, 0x0030
+		push        ax
+		push        bx
+		push        cx
+		WriteChar   
+		pop         cx
+		pop         bx
+		pop         ax
+		loop        %%IsJustRight
+		jmp         %%WriteIntDone
+	%%WayTooBig:   
+		inc         cx
+		xor         dx, dx
+		div         bx
+		push        dx
+		jmp         %%WriteIntLoop
+	%%WriteIntDone:
+		ret
+	%%Done:
+	%endif
 %endmacro
 
 ; Write AX to standard output as HEX
@@ -376,146 +376,170 @@ WriteIntProc:
     jne         %%Error
 %endmacro
 
-%imacro NumberParameters 0-1 NumberParam
-%1:
-    xor         ax, ax
-    push        di
- %%NumLoop:
-    cmp         cx, 0
-    je          %%Done
-    mov         bl, [di]
-    inc         di
-    cmp         bl, 'x'
-    je          %%ForceHex
-    cmp         bl, 'X'
-    je          %%ForceHex
-    
-    cmp         bl, 0x41
-    jl          %%NotUpperCase
-    cmp         bl, 0x5a
-    jg          %%NotUpperCase
-    jmp         %%IsHex
-%%NotUpperCase:
-    cmp         bl, 0x61
-    jl          %%NotLowerCase
-    cmp         bl, 0x7a
-    jg          %%NotLowerCase
-    jmp         %%IsHex
-%%NotLowerCase:
-    push        cx
-    sub         bl, 0x30
-    mov         cx, 10
-    mul         cx
-    xor         bh, bh
-    add         ax, bx
-    pop         cx
-    loop        %%NumLoop
-    jmp         %%Done
- %%ForceHex:
-    pop         bx          ; discard di
-    dec         cx
-    jmp         %%DoAsHex
- %%IsHex:
-    pop         di
-    mov         cx, si
-    sub         cx, di
-    jmp         %%DoAsHex
- %%Done:
-    pop         di
-    ret
-%%DoAsHex:
-    xor         ax, ax
-    cmp         cx, 0
-    je          %%BadHex
-    ; cmp         cx, 4
-    ; jle         %%MakeHex
-    jmp         %%MakeHex
-%%BadHex:
-    WriteStr    CommandLineErrorMsg
-    Terminate   100
-%%MakeHex:
-    push        cx
-    mov         cl, 4
-    shl         ax, cl
-    pop         cx
-    mov         bl, [di]
-    inc         di
-    cmp         bl, 0x30
-    jl          %%BadHex
-    cmp         bl, 0x39
-    jg          %%NotNumber
-    sub         bl, 0x30
-    jmp         %%Adjusted
-%%NotNumber:
-    cmp         bl, 0x41
-    jl          %%BadHex
-    cmp         bl, 0x46 ; 5a is Z
-    jg          %%NotUpper
-    sub         bl, 0x37
-    jmp         %%Adjusted
-%%NotUpper:
-    cmp         bl, 0x61
-    jl          %%BadHex
-    cmp         bl, 0x66 ; 7a is z
-    jg          %%BadHex
-    sub         bl, 0x57
-%%Adjusted:
-    xor         bh, bh
-    add         ax, bx
-    loop        %%MakeHex
-    ret     
+%imacro NumberParamProc 0
+	%ifndef NumberParamProc_Declared
+		%idefine NumberParamProc_Declared
+		jmp	%%SkipOver
+
+	NumberParam_Proc:
+		xor         ax, ax
+		push        di
+	 %%NumLoop:
+		cmp         cx, 0
+		je          %%Done
+		mov         bl, [di]
+		inc         di
+		cmp         bl, 'x'
+		je          %%ForceHex
+		cmp         bl, 'X'
+		je          %%ForceHex
+	
+		cmp         bl, 0x41
+		jl          %%NotUpperCase
+		cmp         bl, 0x5a
+		jg          %%NotUpperCase
+		jmp         %%IsHex
+	%%NotUpperCase:
+		cmp         bl, 0x61
+		jl          %%NotLowerCase
+		cmp         bl, 0x7a
+		jg          %%NotLowerCase
+		jmp         %%IsHex
+	%%NotLowerCase:
+		push        cx
+		sub         bl, 0x30
+		mov         cx, 10
+		mul         cx
+		xor         bh, bh
+		add         ax, bx
+		pop         cx
+		loop        %%NumLoop
+		jmp         %%Done
+	 %%ForceHex:
+		pop         bx          ; discard di
+		dec         cx
+		jmp         %%DoAsHex
+	 %%IsHex:
+		pop         di
+		mov         cx, si
+		sub         cx, di
+		jmp         %%DoAsHex
+	 %%Done:
+		pop         di
+		ret
+	%%DoAsHex:
+		xor         ax, ax
+		cmp         cx, 0
+		je          %%BadHex
+		; cmp         cx, 4
+		; jle         %%MakeHex
+		jmp         %%MakeHex
+	%%BadHex:
+		WriteStr    CommandLineErrorMsg
+		Terminate   100
+	%%MakeHex:
+		push        cx
+		mov         cl, 4
+		shl         ax, cl
+		pop         cx
+		mov         bl, [di]
+		inc         di
+		cmp         bl, 0x30
+		jl          %%BadHex
+		cmp         bl, 0x39
+		jg          %%NotNumber
+		sub         bl, 0x30
+		jmp         %%Adjusted
+	%%NotNumber:
+		cmp         bl, 0x41
+		jl          %%BadHex
+		cmp         bl, 0x46 ; 5a is Z
+		jg          %%NotUpper
+		sub         bl, 0x37
+		jmp         %%Adjusted
+	%%NotUpper:
+		cmp         bl, 0x61
+		jl          %%BadHex
+		cmp         bl, 0x66 ; 7a is z
+		jg          %%BadHex
+		sub         bl, 0x57
+	%%Adjusted:
+		xor         bh, bh
+		add         ax, bx
+		loop        %%MakeHex
+		ret     
+	%%SkipOver:
+	%endif
 %endmacro
 
-%imacro LookupParameters 0-1 LookupParam
-%1:
-    cmp         cx, 0
-    je          %%NoValue
-%%Repeating:
-    push        cx
-    push        di
-    cld
-%%Checking:
-    lodsb
-    cmp         al, 0
-    je          %%EndOfKey
-    mov         ah, [di]
-    inc         di
-    cmp         ah, 0x61
-    jl          %%NotLowerCase
-    cmp         ah, 0x7a
-    jg          %%NotLowerCase
-    sub         ah, 0x20
-%%NotLowerCase:
-    cmp         al, ah
-    jne         %%Different
-    loop        %%Checking
-    lodsb       
-    cmp         al, 0
-    je          %%EndOfKey
-%%Different:
-    cmp         al, 0
-    je          %%NotThisOne
-    lodsb       
-    jmp         %%Different
-%%EndOfKey:
-    cmp         cl, 0
-    je          %%Matched
-%%NotThisOne:
-    pop         di
-    pop         cx
-    lodsw
-    cmp         ax, 0xffff
-    jne         %%Repeating
-    jmp         %%Done
-%%Matched:
-    pop         di
-    pop         cx
-    lodsw
-    jmp         %%Done
-%%NoValue:
-    mov         ax, 0xffff
-%%Done:
-    ret
+%imacro NumberParam 0
+	NumberParamProc
+	call 	NumberParam_Proc
+%endmacro
+
+%imacro LookupParamProc 0
+	%ifndef LookupParamProc_Declared
+		%idefine LookupParamProc_Declared
+		jmp	%%SkipOver
+	LookupParam_Proc:
+		cmp         cx, 0
+		je          %%NoValue
+	%%Repeating:
+		push        cx
+		push        di
+		cld
+	%%Checking:
+		lodsb
+		cmp         al, 0
+		je          %%EndOfKey
+		mov         ah, [di]
+		inc         di
+		cmp         ah, 0x61
+		jl          %%NotLowerCase
+		cmp         ah, 0x7a
+		jg          %%NotLowerCase
+		sub         ah, 0x20
+	%%NotLowerCase:
+		cmp         al, ah
+		jne         %%Different
+		loop        %%Checking
+		lodsb       
+		cmp         al, 0
+		je          %%EndOfKey
+	%%Different:
+		cmp         al, 0
+		je          %%NotThisOne
+		lodsb       
+		jmp         %%Different
+	%%EndOfKey:
+		cmp         cl, 0
+		je          %%Matched
+	%%NotThisOne:
+		pop         di
+		pop         cx
+		lodsw
+		cmp         ax, 0xffff
+		jne         %%Repeating
+		jmp         %%Done
+	%%Matched:
+		pop         di
+		pop         cx
+		lodsw
+		jmp         %%Done
+	%%NoValue:
+		mov         ax, 0xffff
+	%%Done:
+		ret
+	%%SkipOver:
+	%endif
+%endmacro
+
+%imacro LookupParam 1
+	LookupParamProc
+	push	si
+	mov		si, %1
+	call 	LookupParam_Proc
+	pop		si
 %endmacro
 
 %imacro UseFrameBounds 0

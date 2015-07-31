@@ -45,7 +45,7 @@
     mov			bl, [WindMaxX]
     sub			bl, [WindMinX]
     cmp			dl, bl
-    jl			%%Done
+    jle			%%Done
     mov			dl, 0
     inc			dh
     mov			bl, [WindMaxY]

@@ -30,16 +30,15 @@ MainProgram:
 .Done:
     Terminate 0
 
-    NumberParameters        ; insert code for number based CmdLn Params    
-    LookupParameters        ; insert table lookup code for params    
+	LookupParamProc
+	NUmberParamProc
      
 NoSwitch:
 	push		es
-    mov         si, CursorStyles
-    call        LookupParam
+    LookupParam CursorStyles
     cmp         ax, 0xffff
     jne         .Found
-    call        NumberParam
+    NumberParam
     
 	jmp			.Done    
 .Found:

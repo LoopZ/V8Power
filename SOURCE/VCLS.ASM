@@ -20,7 +20,6 @@
 
     CommandLineParser       ; insert code for command line parsing
 
-MainProgram:
     mov         cx, [WindMin]
     mov         dx, [WindMax]
 	mov			al, [TextOnly]
@@ -56,9 +55,6 @@ MainProgram:
     GotoXY      cx	
     Terminate 0
 
-    NumberParameters        ; insert code for number based CmdLn Params    
-    LookupParameters        ; insert table lookup code for params    
-     
 NoSwitch:
 	; NoSwitch falls through to SwitchA
 	ColorSwitchHandlers		; Procedures for handling color switches.
