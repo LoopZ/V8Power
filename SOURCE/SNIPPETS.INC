@@ -264,6 +264,8 @@ Done:
     je          %%Quote 
     cmp         al, 0x20
     je          %%Next
+    cmp         al, 0x09
+    je          %%Next
     cmp         al, "/"
     je          %%Next
     jmp         %%Loop

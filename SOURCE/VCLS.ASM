@@ -22,6 +22,17 @@
 
     mov         cx, [WindMin]
     mov         dx, [WindMax]
+	mov			al, [EolOnly]
+	cmp			al, 1
+	jne			.NotEolOnly
+	push		dx
+    mov         ah, 0x03
+    mov         bh, [VideoPage]
+    int         0x10
+    mov			cx, dx
+    pop			dx
+    mov			dh, ch
+.NotEolOnly:
 	mov			al, [TextOnly]
 	cmp			al, 1
 	je			.ClearTextOnly

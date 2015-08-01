@@ -37,8 +37,6 @@ created BIN directory. <br>
 > * To use a **/** or spaces in a value, put it in qoutes. Like **"Jack and/or Jill"**<br>
 > * Use multiple qoutes to use quotes. Like **"Jack's house"** or **'Say "What?"'**<br>
 > * Unless overriden, most utilities use the text attribute at the current cursor location.<br>
-> * Tab characters are not supported at present. Using them can cause issues. For instance,
-"vcls *&lt;tab&gt;*/L" will cause you problems.
 
 * * *
 #### vcls *[options]* ######
