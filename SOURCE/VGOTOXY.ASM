@@ -42,7 +42,37 @@ DoWhatNow:
 	ret
 	
 XYSwitchHandlers
-LocalSwitchHandlers
+
+; LocalSwitchHandlers Don't use CurrentXY
+SwitchL:
+	mov		ax, [WindMin]
+	mov		dx, [CurrentXY]
+	add		dh, ah
+	add		dl, al
+	mov		[CurrentXY], dx
+	FrameBounds
+	mov		ax, [WindMin]
+	mov		dx, [CurrentXY]
+	sub		dh, ah
+	sub		dl, al
+	mov		[CurrentXY], dx
+	ret
+SwitchG:
+	mov		ax, [WindMin]
+	mov		dx, [CurrentXY]
+	add		dh, ah
+	add		dl, al
+	mov		[CurrentXY], dx
+	mov		ax, 0x0000
+	mov		[WindMin], ax
+	mov		ax, [ScreenMax]
+	mov		[WindMax], ax
+	mov		ax, [WindMin]
+	mov		dx, [CurrentXY]
+	sub		dh, ah
+	sub		dl, al
+	mov		[CurrentXY], dx
+	ret
 
 WhereXProc:
 	mov			al, [CurrentXY]
