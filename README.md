@@ -51,11 +51,12 @@ Clear screen.
 <b><i>color</i></b> (or <b><i>value</i></b>)</td></tr>
 <tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to 
 <b><i>color</i></b> (or <b><i>value</i></b>)</td></tr>
-<tr><td><b>/T</b></td><td>Clear the text only. Leave all colors intact and ignore attributes.</td></tr>
 <tr><td><b>/G</a></td><td>Global Screen Clear. (Default)</b></td></tr>
 <tr><td><b>/L</a></td><td>Local Screen Clear. Detects its surroundings and only clears that.
 	Probably, a box or line or something. You don't really need this option. Because, 
 	you can just redraw the box, maybe.</b></td></tr>
+<tr><td><b>TEXT</b></td><td>Clear the text only. Leave all colors intact and ignore attributes.</td></tr>
+<tr><td><b>EOL</b></td><td>Clear from cursor to End of Line only.</td></tr>
 </table>
 * * *
 #### vcursor *[options]* ######

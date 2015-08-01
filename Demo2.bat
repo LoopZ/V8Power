@@ -26,7 +26,8 @@ vcursor hide
 
 rem vdelay 2000
 
-vcls /bGray /fBlack
+vgotoxy /x1/y1
+vcls /bGray /fBlack EOL
 vgotoxy /x 28 /y 1
 vecho /FBlack "V8Power " /fRed '1.0' /fBlack " Installation"
 vframe /bBlue /fYellow /x1 /y2 /w80 /h23 Hidden

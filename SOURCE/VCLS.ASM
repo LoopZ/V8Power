@@ -57,21 +57,39 @@
     Terminate 0
 
 NoSwitch:
+    LookupParam OptionalTable
+    cmp			ax, 0xffff
+    je			.NotOptional
+    jmp			ax
+    ret
+    
+.NotOptional:
 	; NoSwitch falls through to SwitchA
 	ColorSwitchHandlers		; Procedures for handling color switches.
 	LocalSwitchHandlers		; Procedures for handling local and global relations.
 	
-SwitchT:
+OptionText:
 	mov			al, 1
 	mov			[TextOnly], al
+    ret
+
+OptionEol:
+	mov			al, 1
+	mov			[EolOnly], al
     ret
         
 CommandLineSwitches:
     SwitchData  0,  0, NoSwitch      
     ColorSwitchData
-    SwitchData 'T', 0, SwitchT
     LocalSwitchData
     SwitchData  0,  0, 0
-    
+
+OptionalTable:
+    TableData "EOL",OptionEol
+    TableData "TEXT",OptionText
+    TableEnd
+	
+EolOnly:
+	DB 0
 TextOnly: 
 	DB 0
