@@ -109,11 +109,7 @@ OptionEop:
 	sub			al, bl
 	mov			[CurrentXY], ax
 	ret
-	
-OptionSot:
-OptionEot:
-	ret
-	
+		
 OptionUp:
 	mov			al, [CurrentY]
 	cmp			al, 0
@@ -156,6 +152,120 @@ OptionRight:
 OptionNoMove:
 	ret
 	
+OptionSot:
+	mov			bx, [WindMin]
+	mov			cx, [WindMax]
+	sub			ch, bh
+	sub			cl, bl
+	xor			dx, dx
+	mov			[CurrentXY], dx
+.TestLoop:
+	push		bx
+	push		cx
+	push		dx
+	add			dh, bh
+	add			dl, bl	
+	mov			ah, 0x02
+	mov			bh, [VideoPage]
+	int			0x10
+	mov			ah, 0x08
+	int			0x10
+	pop			dx
+	pop			cx
+	pop			bx
+	cmp			al, 0x20
+	jne			.TestDone
+	call		OptionNext
+	cmp			dx, cx
+	je			.TestDone
+	jmp			.TestLoop
+.TestDone:
+	ret
+	
+OptionEot:
+	mov			bx, [WindMin]
+	mov			cx, [WindMax]
+	sub			ch, bh
+	sub			cl, bl
+	mov			dx, cx
+	mov			[CurrentXY], dx
+.TestLoop:
+	push		bx
+	push		dx
+	add			dh, bh
+	add			dl, bl	
+	mov			ah, 0x02
+	mov			bh, [VideoPage]
+	int			0x10
+	mov			ah, 0x08
+	int			0x10
+	pop			dx
+	pop			bx
+	cmp			al, 0x20
+	jne			.TestDone
+	call		OptionPrev
+	xor			cx, cx
+	cmp			dx, cx
+	je			.TestDone
+	jmp			.TestLoop
+.TestDone:
+	ret
+	
+OptionNext:
+	push		bx
+	push		cx
+	mov			bx, [WindMin]
+	mov			cx, [WindMax]
+	mov			dx, [CurrentXY]
+	add			dh, bh
+	add			dl, bl
+	cmp			dl, cl
+	jl			.MoreX
+	cmp			dh, ch
+	jl			.MoreY
+	jmp			.Done
+.MoreY:	
+	mov			dl, bl
+	inc			dh
+	jmp			.Done
+.MoreX:
+	inc			dl		
+.Done:	
+	sub			dh, bh
+	sub			dl, bl
+	mov			[CurrentXY], dx
+	pop			cx
+	pop			bx
+	ret
+	
+OptionPrev:
+	push		bx
+	push		cx
+	mov			bx, [WindMin]
+	mov			cx, [WindMax]
+	mov			dx, [CurrentXY]
+	add			dh, bh
+	add			dl, bl
+	cmp			dl, bl
+	jg			.LessX
+	cmp			dh, bh
+	jg			.LessY
+	jmp			.Done
+.LessY:	
+	mov			dl, cl
+	dec			dh
+	jmp			.Done
+.LessX:
+	dec			dl		
+.Done:	
+	sub			dh, bh
+	sub			dl, bl
+	mov			[CurrentXY], dx
+	pop			cx
+	pop			bx
+	ret
+	ret
+	
 CommandLineSwitches:
 	SwitchData  0,  0, NoSwitch  
 	SwitchData 'Q', 1, SwitchQ
@@ -181,5 +291,7 @@ OptionalTable:
     TableData "DOWN",OptionDown
     TableData "LEFT",OptionLeft
     TableData "RIGHT",OptionRight
+    TableData "NEXT",OptionNext
+    TableData "PREVIOUS",OptionPrev
     TableEnd
 	

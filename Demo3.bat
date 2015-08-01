@@ -26,17 +26,7 @@ vcursor Full
 vcls /bblue /fwhite
 
 vframe /bGray /fBlack /x5/y5/w70/h15 Single
-vgotoxy /x25/y13
-vecho /n "First move to start of page."
-vcls /l eol
-vgotoxy /l sop
-vdelay 2000
 
-vgotoxy /x25/y13
-vecho /n "Now move to end of page."
-vcls /l eol
-vgotoxy /l eop
-vdelay 2000
 
 vcls /l
 vgotoxy /x25/y13
@@ -48,6 +38,101 @@ vcls /l
 vgotoxy /x25/y13
 vecho /n "Now move to end of line."
 vgotoxy /l eol
+vdelay 2000
+
+vcls /l
+vgotoxy /x25/y13
+vecho "Now move to start of page."
+vgotoxy /l sop
+vdelay 2000
+
+vcls /l 
+vgotoxy /x25/y13
+vecho "Now move to end of page."
+vgotoxy /l eop
+vdelay 2000
+
+vcls /l
+vgotoxy /x25/y13
+vecho "Now move to start of text (then -1)."
+vgotoxy /l sot previous
+vdelay 2000
+
+vcls /l
+vgotoxy /x25/y13
+vecho "Now move to end of text (then +1)."
+vgotoxy /l eot next
+vdelay 2000
+
+vcls /l
+vgotoxy /x15/y13
+vecho /n "Finally, Lets Just move the cursor around a bit."
+vdelay 1000
+vgotoxy /l left
+vdelay 200
+vgotoxy /l left
+vdelay 200
+vgotoxy /l left
+vdelay 200
+vgotoxy /l left
+vdelay 200
+vgotoxy /l left
+vdelay 200
+vgotoxy /l left
+vdelay 200
+vgotoxy /l left
+vdelay 200
+vgotoxy /l left
+vdelay 200
+
+vgotoxy /l up
+vdelay 200
+vgotoxy /l up
+vdelay 200
+vgotoxy /l up
+vdelay 200
+vgotoxy /l up
+vdelay 200
+vgotoxy /l up
+vdelay 200
+vgotoxy /l up
+vdelay 200
+
+vgotoxy /l right
+vdelay 200
+vgotoxy /l right
+vdelay 200
+vgotoxy /l right
+vdelay 200
+vgotoxy /l right
+vdelay 200
+vgotoxy /l right
+vdelay 200
+vgotoxy /l right
+vdelay 200
+vgotoxy /l right
+vdelay 200
+vgotoxy /l right
+vdelay 200
+
+vgotoxy /l down
+vdelay 200
+vgotoxy /l down
+vdelay 200
+vgotoxy /l down
+vdelay 200
+vgotoxy /l down
+vdelay 200
+vgotoxy /l down
+vdelay 200
+vgotoxy /l down
+vdelay 200
+
+vdelay 1000
+
+vcls /l
+vgotoxy /x25/y13
+vecho "All done."
 vdelay 2000
 
 vcls 	/a0x07
