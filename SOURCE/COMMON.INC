@@ -24,6 +24,12 @@ org 0x100
 
 jmp BasicInitialize
 
+%idefine VideoOutput
+
+%ifdef NoVideoOutput
+	%undef VideoOutput
+%endif
+
 ; Common Data Section
 SECTION _DATA
 
@@ -202,10 +208,12 @@ BasicInitialize:
     mov         [ScreenMax], bx     
     mov         [WindMax], bx
 
-	; Hide cursor while we run
-    mov         ah, 0x01
-    mov         cx, 0x2000
-    int         0x10
+	%ifdef VideoOutput
+		; Hide cursor while we run
+		mov         ah, 0x01
+		mov         cx, 0x2000
+		int         0x10
+	%endif
             
     pop         es
     

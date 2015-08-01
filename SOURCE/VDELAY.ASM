@@ -16,6 +16,8 @@
 
 ; NASM for DOS
 
+%idefine NoVideoOutput
+
 %include "COMMON.INC"
 
     CommandLineParser       ; insert code for command line parsing

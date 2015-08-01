@@ -25,15 +25,20 @@ ProgramMain:
 	GotoXY 		[CurrentXY]
 	Terminate 0
 
-NoSwitch:
-	ret
+NoSwitch:	
+    LookupParam	OptionalTable
+	jmp			DoWhatNow
 	
 SwitchQ:
     LookupParam	QueryTable
+
+DoWhatNow:
     cmp         ax, 0xffff
     je         	.NotFound
     jmp			ax
 .NotFound:
+	WriteStr	CommandLineErrorMsg
+	Terminate 	100
 	ret
 	
 XYSwitchHandlers
@@ -50,6 +55,77 @@ WhereOutProc:
 	StdOutCRLF
 	ret
 	
+OptionSol:
+	mov			al, 0
+	mov			[CurrentX], al
+	ret
+	
+OptionEol:
+	mov			al, [WindMaxX]
+	mov			ah, [WindMinX]
+	sub			al, ah
+	mov			[CurrentX], al
+	ret
+		
+OptionSop:
+	xor			ax, ax
+	mov			[CurrentXY], ax
+	ret
+	
+OptionEop:
+	mov			ax, [WindMax]
+	mov			bx, [WindMin]
+	sub			ah, bh
+	sub			al, bl
+	mov			[CurrentXY], ax
+	ret
+	
+OptionSot:
+OptionEot:
+	ret
+	
+OptionUp:
+	mov			al, [CurrentY]
+	cmp			al, 0
+	je			OptionNoMove
+	dec			al
+	mov			[CurrentY], al
+	ret
+	
+OptionDown:
+	mov			ah, [WindMaxY]
+	mov			al, [WindMinY]
+	sub			ah, al
+	mov			al, [CurrentY]
+	cmp			al, ah
+	jge			OptionNoMove
+	inc			al
+	mov			[CurrentY], al
+	ret
+
+OptionLeft:
+	mov			al, [CurrentX]
+	cmp			al, 0
+	je			OptionNoMove
+	dec			al
+	mov			[CurrentX], al
+	ret
+
+OptionRight:
+	mov			ah, [WindMaxX]
+	mov			al, [WindMinX]
+	sub			ah, al
+	mov			al, [CurrentX]
+	cmp			al, ah
+	jge			OptionNoMove
+	inc			al
+	mov			[CurrentX], al
+	ret
+	ret
+	
+OptionNoMove:
+	ret
+	
 CommandLineSwitches:
 	SwitchData  0,  0, NoSwitch  
 	SwitchData 'Q', 1, SwitchQ
@@ -63,4 +139,17 @@ QueryTable:
 	TableData "Y", WhereYProc
 	TableData "WHEREY", WhereYProc
 	TableEnd	
+
+OptionalTable:
+    TableData "SOL",OptionSol
+    TableData "EOL",OptionEol
+    TableData "SOP",OptionSop
+    TableData "EOP",OptionEop
+    TableData "SOT",OptionSot
+    TableData "EOT",OptionEot
+    TableData "UP",OptionUp
+    TableData "DOWN",OptionDown
+    TableData "LEFT",OptionLeft
+    TableData "RIGHT",OptionRight
+    TableEnd
 	

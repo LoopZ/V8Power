@@ -22,6 +22,7 @@
 
     mov         cx, [WindMin]
     mov         dx, [WindMax]
+
 	mov			al, [EolOnly]
 	cmp			al, 1
 	jne			.NotEolOnly
@@ -32,7 +33,10 @@
     mov			cx, dx
     pop			dx
     mov			dh, ch
+    mov         [WindMin], cx 
+    mov         [WindMax], dx 
 .NotEolOnly:
+
 	mov			al, [TextOnly]
 	cmp			al, 1
 	je			.ClearTextOnly
