@@ -38,15 +38,15 @@ vcls /l eol
 vgotoxy /l eop
 vdelay 2000
 
+vcls /l
 vgotoxy /x25/y13
 vecho /n "First move to start of line."
-vcls /l eol
 vgotoxy /l sol
 vdelay 2000
 
+vcls /l
 vgotoxy /x25/y13
 vecho /n "Now move to end of line."
-vcls /l eol
 vgotoxy /l eol
 vdelay 2000
 
