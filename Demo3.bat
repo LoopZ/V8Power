@@ -30,14 +30,14 @@ vframe /bGray /fBlack /x5/y5/w70/h15 Single
 
 vcls /l
 vgotoxy /x25/y13
-vecho /n "First move to start of line."
-vgotoxy /l sol
+vecho /n "First move to start of row."
+vgotoxy /l sor
 vdelay 2000
 
 vcls /l
 vgotoxy /x25/y13
-vecho /n "Now move to end of line."
-vgotoxy /l eol
+vecho /n "Now move to end of row."
+vgotoxy /l eor
 vdelay 2000
 
 vcls /l

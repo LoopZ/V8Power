@@ -98,7 +98,18 @@ Move or query cursor position.
 <tr><td><b>/Y <i>row</i></b></td><td>Move cursor to <b><i>row</i></b></td></tr>
 <tr><td><b>/G</b></td><td>Move cursor based on entire screen. (default)</td></tr>
 <tr><td><b>/L</b></td><td>Move cursor based on its surroundings.</td></tr>
-<tr><td><i>tba</i></td><td><i>(Under development, to be announced)</i></td></tr>
+<tr><td><i>direction</i></td><td>Move cursor <b><i>up</i></b>, <b><i>down</i></b>, 
+<b><i>left</i></b> or <b><i>right</i></b> one space</td></tr>
+<tr><td><i>shift</i></td><td>Move cursor to the <b><i>previous</i></b> or <b><i>next</i></b>
+position and change rows if needed.</td></tr>
+<tr><td><i>positon</i></td><td>Move cursor to the <b><i>SOP</i></b> <i>(Start of Page)</i>, 
+<b><i>EOP</i></b> <i>(End of Page)</i>, 
+<b><i>SOR</i></b> <i>(Start of Row)</i>, 
+<b><i>EOR</i></b> <i>(End of Row)</i>, 
+<b><i>SOT</i></b> <i>(Start of Text)</i> or  
+<b><i>EOT</i></b> <i>(End of Text)</i> 
+position.</td></tr>
+
 </table>
 * * *
 #### vframe *[options]* ######

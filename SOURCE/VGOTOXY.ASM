@@ -85,12 +85,12 @@ WhereOutProc:
 	StdOutCRLF
 	ret
 	
-OptionSol:
+OptionSor:
 	mov			al, 0
 	mov			[CurrentX], al
 	ret
 	
-OptionEol:
+OptionEor:
 	mov			al, [WindMaxX]
 	mov			ah, [WindMinX]
 	sub			al, ah
@@ -281,8 +281,8 @@ QueryTable:
 	TableEnd	
 
 OptionalTable:
-    TableData "SOL",OptionSol
-    TableData "EOL",OptionEol
+    TableData "SOR",OptionSor
+    TableData "EOR",OptionEor
     TableData "SOP",OptionSop
     TableData "EOP",OptionEop
     TableData "SOT",OptionSot
