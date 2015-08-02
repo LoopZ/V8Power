@@ -33,7 +33,7 @@ created BIN directory. <br>
 > Some basic information reguarding all utilities and how they operate.<br>
 > * Options, values and hexidecimal numbers are not case specific **/f white** equals **/F wHIte**<br>
 > * Hexidecimal numbers may be prefixed with **0x** to prevent them from being treated as base ten.<br>
-> * Spaces are optional. **/B7/f0** is the same as **/B 7 /F 0**. But, not **/ B7 / F0**<br>
+> * Spaces are mostly optional. **/B7/f0** is the same as **/B 7 /F 0**. But, not **/ B7 / F0**<br>
 > * To use a **/** or spaces in a value, put it in qoutes. Like **"Jack and/or Jill"**<br>
 > * Use multiple qoutes to use quotes. Like **"Jack's house"** or **'Say "What?"'**<br>
 > * Unless overriden, most utilities use the text attribute at the current cursor location.<br>
