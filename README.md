@@ -104,7 +104,7 @@ Move or query cursor position.
 <b><i>left</i></b> or <b><i>right</i></b> one space</td></tr>
 <tr><td><i>shift</i></td><td>Move cursor to the <b><i>previous</i></b> or <b><i>next</i></b>
 position and change rows if needed.</td></tr>
-<tr><td><i>positon</i></td><td>Move cursor to the <b><i>SOP</i></b> <i>(Start of Page)</i>, 
+<tr><td><i>position</i></td><td>Move cursor to the <b><i>SOP</i></b> <i>(Start of Page)</i>, 
 <b><i>EOP</i></b> <i>(End of Page)</i>, 
 <b><i>SOR</i></b> <i>(Start of Row)</i>, 
 <b><i>EOR</i></b> <i>(End of Row)</i>, 
