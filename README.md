@@ -106,10 +106,10 @@ position and change rows if needed.</td></tr>
 <b><i>EOP</i></b> <i>(End of Page)</i>, 
 <b><i>SOR</i></b> <i>(Start of Row)</i>, 
 <b><i>EOR</i></b> <i>(End of Row)</i>, 
-<b><i>SOL</i></b> <i>(Start of Line)</i>, 
-<b><i>EOL</i></b> <i>(End of Line)</i>, 
-<b><i>SOT</i></b> <i>(Start of Text)</i> or  
-<b><i>EOT</i></b> <i>(End of Text)</i> 
+<b><i>SOL</i></b> <i>(Start of Text on Line)</i>, 
+<b><i>EOL</i></b> <i>(End of Text on Line)</i>, 
+<b><i>SOT</i></b> <i>(Start of All Text)</i> or  
+<b><i>EOT</i></b> <i>(End of All Text)</i> 
 position.</td></tr>
 
 </table>
