@@ -131,7 +131,7 @@ Draw a box windowing thingy.
 <tr><td><b>/H <i>height</i></b></td><td>Total <b><i>height</i></b> of the box.</td></tr>
 <tr><td><b><i>style</i></b></td><td>Box <i>styles</i> are <b><i>Single</i></b>, <b><i>Double</i></b>, 
 <b><i>SingleSides</i></b>, <b><i>DoubleSides</i></b> and <b><i>Hidden</i></b></td></tr>
-<tr><td><i>tba</i></td><td><i>(Under development, to be announced)</i></td></tr>
+<tr><td><i><b>Shadow</b></i></td><td><i>Add a 3D style shadow</i></td></tr>
 </table>
 * * *
 #### vinfo ######

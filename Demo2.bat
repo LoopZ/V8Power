@@ -34,7 +34,7 @@ vgotoxy /x 28 /y 1
 vecho /FBlack "V8Power " /fRed '1.0' /fBlack " Installation"
 
 
-vframe /bGray /fRed /x20 /y8 /w40 /h10 Single
+vframe /bGray /fRed /x20 /y8 /w40 /h10 Single Shadow
 vcls /L /fBlack
 vecho "Blah, Blah, Blah, Blah, Blah, Blah, Blah."
 

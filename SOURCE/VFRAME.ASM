@@ -61,6 +61,9 @@ ProgramMain:
 	pop			dx
 	
 	call		WriteRow
+	mov			al, [BoxShadow]
+	inc			al
+	mov			[BoxShadow], al
 	dec			dh
 	add			di, 3
 Vertical:
@@ -84,9 +87,24 @@ LastRow:
     pop			dx
 	add			di, 3
 	call		WriteRow
+
+ShadowRow:
+	mov			al, [BoxShadow]
+	cmp			al, 2
+	jl			.NoShadowRow
+	mov			bx, [WindMin]
+	mov			dx, [WindMax]	
+	mov			cl, dl
+	sub			cl, bl
+	xor			ch, ch
+	sub			dh, bh
+	mov			dl, 0x01
+	call		ShadowChars
+	
+.NoShadowRow:
 	mov			dx, 0x0101
 	GotoXY		dx
-		
+			
 	Terminate 0
 
 WriteRow:
@@ -131,11 +149,53 @@ WriteRow:
     mov         bl, [BoxAttr]
     mov         cx, 0x0001
     int         0x10
+    mov			al, [BoxShadow]
+    cmp			al, 2
+    jl			.NoShadow
+    inc			cx
+    call		ShadowChars
+.NoShadow:
     pop			dx
     ret
+    
+ShadowChars:
+	mov			ax, [ScreenMax]
+	mov			bx, [WindMin]
+	add			dh, bh
+	add			dl, bl
+	inc			dl
+.ShadowLoop:
+	cmp			dl, al
+	jg			.NoCanDo
+	cmp			dh, ah
+	jg			.NoCanDo
+	push		ax
+	push		bx
+	push		cx
+	push		dx
+	mov			ah, 0x02
+	mov			bh, [VideoPage]
+	int			0x10
+	mov			ah, 0x08
+	int			0x10
+	mov			ah, 0x09
+	mov			bl, [ShadowAttr]
+	mov			cx, 0x0001
+	int			0x10
+	pop			dx
+	pop			cx
+	pop			bx
+	pop			ax
+	inc			dl
+	loop		.ShadowLoop	
+.NoCanDo:
+	ret
+    
 
 NoSwitch:
     LookupParam BoxStyleTable
+    cmp			ax, BoxShadow
+    je			.SetShadow
     cmp         ax, 0xffff
     jne	        .Found
     jmp			.NotBox
@@ -151,6 +211,11 @@ NoSwitch:
 .NormalBox:
 	mov			[BoxStyle], ax		
 	ret
+.SetShadow:
+	mov			al, 1
+	mov			[BoxShadow], al
+	ret
+	
 .NotBox:
 
 .Error:
@@ -178,8 +243,13 @@ BoxShown:
 	db  0
 BoxAttr: 
 	db 	0
+ShadowAttr: 
+	db 	0x08
+BoxShadow:
+	db  0	
 	
 BoxStyleTable:
+	TableData "SHADOW",			BoxShadow
 	TableData "HIDE",			BoxHidden
 	TableData "HIDDEN",			BoxHidden
 	TableData "SINGLE", 		BoxSingle
