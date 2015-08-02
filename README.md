@@ -40,7 +40,7 @@ created BIN directory. <br>
 
 * * *
 #### vcls *[options]* ######
-Clear screen.
+Clear screen, area or row (line).
 <table>
 <tr><td width="125pt"></td><td>Clear the screen with the current text attribute</td></tr>
 <tr><td><b><i>n</i></b></td><td>Set text attribute to <b><i>n</i></b></td></tr>
@@ -60,7 +60,7 @@ Clear screen.
 </table>
 * * *
 #### vcursor *[options]* ######
-Change the cursor size and shape.
+Change or query the cursor size and shape.
 <table>
 <tr><td width="125pt"></td><td>Outputs the current cursor shape to <b>STDOUT</b></td></tr>
 <tr><td><b><i>n</i></b></td><td>Set the current cursor shape as <b><i>n</i></b></td></tr>
@@ -71,13 +71,14 @@ Change the cursor size and shape.
 </table>
 * * *
 #### vdelay *[ms]* ######
-Simple delay.
+Simple delay in milliseconds.
 <table>
 <tr><td width="125pt"></td><td>Default is 1000ms (1 second) delay.</td></tr>
 <tr><td><b><i>ms</i></b></td><td>Delay for <b><i>ms</i></b> milliseconds. (0-65535, 0x0000-0xffff) </td></tr>
 </table>
 * * *
 #### vecho *[options]* *[text]* ######
+Output text to display.
 <table>
 <tr><td width="125pt"></td><td>Preforms a Carriage Return and Line Feed to the display</td></tr>
 <tr><td><b><i>text</i></b></td><td>Writes <b><i>text</i></b> to the display</td></tr>
@@ -113,11 +114,10 @@ position and change rows if needed.</td></tr>
 <b><i>SOT</i></b> <i>(Start of All Text)</i> or  
 <b><i>EOT</i></b> <i>(End of All Text)</i> 
 position.</td></tr>
-
 </table>
 * * *
 #### vframe *[options]* ######
-Draw a box windowing thingy.
+Draw a box windowing thingy and move cursor to its inside top left position.
 <table>
 <tr><td width="125pt"></td><td>Draw a box that encloses the entire screen</td></tr>
 <tr><td><b>/A <i>n</i></a></td><td>Set text attribute to <b><i>n</i></b></td></tr>
