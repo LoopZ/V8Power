@@ -158,6 +158,7 @@ OptionSot:
 	sub			ch, bh
 	sub			cl, bl
 	xor			dx, dx
+SearchStart:
 	mov			[CurrentXY], dx
 .TestLoop:
 	push		bx
@@ -188,9 +189,12 @@ OptionEot:
 	sub			ch, bh
 	sub			cl, bl
 	mov			dx, cx
+	xor			cx, cx
+SearchEnd:
 	mov			[CurrentXY], dx
 .TestLoop:
 	push		bx
+	push		cx
 	push		dx
 	add			dh, bh
 	add			dl, bl	
@@ -200,16 +204,34 @@ OptionEot:
 	mov			ah, 0x08
 	int			0x10
 	pop			dx
+	pop			cx
 	pop			bx
 	cmp			al, 0x20
 	jne			.TestDone
 	call		OptionPrev
-	xor			cx, cx
 	cmp			dx, cx
 	je			.TestDone
 	jmp			.TestLoop
 .TestDone:
 	ret
+	
+OptionSol:
+	mov			bx, [WindMin]
+	mov			cx, [WindMax]
+	mov			dx, [CurrentXY]
+	xor			dl, dl
+	sub			ch, bh
+	jmp			SearchStart
+	
+OptionEol:
+	mov			bx, [WindMin]
+	mov			cx, [WindMax]
+	mov			dx, [CurrentXY]
+	mov			dl, cl
+	sub			dl, bl
+	mov			cx, dx
+	xor 		cl, cl
+	jmp			SearchEnd
 	
 OptionNext:
 	push		bx
@@ -281,6 +303,8 @@ QueryTable:
 	TableEnd	
 
 OptionalTable:
+    TableData "SOL",OptionSol
+    TableData "EOL",OptionEol
     TableData "SOR",OptionSor
     TableData "EOR",OptionEor
     TableData "SOP",OptionSop

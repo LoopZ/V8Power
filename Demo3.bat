@@ -27,10 +27,21 @@ vcls /bblue /fwhite
 
 vframe /bGray /fBlack /x5/y5/w70/h15 Single
 
+vcls /l
+vgotoxy /x25/y13
+vecho /n "First move to start of line."
+vgotoxy /l sol
+vdelay 2000
 
 vcls /l
 vgotoxy /x25/y13
-vecho /n "First move to start of row."
+vecho /n "Now move to end of line."
+vgotoxy /l eol
+vdelay 2000
+
+vcls /l
+vgotoxy /x25/y13
+vecho /n "Next move to start of row."
 vgotoxy /l sor
 vdelay 2000
 
@@ -53,14 +64,18 @@ vgotoxy /l eop
 vdelay 2000
 
 vcls /l
-vgotoxy /x25/y13
-vecho "Now move to start of text (then -1)."
+vgotoxy /x25/y12
+vecho "Now move to start of text"
+vgotoxy /x25/y14
+vecho "(then -1)."
 vgotoxy /l sot previous
 vdelay 2000
 
 vcls /l
-vgotoxy /x25/y13
-vecho "Now move to end of text (then +1)."
+vgotoxy /x25/y12
+vecho "Now move to end of text"
+vgotoxy /x25/y14
+vecho "(then +1)."
 vgotoxy /l eot next
 vdelay 2000
 
