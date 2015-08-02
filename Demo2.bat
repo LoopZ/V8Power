@@ -22,40 +22,134 @@ cd bin
 rem redirect does not work in DosBox, so preset it to small
 set CURSOR=small
 vcursor | set /p CURSOR=
-vcursor hide
+vcursor Full
+vcls /bblue /fwhite
 
-rem vdelay 2000
+vframe /bGray /fBlack /x5/y5/w70/h15 Single
 
-vcls /fGray /bBlue /c 0xb0
-rem Title Bar
-vgotoxy /x1/y1
-vcls /bGray /fBlack EOL
-vgotoxy /x 28 /y 1
-vecho /FBlack "V8Power " /fRed '1.0' /fBlack " Installation"
+vcls /l
+vgotoxy /x25/y13
+vecho /n "First move to start of line."
+vgotoxy /l sol
+vdelay 2000
 
+vcls /l
+vgotoxy /x25/y13
+vecho /n "Now move to end of line."
+vgotoxy /l eol
+vdelay 2000
 
-vframe /bGray /fRed /x20 /y8 /w40 /h10 Single Shadow
-vcls /L /fBlack
-vecho "Blah, Blah, Blah, Blah, Blah, Blah, Blah."
+vcls /l
+vgotoxy /x25/y13
+vecho /n "Next move to start of row."
+vgotoxy /l sor
+vdelay 2000
 
-rem Temporary bottom menu bar
-vgotoxy /x1/y25
-vcls /bGray /fBlack EOL
-vgotoxy /g /x2 /y25
-vecho /n "Previous " /fWhite "(" /fRed "Alt+P" /fWhite ")"
-vecho /n " | "
-vecho /n "Next " /fWhite "(" /fRed "Alt+N" /fWhite ")"
-vgotoxy /x68 /y25
-vecho /n "Quit " /fWhite "(" /fRed "Alt+Q" /fWhite ")"
+vcls /l
+vgotoxy /x25/y13
+vecho /n "Now move to end of row."
+vgotoxy /l eor
+vdelay 2000
 
-rem back to Center Frame
-vgotoxy /g /x21 /y9
-vgotoxy /l eot next next
-vecho /fRed "More, more more more."
+vcls /l
+vgotoxy /x25/y13
+vecho "Now move to start of page."
+vgotoxy /l sop
+vdelay 2000
 
-vdelay 3000
-vcls text
+vcls /l 
+vgotoxy /x25/y13
+vecho "Now move to end of page."
+vgotoxy /l eop
+vdelay 2000
+
+vcls /l
+vgotoxy /x25/y12
+vecho "Now move to start of text"
+vgotoxy /x25/y14
+vecho "(then -1)."
+vgotoxy /l sot previous
+vdelay 2000
+
+vcls /l
+vgotoxy /x25/y12
+vecho "Now move to end of text"
+vgotoxy /x25/y14
+vecho "(then +1)."
+vgotoxy /l eot next
+vdelay 2000
+
+vcls /l
+vgotoxy /x15/y13
+vecho /n "Finally, Lets Just move the cursor around a bit."
 vdelay 1000
+vgotoxy /l left
+vdelay 200
+vgotoxy /l left
+vdelay 200
+vgotoxy /l left
+vdelay 200
+vgotoxy /l left
+vdelay 200
+vgotoxy /l left
+vdelay 200
+vgotoxy /l left
+vdelay 200
+vgotoxy /l left
+vdelay 200
+vgotoxy /l left
+vdelay 200
+
+vgotoxy /l up
+vdelay 200
+vgotoxy /l up
+vdelay 200
+vgotoxy /l up
+vdelay 200
+vgotoxy /l up
+vdelay 200
+vgotoxy /l up
+vdelay 200
+vgotoxy /l up
+vdelay 200
+
+vgotoxy /l right
+vdelay 200
+vgotoxy /l right
+vdelay 200
+vgotoxy /l right
+vdelay 200
+vgotoxy /l right
+vdelay 200
+vgotoxy /l right
+vdelay 200
+vgotoxy /l right
+vdelay 200
+vgotoxy /l right
+vdelay 200
+vgotoxy /l right
+vdelay 200
+
+vgotoxy /l down
+vdelay 200
+vgotoxy /l down
+vdelay 200
+vgotoxy /l down
+vdelay 200
+vgotoxy /l down
+vdelay 200
+vgotoxy /l down
+vdelay 200
+vgotoxy /l down
+vdelay 200
+
+vdelay 1000
+
+vcls /l
+vgotoxy /x25/y13
+vecho "All done."
+vdelay 2000
+
 vcls 	/a0x07
 vecho Goodbye...
 rem restore the cursor size and shape
