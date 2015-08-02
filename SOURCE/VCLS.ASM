@@ -36,26 +36,34 @@
     mov         [WindMin], cx 
     mov         [WindMax], dx 
 .NotEolOnly:
-
+	mov			ah, 0x0a
 	mov			al, [TextOnly]
 	cmp			al, 1
-	je			.ClearTextOnly
+	je			.WriteClear
+	mov			ah, 0x09
+	mov			al, [FillCode]
+	cmp			al, 0x20
+	jne			.WriteClear
+	
     mov         ax, 0x0600
     mov         bh, [TextAttr]
     int         0x10
     jmp			.Done
-.ClearTextOnly:
+    
+.WriteClear:
 	sub			dh, ch
 	sub			dl, cl
 	xchg		cx, dx
 	inc 		cl
 	inc			ch
 	xor			dx, dx
-.ClearTextLoop:
-	GotoXY		dx
-	mov			ax, 0x0a20
+	mov			al, [FillChar]
 	mov			bh, [VideoPage]
-	xor			bl, bl
+	xor			bl, [TextAttr]
+.ClearTextLoop:
+	push		ax
+	GotoXY		dx
+	pop			ax
 	push		cx
 	xor			ch, ch
 	int			0x10
@@ -71,12 +79,18 @@
     GotoXY      cx	
     Terminate 0
 
+FillCode:
+	NumberParam
+	mov			[FillChar], al
+	ret
+
 NoSwitch:
     LookupParam OptionalTable
     cmp			ax, 0xffff
     je			.NotOptional
     jmp			ax
     ret
+    	
     
 .NotOptional:
 	; NoSwitch falls through to SwitchA
@@ -97,6 +111,7 @@ CommandLineSwitches:
     SwitchData  0,  0, NoSwitch      
     ColorSwitchData
     LocalSwitchData
+    SwitchData  'C',  1, FillCode
     SwitchData  0,  0, 0
 
 OptionalTable:
@@ -104,6 +119,8 @@ OptionalTable:
     TableData "TEXT",OptionText
     TableEnd
 	
+FillChar:
+	db 0x20
 EolOnly:
 	DB 0
 TextOnly: 

@@ -55,6 +55,8 @@ Clear screen.
 	you can just redraw the box, maybe.</b></td></tr>
 <tr><td><b>TEXT</b></td><td>Clear the text only. Leave all colors intact and ignore attributes.</td></tr>
 <tr><td><b>EOL</b></td><td>Clear from cursor to End of Line only.</td></tr>
+<tr><td><b>/C <i>code</i></b></td><td>Clear by filling with ASCII character 
+<b><i>code</i></b>.</td></tr>
 </table>
 * * *
 #### vcursor *[options]* ######

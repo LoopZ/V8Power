@@ -26,6 +26,7 @@ vcursor hide
 
 rem vdelay 2000
 
+vcls /fGray /bBlue /c 0xb0
 rem Title Bar
 vgotoxy /x1/y1
 vcls /bGray /fBlack EOL
@@ -33,8 +34,6 @@ vgotoxy /x 28 /y 1
 vecho /FBlack "V8Power " /fRed '1.0' /fBlack " Installation"
 
 
-rem Center Frame window
-vframe /bBlue /fYellow /x1 /y2 /w80 /h23 Hidden
 vframe /bGray /fRed /x20 /y8 /w40 /h10 Single
 vcls /L /fBlack
 vecho "Blah, Blah, Blah, Blah, Blah, Blah, Blah."
@@ -51,8 +50,8 @@ vecho /n "Quit " /fWhite "(" /fRed "Alt+Q" /fWhite ")"
 
 rem back to Center Frame
 vgotoxy /g /x21 /y9
-vgotoxy /l last 
-vecho /n " " /fRed "More, more more more."
+vgotoxy /l eot next next
+vecho /fRed "More, more more more."
 
 vdelay 3000
 vcls text
