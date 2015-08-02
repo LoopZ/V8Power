@@ -50,6 +50,9 @@ SwitchL:
 	add		dh, ah
 	add		dl, al
 	mov		[CurrentXY], dx
+	mov		ah, 0x02
+	mov		bh, [VideoPage]
+	int		0x10
 	FrameBounds
 	mov		ax, [WindMin]
 	mov		dx, [CurrentXY]
@@ -57,12 +60,16 @@ SwitchL:
 	sub		dl, al
 	mov		[CurrentXY], dx
 	ret
+	
 SwitchG:
 	mov		ax, [WindMin]
 	mov		dx, [CurrentXY]
 	add		dh, ah
 	add		dl, al
 	mov		[CurrentXY], dx
+	mov		ah, 0x02
+	mov		bh, [VideoPage]
+	int		0x10
 	mov		ax, 0x0000
 	mov		[WindMin], ax
 	mov		ax, [ScreenMax]

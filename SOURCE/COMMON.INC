@@ -33,19 +33,19 @@ jmp BasicInitialize
 ; Common Data Section
 SECTION _DATA
 
-VideoMode:      DB 0
-VideoPage:      DB 0
-CursorShape:    DW 0
-TextAttr:       DB 0x07
-ScreenMax:
-	ScreenMaxX:	DB 0
-	ScreenMaxY	DB 0
-WindMin:        
-	WindMinX:	DB 0
-	WindMinY	DB 0
-WindMax:        
-	WindMaxX:	DB 0
-	WindMaxY	DB 0
+	VideoMode:      DB 0
+	VideoPage:      DB 0
+	CursorShape:    DW 0
+	TextAttr:       DB 0x07
+	ScreenMax:
+		ScreenMaxX:	DB 0
+		ScreenMaxY	DB 0
+	WindMin:        
+		WindMinX:	DB 0
+		WindMinY	DB 0
+	WindMax:        
+		WindMaxX:	DB 0
+		WindMaxY	DB 0
 
 CommandLineErrorMsg:
     DB          "Parameter Error",0
@@ -161,15 +161,17 @@ WriteStrProc:
     
 ; Terminate with exit code and return to DOS
 ProgramTerminate:
-    push        ax
-    WhereXY     
-    cmp         cx, [CursorShape]
-    je          .Done
-    mov         ah, 0x01
-    mov         cx, [CursorShape]
-    int         0x10
-.Done:
-    pop         ax
+	%ifdef VideoOutput
+		push        ax
+		WhereXY     
+		cmp         cx, [CursorShape]
+		je          .Done
+		mov         ah, 0x01
+		mov         cx, [CursorShape]
+		int         0x10
+	.Done:
+		pop         ax
+    %endif
     mov         ah, 4ch  
     int         0x21
 

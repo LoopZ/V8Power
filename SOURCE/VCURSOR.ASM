@@ -16,6 +16,8 @@
 
 ; NASM for DOS
 
+%idefine NoVideoOutput
+
 %include "COMMON.INC"
 
     CommandLineParser       ; insert code for command line parsing
@@ -28,6 +30,9 @@ MainProgram:
 	StdOutHexWord
 	StdOutCRLF
 .Done:
+	mov         ah, 0x01
+	mov         cx, [CursorShape]
+	int         0x10
     Terminate 0
 
 	LookupParamProc

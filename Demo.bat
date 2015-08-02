@@ -31,12 +31,7 @@ rem Title Bar
 vgotoxy /x1/y1
 vcls /bGray /fBlack EOL
 vgotoxy /x 28 /y 1
-vecho /FBlack "V8Power " /fRed '1.0' /fBlack " Installation"
-
-
-vframe /bGray /fRed /x20 /y8 /w40 /h10 Single Shadow
-vcls /L /fBlack
-vecho "Blah, Blah, Blah, Blah, Blah, Blah, Blah."
+vecho /FBlack "Something " /fRed '1.0' /fBlack " Installation"
 
 rem Temporary bottom menu bar
 vgotoxy /x1/y25
@@ -47,11 +42,69 @@ vecho /n " | "
 vecho /n "Next " /fWhite "(" /fRed "Alt+N" /fWhite ")"
 vgotoxy /x68 /y25
 vecho /n "Quit " /fWhite "(" /fRed "Alt+Q" /fWhite ")"
+vdelay 1000
 
-rem back to Center Frame
-vgotoxy /g /x21 /y9
+rem make top left frame and put some text there
+vframe /bGray /fRed /x4 /y5 /w35 /h10 Single Shadow
+vcls /L /fBlack
+vecho "Top Left frame."
+vdelay 2000
+
+rem make top right frame and put some text there
+vframe /bGray /fRed /x42 /y5 /w35 /h10 Double Shadow
+vcls /L /fBlack
+vecho "Top Right frame."
+vdelay 2000
+
+rem back to Top Left Frame
+vgotoxy /g /x5 /y6 
 vgotoxy /l eot next next
-vecho /fRed "More, more more more."
+vecho /fRed "Blah, Blah, Blah."
+vdelay 500
+
+rem back to Top Left Frame
+vgotoxy /g /x43 /y6 
+vgotoxy /l eot next next
+vecho /fBlue "Blah, Blah, Blah."
+vdelay 500
+
+rem back and forth a bit
+vgotoxy /g /x5 /y6 /l eot next next
+vecho /fBlue "More, More, More."
+vdelay 250
+vgotoxy /g /x43 /y6 /l eot next next
+vecho /fRed "More, More, More."
+vdelay 250
+vgotoxy /g /x5 /y6 /l eot next next
+vecho /fRed "More, More, More."
+vdelay 250
+vgotoxy /g /x43 /y6 /l eot next next
+vecho /fBlue "More, More, More."
+vdelay 250
+vgotoxy /g /x5 /y6 /l eot next next
+vecho /fBlue "More, More, More."
+vdelay 250
+vgotoxy /g /x43 /y6 /l eot next next
+vecho /fRed "More, More, More."
+vdelay 250
+vgotoxy /g /x5 /y6 /l eot next next
+vecho /fRed "More, More, More."
+vdelay 250
+vgotoxy /g /x43 /y6 /l eot next next
+vecho /fBlue "More, More, More."
+vdelay 250
+vgotoxy /g /x5 /y6 /l eot next next
+vecho /fBlue "More, More, More."
+vdelay 250
+vgotoxy /g /x43 /y6 /l eot next next
+vecho /fRed "More, More, More."
+vdelay 250
+vgotoxy /g /x5 /y6 /l eot next next
+vecho /fRed "More, More, More."
+vdelay 250
+vgotoxy /g /x43 /y6 /l eot next next
+vecho /fBlue "More, More, More."
+vdelay 250
 
 vdelay 3000
 vcls text
