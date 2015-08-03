@@ -168,3 +168,9 @@ TBA
 * * *
 #### vview ######
 TBA
+* * *
+#### vchoice ######
+TBA
+* * *
+#### vask ######
+TBA
