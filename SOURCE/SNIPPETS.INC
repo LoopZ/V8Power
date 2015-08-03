@@ -71,6 +71,19 @@ Done:
 	%endif
 %endmacro
 
+%imacro StdOutStr 1
+	mov		di, %1
+%%OutLoop:
+	mov		ah, 0x02
+	mov		dl, [di]
+	cmp		dl, 0
+	je		%%Done
+	int		0x21
+	inc		di
+	jmp		%%OutLoop
+%%Done:
+%endmacro
+
 ; Write AX to standard output as HEX
 %imacro StdOutHexByte 0
 	push	ax

@@ -144,7 +144,15 @@ then 0 is assumed)</td></tr>
 </table>
 * * *
 #### vinfo ######
-TBA
+V8Power information program.
+<table>
+<tr><td width="125pt"></td><td>Outputs all info to <b>STDOUT</b></td></tr>
+<tr><td><b><i>all</i></b></td><td>Outputs <b><i>all</i></b> info to <b>STDOUT</b></td></tr>
+<tr><td><b><i>title</i></b></td><td>Outputs full <b><i>title</i></b> to <b>STDOUT</b></td></tr>
+<tr><td><b><i>copyright</i></b></td><td>Outputs the <b><i>copyright</i></b> message to <b>STDOUT</b></td></tr>
+<tr><td><b><i>version</i></b></td><td>Outputs the <b><i>version</i></b> information to <b>STDOUT</b></td></tr>
+<tr><td><b><i>license</i></b></td><td>Outputs <b><i>license</i></b> information to <b>STDOUT</b></td></tr>
+</table>
 * * *
 #### vline ######
 TBA

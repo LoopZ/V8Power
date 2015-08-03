@@ -18,10 +18,11 @@ bin\vecho "Cleaning " /f 15 "air filter" /f gray ...
 NASM.EXE -ISOURCE\ SOURCE\VDELAY.ASM -fbin -O9 -o BIN\VDELAY.COM
 bin\vecho "Verifying " /f 12 timing /f gray ...
 NASM.EXE -ISOURCE\ SOURCE\VPCSPKR.ASM -fbin -O9 -o BIN\VPCSPKR.COM
+bin\vecho "Referencing " /f 11 "Zen and the Art of Motorcycle Maintenance" /f gray ...
+NASM.EXE -ISOURCE\ SOURCE\VINFO.ASM -fbin -O9 -o BIN\VINFO.COM
 
 goto Done
 
-NASM.EXE -ISOURCE\ SOURCE\VINFO.ASM -fbin -O9 -o BIN\VINFO.COM
 NASM.EXE -ISOURCE\ SOURCE\VLINE.ASM -fbin -O9 -o BIN\VLINE.COM
 NASM.EXE -ISOURCE\ SOURCE\VCHOICE.ASM -fbin -O9 -o BIN\VCHOICE.COM
 NASM.EXE -ISOURCE\ SOURCE\VPAUSE.ASM -fbin -O9 -o BIN\VPAUSE.COM
