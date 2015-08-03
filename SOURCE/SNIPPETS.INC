@@ -474,6 +474,7 @@ Done:
 	%endif
 %endmacro
 
+; di points to start, cx is count of characters
 %imacro NumberParam 0
 	NumberParamProc
 	call 	NumberParam_Proc

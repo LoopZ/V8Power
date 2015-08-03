@@ -16,8 +16,90 @@
 
 ; NASM for DOS 
 
+%idefine NoVideoOutput
+
 %include "COMMON.INC"
 
-PlaceHolder 
-
+CommandLineParser
 Terminate 0
+
+
+NoSwitch:
+	mov		bx, di
+.FindColon:
+	mov		al, [bx]
+	cmp		al, ':'
+	je		SoundAndDelay
+	cmp		bx, si
+	je		DelayOnly
+	inc		bx
+	jmp		.FindColon
+
+SoundAndDelay:
+	mov		cx, bx
+	sub		cx, di
+	push	bx
+	NumberParam
+	pop		bx
+	mov		cx, ax
+	push	cx
+	inc		bx
+	mov		di, bx
+	mov		cx, si
+	sub		cx, di
+	NumberParam
+	pop		cx
+	call	Sound
+	Delay	ax
+	ret
+	
+DelayOnly:
+	NumberParam
+	call	SoundOff
+	Delay	ax
+	ret
+	
+Sound:
+	push	ax
+	cmp		cx, 0x0012
+	jle  	SoundOffInstead
+	mov		dx, 0x0012
+	mov		ax, 0x34DC
+	div		cx
+	push	ax
+	mov 	al, 10110110b
+	mov 	dx, 0x0043
+	out 	dx, al
+	mov 	dx, 0x0042
+	pop		ax
+	out		dx, al
+	mov		al, ah
+	out		dx, al
+	mov		dx, 0x0061
+	in		al, dx
+	mov		al, 0x03 
+	out		dx, al
+	pop		ax
+ret
+
+SoundOffInstead:
+	pop		ax
+SoundOff:
+	push	ax
+	mov  dx, 0x0061
+	in   al, dx
+	and  al, 11111101b
+	out  dx, al
+	mov  al, 10110110b
+	mov  dx, 0x0043
+	out  dx, al
+	mov  dx, 0x0042
+	mov  al, 0
+	out  dx, al
+	out  dx, al
+	pop		ax
+ret
+
+CommandLineSwitches:
+	SwitchData  0,  0, NoSwitch  
+    SwitchData  0,  0, 0

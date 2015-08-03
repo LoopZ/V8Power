@@ -48,13 +48,14 @@ rem make top left frame and put some text there
 vframe /bGray /fRed /x4 /y5 /w35 /h10 Single Shadow
 vcls /L /fBlack
 vecho "Top Left frame."
-vdelay 2000
 
 rem make top right frame and put some text there
 vframe /bGray /fRed /x42 /y5 /w35 /h10 Double Shadow
 vcls /L /fBlack
 vecho "Top Right frame."
-vdelay 2000
+vpcspkr 200:200 200 200:200 200 200:200 200
+vpcspkr	150:100 100 250:100 100 200:200 200
+vpcspkr 150:100 100 250:100 100 200:200 200 0
 
 rem back to Top Left Frame
 vgotoxy /g /x5 /y6 
