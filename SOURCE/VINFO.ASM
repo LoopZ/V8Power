@@ -33,6 +33,7 @@ OptAll:
 	call	OptName
 	call	OptCopy
 	call	OptVer
+	call	OptURL
 	StdOutCRLF
 	call	OptLic
 	ret
@@ -51,6 +52,10 @@ OptCopy:
 	ret
 OptLic:
 	StdOutStr OptLicMsg
+	StdOutCRLF
+	ret
+OptURL:
+	StdOutStr OptURLMsg
 	StdOutCRLF
 	ret
 
@@ -85,6 +90,7 @@ OptionsTable:
 	TableData "COPY", OptCopy
 	TableData "VER", OptVer
 	TableData "LIC", OptLic
+	TableData "URL", OptURL
 	TableEnd
 	
 OptNameMsg:
@@ -93,6 +99,8 @@ OptVerMsg:
 	DB 'Version 0/0/2015 (Pre-release)',0
 OptCopyMsg:
 	DB 'Copyright (C) 2015 Jerome Shidel',0
+OptURLMsg:
+	DB 'https://github.com/LoopZ/V8Power',0
 OptLicMsg:
 	DB "This program is free software; you can redistribute it and/or modify",CRLF
 	DB "it under the terms of the GNU General Public License as published by",CRLF

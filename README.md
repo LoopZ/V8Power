@@ -152,6 +152,7 @@ V8Power information program.
 <tr><td><b><i>copyright</i></b></td><td>Outputs the <b><i>copyright</i></b> message to <b>STDOUT</b></td></tr>
 <tr><td><b><i>version</i></b></td><td>Outputs the <b><i>version</i></b> information to <b>STDOUT</b></td></tr>
 <tr><td><b><i>license</i></b></td><td>Outputs <b><i>license</i></b> information to <b>STDOUT</b></td></tr>
+<tr><td><b><i>url</i></b></td><td>Outputs the website <b><i>url</i></b> information to <b>STDOUT</b></td></tr>
 </table>
 * * *
 #### vline ######
