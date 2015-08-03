@@ -155,26 +155,26 @@ V8Power information program.
 <tr><td><b><i>url</i></b></td><td>Outputs the website <b><i>url</i></b> information to <b>STDOUT</b></td></tr>
 </table>
 * * *
-#### vline ######
+#### vprogress ######
 TBA
 * * *
-#### vmode ######
+#### vline ######
 TBA
 * * *
 #### vpause ######
 TBA
 * * *
-#### vprogress ######
+#### vchoice ######
+TBA
+* * *
+#### vdiskinf ######
+TBA
+* * *
+#### vmode ######
 TBA
 * * *
 #### vview ######
 TBA
 * * *
-#### vchoice ######
-TBA
-* * *
 #### vask ######
-TBA
-* * *
-#### vdiskinf ######
 TBA
