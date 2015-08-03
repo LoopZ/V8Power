@@ -29,9 +29,9 @@ rem vdelay 2000
 vcls /fGray /bBlue /c 0xb0
 rem Title Bar
 vgotoxy /x1/y1
-vcls /bGray /fBlack EOL
+vcls /b Gray /f Black EOL
 vgotoxy /x 28 /y 1
-vecho /FBlack "Something " /fRed '1.0' /fBlack " Installation"
+vecho /f Black "Something " /fRed '1.0' /fBlack " Installation"
 
 rem Temporary bottom menu bar
 vgotoxy /x1/y25
@@ -45,7 +45,7 @@ vecho /n "Quit " /fWhite "(" /fRed "Alt+Q" /fWhite ")"
 vdelay 1000
 
 rem make top left frame and put some text there
-vframe /bGray /fRed /x4 /y5 /w35 /h10 Single Shadow
+vframe /bGray /fBlue /x4 /y5 /w35 /h10 Single Shadow
 vcls /L /fBlack
 vecho "Top Left frame."
 
@@ -70,42 +70,72 @@ vecho /fBlue "Blah, Blah, Blah."
 vdelay 500
 
 rem back and forth a bit
-vgotoxy /g /x5 /y6 /l eot next next
+vgotoxy /x 5 /y 6 /l eot next next
 vecho /fBlue "More, More, More."
 vdelay 250
-vgotoxy /g /x43 /y6 /l eot next next
+vgotoxy /x43/y6 /l eot next next
 vecho /fRed "More, More, More."
 vdelay 250
-vgotoxy /g /x5 /y6 /l eot next next
+vgotoxy /x5/y6/l eot next next
 vecho /fRed "More, More, More."
 vdelay 250
-vgotoxy /g /x43 /y6 /l eot next next
+vgotoxy /x43/y6/l eot next next
 vecho /fBlue "More, More, More."
 vdelay 250
-vgotoxy /g /x5 /y6 /l eot next next
+vgotoxy /x5/y6/l eot next next
 vecho /fBlue "More, More, More."
 vdelay 250
-vgotoxy /g /x43 /y6 /l eot next next
+vgotoxy /x43/y6/l eot next next
 vecho /fRed "More, More, More."
 vdelay 250
-vgotoxy /g /x5 /y6 /l eot next next
+vgotoxy /x5/y6/l eot next next
 vecho /fRed "More, More, More."
 vdelay 250
-vgotoxy /g /x43 /y6 /l eot next next
+vgotoxy /x43/y6/l eot next next
 vecho /fBlue "More, More, More."
 vdelay 250
-vgotoxy /g /x5 /y6 /l eot next next
+vgotoxy /x5/y6/l eot next next
 vecho /fBlue "More, More, More."
 vdelay 250
-vgotoxy /g /x43 /y6 /l eot next next
+vgotoxy /x43/y6/l eot next next
 vecho /fRed "More, More, More."
 vdelay 250
-vgotoxy /g /x5 /y6 /l eot next next
+vgotoxy /x5/y6/l eot next next
 vecho /fRed "More, More, More."
 vdelay 250
-vgotoxy /g /x43 /y6 /l eot next next
+vgotoxy /x43/y6/l eot next next
 vecho /fBlue "More, More, More."
-vdelay 250
+vdelay 2000
+
+vgotoxy /x5/y6/l eot 
+vecho
+vecho
+vecho /fBlue "Faster, faster and faster."
+vgotoxy /x43/y6/l eot
+vecho
+vecho
+vecho /fRed "Faster, faster and faster."
+vgotoxy /x5/y6/l eot next next
+vecho /fRed "Faster, faster and faster."
+vgotoxy /x43/y6/l eot next next
+vecho /fBlue "Faster, faster and faster."
+vgotoxy /x5/y6/l eot next next
+vecho /fBlue "Faster, faster and faster."
+vgotoxy /x43/y6/l eot next next
+vecho /fRed "Faster, faster and faster."
+vgotoxy /x5/y6/l eot next next
+vecho /fRed "Faster, faster and faster."
+vgotoxy /x43/y6/l eot next next
+vecho /fBlue "Faster, faster and faster."
+vgotoxy /x5/y6/l eot next next
+vecho /fBlue "Faster, faster and faster."
+vgotoxy /x43/y6/l eot next next
+vecho /fRed "Faster, faster and faster."
+vgotoxy /x5/y6/l eot next next
+vecho /fRed "Faster, faster and faster."
+vgotoxy /x43/y6/l eot next next
+vecho /fBlue "Faster, faster and faster."
+
 
 vdelay 3000
 vcls text
