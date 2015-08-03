@@ -134,7 +134,7 @@ Draw a box windowing thingy and move cursor to its inside top left position.
 <tr><td><i><b>shadow</b></i></td><td>Add a 3D style <b><i>shadow</i></b></td></tr>
 </table>
 * * *
-#### vpcspkr *[[frequency]:[ms]]* ######
+#### vpcspkr *[frequency]:[ms]* ######
 Generate a tone using the built in speaker.
 <table>
 <tr><td width="125pt"></td><td>No output.</td></tr>
