@@ -174,3 +174,6 @@ TBA
 * * *
 #### vask ######
 TBA
+* * *
+#### vdiskinf ######
+TBA
