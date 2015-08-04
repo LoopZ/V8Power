@@ -136,7 +136,6 @@ vecho /fRed "Faster, faster and faster."
 vgotoxy /x43/y6/l eot next next
 vecho /fBlue "Faster, faster and faster."
 
-
 vdelay 3000
 vcls text
 vdelay 1000
