@@ -88,7 +88,7 @@ Output text to display.
 <tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to 
 <b><i>color</i></b> (or <b><i>value</i></b>)</td></tr>
 <tr><td><b>/N</td><td>Do not perform a CRLF when done.</td></tr>
-<tr><td><i>tba</i></td><td><i>(Under development, to be announced)</i></td></tr>
+<tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
 * * *
 #### vgotoxy *[options]* ######
@@ -141,6 +141,7 @@ Generate a tone using the built in speaker.
 <tr><td><b><i>frequency:ms</i></b></td><td>Use the PC Speaker to generate a <b><i>frequency</i></b> tone. 
 Then Delay for <b><i>ms</i></b> milliseconds. (Note: 0 frequency turns off speaker. If no frequency is provided
 then 0 is assumed)</td></tr>
+<tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
 * * *
 #### vinfo ######
