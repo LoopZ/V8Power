@@ -134,11 +134,11 @@ Draw a box windowing thingy and move cursor to its inside top left position.
 <tr><td><i><b>shadow</b></i></td><td>Add a 3D style <b><i>shadow</i></b></td></tr>
 </table>
 * * *
-#### vpcspkr *[frequency]:[ms]* ######
+#### vpcspkr *[hz:][ms]* ######
 Generate a tone using the built in speaker.
 <table>
 <tr><td width="125pt"></td><td>No output.</td></tr>
-<tr><td><b><i>frequency:ms</i></b></td><td>Use the PC Speaker to generate a <b><i>frequency</i></b> tone. 
+<tr><td><b><i>hz:ms</i></b></td><td>Use the PC Speaker to generate a <b><i>hz</i></b> frequency tone. 
 Then Delay for <b><i>ms</i></b> milliseconds. (Note: 0 frequency turns off speaker. If no frequency is provided
 then 0 is assumed)</td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
