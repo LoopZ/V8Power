@@ -75,8 +75,9 @@
     int         0x10
 %endmacro
     
-%imacro WriteChar 0
-    call        WriteCharProc
+%imacro WriteChar 0-1 0x09
+	mov			ah, %1
+    call        WriteCharProc 
 %endmacro
 
 ; Write a ASCIIZ String and display control codes as characters

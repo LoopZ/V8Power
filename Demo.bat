@@ -57,55 +57,100 @@ vpcspkr 200:200 200 200:200 200 200:200 200
 vpcspkr	150:100 100 250:100 100 200:200 200
 vpcspkr 150:100 100 250:100 100 200:200 200 0
 
+rem Progress bar frame
+vframe /bBlue /fLightCyan /x6 /y18 /w70 /h3 Hidden Shadow
+vprogress 0 left
+
 rem back to Top Left Frame
 vgotoxy /g /x5 /y6 
 vgotoxy /l eot next next
 vecho /fRed "Blah, Blah, Blah."
 vdelay 500
+vgotoxy /x7 /y19
+vprogress 1 left
 
 rem back to Top Left Frame
 vgotoxy /g /x43 /y6 
 vgotoxy /l eot next next
 vecho /fBlue "Blah, Blah, Blah."
 vdelay 500
+vgotoxy /x7 /y19
+vprogress 2 left
 
 rem back and forth a bit
 vgotoxy /x 5 /y 6 /l eot next next
 vecho /fBlue "More, More, More."
 vdelay 250
+vgotoxy /x7 /y19
+vprogress 3 left
+
 vgotoxy /x43/y6 /l eot next next
 vecho /fRed "More, More, More."
 vdelay 250
+vgotoxy /x7 /y19
+vprogress 4 left
+
 vgotoxy /x5/y6/l eot next next
 vecho /fRed "More, More, More."
 vdelay 250
+vgotoxy /x7 /y19
+vprogress 5 right
 vgotoxy /x43/y6/l eot next next
 vecho /fBlue "More, More, More."
 vdelay 250
+vgotoxy /x7 /y19
+vprogress 6 right
 vgotoxy /x5/y6/l eot next next
 vecho /fBlue "More, More, More."
 vdelay 250
+vgotoxy /x7 /y19
+vprogress 7 right
 vgotoxy /x43/y6/l eot next next
 vecho /fRed "More, More, More."
 vdelay 250
+vgotoxy /x7 /y19
+vprogress 8 right
 vgotoxy /x5/y6/l eot next next
 vecho /fRed "More, More, More."
 vdelay 250
+vgotoxy /x7 /y19
+vprogress 9 right
 vgotoxy /x43/y6/l eot next next
 vecho /fBlue "More, More, More."
 vdelay 250
+vgotoxy /x7 /y19
+vprogress 10 right
 vgotoxy /x5/y6/l eot next next
 vecho /fBlue "More, More, More."
 vdelay 250
+vgotoxy /x7 /y19
+vprogress 11
 vgotoxy /x43/y6/l eot next next
 vecho /fRed "More, More, More."
 vdelay 250
+vgotoxy /x7 /y19
+vprogress 12
 vgotoxy /x5/y6/l eot next next
 vecho /fRed "More, More, More."
 vdelay 250
+vgotoxy /x7 /y19
+vprogress 15
 vgotoxy /x43/y6/l eot next next
 vecho /fBlue "More, More, More."
-vdelay 2000
+
+vgotoxy /x7 /y19
+vprogress 49
+vdelay 500
+vgotoxy /x7 /y19
+vprogress 50
+vdelay 500
+vgotoxy /x7 /y19
+vprogress 51
+vdelay 500
+vgotoxy /x7 /y19
+vprogress 52
+vdelay 500
+
 
 vgotoxy /x5/y6/l eot 
 vecho
@@ -136,7 +181,16 @@ vecho /fRed "Faster, faster and faster."
 vgotoxy /x43/y6/l eot next next
 vecho /fBlue "Faster, faster and faster."
 
-vdelay 3000
+vgotoxy /x7 /y19
+vprogress 98
+vdelay 1000
+vgotoxy /x7 /y19
+vprogress 99
+vdelay 1000
+vgotoxy /x7 /y19
+vprogress 100
+vdelay 1000
+
 vcls text
 vdelay 1000
 vcls 	/a0x07

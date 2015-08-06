@@ -53,7 +53,45 @@ Done:
 		push        ax
 		push        bx
 		push        cx
-		WriteChar   
+		WriteChar   0x09
+		pop         cx
+		pop         bx
+		pop         ax
+		loop        %%IsJustRight
+		jmp         %%WriteIntDone
+	%%WayTooBig:   
+		inc         cx
+		xor         dx, dx
+		div         bx
+		push        dx
+		jmp         %%WriteIntLoop
+	%%WriteIntDone:
+		ret
+	%%Done:
+	%endif
+%endmacro
+
+; Write Word in AX
+%imacro WriteIntNoAttr 1
+    mov         ax, %1
+	call		WriteIntNAProc    
+	%ifndef WriteIntNAProc_Declared
+		%idefine 	WriteIntNAProc_Declared
+		jmp			%%Done
+	WriteIntNAProc:
+		mov         bx, 0x000A
+		mov         cx, 0x0001
+	%%WriteIntLoop:
+		cmp         ax, bx
+		jge         %%WayTooBig
+		push        ax
+	%%IsJustRight:
+		pop         ax
+		add         ax, 0x0030
+		push        ax
+		push        bx
+		push        cx
+		WriteChar   0x0A
 		pop         cx
 		pop         bx
 		pop         ax

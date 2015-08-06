@@ -144,7 +144,7 @@ then 0 is assumed)</td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
 * * *
-#### vinfo ######
+#### vversion ######
 V8Power information program.
 <table>
 <tr><td width="125pt"></td><td>Outputs all info to <b>STDOUT</b></td></tr>
@@ -156,8 +156,22 @@ V8Power information program.
 <tr><td><b><i>url</i></b></td><td>Outputs the website <b><i>url</i></b> information to <b>STDOUT</b></td></tr>
 </table>
 * * *
-#### vprogress ######
-TBA
+#### vprogress *[options]* ######
+Draw a progress bar at current location.
+<table>
+<tr><td width="125pt"></td><td>Draw a progress bar at 0%</td></tr>
+<tr><td><b>/A <i>n</i></a></td><td>Set text attribute to <b><i>n</i></b></td></tr>
+<tr><td><b>/B <i>color</i></b></td><td>Set the background text attribute to 
+<b><i>color</i></b> (or <b><i>value</i></b>)</td></tr>
+<tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to 
+<b><i>color</i></b> (or <b><i>value</i></b>)</td></tr>
+<tr><td><b>/W <i>width</i></b></td><td>Override default <b><i>width</i></b> of the bar (default is from cursor to end of line)</td></tr>
+<tr><td><b><i>percent</i></b></td><td>Sets the value in <b><i>percent</i></b> of progress</td></tr>
+<tr><td><b><i>off</i></b></td><td>Do not display percentage number</td></tr>
+<tr><td><b><i>center</i></b></td><td>Percentage number in <b><i>center</i></b> (Default)</td></tr>
+<tr><td><b><i>left</i></b></td><td>Percentage number on <b><i>left</i></b></td></tr>
+<tr><td><b><i>right</i></b></td><td>Percentage number on <b><i>right</i></b></td></tr>
+</table>
 * * *
 #### vline ######
 TBA

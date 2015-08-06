@@ -91,7 +91,7 @@ GotoXYProc:
 
 ; Write a single character
 WriteCharProc:
-    mov         ah, 0x09
+;    mov         ah, 0x09
     mov         bh, [VideoPage]
     mov         bl, [TextAttr]
     mov         cx, 0x0001
