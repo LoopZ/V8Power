@@ -96,6 +96,53 @@ NoSwitch:
 	; NoSwitch falls through to SwitchA
 	ColorSwitchHandlers		; Procedures for handling color switches.
 	LocalSwitchHandlers		; Procedures for handling local and global relations.
+
+SwitchX:
+	NumberParam
+	dec			al
+	mov			cl, [ScreenMaxX]
+	cmp			al, cl
+	jle			.Ok
+	mov			al, cl
+.Ok:
+	mov			[WindMinX], al
+	ret
+	
+SwitchY:
+	call		NumberParam
+	dec			al
+	mov			cl, [ScreenMaxY]
+	cmp			al, cl
+	jle			.Ok
+	mov			al, cl
+.Ok:
+	mov			[WindMinY], al
+	ret
+
+SwitchW:
+	NumberParam
+	dec			al
+	mov			bl, [WindMinX]
+	add			al, bl
+	mov			cl, [ScreenMaxX]
+	cmp			al, cl
+	jle			.Ok
+	mov			al, cl
+.Ok:
+	mov			[WindMaxX], al
+	ret	
+SwitchH:
+	NumberParam
+	dec			al
+	mov			bl, [WindMinY]
+	add			al, bl
+	mov			cl, [ScreenMaxY]
+	cmp			al, cl
+	jle			.Ok
+	mov			al, cl
+.Ok:
+	mov			[WindMaxY], al
+	ret
 	
 OptionText:
 	mov			al, 1
@@ -111,6 +158,8 @@ CommandLineSwitches:
     SwitchData  0,  0, NoSwitch      
     ColorSwitchData
     LocalSwitchData
+ 	XYSwitchData
+	SizeSwitchData
     SwitchData  'C',  1, FillCode
     SwitchData  0,  0, 0
 

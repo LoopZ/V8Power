@@ -18,6 +18,18 @@
 
 %include "COMMON.INC"
 
-PlaceHolder 
+	FrameBounds
 
-Terminate 0
+    CommandLineParser       ; insert code for command line parsing
+
+	Terminate 0
+
+	ColorSwitchHandlers
+
+NoSwitch:
+	ret
+	
+CommandLineSwitches:
+	SwitchData  0,  0, NoSwitch  
+	ColorSwitchData
+    SwitchData  0,  0, 0

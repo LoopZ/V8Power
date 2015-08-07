@@ -24,7 +24,7 @@ set CURSOR=small
 vcursor | set /p CURSOR=
 vcursor hide
 
-rem vdelay 2000
+rem goto SkipPartA
 
 vcls /fGray /bBlue /c 0xb0
 rem Title Bar
@@ -153,7 +153,6 @@ vgotoxy /x7 /y19
 vprogress 52
 vdelay 500
 
-
 vgotoxy /x5/y6/l eot 
 vecho
 vecho
@@ -191,10 +190,17 @@ vprogress 99
 vdelay 1000
 vgotoxy /x7 /y19
 vprogress 100
-vdelay 1000
+vdelay 2000
 
+:SkipPartA
+vcls /fGray /bBlue /c 0xb0 /y2/h23
+
+vdelay 3000
+
+:AllDone
 vcls text
 vdelay 1000
+
 vcls 	/a0x07
 vecho Goodbye...
 rem restore the cursor size and shape

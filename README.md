@@ -57,6 +57,10 @@ Clear screen, area or row (line).
 <tr><td><b>EOL</b></td><td>Clear from cursor to End of Line only.</td></tr>
 <tr><td><b>/C <i>code</i></b></td><td>Clear by filling with ASCII character 
 <b><i>code</i></b>.</td></tr>
+<tr><td><b>/X <i>column</i></b></td><td>Absolute screen <b><i>column</i></b> to start clear.</td></tr>
+<tr><td><b>/Y <i>row</i></b></td><td>Absolute screen <b><i>row</i></b> to start clear.</td></tr>
+<tr><td><b>/W <i>width</i></b></td><td>Total <b><i>width</i></b> of cleared area.</td></tr>
+<tr><td><b>/H <i>height</i></b></td><td>Total <b><i>height</i></b> of cleared area.</td></tr>
 </table>
 * * *
 #### vcursor *[options]* ######
