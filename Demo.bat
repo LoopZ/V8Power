@@ -35,10 +35,12 @@ vecho /f Black "Something " /fRed '1.0' /fBlack " Installation"
 
 rem Temporary bottom menu bar
 vgotoxy /x1/y25
-vcls /bGray /fBlack EOL
+vcls /bGray /fBlack /c0 EOL
 vgotoxy /g /x2 /y25
-vecho /n "Previous " /fWhite "(" /fRed "Alt+P" /fWhite ")"
-vecho /n " | "
+vecho /n  "Previous " /fWhite "(" /fRed "Alt+P" /fWhite ")"
+vgotoxy right
+vecho /n "|"
+vgotoxy right
 vecho /n "Next " /fWhite "(" /fRed "Alt+N" /fWhite ")"
 vgotoxy /x68 /y25
 vecho /n "Quit " /fWhite "(" /fRed "Alt+Q" /fWhite ")"
