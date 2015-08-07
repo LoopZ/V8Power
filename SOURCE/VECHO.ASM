@@ -25,19 +25,50 @@
 	mov			al, [NoNewLine]
 	cmp			al, 0
 	jne			Done
+	mov		cx, [Repeat]
+ReturnLoop:
+	push	cx
 	WriteStr 	CRLFString
+	pop		cx
+	loop	ReturnLoop
 Done:
     Terminate 0
     
 NoSwitch:
 	xor 		al, al
 	mov			[si], al
+	mov		cx, [Repeat]
+.SwitchLoop:
+	push	cx
+	push	di
 	WriteStr	di
+	pop		di
+	pop		cx
+	loop	.SwitchLoop
+	inc		cx
+	mov		[Repeat], cx
 	ret
 
 SwitchN:
 	mov			al, 1
 	mov			[NoNewLine], al
+	ret
+
+SwitchC:
+	NumberParam
+	mov		cx, [Repeat]
+.SwitchLoop:
+	push	cx
+	WriteChar
+	pop		cx
+	loop	.SwitchLoop
+	inc		cx
+	mov		[Repeat], cx
+	ret
+
+SwitchR:
+	NumberParam
+	mov			[Repeat], ax
 	ret
 
 	ColorSwitchHandlers
@@ -46,10 +77,14 @@ CommandLineSwitches:
 	SwitchData  0,  0, NoSwitch  
 	ColorSwitchData
 	SwitchData	'N', 0, SwitchN
+	SwitchData	'C', 1, SwitchC
+	SwitchData	'R', 1, SwitchR
     SwitchData  0,  0, 0
 
 CRLFString:
 	db	CRLF,0
 	
+Repeat:
+	dw 1
 NoNewLine:
 	db 0

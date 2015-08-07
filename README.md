@@ -1,9 +1,9 @@
-# V8Power
+# V8Power Tools
 Putting the power of an 8-cylinder engine under the hood of DOS batch files.
 
 * * *
 
-The V8Power project is being designed in cooperation with
+The V8Power Tools project is being designed in cooperation with
 [Jim Hall](http://www.freedos.org/jhall) for the [FreeDOS™](http://www.freedos.org) 
 operating system. It is intended to expand the functionality of scripts written 
 using batch files and to provide them with a better looking user interface with
@@ -11,7 +11,7 @@ increased functionality.
 
 * * *
 
-## Compiling V8Power
+## Compiling V8Power Tools
 
 #### &nbsp;&nbsp; Prerequisites ######
 
@@ -28,7 +28,7 @@ increased functionality.
 created BIN directory. <br>
 * * *
 
-## V8Power Usage
+## V8Power Tools Usage
 
 > Some basic information reguarding all utilities and how they operate.<br>
 > * Options, values and hexidecimal numbers are not case specific **/f white** equals **/F wHIte**<br>
@@ -87,7 +87,10 @@ Output text to display.
 <b><i>color</i></b> (or <b><i>value</i></b>)</td></tr>
 <tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to 
 <b><i>color</i></b> (or <b><i>value</i></b>)</td></tr>
-<tr><td><b>/N</td><td>Do not perform a CRLF when done.</td></tr>
+<tr><td><b>/N</td><td>Do not write a CRLF when done.</td></tr>
+<tr><td><b>/C <i>code</i></b></td><td>Clear by filling with ASCII character 
+<b><i>code</i></b>.</td></tr>
+<tr><td><b>/R <i>times</i></b></td><td>Repeat the next write <b><i>times</i></b> number of times.</td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
 * * *
@@ -156,7 +159,7 @@ V8Power information program.
 <tr><td><b><i>url</i></b></td><td>Outputs the website <b><i>url</i></b> information to <b>STDOUT</b></td></tr>
 </table>
 * * *
-#### vprogress *[options]* ######
+#### vprogres *[options]* ######
 Draw a progress bar at current location.
 <table>
 <tr><td width="125pt"></td><td>Draw a progress bar at 0%</td></tr>
