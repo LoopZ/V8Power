@@ -164,7 +164,7 @@ V8Power information program.
 </table>
 * * *
 #### vprogres *[options]* ######
-Draw a progress bar at current location.
+Draw a progress bar at current location without moving cursor.
 <table>
 <tr><td width="125pt"></td><td>Draw a progress bar at 0%</td></tr>
 <tr><td><b>/A <i>n</i></a></td><td>Set text attribute to <b><i>n</i></b></td></tr>

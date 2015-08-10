@@ -19,17 +19,220 @@
 %include "COMMON.INC"
 
 	FrameBounds
+	WhereXY
+    mov			al, [TextAttr]
+    mov			[NotAttr], al
+    mov			[SelectedAttr], al
 
+	mov			[Position], dx
+	mov			ax, [WindMin]
+	mov			[OptionBox], ax
+	mov			ax, [WindMax]
+	mov			[OptionBox + 2], ax
+	
+	mov			di, CountChoice
+	call 		EachChoice
+	
     CommandLineParser       ; insert code for command line parsing
 
+    mov			al, [TextAttr]
+    mov			[SelectedAttr], al
+    
+	mov			di, SelectChoice
+	call 		EachChoice
+    
+Done:
+	mov			dx, [Position]
+	GotoXY		dx
 	Terminate 0
 
+EachChoice:
+	mov			cl, [OptionBox + 3]
+	mov			ch, [OptionBox + 1]
+	sub			cl, ch
+	inc			cl
+	xor			ch, ch
+	xor			dx, dx
+	xor			bx, bx
+.CountLoop:
+	push		cx
+	push		dx
+.CheckLoop:
+	push		bx
+	GotoXY		dx
+	mov			ah, 0x08
+	mov			bh, [VideoPage]
+	int			0x10
+	pop			bx
+	xor			ch, ch
+	mov			cl, al
+	cmp			cx, 0x21
+	jl			.Missing
+	cmp			cx, 0xad
+	jg			.Missing
+	inc			bx
+	call		di
+	jmp			.Found
+.Missing:
+;	mov			cx, [NotAttr]
+;	cmp			ch, 0
+;	jne			.NotAttrSet
+;	mov			cl, ah
+;	inc			ch
+;	mov			[NotAttr], cx
+;.NotAttrSet:
+	inc			dl
+	mov			cl, [OptionBox + 2]
+	mov			ch, [OptionBox + 0]
+	sub			cl, ch
+	cmp			dl, cl
+	jle			.CheckLoop
+.Found:
+	pop			dx
+	pop			cx
+	inc			dh
+	loop		.CountLoop
+	ret
+
+CountChoice:
+	mov			al, [Max]
+	inc			al
+	mov			[Max], al
+	ret
+
+SelectChoice:
+	push		bx
+	push		dx
+	mov			bh, [VideoPage]
+	xor			dl, dl
+	mov			al, [Selected]
+	cmp			al, bl
+	jne			.NotThis
+	mov			bl, [SelectedAttr]
+	jmp			.ChangeLine
+.NotThis:
+	mov			bl, [NotAttr]
+.ChangeLine:
+	mov			cl, [OptionBox + 2]
+	mov			ch, [OptionBox + 0]
+	sub			cl, ch
+	inc			cl
+	xor			ch, ch
+.ChangeLoop:
+	push		cx
+	push		bx
+	GotoXY		dx
+	pop			bx
+	push		bx
+	mov			ah, 0x08
+	int			0x10
+	pop			bx
+	mov			ah, 0x09
+	mov			cx, 0x0001
+	int			0x10
+	pop			cx
+	inc			dl
+	loop		.ChangeLoop
+	pop			dx
+	pop			bx
+	ret
+	
+; Switches
 	ColorSwitchHandlers
+	
+SwitchT:
+	NumberParam
+	mov			[TimeOut], ax
+	ret
+SwitchD:
+	mov			al, [di]
+	cmp         al, 0x61
+	jl          .NotLower
+	cmp         al, 0x7a
+	jg          .NotLower
+	sub         al, 0x20
+.NotLower:
+	cmp         al, 0x41
+	jl          .NotUpper
+	cmp         al, 0x5a
+	jg          .NotUpper
+	sub         al, 0x40
+	jmp			ValidateD
+.NotUpper:	
+	NumberParam
+ValidateD:
+	mov			ah, [Max]
+	cmp			al, ah
+	jle			.Done
+	mov			al, ah
+.Done:
+	mov			[Selected], al
+	ret
+
+OptNone:
+	mov			al, 0
+	mov			[SelectChars], al
+	ret
+OptAuto:
+	mov			al, 1
+	mov			[SelectChars], al
+	ret	
+OptAlpha:
+	mov			al, 2
+	mov			[SelectChars], al
+	ret
+OptNumber:
+	mov			al, 3
+	mov			[SelectChars], al
+	ret
+OptYesNo:
+	mov			al, 4
+	mov			[SelectChars], al
+	ret
+	ret	
 
 NoSwitch:
-	ret
+	LookupParam StyleTable
+	cmp			ax, 0xffff
+	je			.Error
+	jmp			ax
+.Error:
+	WriteStr    CommandLineErrorMsg
+	Terminate	100
 	
 CommandLineSwitches:
 	SwitchData  0,  0, NoSwitch  
+	SwitchData  'D',  1, SwitchD
+	SwitchData  'T',  1, SwitchT
 	ColorSwitchData
     SwitchData  0,  0, 0
+
+StyleTable:
+	TableData 'NONE', OptNone
+	TableData 'AUTO', OptAuto
+	TableData 'FIRST', OptAuto
+	TableData 'ALPHA', OptAlpha
+	TableData 'LETTER', OptAlpha
+	TableData 'NUMBER', OptNumber
+	TableData 'DIGIT', OptNumber
+	TableData 'YN', OptYesNo
+	TableData 'YES', OptYesNo
+	TableData 'YESNO', OptYesNo
+	TableEnd
+
+TimeOut:
+	dw 0	
+SelectChars:
+	db 1
+Max: 
+	db 0
+Selected:
+	db 1
+SelectedAttr:
+	db 0
+NotAttr:
+	dw 0
+Position:
+	dw  0
+OptionBox:
+	dw 0,0

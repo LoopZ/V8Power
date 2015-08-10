@@ -24,8 +24,6 @@ set CURSOR=small
 vcursor | set /p CURSOR=
 vcursor hide
 
-rem goto SkipPartA
-
 vcls /fGray /bBlue /c 0xb0
 rem Title Bar
 vgotoxy /x1/y1
@@ -44,8 +42,12 @@ vgotoxy right
 vecho /n "Next " /fWhite "(" /fRed "Alt+N" /fWhite ")"
 vgotoxy /x68 /y25
 vecho /n "Quit " /fWhite "(" /fRed "Alt+Q" /fWhite ")"
-vdelay 1000
 
+goto SkipPartA
+
+:PartA
+
+vdelay 1000
 rem make top left frame and put some text there
 vframe /bGray /fBlue /x4 /y5 /w35 /h10 Single Shadow
 vcls /L /fBlack
@@ -194,6 +196,19 @@ vdelay 2000
 
 :SkipPartA
 vcls /fGray /bBlue /c 0xb0 /y2/h23
+
+vframe /bBlue /fGray /x16 /y8 /w46 /h9 Hidden Shadow
+vframe /x18 /y8 /w42 /h9 DoubleSides
+vcls /L /fYellow
+
+vecho
+vecho " A. Progress and Multi-Window Demo "
+vecho " B. Display Locations and Writing Demo "
+vecho " C. Cursor Movement Demo "
+vecho
+vecho " 0. Return to DOS "
+
+vchoice auto /d100/t10/fWhite/bRed
 
 vdelay 3000
 
