@@ -1,9 +1,9 @@
 @echo off
 
-rem call mkClean.bat
+call mkClean.bat
 if not exist BIN mkdir BIN
 
-goto This
+rem goto This
 
 echo V8 Power!
 NASM.EXE -ISOURCE\ SOURCE\VCLS.ASM -fbin -O9 -o BIN\VCLS.COM
