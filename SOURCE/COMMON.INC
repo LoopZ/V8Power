@@ -917,6 +917,79 @@ Done:
     ret
 %endmacro
 
+%imacro AllocMem 1
+	%ifnidni %1, bx
+		mov		bx, %1
+	%endif
+	mov		ah, 0x48
+	int		0x21
+	jc		%%Error
+	jmp		%%Done
+OutOfMemoryMsg:
+	db ' Insufficient Memory',CRLF,0
+%%Error:
+	push		ax
+	WriteInt	bx
+	WriteChar	' '
+	pop			ax
+	WriteInt	ax
+	WriteStr	OutOfMemoryMsg
+	Terminate	100
+%%Done:
+	%ifnidni %1, ax
+		mov	%1, ax
+	%endif
+%endmacro
+
+%imacro FreeMem 1
+	mov		ah, 0x49
+	push	es
+	push	%1
+	pop		es
+	int		0x21
+	jc		%%Error
+	xor		%1, %1
+%%Error:
+	pop		es
+%endmacro
+
+%imacro AllocTempVideoPage 0
+	xor			ax, ax
+	mov			cx, ax
+	mov			al, [ScreenMaxX]
+	inc			al
+	mov			cl, [ScreenMaxY]
+	inc			cl
+	mul			cx
+	mov			cl, 2
+	mul			cx
+	mov			dx, ax
+	mov			cl, 4
+	shr			ax, cl
+	and 		dx, 0x0f
+	cmp			dx, 0
+	je			%%Even
+	inc			ax
+%%Even:
+	AllocMem	ax
+	mov			[TempVideoPagePtr], ax
+	jmp	%%Done
+TempVideoPageSize:
+	dw 0
+TempVideoPagePtr:
+	dw 0
+%%Done:	
+%endmacro
+
+%imacro FreeTempVideoPage 0
+	mov		bx,	[TempVideoPagePtr]
+	cmp		bx, 0
+	je		%%Done
+	FreeMem bx
+	mov		[TempVideoPagePtr], bx
+%%Done:
+%endmacro
+
 %include "SWITCHES.INC"
 %include "TABLES.INC"
 

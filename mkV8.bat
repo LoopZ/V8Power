@@ -20,7 +20,7 @@ NASM.EXE -ISOURCE\ SOURCE\VCURSOR.ASM -fbin -O9 -o BIN\VCURSOR.COM
 :This
 bin\vecho "Verifying " /f 12 "timing" /f gray ...
 NASM.EXE -ISOURCE\ SOURCE\VCHOICE.ASM -fbin -O9 -o BIN\VCHOICE.COM
-goto Done
+rem goto Done
 
 bin\vecho "Cleaning " /f 15 "air filter" /f gray ...
 NASM.EXE -ISOURCE\ SOURCE\VDELAY.ASM -fbin -O9 -o BIN\VDELAY.COM

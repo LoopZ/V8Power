@@ -41,11 +41,11 @@
 	cmp			al, 1
 	je			.WriteClear
 	mov			ah, 0x09
-	mov			al, [FillCode]
+	mov			al, [FillChar]
 	cmp			al, 0x20
 	jne			.WriteClear
 	
-    mov         ax, 0x0600
+   mov         ax, 0x0600
     mov         bh, [TextAttr]
     int         0x10
     jmp			.Done
@@ -64,10 +64,16 @@
 	push		ax
 	GotoXY		dx
 	pop			ax
+	push		ax
+	push		bx
 	push		cx
+	push		dx
 	xor			ch, ch
 	int			0x10
+	pop			dx
 	pop			cx
+	pop			bx
+	pop			ax
 	inc			dh
 	dec			ch
 	cmp			ch, 0
