@@ -25,10 +25,10 @@
     mov			[SelectedAttr], al
     and			al, 0x77
     mov			[NotAttr], al
-    mov			al, [TextAttr]
-    not			al
-    and			al, 0x7f
-    mov			[HotAttr], al
+	mov			al, [TextAttr]
+	not			al
+	and			al, 0x7f
+	mov			[HotAttr], al
 
 	mov			[Position], dx
 	mov			ax, [WindMin]
@@ -45,14 +45,34 @@
 	
     mov			al, [TextAttr]
     mov			[SelectedAttr], al
+;	mov			ah, [HotAttr]
+;	cmp			ah, 0x00
+;	jne			KeyBoardLoop
+;	mov			al, [TextAttr]
+;	not			al
+;	and			al, 0x7f
+;	mov			[HotAttr], al
     
-KeyBoardLoop:
+    jmp			KeyBoardLoop
+    
+ShowChoices:
+;	mov			al, [SelectedAttr]
+;	mov			ah, [HotAttr]
+;	cmp			al, ah
+;	jne			.MultiColor
+;	mov			al, [HotChoice]
+;	mov			[Selected], al
+;.MultiColor:
 	mov			di, SelectChoice
 	call 		EachChoice
 	mov			bl, [Selected]
 	mov			[LastSelected], bl
 	mov			bl, [HotChoice]
 	mov			[LastHot], bl
+	ret
+    
+KeyBoardLoop:
+	call		ShowChoices
 WaitLoop:
 	mov			ax, 0x0100
 	int			0x16
@@ -67,33 +87,60 @@ WaitLoop:
 	je			.Select
 	cmp			al, 0x0d
 	je			.Chosen
+	cmp			al, 0x61
+	jl			.NotLowercase
+	cmp			al, 0x7a
+	jg			.NotLowercase
+	mov			bx, ax
+	xor			bh, bh
+	sub			bx, 0x20
+	mov			al, bl
+.NotLowercase:
+	cmp			al, 0x30
+	jl			.OtherKeypress
+	cmp			al, 0x39
+	jle			.NumberPress
+	cmp			al, 0x40
+	jle			.OtherKeypress
+	cmp			al, 0x5a
+	jg			.OtherKeypress
+	jmp			.AlphaPress
+.OtherKeypress:
 	xor			ax, ax
 	; StdOutHexWord
 	jmp			Done
 	
+.AlphaPress:
+.NumberPress:
+	jmp			.Changed
+	
+.Changed:
+	jmp			KeyBoardLoop
+	
 .GoUp:
-	mov			al, [HotChoice]
+	mov			al, [Selected]
 	cmp			al, 1
 	jle			KeyBoardLoop
 	dec			al
-	mov			[HotChoice], al
-	jmp KeyBoardLoop
+	mov			[Selected], al
+	jmp 		.Changed
 	
 .GoDown:
-	mov			al, [HotChoice]
+	mov			al, [Selected]
 	mov			ah, [Max]
 	cmp			al, ah
 	jge			KeyBoardLoop
 	inc			al
-	mov			[HotChoice], al
-	jmp KeyBoardLoop
+	mov			[Selected], al
+	jmp 		.Changed
 .Select:
 	mov			al, [HotChoice]
+	mov			ah, [Selected]
+	cmp			al, ah
+	je			KeyBoardLoop
 	mov			[Selected], al
-	jmp KeyBoardLoop
+	jmp 		.Changed
 .Chosen:
-	mov			al, [HotChoice]
-	mov			[Selected], al
 	xor			al, al
 	mov			[HotChoice], al
 	mov			di, SelectChoice

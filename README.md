@@ -37,7 +37,7 @@ created BIN directory. <br>
 > Windows 3.11 Shell<br>
 > Windows 98 Shell and Command Line<br>
 > Windows XP SP3 Shell (except vcursor)<br>
-> DosBOX (no i/o redirection or errorlevel support)<br>
+> DosBOX (no i/o redirection, polling stdout will not work)<br>
 
 * * *
 
