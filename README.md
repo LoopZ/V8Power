@@ -193,13 +193,23 @@ Draw a progress bar at current location without moving cursor.
 <tr><td><b><i>right</i></b></td><td>Percentage number on <b><i>right</i></b></td></tr>
 </table>
 * * *
+#### vchoice ######
+Choose an option. (returns an errorlevel of choice selected)
+<table>
+<tr><td width="125pt"></td><td>Draw a progress bar at 0%</td></tr>
+<tr><td><b>/A <i>n</i></a></td><td>Set text attribute to <b><i>n</i></b> for selected item</td></tr>
+<tr><td><b>/B <i>color</i></b></td><td>Set the background text attribute to 
+<b><i>color</i></b> for selected item.</td></tr>
+<tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to 
+<b><i>color</i></b> for selected item.</td></tr>
+<tr><td><b>/D <i>n</i></a></td><td>Preselect item number <b><i>n</i></b></td></tr>
+<tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
+</table>
+* * *
 #### vline ######
 TBA
 * * *
 #### vpause ######
-TBA
-* * *
-#### vchoice ######
 TBA
 * * *
 #### vdiskinf ######
