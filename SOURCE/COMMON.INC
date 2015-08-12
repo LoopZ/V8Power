@@ -965,6 +965,7 @@ Done:
 %%Even:
 	AllocMem	ax
 	mov			[TempVideoPagePtr], ax
+	CopyToTempVideo
 	jmp	%%Done
 TempVideoPageSize:
 	dw 0
@@ -984,10 +985,107 @@ TempVideoPagePtr:
 
 %imacro	CopyToTempVideo 0
 	mov		bx, [TempVideoPagePtr]
-		
+	cmp		bx, 0
+	je		%%NoTemp
+	push 	es
+	push	si
+	mov		es, bx
+	xor		bx, bx
+	mov		si, bx
+	mov		bh, [VideoPage]
+	mov		cx, [ScreenMax]
+	inc		cl
+	inc		ch
+	xor 	dx, dx
+%%CopyLoop:
+	push	dx
+	push	cx
+	push 	bx
+	mov		ah, 0x02
+	int		0x10
+	mov		ah, 0x08
+	int		0x10
+	es mov		[si], ax
+	add		si, 2
+	pop		bx
+	pop		cx
+	pop		dx
+	inc		dl
+	dec		cl
+	cmp		cl, 0
+	jne		%%CopyLoop
+	mov		cl, [ScreenMaxX]
+	inc		cl
+	xor		dl, dl
+	dec		ch
+	inc		dh
+	cmp		ch, 0
+	jne		%%CopyLoop
+	pop		si
+	pop		es
+%%NoTemp:	
 %endmacro
 
-%imacro	CopyFromTempVideo 1
+; CX is count, DX is coordinate, ax is attribute or 00 for restore
+%imacro	CopyFromTempVideoProc 0
+CopyFromTempVideo:
+	mov		bx, [TempVideoPagePtr]
+	cmp		bx, 0
+	je		%%NoTemp
+	push 	es
+	push	si
+	push	ax
+	mov		es, bx
+	mov		bh, [VideoPage]
+	push	cx
+	mov		al, [ScreenMaxX]
+	inc		al
+	xor		ah, ah
+	push	dx
+	mov		cl, dh
+	push	dx
+	mul		cx
+	pop		dx
+	xor		dh, dh
+	add		ax, dx
+	mov		cx, 1
+	shl 	ax, cl	
+	pop		dx
+	pop		cx
+	mov		si, ax
+	pop		ax
+%%CopyLoop:
+	push	dx
+	push	cx
+	push 	bx
+	push	ax
+	mov		ah, 0x02
+	int		0x10
+	pop		ax
+	push	ax
+	cmp		ax, 0
+	je		%%Restore
+	es mov		ah, [si]
+	xchg	al, ah
+	jmp		%%Write
+%%Restore:
+	es mov		ax, [si]
+%%Write:
+	add		si, 2
+	mov		bl, ah
+	mov		cx, 1
+	mov		ah, 0x09
+	int		0x10
+	pop		ax
+	pop		bx
+	pop		cx
+	pop		dx
+	inc		dl
+	loop	%%CopyLoop
+	pop		si
+	pop		es
+%%NoTemp:
+	ret	
 %endmacro
 
 %include "SWITCHES.INC"

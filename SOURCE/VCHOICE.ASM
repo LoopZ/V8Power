@@ -21,8 +21,10 @@
 	FrameBounds
 	WhereXY
     mov			al, [TextAttr]
-    mov			[NotAttr], al
+    or			al, 0x08
     mov			[SelectedAttr], al
+    and			al, 0x77
+    mov			[NotAttr], al
 
 	mov			[Position], dx
 	mov			ax, [WindMin]
@@ -35,8 +37,8 @@
 	
     CommandLineParser       ; insert code for command line parsing
     
-	AllocTempVideoPage   
-	 
+	AllocTempVideoPage 
+	
     mov			al, [TextAttr]
     mov			[SelectedAttr], al
     
@@ -104,24 +106,48 @@ CountChoice:
 	mov			[Max], al
 	ret
 
+CopyFromTempVideoProc
+
 SelectChoice:
 	push		bx
 	push		dx
-	mov			bh, [VideoPage]
-	xor			dl, dl
-	mov			al, [Selected]
-	cmp			al, bl
-	jne			.NotThis
-	mov			bl, [SelectedAttr]
-	jmp			.ChangeLine
-.NotThis:
-	mov			bl, [NotAttr]
-.ChangeLine:
 	mov			cl, [OptionBox + 2]
 	mov			ch, [OptionBox + 0]
 	sub			cl, ch
 	inc			cl
 	xor			ch, ch
+
+	mov			bh, [VideoPage]
+	xor			dl, dl
+	mov			al, [Selected]
+	cmp			al, bl
+	jne			.NotThis
+	mov			[LastSelected], al
+	mov			bl, [SelectedAttr]
+	mov			ax, [TempVideoPagePtr]
+	cmp			ax, 0
+	je			.ChangeLoop
+	xor			ah, ah
+	mov			al, bl
+	mov			bx, [WindMin]
+	add			dl, bl
+	add			dh, bh
+	call		CopyFromTempVideo
+	jmp			.Done	
+.NotThis:
+	mov			al, [LastSelected]
+	cmp			al, bl
+	jne			.Done
+	mov			bl, [NotAttr]
+	mov			ax, [TempVideoPagePtr]
+	cmp			ax, 0
+	je			.ChangeLoop
+	xor			ax, ax
+	mov			bx, [WindMin]
+	add			dl, bl
+	add			dh, bh
+	call		CopyFromTempVideo
+	jmp			.Done	
 .ChangeLoop:
 	push		cx
 	push		bx
@@ -137,6 +163,7 @@ SelectChoice:
 	pop			cx
 	inc			dl
 	loop		.ChangeLoop
+.Done:
 	pop			dx
 	pop			bx
 	ret
@@ -232,6 +259,8 @@ Max:
 	db 0
 Selected:
 	db 1
+LastSelected:
+	db 0
 SelectedAttr:
 	db 0
 NotAttr:
