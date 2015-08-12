@@ -50,10 +50,8 @@ vecho /n "Next " /fWhite "(" /fRed "Alt+N" /fWhite ")"
 vgotoxy /x68 /y25
 vecho /n "Quit " /fWhite "(" /fRed "Alt+Q" /fWhite ")"
 
-
-:SkipPartA
-vframe /bBlue /fGray /x16 /y8 /w46 /h9 Hidden Shadow
-vframe /x18 /y8 /w42 /h9 DoubleSides
+vframe /bBlue /fGray /x16 /y7 /w46 /h10 Hidden Shadow
+vframe /x18 /y7 /w42 /h10 DoubleSides
 vcls /L /fYellow
 
 :TryAgain
@@ -61,6 +59,7 @@ vecho
 vecho /fLightCyan  " A. " /fYellow "Progress and Multi-Window Demo "
 vecho /fLightGreen " B. " /fYellow "Display Locations and Writing Demo "
 vecho /fLightGreen " C. " /fYellow "Cursor Movement Demo "
+vecho
 vecho
 vecho /n /fWhite " 0. " /fLightRed "Return to " 
 vecho /fLightMagenta "DOS "
