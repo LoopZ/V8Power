@@ -196,7 +196,7 @@ Draw a progress bar at current location without moving cursor.
 #### vchoice *[options]* ######
 Choose an option. (returns an errorlevel of choice selected)
 <table>
-<tr><td width="125pt"></td><td>Perform with automatic defaults.</td></tr>
+<tr><td width="125pt"></td><td>Perform using all automatic defaults settings.</td></tr>
 <tr><td><b>/A <i>n</i></a></td><td>Set text attribute to <b><i>n</i></b> for selected item</td></tr>
 <tr><td><b>/B <i>color</i></b></td><td>Set the background text attribute to 
 <b><i>color</i></b> for selected item.</td></tr>
