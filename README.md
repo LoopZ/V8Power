@@ -30,14 +30,14 @@ created BIN directory. <br>
 
 ## V8Power Tools Tested Compatibility
 	
-> FreeDOS 1.1
-> MS-DOS 3.3, 6.2 and 6.22
-> PC-DOS 7.0, 7.01 and 2000
-> DR-DOS 7.03
-> Windows 3.11 Shell
-> Windows 98 Shell and Command Line
-> Windows XP SP3 Shell (except vcursor)
-> DosBOX (no i/o redirection or errorlevel support)
+> FreeDOS 1.1<br>
+> MS-DOS 3.3, 6.2 and 6.22<br>
+> PC-DOS 7.0, 7.01 and 2000<br>
+> DR-DOS 7.03<br>
+> Windows 3.11 Shell<br>
+> Windows 98 Shell and Command Line<br>
+> Windows XP SP3 Shell (except vcursor)<br>
+> DosBOX (no i/o redirection or errorlevel support)<br>
 
 * * *
 
