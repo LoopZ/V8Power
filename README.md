@@ -30,7 +30,7 @@ created BIN directory. <br>
 
 ## V8Power Tools Tested Compatibility
 	
-> FreeDOS 1.1 and 1.2<br>
+> FreeDOS 1.1<br>
 > MS-DOS 3.3, 6.2 and 6.22<br>
 > PC-DOS 7.0, 7.01 and 2000<br>
 > DR-DOS 7.03<br>
