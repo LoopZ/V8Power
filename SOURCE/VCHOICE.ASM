@@ -35,7 +35,7 @@
 	
     CommandLineParser       ; insert code for command line parsing
     
-	; AllocTempVideoPage   
+	AllocTempVideoPage   
 	 
     mov			al, [TextAttr]
     mov			[SelectedAttr], al
@@ -47,7 +47,7 @@ Done:
 	mov			dx, [Position]
 	GotoXY		dx
 	
-	; FreeTempVideoPage
+	FreeTempVideoPage
 	Terminate 0
 
 EachChoice:

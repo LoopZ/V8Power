@@ -925,16 +925,8 @@ Done:
 	int		0x21
 	jc		%%Error
 	jmp		%%Done
-OutOfMemoryMsg:
-	db ' Insufficient Memory',CRLF,0
 %%Error:
-	push		ax
-	WriteInt	bx
-	WriteChar	' '
-	pop			ax
-	WriteInt	ax
-	WriteStr	OutOfMemoryMsg
-	Terminate	100
+	xor		ax, ax
 %%Done:
 	%ifnidni %1, ax
 		mov	%1, ax
@@ -988,6 +980,14 @@ TempVideoPagePtr:
 	FreeMem bx
 	mov		[TempVideoPagePtr], bx
 %%Done:
+%endmacro
+
+%imacro	CopyToTempVideo 0
+	mov		bx, [TempVideoPagePtr]
+		
+%endmacro
+
+%imacro	CopyFromTempVideo 1
 %endmacro
 
 %include "SWITCHES.INC"

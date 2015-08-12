@@ -1,9 +1,9 @@
 @echo off
 
-call mkClean.bat
+rem call mkClean.bat
 if not exist BIN mkdir BIN
 
-rem goto This
+goto This
 
 echo V8 Power!
 NASM.EXE -ISOURCE\ SOURCE\VCLS.ASM -fbin -O9 -o BIN\VCLS.COM
@@ -20,7 +20,7 @@ NASM.EXE -ISOURCE\ SOURCE\VCURSOR.ASM -fbin -O9 -o BIN\VCURSOR.COM
 :This
 bin\vecho "Verifying " /f 12 "timing" /f gray ...
 NASM.EXE -ISOURCE\ SOURCE\VCHOICE.ASM -fbin -O9 -o BIN\VCHOICE.COM
-rem goto Done
+goto Done
 
 bin\vecho "Cleaning " /f 15 "air filter" /f gray ...
 NASM.EXE -ISOURCE\ SOURCE\VDELAY.ASM -fbin -O9 -o BIN\VDELAY.COM
