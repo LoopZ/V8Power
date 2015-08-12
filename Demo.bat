@@ -43,7 +43,7 @@ vecho /n "Next " /fWhite "(" /fRed "Alt+N" /fWhite ")"
 vgotoxy /x68 /y25
 vecho /n "Quit " /fWhite "(" /fRed "Alt+Q" /fWhite ")"
 
-rem goto SkipPartA
+if "%1" == "dev" goto SkipPartA
 
 :PartA
 
