@@ -28,6 +28,19 @@ increased functionality.
 created BIN directory. <br>
 * * *
 
+## V8Power Tools Tested Compatibility
+	
+> FreeDOS 1.1
+> MS-DOS 3.3, 6.2 and 6.22
+> PC-DOS 7.0, 7.01 and 2000
+> DR-DOS 7.03
+> Windows 3.11 Shell
+> Windows 98 Shell and Command Line
+> Windows XP SP3 Shell (except vcursor)
+> DosBOX (no i/o redirection or errorlevel support)
+
+* * *
+
 ## V8Power Tools Usage
 
 > Some basic information reguarding all utilities and how they operate.<br>
