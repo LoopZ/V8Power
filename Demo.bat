@@ -58,11 +58,12 @@ vcls /L /fYellow
 
 :TryAgain
 vecho
-vecho " A. Progress and Multi-Window Demo "
-vecho " B. Display Locations and Writing Demo "
-vecho " C. Cursor Movement Demo "
+vecho /fLightCyan  " A. " /fYellow "Progress and Multi-Window Demo "
+vecho /fLightGreen " B. " /fYellow "Display Locations and Writing Demo "
+vecho /fLightGreen " C. " /fYellow "Cursor Movement Demo "
 vecho
-vecho " 0. Return to DOS "
+vecho /n /fWhite " 0. " /fLightRed "Return to " 
+vecho /fLightMagenta "DOS "
 
 vchoice auto /d100/t10/fWhite/bRed
 
