@@ -25,6 +25,10 @@
     mov			[SelectedAttr], al
     and			al, 0x77
     mov			[NotAttr], al
+    mov			al, [TextAttr]
+    not			al
+    and			al, 0x7f
+    mov			[HotAttr], al
 
 	mov			[Position], dx
 	mov			ax, [WindMin]
@@ -42,8 +46,48 @@
     mov			al, [TextAttr]
     mov			[SelectedAttr], al
     
+KeyBoardLoop:
 	mov			di, SelectChoice
 	call 		EachChoice
+	mov			bl, [Selected]
+	mov			[LastSelected], bl
+	mov			bl, [HotChoice]
+	mov			[LastHot], bl
+WaitLoop:
+	mov			ax, 0x0100
+	int			0x16
+	jz			WaitLoop
+	mov			ax, 0x0000
+	int			0x16
+	cmp			ah, 0x48
+	je			.GoUp
+	cmp			ah, 0x50
+	je			.GoDown
+	cmp			ah, 0x1d
+	je			.Chosen
+	
+	; StdOutHexWord
+	jmp			Done
+	
+.GoUp:
+	mov			al, [Selected]
+	cmp			al, 1
+	jle			KeyBoardLoop
+	dec			al
+	mov			[Selected], al
+	jmp KeyBoardLoop
+	
+.GoDown:
+	mov			al, [Selected]
+	mov			ah, [Max]
+	cmp			al, ah
+	jge			KeyBoardLoop
+	inc			al
+	mov			[Selected], al
+	jmp KeyBoardLoop
+.Select:
+	jmp KeyBoardLoop
+.Chosen:
     
 Done:
 	mov			dx, [Position]
@@ -119,10 +163,12 @@ SelectChoice:
 
 	mov			bh, [VideoPage]
 	xor			dl, dl
+	mov			al, [HotChoice]
+	cmp			al, bl
+	je			.IsHot
 	mov			al, [Selected]
 	cmp			al, bl
 	jne			.NotThis
-	mov			[LastSelected], al
 	mov			bl, [SelectedAttr]
 	mov			ax, [TempVideoPagePtr]
 	cmp			ax, 0
@@ -134,10 +180,31 @@ SelectChoice:
 	add			dh, bh
 	call		CopyFromTempVideo
 	jmp			.Done	
+.IsHot:
+	mov			bl, [HotAttr]
+	mov			ax, [TempVideoPagePtr]
+	cmp			ax, 0
+	je			.ChangeLoop
+	xor			ah, ah
+	mov			al, bl
+	mov			bx, [WindMin]
+	add			dl, bl
+	add			dh, bh
+	call		CopyFromTempVideo
+	jmp			.Done	
 .NotThis:
+	push		ax
+	mov			ax, [TempVideoPagePtr]
+	cmp			ax, 0
+	pop			ax
+	je			.Restore
+	mov			al, [LastHot]
+	cmp			al, bl
+	je			.Restore
 	mov			al, [LastSelected]
 	cmp			al, bl
 	jne			.Done
+.Restore:
 	mov			bl, [NotAttr]
 	mov			ax, [TempVideoPagePtr]
 	cmp			ax, 0
@@ -261,7 +328,13 @@ Selected:
 	db 1
 LastSelected:
 	db 0
+HotChoice:
+	db 0
+LastHot:
+	db 0
 SelectedAttr:
+	db 0
+HotAttr:
 	db 0
 NotAttr:
 	dw 0
