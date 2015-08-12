@@ -17,10 +17,15 @@ if not exist BIN\VCURSOR.COM goto NoJoy
 
 cd bin
 
-rem redirect does not work in DosBox, so preset it to small
-set CURSOR=small
+rem DosBOX Test
+set DBTEST=yes
+echo. | set /p DBTEST=
+if "%DBTEST%" == "yes" goto DosBOX
 vcursor | set /p CURSOR=
-
+goto NotDosBOX
+:DosBOX
+set CURSOR=small
+:NotDosBOX
 vcursor hide
 
 pause
@@ -114,5 +119,7 @@ vecho "Goodbye."
 
 vcursor %CURSOR%
 set CURSOR=
+set	DBTEST=
+
 cd ..
 :Done

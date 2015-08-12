@@ -19,11 +19,18 @@ goto Done
 
 cd bin
 
-rem redirect does not work in DosBox, so preset it to small
-set MYCURSOR=small
+rem DosBOX Test
+set DBTEST=yes
+echo. | set /p DBTEST=
+if "%DBTEST%" == "yes" goto DosBOX
 vcursor | set /p MYCURSOR=
+goto NotDosBOX
+:DosBOX
+set MYCURSOR=small
+:NotDosBOX
 vcursor hide
 
+:StartUp
 vcls /fGray /bBlue /c 0xb0
 rem Title Bar
 vgotoxy /x1/y1
@@ -43,11 +50,32 @@ vecho /n "Next " /fWhite "(" /fRed "Alt+N" /fWhite ")"
 vgotoxy /x68 /y25
 vecho /n "Quit " /fWhite "(" /fRed "Alt+Q" /fWhite ")"
 
-if "%1" == "dev" goto SkipPartA
 
-vdelay 1000
+:SkipPartA
+vframe /bBlue /fGray /x16 /y8 /w46 /h9 Hidden Shadow
+vframe /x18 /y8 /w42 /h9 DoubleSides
+vcls /L /fYellow
 
+:TryAgain
+vecho
+vecho " A. Progress and Multi-Window Demo "
+vecho " B. Display Locations and Writing Demo "
+vecho " C. Cursor Movement Demo "
+vecho
+vecho " 0. Return to DOS "
+
+vchoice auto /d100/t10/fWhite/bRed
+
+if errorlevel 4 goto AllDone
+if ERRORLEVEL 3 goto PartC
+if errorlevel 2 goto PartB
+if errorlevel 1 goto PartA
+
+rem goto TryAgain
+goto NextPart
 :PartA
+:PartA
+vdelay 1000
 vcls /fGray /bBlue /c 0xb0 /y2/h23
 
 rem make top left frame and put some text there
@@ -195,31 +223,8 @@ vdelay 1000
 vgotoxy /x7 /y19
 vprogres 100
 vdelay 2000
-
-:SkipPartA
-vcls /fGray /bBlue /c 0xb0 /y2/h23
-
-vframe /bBlue /fGray /x16 /y8 /w46 /h9 Hidden Shadow
-vframe /x18 /y8 /w42 /h9 DoubleSides
-vcls /L /fYellow
-
-:TryAgain
-vecho
-vecho " A. Progress and Multi-Window Demo "
-vecho " B. Display Locations and Writing Demo "
-vecho " C. Cursor Movement Demo "
-vecho
-vecho " 0. Return to DOS "
-
-vchoice auto /d100/t10/fWhite/bRed
-
-if errorlevel 4 goto AllDone
-if ERRORLEVEL 3 goto PartC
-if errorlevel 2 goto PartB
-if errorlevel 1 goto PartA
-
-rem goto TryAgain
 goto NextPart
+
 :PartB
 cd ..
 call Demo1.bat
@@ -233,6 +238,7 @@ cd bin
 goto NextPart
 
 :NextPart
+goto StartUp
 
 :AllDone
 vcls text
@@ -243,5 +249,6 @@ vecho Goodbye...
 rem restore the cursor size and shape
 vcursor %MYCURSOR%
 set MYCURSOR=
+set DOSBOX_TEST=
 cd ..
 :Done
