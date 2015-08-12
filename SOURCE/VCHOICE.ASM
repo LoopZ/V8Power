@@ -63,31 +63,41 @@ WaitLoop:
 	je			.GoUp
 	cmp			ah, 0x50
 	je			.GoDown
-	cmp			ah, 0x1d
+	cmp			al, 0x20
+	je			.Select
+	cmp			al, 0x0d
 	je			.Chosen
 	
-	; StdOutHexWord
+	StdOutHexWord
 	jmp			Done
 	
 .GoUp:
-	mov			al, [Selected]
+	mov			al, [HotChoice]
 	cmp			al, 1
 	jle			KeyBoardLoop
 	dec			al
-	mov			[Selected], al
+	mov			[HotChoice], al
 	jmp KeyBoardLoop
 	
 .GoDown:
-	mov			al, [Selected]
+	mov			al, [HotChoice]
 	mov			ah, [Max]
 	cmp			al, ah
 	jge			KeyBoardLoop
 	inc			al
-	mov			[Selected], al
+	mov			[HotChoice], al
 	jmp KeyBoardLoop
 .Select:
+	mov			al, [HotChoice]
+	mov			[Selected], al
 	jmp KeyBoardLoop
 .Chosen:
+	mov			al, [HotChoice]
+	mov			[Selected], al
+	xor			al, al
+	mov			[HotChoice], al
+	mov			di, SelectChoice
+	call 		EachChoice
     
 Done:
 	mov			dx, [Position]
