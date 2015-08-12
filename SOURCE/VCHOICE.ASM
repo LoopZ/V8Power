@@ -67,8 +67,8 @@ WaitLoop:
 	je			.Select
 	cmp			al, 0x0d
 	je			.Chosen
-	
-	StdOutHexWord
+	xor			ax, ax
+	; StdOutHexWord
 	jmp			Done
 	
 .GoUp:
@@ -98,13 +98,16 @@ WaitLoop:
 	mov			[HotChoice], al
 	mov			di, SelectChoice
 	call 		EachChoice
+	mov			al, [Selected]
     
 Done:
+	push		ax
 	mov			dx, [Position]
 	GotoXY		dx
 	
 	FreeTempVideoPage
-	Terminate 0
+	pop			ax
+	Terminate 	al
 
 EachChoice:
 	mov			cl, [OptionBox + 3]

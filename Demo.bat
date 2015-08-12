@@ -20,8 +20,8 @@ goto Done
 cd bin
 
 rem redirect does not work in DosBox, so preset it to small
-set CURSOR=small
-vcursor | set /p CURSOR=
+set MYCURSOR=small
+vcursor | set /p MYCURSOR=
 vcursor hide
 
 vcls /fGray /bBlue /c 0xb0
@@ -45,9 +45,11 @@ vecho /n "Quit " /fWhite "(" /fRed "Alt+Q" /fWhite ")"
 
 if "%1" == "dev" goto SkipPartA
 
-:PartA
-
 vdelay 1000
+
+:PartA
+vcls /fGray /bBlue /c 0xb0 /y2/h23
+
 rem make top left frame and put some text there
 vframe /bGray /fBlue /x4 /y5 /w35 /h10 Single Shadow
 vcls /L /fBlack
@@ -201,6 +203,7 @@ vframe /bBlue /fGray /x16 /y8 /w46 /h9 Hidden Shadow
 vframe /x18 /y8 /w42 /h9 DoubleSides
 vcls /L /fYellow
 
+:TryAgain
 vecho
 vecho " A. Progress and Multi-Window Demo "
 vecho " B. Display Locations and Writing Demo "
@@ -210,16 +213,35 @@ vecho " 0. Return to DOS "
 
 vchoice auto /d100/t10/fWhite/bRed
 
-vdelay 3000
+if errorlevel 4 goto AllDone
+if ERRORLEVEL 3 goto PartC
+if errorlevel 2 goto PartB
+if errorlevel 1 goto PartA
+
+rem goto TryAgain
+goto NextPart
+:PartB
+cd ..
+call Demo1.bat
+cd bin
+goto NextPart
+
+:PartC
+cd ..
+call Demo2.bat
+cd bin
+goto NextPart
+
+:NextPart
 
 :AllDone
 vcls text
-vdelay 1000
+vdelay 2000
 
 vcls 	/a0x07
 vecho Goodbye...
 rem restore the cursor size and shape
-vcursor %CURSOR%
-set CURSOR=
+vcursor %MYCURSOR%
+set MYCURSOR=
 cd ..
 :Done
