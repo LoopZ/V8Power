@@ -87,12 +87,12 @@ Clear screen, area or row (line).
 #### vcursor *[options]* ######
 Change or query the cursor size and shape.
 <table>
-<tr><td width="125pt"></td><td>Outputs the current cursor shape to <b>STDOUT</b></td></tr>
-<tr><td><b><i>n</i></b></td><td>Set the current cursor shape as <b><i>n</i></b></td></tr>
+<tr><td width="125pt"></td><td>Outputs the current cursor shape to <b>STDOUT</b>.</td></tr>
+<tr><td><b><i>n</i></b></td><td>Set the current cursor shape as <b><i>n</i></b>.</td></tr>
 <tr><td><b>HIDE</b></td><td>Hides the cursor.</td></tr>
-<tr><td><b>SMALL</b></td><td>Sets a small cursor</td></tr>
-<tr><td><b>HALF</b></td><td>Sets the cursor to 1/2 text height</td></tr>
-<tr><td><b>FULL</b></td><td>Sets the cursro to the full height of text</td></tr>
+<tr><td><b>SMALL</b></td><td>Sets a small cursor</td>.</tr>
+<tr><td><b>HALF</b></td><td>Sets the cursor to 1/2 of the text height.</td></tr>
+<tr><td><b>FULL</b></td><td>Sets the cursro to the full height of text.</td></tr>
 </table>
 * * *
 #### vdelay *[ms]* ######
