@@ -18,35 +18,35 @@ functionality.
 
 Compiling V8Power Tools
 
-	Prerequisites:
+    Prerequisites:
 
-		8086 or better cpu. 
-		EGA or better video adapter.
-		FreeDOS(TM) 1.1 or higher (http://www.freedos.org)
-		NASM for DOS version 2.11.08 (http://wwww.nasm.us)
+        8086 or better cpu. 
+        EGA or better video adapter.
+        FreeDOS(TM) 1.1 or higher (http://www.freedos.org)
+        NASM for DOS version 2.11.08 (http://wwww.nasm.us)
 
-	Compiling:
+    Compiling:
 
-		Insure the NASM directory is in your path spec.
-		Download the latest sources from http://github.com/LoopZ/V8Power
-		Run the mkV8.bat script.
-		All executibles will be placed in newly created BIN directory.
-		
-		( To create a redistributable version use the mkDist.bat script.
-		It will create an DIST folder containing everything you need.)
+        Insure the NASM directory is in your path spec.
+        Download the latest sources from http://github.com/LoopZ/V8Power
+        Run the mkV8.bat script.
+        All executibles will be placed in newly created BIN directory.
+        
+        ( To create a redistributable version use the mkDist.bat script.
+        It will create an DIST folder containing everything you need.)
 
 -------------------------------------------------------------------------------
 
 V8Power Tools Tested Compatibility
-	
-	FreeDOS 1.1+
-	MS-DOS 3.3, 6.2 and 6.22
-	PC-DOS 7.0, 7.01 and 2000
-	DR-DOS 7.03
-	Windows 3.11 Shell
-	Windows 98 Shell and Command Line
-	Windows XP SP3 Shell (except vcursor)
-	DosBOX (no i/o redirection, polling or querying stdout will not work)
+    
+    FreeDOS 1.1+
+    MS-DOS 3.3, 6.2 and 6.22
+    PC-DOS 7.0, 7.01 and 2000
+    DR-DOS 7.03
+    Windows 3.11 Shell
+    Windows 98 Shell and Command Line
+    Windows XP SP3 Shell (except vcursor)
+    DosBOX (no i/o redirection, polling or querying stdout will not work)
 
 -------------------------------------------------------------------------------
 
@@ -54,108 +54,108 @@ V8Power Tools Usage
 
 Here is some basic information reguarding all utilities and how they operate.
 
-	Options, values and hexidecimal numbers are not case specific /f white is 
-	the same as /F wHIte.
+    Options, values and hexidecimal numbers are not case specific /f white is 
+    the same as /F wHIte.
 
-	Hexidecimal numbers may be prefixed with 0x to prevent them from being 
-	treated as base ten. (Example: 10 and 0x10)
-	
-	Spaces are mostly optional. /B7/f0 is the same as /B 7 /F 0. 
-	But, not / B7 / F0.
-	
-	To use a / or spaces in a value, put it in qoutes. Like "Jack and/or Jill".
-	
-	Use multiple qoutes to use quotes. Like "Jack's house" or 'Say "What?"'.
-	
-	Unless overriden, most utilities use the text attribute at the current 
-	cursor location.
+    Hexidecimal numbers may be prefixed with 0x to prevent them from being 
+    treated as base ten. (Example: 10 and 0x10)
+    
+    Spaces are mostly optional. /B7/f0 is the same as /B 7 /F 0. 
+    But, not / B7 / F0.
+    
+    To use a / or spaces in a value, put it in qoutes. Like "Jack and/or Jill".
+    
+    Use multiple qoutes to use quotes. Like "Jack's house" or 'Say "What?"'.
+    
+    Unless overriden, most utilities use the text attribute at the current 
+    cursor location.
 
 ===============================================================================
 vcls [options]
 
 Clear screen, area or row (line).
 
-	[none] 		Clear the screen with the current text attribute.
-	n			Set text attribute to n.
-	/A n		Set text attribute to n.
-	/B color	Set the background text attribute to color (or a value).
-	/F color	Set the forground text attribute to color (or a value).
-	/G			Global Screen Clear. (Default)
-	/L			Local Screen Clear. Detects its surroundings and only clears 
-				that.  Probably, a box or line or something. You don't really 
-				need this option. Because, you can just redraw the box, maybe.			
-	TEXT		Clear the text only. Leave all colors intact and ignore their 
-				color attributes.
-	EOL			Clear from cursor to End of Line only.
-	/C code		Clear by filling with an ASCII character code.
-	/X column	Absolute screen column to start clear.
-	/Y row		Absolute screen row to start clear.
-	/W width	Total width of area to clear.
-	/H height	Total height of area to clear.
-	
+    [none]      Clear the screen with the current text attribute.
+    n           Set text attribute to n.
+    /A n        Set text attribute to n.
+    /B color    Set the background text attribute to color (or a value).
+    /F color    Set the forground text attribute to color (or a value).
+    /G          Global Screen Clear. (Default)
+    /L          Local Screen Clear. Detects its surroundings and only clears 
+                that.  Probably, a box or line or something. You don't really 
+                need this option. Because, you can just redraw the box, maybe.          
+    TEXT        Clear the text only. Leave all colors intact and ignore their 
+                color attributes.
+    EOL         Clear from cursor to End of Line only.
+    /C code     Clear by filling with an ASCII character code.
+    /X column   Absolute screen column to start clear.
+    /Y row      Absolute screen row to start clear.
+    /W width    Total width of area to clear.
+    /H height   Total height of area to clear.
+    
 -------------------------------------------------------------------------------
 vcursor [options]
 
 Change or query the cursor size and shape.
 
-	[none]		Outputs the current cursor shape to STDOUT.
-	n			Set the current cursor shape as n.
-	HIDE		Hides the cursor.
-	SMALL		Sets a small cursor.
-	HALF		Sets the cursor to 1/2 of the text height.
-	FULL		Sets the cursro to the full height of text.
+    [none]      Outputs the current cursor shape to STDOUT.
+    n           Set the current cursor shape as n.
+    HIDE        Hides the cursor.
+    SMALL       Sets a small cursor.
+    HALF        Sets the cursor to 1/2 of the text height.
+    FULL        Sets the cursro to the full height of text.
 
 -------------------------------------------------------------------------------
 
 vdelay [ms]
 
 Simple delay in milliseconds.
-	
-	[none]		Default is 1000ms (1 second) delay.
-	ms			Delay for ms milliseconds. (0-65535, 0x0000-0xffff)
-	
+    
+    [none]      Default is 1000ms (1 second) delay.
+    ms          Delay for ms milliseconds. (0-65535, 0x0000-0xffff)
+    
 -------------------------------------------------------------------------------
 
 vecho [options] [text]
 
 Output text to display.
-	
-	[none]		Preforms a Carriage Return and Line Feed to the display.
-	text		Writes text to the display.
-	/A n		Set text attribute to n.
-	/B color	Set the background text attribute to color (or a value).
-	/F color	Set the forground text attribute to color (or a value).
-	/N			Do not write a CRLF when done.
-	/C code		Write an ASCII character code.
-	/R times	Repeat the next write times number of times. (1-65535)
-	
-	tba			(Still under development, more to be announced)
-	
+    
+    [none]      Preforms a Carriage Return and Line Feed to the display.
+    text        Writes text to the display.
+    /A n        Set text attribute to n.
+    /B color    Set the background text attribute to color (or a value).
+    /F color    Set the forground text attribute to color (or a value).
+    /N          Do not write a CRLF when done.
+    /C code     Write an ASCII character code.
+    /R times    Repeat the next write times number of times. (1-65535)
+    
+    tba         (Still under development, more to be announced)
+    
 -------------------------------------------------------------------------------
 
 vgotoxy [options]
 
 Move or query cursor position.
 
-	[none]		Preforms no action.
-	/Q x or y	Queries the current X or Y position of the cursor and outputs 
-				it to STDOUT.
-	/X column	Move cursor to column.
-	/Y row 		Move cursor to row.
-	/G			Move cursor based on entire screen. (default)
-	/L			Move cursor based on its surroundings.
-	direction	Move cursor up, down, left or right one space.
-	shift		Move cursor to the previous or next position and change 
-				rows if needed.
-	position	Move cursor to the 
-					SOP (Start of Page),
-					EOP (End of Page),
-					SOR (Start of Row),
-					EOR (End of Row), 
-					SOL (Start of Text on Line), 
-					EOL (End of Text on Line), 
-					SOT (Start of All Text) or  
-					EOT (End of All Text) position.
+    [none]      Preforms no action.
+    /Q x or y   Queries the current X or Y position of the cursor and outputs 
+                it to STDOUT.
+    /X column   Move cursor to column.
+    /Y row      Move cursor to row.
+    /G          Move cursor based on entire screen. (default)
+    /L          Move cursor based on its surroundings.
+    direction   Move cursor up, down, left or right one space.
+    shift       Move cursor to the previous or next position and change 
+                rows if needed.
+    position    Move cursor to the 
+                    SOP (Start of Page),
+                    EOP (End of Page),
+                    SOR (Start of Row),
+                    EOR (End of Row), 
+                    SOL (Start of Text on Line), 
+                    EOL (End of Text on Line), 
+                    SOT (Start of All Text) or  
+                    EOT (End of All Text) position.
 
 
 -------------------------------------------------------------------------------
@@ -164,17 +164,17 @@ vframe [options]
 
 Draw a box windowing thingy and move cursor to its inside top left position.
 
-	[none]		Draw a box that encloses the entire screen.
-	/A n		Set text attribute to n.
-	/B color	Set the background text attribute to color (or a value).
-	/F color	Set the forground text attribute to color (or a value).
-	/X column	Screen column to start the box.
-	/Y row		Screen row to start the box.
-	/W width	Total width of the box.
-	/H height 	Total height of the box.
-	style		Box styles are Single, Double, SingleSides, DoubleSides
-				and Hidden.
-	shadow		Add a 3D style shadow.
+    [none]      Draw a box that encloses the entire screen.
+    /A n        Set text attribute to n.
+    /B color    Set the background text attribute to color (or a value).
+    /F color    Set the forground text attribute to color (or a value).
+    /X column   Screen column to start the box.
+    /Y row      Screen row to start the box.
+    /W width    Total width of the box.
+    /H height   Total height of the box.
+    style       Box styles are Single, Double, SingleSides, DoubleSides
+                and Hidden.
+    shadow      Add a 3D style shadow.
 
 -------------------------------------------------------------------------------
 
@@ -182,12 +182,12 @@ vpcspkr [hz:][ms]
 
 Generate a tone using the built in speaker.
 
-	[none]		No output.
-	hz:ms		Use the PC Speaker to generate a hz frequency tone. Then, delay
-				for ms milliseconds. (Note: 0 frequency turns off speaker. 
-				If no frequency is provided then 0 is assumed)
-	
-	tba			(Still under development, more to be announced)
+    [none]      No output.
+    hz:ms       Use the PC Speaker to generate a hz frequency tone. Then, delay
+                for ms milliseconds. (Note: 0 frequency turns off speaker. 
+                If no frequency is provided then 0 is assumed)
+    
+    tba         (Still under development, more to be announced)
 
 -------------------------------------------------------------------------------
 
@@ -195,33 +195,33 @@ vversion [options]
 
 V8Power information program.
 
-	[none]		Outputs all info to STDOUT.
-	all			Outputs all info to STDOUT.
-	title		Outputs full title to STDOUT.
-	copyright 	Outputs the copyright message to STDOUT.
-	version<	Outputs the version information to STDOUT.
-	license		Outputs license information to STDOUT.
-	url			Outputs the website url information to STDOUT.
-	
-	tba			(Still under development, more to be announced)
+    [none]      Outputs all info to STDOUT.
+    all         Outputs all info to STDOUT.
+    title       Outputs full title to STDOUT.
+    copyright   Outputs the copyright message to STDOUT.
+    version<    Outputs the version information to STDOUT.
+    license     Outputs license information to STDOUT.
+    url         Outputs the website url information to STDOUT.
+    
+    tba         (Still under development, more to be announced)
 
 -------------------------------------------------------------------------------
 
 vprogres [options]
 
 Draw a progress bar at current location without moving cursor.
-	
-	[none]		Draw a progress bar at 0%.
-	/A n		Set text attribute to n.
-	/B color	Set the background text attribute to color (or a value).
-	/F color	Set the forground text attribute to color (or a value).
-	/X column	Screen column to start the box.
-	/W  width 	Override default width of the bar.
-				(default is from cursor to end of line)
-	value		Sets the value in a percent of progress.
-	off			Do not display percentage number.
-	align		Percentage number on left, center (Default) or right side of 
-				the progress bar.
+    
+    [none]      Draw a progress bar at 0%.
+    /A n        Set text attribute to n.
+    /B color    Set the background text attribute to color (or a value).
+    /F color    Set the forground text attribute to color (or a value).
+    /X column   Screen column to start the box.
+    /W  width   Override default width of the bar.
+                (default is from cursor to end of line)
+    value       Sets the value in a percent of progress.
+    off         Do not display percentage number.
+    align       Percentage number on left, center (Default) or right side of 
+                the progress bar.
 
 -------------------------------------------------------------------------------
 
@@ -235,20 +235,20 @@ it will return an errorlevel of 2. Regardless of any prefix (Like C, 1, R, etc).
 Also, I personally recommend using auto for any set of choices that
 you prefix with a letter or number.
  
-	[none]		Perform using all automatic defaults settings.</td></tr>
-	/A n		Set text attribute to n for selected item.
-	/B color	Set the background text attribute to color (or a value) for 
-				selected item.
-	/F color	Set the forground text attribute to color (or a value) for 
-				selected item.
-	/D n		Preselect item number n as the default choice.
-	type		Direct keypress selection type.
-	 				off		Select with only arrow keys.
-					auto 	Detect direct jump characters. (Default)
-					alpha	Jump to selections using A-Z.
-					digit	Jump to selections using 1-9 (+0).
-	
-	tba			(Still under development, more to be announced)
+    [none]      Perform using all automatic defaults settings.</td></tr>
+    /A n        Set text attribute to n for selected item.
+    /B color    Set the background text attribute to color (or a value) for 
+                selected item.
+    /F color    Set the forground text attribute to color (or a value) for 
+                selected item.
+    /D n        Preselect item number n as the default choice.
+    type        Direct keypress selection type.
+                    off     Select with only arrow keys.
+                    auto    Detect direct jump characters. (Default)
+                    alpha   Jump to selections using A-Z.
+                    digit   Jump to selections using 1-9 (+0).
+    
+    tba         (Still under development, more to be announced)
 
 
 -------------------------------------------------------------------------------
