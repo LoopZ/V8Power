@@ -32,7 +32,6 @@ DelayFunc:
 	Delay	ax
 	ret
 
-     
 NoSwitch:
 	NumberParam
 	call 		DelayFunc

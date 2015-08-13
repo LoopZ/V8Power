@@ -23,7 +23,6 @@
 CommandLineParser
 Terminate 0
 
-
 NoSwitch:
 	mov		bx, di
 .FindColon:

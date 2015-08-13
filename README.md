@@ -58,6 +58,27 @@ It will create an <b>DIST</b> folder containing everything you need.</i><br>
 > * To use a **/** or spaces in a value, put it in qoutes. Like **"Jack and/or Jill"**.<br>
 > * Use multiple qoutes to use quotes. Like **"Jack's house"** or **'Say "What?"'**.<br>
 > * Unless overriden, most utilities use the text attribute at the current cursor location.<br>
+<br>
+Here is color table used for all /A, /F and /B switches:
+<table>
+<th><td>Decimal</td><td>Hex</td><td>Label(Not case specific)</td></th>
+<tr><td>0</td><td>0x00</td><td>Black</td)</tr>
+<tr><td>1</td><td>0x01</td><td>Blue</td)</tr>
+<tr><td>2</td><td>0x02</td><td>Green</td)</tr>
+<tr><td>3</td><td>0x03</td><td>Cyan</td)</tr>
+<tr><td>4</td><td>0x04</td><td>Red</td)</tr>
+<tr><td>5</td><td>0x05</td><td>Magenta</td)</tr>
+<tr><td>6</td><td>0x06</td><td>Brown</td)</tr>
+<tr><td>7</td><td>0x07</td><td>Gray</td)</tr>
+<tr><td>8</td><td>0x08</td><td>DarkGray</td)</tr>
+<tr><td>9</td><td>0x09</td><td>LightBlue</td)</tr>
+<tr><td>10</td><td>0x0a</td><td>LightGreen</td)</tr>
+<tr><td>11</td><td>0x0b</td><td>LightCyan</td)</tr>
+<tr><td>12</td><td>0x0c</td><td>LightRed</td)</tr>
+<tr><td>13</td><td>0x0d</td><td>LightMagenta</td)</tr>
+<tr><td>14</td><td>0x0e</td><td>Yellow</td)</tr>
+<tr><td>15</td><td>0x0f</td><td>White</td)</tr>
+</table>
 
 * * *
 #### vcls *[options]* ######
