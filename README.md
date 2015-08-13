@@ -53,7 +53,7 @@ It will create an <b>DIST</b> folder containing everything you need.</i><br>
 > Here is some basic information reguarding all utilities and how they operate.<br>
 > * Options, values and hexidecimal numbers are not case specific **/f white** is the same as **/F wHIte**.<br>
 > * Hexidecimal numbers may be prefixed with **0x** to prevent them from being treated as base ten.
-<i>(Example: 10 and 0x10)</i><br>
+<i>(Example: <b>10</b> and <b>0x10</b>)</i><br>
 > * Spaces are mostly optional. **/B7/f0** is the same as **/B 7 /F 0**. But, not **/ B7 / F0**.<br>
 > * To use a **/** or spaces in a value, put it in qoutes. Like **"Jack and/or Jill"**.<br>
 > * Use multiple qoutes to use quotes. Like **"Jack's house"** or **'Say "What?"'**.<br>
