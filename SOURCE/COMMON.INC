@@ -1005,7 +1005,7 @@ TempVideoPagePtr:
 	int		0x10
 	mov		ah, 0x08
 	int		0x10
-	es mov		[si], ax
+	mov		[es:si], ax
 	add		si, 2
 	pop		bx
 	pop		cx
@@ -1065,11 +1065,11 @@ CopyFromTempVideo:
 	push	ax
 	cmp		ax, 0
 	je		%%Restore
-	es mov		ah, [si]
+	mov		ah, [es:si]
 	xchg	al, ah
 	jmp		%%Write
 %%Restore:
-	es mov		ax, [si]
+	mov		ax, [es:si]
 %%Write:
 	add		si, 2
 	mov		bl, ah
