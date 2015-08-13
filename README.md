@@ -196,8 +196,8 @@ Draw a progress bar at current location without moving cursor.
 Choose an option.<br>
 It returns an errorlevel of choice selected based on its entry number. Not
 the letter/number of the choice. For example, if the second item is chosen,
-it will return an errorlevel of 2. Regardless of any prefix (Like C, 1, R, etc).<br>
-Also, I personally recommend using <b><i>auto</i><b> for any set of choices that
+it will return an errorlevel of 2. Regardless of any prefix (Like C, 1, R, etc). 
+Also, I personally recommend using <b><i>auto</i></b> for any set of choices that
 you prefix with a letter or number. 
 <table>
 <tr><td width="125pt"></td><td>Perform using all automatic defaults settings.</td></tr>
