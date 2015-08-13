@@ -28,7 +28,9 @@ increased functionality.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Download the latest sources from [GitHub](http://github.com/LoopZ/V8Power).<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Run the mkV8.bat script. <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;All executibles will be placed in newly
-created BIN directory. <br>
+created BIN directory.<br><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+( To create a redistributable version use the mkDist.bat script. It will create an DIST folder containing everything you need. )<br>
 * * *
 
 ## V8Power Tools Tested Compatibility
