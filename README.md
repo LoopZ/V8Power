@@ -1,6 +1,7 @@
 # V8Power Tools
-Copyright 2015 Jerome Shidel
-Released under GPL v2.0 License.
+Copyright 2015 Jerome Shidel<br>
+Released under GPL v2.0 License.<br>
+* * *
 Putting the power of an 8-cylinder engine under the hood of DOS batch files.
 
 * * *
