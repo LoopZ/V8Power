@@ -122,11 +122,11 @@ Output text to display.
 #### vgotoxy *[options]* ######
 Move or query cursor position.
 <table>
-<tr><td width="125pt"></td><td>Preforms no action</td></tr>
+<tr><td width="125pt"></td><td>Preforms no action.</td></tr>
 <tr><td><b>/Q <i>x</i></b> or <b><i>y</i></b></td><td>Queries the current <b><i>X</i></b>
- or <b><i>Y</i></b> position of the cursor and outputs it to <b>STDOUT</b></td></tr>
-<tr><td><b>/X <i>column</i></b></td><td>Move cursor to <b><i>column</i></b></td></tr>
-<tr><td><b>/Y <i>row</i></b></td><td>Move cursor to <b><i>row</i></b></td></tr>
+ or <b><i>Y</i></b> position of the cursor and outputs it to <b>STDOUT</b>.</td></tr>
+<tr><td><b>/X <i>column</i></b></td><td>Move cursor to <b><i>column</i></b>.</td></tr>
+<tr><td><b>/Y <i>row</i></b></td><td>Move cursor to <b><i>row</i></b>.</td></tr>
 <tr><td><b>/G</b></td><td>Move cursor based on entire screen. (default)</td></tr>
 <tr><td><b>/L</b></td><td>Move cursor based on its surroundings.</td></tr>
 <tr><td><i>direction</i></td><td>Move cursor <b><i>up</i></b>, <b><i>down</i></b>, 
@@ -147,19 +147,19 @@ position.</td></tr>
 #### vframe *[options]* ######
 Draw a box windowing thingy and move cursor to its inside top left position.
 <table>
-<tr><td width="125pt"></td><td>Draw a box that encloses the entire screen</td></tr>
-<tr><td><b>/A <i>n</i></a></td><td>Set text attribute to <b><i>n</i></b></td></tr>
+<tr><td width="125pt"></td><td>Draw a box that encloses the entire screen.</td></tr>
+<tr><td><b>/A <i>n</i></a></td><td>Set text attribute to <b><i>n</i></b>.</td></tr>
 <tr><td><b>/B <i>color</i></b></td><td>Set the background text attribute to 
-<b><i>color</i></b> (or <b><i>value</i></b>)</td></tr>
+<b><i>color</i></b> (or <b><i>value</i></b>).</td></tr>
 <tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to 
-<b><i>color</i></b> (or <b><i>value</i></b>)</td></tr>
+<b><i>color</i></b> (or <b><i>value</i></b>).</td></tr>
 <tr><td><b>/X <i>column</i></b></td><td>Screen <b><i>column</i></b> to start the box.</td></tr>
 <tr><td><b>/Y <i>row</i></b></td><td>Screen <b><i>row</i></b> to start the box.</td></tr>
 <tr><td><b>/W <i>width</i></b></td><td>Total <b><i>width</i></b> of the box.</td></tr>
 <tr><td><b>/H <i>height</i></b></td><td>Total <b><i>height</i></b> of the box.</td></tr>
 <tr><td><i>style</i></td><td>Box <i>styles</i> are <b><i>Single</i></b>, <b><i>Double</i></b>, 
-<b><i>SingleSides</i></b>, <b><i>DoubleSides</i></b> and <b><i>Hidden</i></b></td></tr>
-<tr><td><i><b>shadow</b></i></td><td>Add a 3D style <b><i>shadow</i></b></td></tr>
+<b><i>SingleSides</i></b>, <b><i>DoubleSides</i></b> and <b><i>Hidden</i></b>.</td></tr>
+<tr><td><i><b>shadow</b></i></td><td>Add a 3D style <b><i>shadow</i></b>.</td></tr>
 </table>
 * * *
 #### vpcspkr *[hz:][ms]* ######
@@ -175,29 +175,30 @@ then 0 is assumed)</td></tr>
 #### vversion *[options]* ######
 V8Power information program.
 <table>
-<tr><td width="125pt"></td><td>Outputs all info to <b>STDOUT</b></td></tr>
-<tr><td><b><i>all</i></b></td><td>Outputs <b><i>all</i></b> info to <b>STDOUT</b></td></tr>
-<tr><td><b><i>title</i></b></td><td>Outputs full <b><i>title</i></b> to <b>STDOUT</b></td></tr>
-<tr><td><b><i>copyright</i></b></td><td>Outputs the <b><i>copyright</i></b> message to <b>STDOUT</b></td></tr>
-<tr><td><b><i>version</i></b></td><td>Outputs the <b><i>version</i></b> information to <b>STDOUT</b></td></tr>
-<tr><td><b><i>license</i></b></td><td>Outputs <b><i>license</i></b> information to <b>STDOUT</b></td></tr>
-<tr><td><b><i>url</i></b></td><td>Outputs the website <b><i>url</i></b> information to <b>STDOUT</b></td></tr>
+<tr><td width="125pt"></td><td>Outputs all info to <b>STDOUT</b>.</td></tr>
+<tr><td><b><i>all</i></b></td><td>Outputs <b><i>all</i></b> info to <b>STDOUT</b>.</td></tr>
+<tr><td><b><i>title</i></b></td><td>Outputs full <b><i>title</i></b> to <b>STDOUT</b>.</td></tr>
+<tr><td><b><i>copyright</i></b></td><td>Outputs the <b><i>copyright</i></b> message to <b>STDOUT</b>.</td></tr>
+<tr><td><b><i>version</i></b></td><td>Outputs the <b><i>version</i></b> information to <b>STDOUT</b>.</td></tr>
+<tr><td><b><i>license</i></b></td><td>Outputs <b><i>license</i></b> information to <b>STDOUT</b>.</td></tr>
+<tr><td><b><i>url</i></b></td><td>Outputs the website <b><i>url</i></b> information to <b>STDOUT</b>.</td></tr>
 </table>
 * * *
 #### vprogres *[options]* ######
 Draw a progress bar at current location without moving cursor.
 <table>
-<tr><td width="125pt"></td><td>Draw a progress bar at 0%</td></tr>
-<tr><td><b>/A <i>n</i></a></td><td>Set text attribute to <b><i>n</i></b></td></tr>
+<tr><td width="125pt"></td><td>Draw a progress bar at 0%.</td></tr>
+<tr><td><b>/A <i>n</i></a></td><td>Set text attribute to <b><i>n</i></b>.</td></tr>
 <tr><td><b>/B <i>color</i></b></td><td>Set the background text attribute to 
-<b><i>color</i></b> (or <b><i>value</i></b>)</td></tr>
+<b><i>color</i></b> (or <b><i>value</i></b>).</td></tr>
 <tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to 
-<b><i>color</i></b> (or <b><i>value</i></b>)</td></tr>
-<tr><td><b>/W <i>width</i></b></td><td>Override default <b><i>width</i></b> of the bar (default is from cursor to end of line)</td></tr>
-<tr><td><i>value</i></td><td>Sets the <b><i>value</i></b> in percent of progress</td></tr>
-<tr><td><b><i>off</i></b></td><td>Do not display percentage number</td></tr>
+<b><i>color</i></b> (or <b><i>value</i></b>).</td></tr>
+<tr><td><b>/W <i>width</i></b></td><td>Override default <b><i>width</i></b> 
+of the bar (default is from cursor to end of line).</td></tr>
+<tr><td><i>value</i></td><td>Sets the <b><i>value</i></b> in percent of progress.</td></tr>
+<tr><td><b><i>off</i></b></td><td>Do not display percentage number.</td></tr>
 <tr><td><i>align</i></td><td>Percentage number on <b><i>left</i></b>, 
-<b><i>center</i></b> (Default) or <b><i>right</i></b> side of the progress bar</td></tr>
+<b><i>center</i></b> (Default) or <b><i>right</i></b> side of the progress bar.</td></tr>
 </table>
 * * *
 #### vchoice *[options]* ######
@@ -209,12 +210,12 @@ Also, I personally recommend using <b><i>auto</i></b> for any set of choices tha
 you prefix with a letter or number. 
 <table>
 <tr><td width="125pt"></td><td>Perform using all automatic defaults settings.</td></tr>
-<tr><td><b>/A <i>n</i></a></td><td>Set text attribute to <b><i>n</i></b> for selected item</td></tr>
+<tr><td><b>/A <i>n</i></a></td><td>Set text attribute to <b><i>n</i></b> for selected item.</td></tr>
 <tr><td><b>/B <i>color</i></b></td><td>Set the background text attribute to 
 <b><i>color</i></b> for selected item.</td></tr>
 <tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to 
 <b><i>color</i></b> for selected item.</td></tr>
-<tr><td><b>/D <i>n</i></a></td><td>Preselect item number <b><i>n</i></b></td></tr>
+<tr><td><b>/D <i>n</i></a></td><td>Preselect item number <b><i>n</i></b>.</td></tr>
 <tr><td><i>type</i></td><td>Direct keypress selection type.<br>
 	 <b><i>off</i></b> Select with only arrow keys.<br>
 	 <b><i>auto</i></b> Detect direct jump characters (Default)<br>
