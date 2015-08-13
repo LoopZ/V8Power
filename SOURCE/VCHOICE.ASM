@@ -79,14 +79,21 @@ WaitLoop:
 	jz			WaitLoop
 	mov			ax, 0x0000
 	int			0x16
+	; up down to navigate
 	cmp			ah, 0x48
 	je			.GoUp
 	cmp			ah, 0x50
 	je			.GoDown
+	; Space or Enter to Choose
 	cmp			al, 0x20
-	je			.Select
+	je			.Chosen
 	cmp			al, 0x0d
 	je			.Chosen
+	; test selection type off
+	mov			bl, [SelectChars]
+	cmp			bl, 0
+	je			.OtherKeypress
+	; adjust upper case
 	cmp			al, 0x61
 	jl			.NotLowercase
 	cmp			al, 0x7a
@@ -96,6 +103,14 @@ WaitLoop:
 	sub			bx, 0x20
 	mov			al, bl
 .NotLowercase:
+	; test selection type auto
+	mov			bl, [SelectChars]
+	cmp			bl, 1
+	je			.AutoPress
+	mov			bl, [SelectChars]
+	cmp			bl, 4
+	je			.YesNoPress
+	; letter, number or other
 	cmp			al, 0x30
 	jl			.OtherKeypress
 	cmp			al, 0x39
@@ -106,13 +121,35 @@ WaitLoop:
 	jg			.OtherKeypress
 	jmp			.AlphaPress
 .OtherKeypress:
-	xor			ax, ax
 	; StdOutHexWord
-	jmp			Done
-	
+	jmp			KeyBoardLoop
+
+.YesNoPress:
+	jmp			KeyBoardLoop
+.AutoPress:	
+	jmp			KeyBoardLoop
 .AlphaPress:
+	mov			bl, [SelectChars]
+	cmp			bl, 2
+	jne			KeyBoardLoop
+	sub			al, 0x40
+	jmp			.DoKeySelect
 .NumberPress:
-	jmp			.Changed
+	mov			bl, [SelectChars]
+	cmp			bl, 3
+	jne			KeyBoardLoop
+	sub			al, 0x30
+	cmp			al, 0
+	jne			.DoKeySelect
+	mov			al, 0x0a
+.DoKeySelect:
+	mov			ah, [Max]
+	cmp			al, ah
+	jle			.OkKeySelect
+	mov			al, ah
+.OkKeySelect:
+	mov			[Selected], al
+	jmp			KeyBoardLoop
 	
 .Changed:
 	jmp			KeyBoardLoop
@@ -124,7 +161,6 @@ WaitLoop:
 	dec			al
 	mov			[Selected], al
 	jmp 		.Changed
-	
 .GoDown:
 	mov			al, [Selected]
 	mov			ah, [Max]
@@ -133,6 +169,7 @@ WaitLoop:
 	inc			al
 	mov			[Selected], al
 	jmp 		.Changed
+	
 .Select:
 	mov			al, [HotChoice]
 	mov			ah, [Selected]
@@ -367,6 +404,7 @@ CommandLineSwitches:
 
 StyleTable:
 	TableData 'NONE', OptNone
+	TableData 'OFF', OptNone
 	TableData 'AUTO', OptAuto
 	TableData 'FIRST', OptAuto
 	TableData 'ALPHA', OptAlpha
@@ -397,7 +435,7 @@ SelectedAttr:
 HotAttr:
 	db 0
 NotAttr:
-	dw 0
+	db 0
 Position:
 	dw  0
 OptionBox:

@@ -64,7 +64,7 @@ vecho
 vecho /n /fWhite " 0. " /fLightRed "Return to " 
 vecho /fLightMagenta "DOS "
 
-vchoice auto /d100/t10/fWhite/bRed
+vchoice digit /d100/t10/fWhite/bRed
 
 if errorlevel 4 goto AllDone
 if ERRORLEVEL 3 goto PartC
