@@ -67,7 +67,7 @@ vgotoxy /l /x8
 vecho /n /fWhite " 0" /fGray " - " /fLightRed "Return to " 
 vecho /fLightMagenta "DOS "
 
-vchoice auto /d100/t10/fWhite/bRed
+vchoice auto /d100/t15/fWhite/bRed
 
 if errorlevel 4 goto AllDone
 if ERRORLEVEL 3 goto PartC

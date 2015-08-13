@@ -79,39 +79,80 @@ TimedOut:
 	jmp			Chosen
 	
 ShowTimeOut:
+	push		cx
 	push		bx
 	push		dx
-	mov			dl, [TextAttr]
-	push		dx
-	mov			dl, [FirstAttr]
-	mov			[TextAttr], dl
-	push		cx
 
-	mov			dx, [WindMax]
-	sub			dl, 10
-    mov         ah, 0x02
-    mov         bh, [VideoPage]
-    int         0x10
-   
-   	mov			al, 0x20
-   	WriteChar	0x0a 
-	pop			cx
-	push		cx
 	xor			dx, dx
 	mov			ax, 11
 	xchg		ax, cx
 	mul			cx
 	mov			cx, 200
 	div			cx
+
+	mov			dl, [TextAttr]
+	push		dx
+	mov			dl, [FirstAttr]
+	mov			[TextAttr], dl
+	mov			dx, [WindMax]
+	push		dx
+	mov			bx, [ScreenMax]
+	cmp			bx, dx
+	je			NoDisplayTimeOut
+	mov			[WindMax], bx
+	inc			dh
+	sub			dl, 8
+	
+    push		ax
+    mov         ah, 0x02
+    mov         bh, [VideoPage]
+    int         0x10
+    mov			ah, 0x08
+    int			0x10
+    mov			bx, ax
+    
+    pop			ax
+    push		ax
+    mov			cx, 1
+	cmp			ax, 1000
+	jge			.SetWidth
+	inc			cx
+	cmp			ax, 100
+	jge			.SetWidth
+	inc			cx
+	cmp			ax, 10
+	jge			.SetWidth
+	inc			cx
+.SetWidth:
+    mov			al, bl
+    mov			bl, [VideoPage]
+    xchg		bl, bh
+    
+    inc			dl
+    mov         ah, 0x02
+    int         0x10
+    ; mov			bl, 0x4f
+    mov			ah, 0x09
+    int			0x10
+    add			dl, cl
+    mov         ah, 0x02
+    int         0x10
+   
+   	mov			al, 0x20
+   	WriteChar	0x09 
+
+	pop			ax
     WriteInt	ax
    	mov			al, 0x20
-   	WriteChar	0x0a 
-   	pop			cx
-   	
+   	WriteChar	0x09 
+NoDisplayTimeOut:
+ 	pop			dx
+	mov			[WindMax], dx
    	pop			dx
 	mov			[TextAttr], dl
     pop			dx
 	pop			bx
+ 	pop			cx   	
 	ret
 	
 KeyBoardLoop:

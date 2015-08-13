@@ -245,6 +245,7 @@ as the default choice.</td></tr>
 	 <b><i>digit</i></b> Jump to selections using 1-9 (+0).<br>
 <tr><td><b>/Q</td><td>Query for result. When the choice is made, it's text will be
 sent to STDOUT.</td></tr>
+<tr><td><b>/T <i>seconds</i></a></td><td>Delay in <b><i>seconds</i></b> before default item is automatically selected (0-3600).</td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </td></tr></table>
 * * *
