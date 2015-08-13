@@ -63,9 +63,9 @@ It will create an <b>DIST</b> folder containing everything you need.</i><br>
 #### vcls *[options]* ######
 Clear screen, area or row (line).
 <table>
-<tr><td width="125pt"></td><td>Clear the screen with the current text attribute</td></tr>
-<tr><td><b><i>n</i></b></td><td>Set text attribute to <b><i>n</i></b></td></tr>
-<tr><td><b>/A <i>n</i></a></td><td>Set text attribute to <b><i>n</i></b></td></tr>
+<tr><td width="125pt"></td><td>Clear the screen with the current text attribute.</td></tr>
+<tr><td><b><i>n</i></b></td><td>Set text attribute to <b><i>n</i></b>.</td></tr>
+<tr><td><b>/A <i>n</i></a></td><td>Set text attribute to <b><i>n</i></b>.</td></tr>
 <tr><td><b>/B <i>color</i></b></td><td>Set the background text attribute to 
 <b><i>color</i></b> (or a <b><i>value</i></b>).</td></tr>
 <tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to 
@@ -76,12 +76,12 @@ Clear screen, area or row (line).
 	you can just redraw the box, maybe.</b></td></tr>
 <tr><td><b>TEXT</b></td><td>Clear the text only. Leave all colors intact and ignore their color attributes.</td></tr>
 <tr><td><b>EOL</b></td><td>Clear from cursor to End of Line only.</td></tr>
-<tr><td><b>/C <i>code</i></b></td><td>Clear by filling with ASCII character 
+<tr><td><b>/C <i>code</i></b></td><td>Clear by filling with an ASCII character 
 <b><i>code</i></b>.</td></tr>
 <tr><td><b>/X <i>column</i></b></td><td>Absolute screen <b><i>column</i></b> to start clear.</td></tr>
 <tr><td><b>/Y <i>row</i></b></td><td>Absolute screen <b><i>row</i></b> to start clear.</td></tr>
-<tr><td><b>/W <i>width</i></b></td><td>Total <b><i>width</i></b> of cleared area.</td></tr>
-<tr><td><b>/H <i>height</i></b></td><td>Total <b><i>height</i></b> of cleared area.</td></tr>
+<tr><td><b>/W <i>width</i></b></td><td>Total <b><i>width</i></b> of area to clear.</td></tr>
+<tr><td><b>/H <i>height</i></b></td><td>Total <b><i>height</i></b> of area to clear.</td></tr>
 </table>
 * * *
 #### vcursor *[options]* ######
