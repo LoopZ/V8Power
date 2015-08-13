@@ -246,8 +246,8 @@ as the default choice.</td></tr>
 <tr><td><b>/Q</td><td>Query for result. When the choice is made, it's text will be
 sent to STDOUT.</td></tr>
 <tr><td><b>/T <i>seconds</i></a></td><td>Delay in <b><i>seconds</i></b> before the default item is automatically selected (0-3600). 
-Note that even if the user navigates to a different item, the original default will be
-selected if the timeout is achieved.</td></tr>
+Note that even if the user navigates to a different item, the original default item will be
+selected when the timeout is achieved.</td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </td></tr></table>
 * * *
