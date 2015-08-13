@@ -236,19 +236,20 @@ Also, I personally recommend using auto for any set of choices that
 you prefix with a letter or number.
  
 	[none]		Perform using all automatic defaults settings.</td></tr>
-<tr><td><b>/A <i>n</i></a></td><td>Set text attribute to <b><i>n</i></b> for selected item</td></tr>
-<tr><td><b>/B <i>color</i></b></td><td>Set the background text attribute to 
-<b><i>color</i></b> for selected item.</td></tr>
-<tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to 
-<b><i>color</i></b> for selected item.</td></tr>
-<tr><td><b>/D <i>n</i></a></td><td>Preselect item number <b><i>n</i></b></td></tr>
-<tr><td><i>type</i></td><td>Direct keypress selection type.<br>
-	 <b><i>off</i></b> Select with only arrow keys.<br>
-	 <b><i>auto</i></b> Detect direct jump characters (Default)<br>
-	 <b><i>alpha</i></b> Jump to selections using A-Z.<br>
-	 <b><i>digit</i></b> Jump to selections using 1-9 (+0).<br>
-<tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
-</td></tr></table>
+	/A n		Set text attribute to n for selected item.
+	/B color	Set the background text attribute to color (or a value) for 
+				selected item.
+	/F color	Set the forground text attribute to color (or a value) for 
+				selected item.
+	/D n		Preselect item number n as the default choice.
+	type		Direct keypress selection type.
+	 				off		Select with only arrow keys.
+					auto 	Detect direct jump characters. (Default)
+					alpha	Jump to selections using A-Z.
+					digit	Jump to selections using 1-9 (+0).
+	
+	tba			(Still under development, more to be announced)
+
 
 -------------------------------------------------------------------------------
 

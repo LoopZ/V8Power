@@ -215,7 +215,8 @@ you prefix with a letter or number.
 <b><i>color</i></b> for selected item.</td></tr>
 <tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to 
 <b><i>color</i></b> for selected item.</td></tr>
-<tr><td><b>/D <i>n</i></a></td><td>Preselect item number <b><i>n</i></b>.</td></tr>
+<tr><td><b>/D <i>n</i></a></td><td>Preselect item number <b><i>n</i></b> 
+as the default choice.</td></tr>
 <tr><td><i>type</i></td><td>Direct keypress selection type.<br>
 	 <b><i>off</i></b> Select with only arrow keys.<br>
 	 <b><i>auto</i></b> Detect direct jump characters. (Default)<br>
