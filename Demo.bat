@@ -74,8 +74,6 @@ if errorlevel 1 goto PartA
 rem goto TryAgain
 goto NextPart
 :PartA
-:PartA
-vdelay 1000
 vcls /fGray /bBlue /c 0xb0 /y2/h23
 
 rem make top left frame and put some text there
