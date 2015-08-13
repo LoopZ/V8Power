@@ -62,7 +62,7 @@ It will create an <b>DIST</b> folder containing everything you need.</i><br>
 Here is color table used for all **/A**, **/F** and **/B** switches:
 <table>
 <tr><th>Decimal</th><th>Hex</th><th>Label(Not case specific)</th><th>Sample</th></tr>
-<tr><td>0</td><td>0x00</td><td>Black</td></td bgcolor="Black"></td></tr>
+<tr><td>0</td><td>0x00</td><td>Black</td><td bgcolor="Black"></td></tr>
 <tr><td>1</td><td>0x01</td><td>Blue</td)</tr>
 <tr><td>2</td><td>0x02</td><td>Green</td)</tr>
 <tr><td>3</td><td>0x03</td><td>Cyan</td)</tr>
