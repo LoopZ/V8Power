@@ -127,6 +127,9 @@ WaitLoop:
 .YesNoPress:
 	jmp			KeyBoardLoop
 .AutoPress:	
+	mov			[Searching], al
+	mov			di, SearchChoice
+	call 		EachChoice
 	jmp			KeyBoardLoop
 .AlphaPress:
 	mov			bl, [SelectChars]
@@ -221,13 +224,6 @@ EachChoice:
 	call		di
 	jmp			.Found
 .Missing:
-;	mov			cx, [NotAttr]
-;	cmp			ch, 0
-;	jne			.NotAttrSet
-;	mov			cl, ah
-;	inc			ch
-;	mov			[NotAttr], cx
-;.NotAttrSet:
 	inc			dl
 	mov			cl, [OptionBox + 2]
 	mov			ch, [OptionBox + 0]
@@ -241,13 +237,33 @@ EachChoice:
 	loop		.CountLoop
 	ret
 
+CopyFromTempVideoProc
+
 CountChoice:
 	mov			al, [Max]
 	inc			al
 	mov			[Max], al
 	ret
 
-CopyFromTempVideoProc
+SearchChoice:
+	push		bx
+	; adjust upper case
+	cmp			al, 0x61
+	jl			.NotLowercase
+	cmp			al, 0x7a
+	jg			.NotLowercase
+	mov			bx, ax
+	xor			bh, bh
+	sub			bx, 0x20
+	mov			al, bl
+.NotLowercase:
+	pop			bx
+	mov			ah, [Searching]
+	cmp			al, ah
+	jne			.Done
+	mov			[Selected], bl
+.Done:
+	ret
 
 SelectChoice:
 	push		bx
@@ -440,3 +456,5 @@ Position:
 	dw  0
 OptionBox:
 	dw 0,0
+Searching:
+	db 0
