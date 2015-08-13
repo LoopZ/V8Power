@@ -105,15 +105,15 @@ Simple delay in milliseconds.
 #### vecho *[options]* *[text]* ######
 Output text to display.
 <table>
-<tr><td width="125pt"></td><td>Preforms a Carriage Return and Line Feed to the display</td></tr>
-<tr><td><b><i>text</i></b></td><td>Writes <b><i>text</i></b> to the display</td></tr>
-<tr><td><b>/A <i>n</i></a></td><td>Set text attribute to <b><i>n</i></b></td></tr>
+<tr><td width="125pt"></td><td>Preforms a Carriage Return and Line Feed to the display.</td></tr>
+<tr><td><b><i>text</i></b></td><td>Writes <b><i>text</i></b> to the display.</td></tr>
+<tr><td><b>/A <i>n</i></a></td><td>Set text attribute to <b><i>n</i></b>.</td></tr>
 <tr><td><b>/B <i>color</i></b></td><td>Set the background text attribute to 
-<b><i>color</i></b> (or <b><i>value</i></b>)</td></tr>
+<b><i>color</i></b> (or <b><i>value</i></b>).</td></tr>
 <tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to 
-<b><i>color</i></b> (or <b><i>value</i></b>)</td></tr>
+<b><i>color</i></b> (or <b><i>value</i></b>).</td></tr>
 <tr><td><b>/N</td><td>Do not write a CRLF when done.</td></tr>
-<tr><td><b>/C <i>code</i></b></td><td>Clear by filling with ASCII character 
+<tr><td><b>/C <i>code</i></b></td><td>Write an ASCII character 
 <b><i>code</i></b>.</td></tr>
 <tr><td><b>/R <i>times</i></b></td><td>Repeat the next write <b><i>times</i></b> number of times.</td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
