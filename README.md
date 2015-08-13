@@ -167,7 +167,7 @@ Generate a tone using the built in speaker.
 <table>
 <tr><td width="125pt"></td><td>No output.</td></tr>
 <tr><td><i>hz:ms</i></td><td>Use the PC Speaker to generate a <b><i>hz</i></b> frequency tone. 
-Then Delay for <b><i>ms</i></b> milliseconds. (Note: 0 frequency turns off speaker. If no frequency is provided
+Then, delay for <b><i>ms</i></b> milliseconds. (Note: 0 frequency turns off speaker. If no frequency is provided
 then 0 is assumed)</td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
@@ -195,7 +195,7 @@ Draw a progress bar at current location without moving cursor.
 <b><i>color</i></b> (or <b><i>value</i></b>).</td></tr>
 <tr><td><b>/W <i>width</i></b></td><td>Override default <b><i>width</i></b> 
 of the bar (default is from cursor to end of line).</td></tr>
-<tr><td><i>value</i></td><td>Sets the <b><i>value</i></b> in percent of progress.</td></tr>
+<tr><td><i>value</i></td><td>Sets the <b><i>value</i></b> in a percent of progress.</td></tr>
 <tr><td><b><i>off</i></b></td><td>Do not display percentage number.</td></tr>
 <tr><td><i>align</i></td><td>Percentage number on <b><i>left</i></b>, 
 <b><i>center</i></b> (Default) or <b><i>right</i></b> side of the progress bar.</td></tr>

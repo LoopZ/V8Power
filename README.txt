@@ -163,68 +163,65 @@ Move or query cursor position.
 vframe [options]
 
 Draw a box windowing thingy and move cursor to its inside top left position.
-<table>
-<tr><td width="125pt"></td><td>Draw a box that encloses the entire screen</td></tr>
-<tr><td><b>/A <i>n</i></a></td><td>Set text attribute to <b><i>n</i></b></td></tr>
-<tr><td><b>/B <i>color</i></b></td><td>Set the background text attribute to 
-<b><i>color</i></b> (or <b><i>value</i></b>)</td></tr>
-<tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to 
-<b><i>color</i></b> (or <b><i>value</i></b>)</td></tr>
-<tr><td><b>/X <i>column</i></b></td><td>Screen <b><i>column</i></b> to start the box.</td></tr>
-<tr><td><b>/Y <i>row</i></b></td><td>Screen <b><i>row</i></b> to start the box.</td></tr>
-<tr><td><b>/W <i>width</i></b></td><td>Total <b><i>width</i></b> of the box.</td></tr>
-<tr><td><b>/H <i>height</i></b></td><td>Total <b><i>height</i></b> of the box.</td></tr>
-<tr><td><i>style</i></td><td>Box <i>styles</i> are <b><i>Single</i></b>, <b><i>Double</i></b>, 
-<b><i>SingleSides</i></b>, <b><i>DoubleSides</i></b> and <b><i>Hidden</i></b></td></tr>
-<tr><td><i><b>shadow</b></i></td><td>Add a 3D style <b><i>shadow</i></b></td></tr>
-</table>
+
+	[none]		Draw a box that encloses the entire screen.
+	/A n		Set text attribute to n.
+	/B color	Set the background text attribute to color (or a value).
+	/F color	Set the forground text attribute to color (or a value).
+	/X column	Screen column to start the box.
+	/Y row		Screen row to start the box.
+	/W width	Total width of the box.
+	/H height 	Total height of the box.
+	style		Box styles are Single, Double, SingleSides, DoubleSides
+				and Hidden.
+	shadow		Add a 3D style shadow.
 
 -------------------------------------------------------------------------------
 
 vpcspkr [hz:][ms]
 
 Generate a tone using the built in speaker.
-<table>
-<tr><td width="125pt"></td><td>No output.</td></tr>
-<tr><td><i>hz:ms</i></td><td>Use the PC Speaker to generate a <b><i>hz</i></b> frequency tone. 
-Then Delay for <b><i>ms</i></b> milliseconds. (Note: 0 frequency turns off speaker. If no frequency is provided
-then 0 is assumed)</td></tr>
-<tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
-</table>
+
+	[none]		No output.
+	hz:ms		Use the PC Speaker to generate a hz frequency tone. Then, delay
+				for ms milliseconds. (Note: 0 frequency turns off speaker. 
+				If no frequency is provided then 0 is assumed)
+	
+	tba			(Still under development, more to be announced)
 
 -------------------------------------------------------------------------------
 
 vversion [options]
 
 V8Power information program.
-<table>
-<tr><td width="125pt"></td><td>Outputs all info to <b>STDOUT</b></td></tr>
-<tr><td><b><i>all</i></b></td><td>Outputs <b><i>all</i></b> info to <b>STDOUT</b></td></tr>
-<tr><td><b><i>title</i></b></td><td>Outputs full <b><i>title</i></b> to <b>STDOUT</b></td></tr>
-<tr><td><b><i>copyright</i></b></td><td>Outputs the <b><i>copyright</i></b> message to <b>STDOUT</b></td></tr>
-<tr><td><b><i>version</i></b></td><td>Outputs the <b><i>version</i></b> information to <b>STDOUT</b></td></tr>
-<tr><td><b><i>license</i></b></td><td>Outputs <b><i>license</i></b> information to <b>STDOUT</b></td></tr>
-<tr><td><b><i>url</i></b></td><td>Outputs the website <b><i>url</i></b> information to <b>STDOUT</b></td></tr>
-</table>
+
+	[none]		Outputs all info to STDOUT.
+	all			Outputs all info to STDOUT.
+	title		Outputs full title to STDOUT.
+	copyright 	Outputs the copyright message to STDOUT.
+	version<	Outputs the version information to STDOUT.
+	license		Outputs license information to STDOUT.
+	url			Outputs the website url information to STDOUT.
+	
+	tba			(Still under development, more to be announced)
 
 -------------------------------------------------------------------------------
 
 vprogres [options]
 
 Draw a progress bar at current location without moving cursor.
-<table>
-<tr><td width="125pt"></td><td>Draw a progress bar at 0%</td></tr>
-<tr><td><b>/A <i>n</i></a></td><td>Set text attribute to <b><i>n</i></b></td></tr>
-<tr><td><b>/B <i>color</i></b></td><td>Set the background text attribute to 
-<b><i>color</i></b> (or <b><i>value</i></b>)</td></tr>
-<tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to 
-<b><i>color</i></b> (or <b><i>value</i></b>)</td></tr>
-<tr><td><b>/W <i>width</i></b></td><td>Override default <b><i>width</i></b> of the bar (default is from cursor to end of line)</td></tr>
-<tr><td><i>value</i></td><td>Sets the <b><i>value</i></b> in percent of progress</td></tr>
-<tr><td><b><i>off</i></b></td><td>Do not display percentage number</td></tr>
-<tr><td><i>align</i></td><td>Percentage number on <b><i>left</i></b>, 
-<b><i>center</i></b> (Default) or <b><i>right</i></b> side of the progress bar</td></tr>
-</table>
+	
+	[none]		Draw a progress bar at 0%.
+	/A n		Set text attribute to n.
+	/B color	Set the background text attribute to color (or a value).
+	/F color	Set the forground text attribute to color (or a value).
+	/X column	Screen column to start the box.
+	/W  width 	Override default width of the bar.
+				(default is from cursor to end of line)
+	value		Sets the value in a percent of progress.
+	off			Do not display percentage number.
+	align		Percentage number on left, center (Default) or right side of 
+				the progress bar.
 
 -------------------------------------------------------------------------------
 
