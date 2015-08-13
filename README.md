@@ -188,9 +188,8 @@ Draw a progress bar at current location without moving cursor.
 <tr><td><b>/W <i>width</i></b></td><td>Override default <b><i>width</i></b> of the bar (default is from cursor to end of line)</td></tr>
 <tr><td><b><i>percent</i></b></td><td>Sets the value in <b><i>percent</i></b> of progress</td></tr>
 <tr><td><b><i>off</i></b></td><td>Do not display percentage number</td></tr>
-<tr><td><b><i>center</i></b></td><td>Percentage number in <b><i>center</i></b> (Default)</td></tr>
-<tr><td><b><i>left</i></b></td><td>Percentage number on <b><i>left</i></b></td></tr>
-<tr><td><b><i>right</i></b></td><td>Percentage number on <b><i>right</i></b></td></tr>
+<tr><td><b><i>align</i></b></td><td>Percentage number in <b><i>left</i></b>, 
+<b><i>center</i></b> (Default) or <b><i>right</i></b> of the progress bar</td></tr>
 </table>
 * * *
 #### vchoice *[options]* ######
