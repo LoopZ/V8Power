@@ -37,7 +37,7 @@ created BIN directory. <br>
 > Windows 3.11 Shell<br>
 > Windows 98 Shell and Command Line<br>
 > Windows XP SP3 Shell (except vcursor)<br>
-> DosBOX (no i/o redirection, polling stdout will not work)<br>
+> DosBOX (no i/o redirection, polling and querying stdout will not work)<br>
 
 * * *
 
@@ -193,7 +193,10 @@ Draw a progress bar at current location without moving cursor.
 </table>
 * * *
 #### vchoice *[options]* ######
-Choose an option. (returns an errorlevel of choice selected)
+Choose an option.<br>
+It returns an errorlevel of choice selected based on its entry number. Not
+the letter/number of the choice. For example, if the second item is chosen,
+it will return an errorlevel of 2. Regardless of any prefix (Like C, 1, R, etc)
 <table>
 <tr><td width="125pt"></td><td>Perform using all automatic defaults settings.</td></tr>
 <tr><td><b>/A <i>n</i></a></td><td>Set text attribute to <b><i>n</i></b> for selected item</td></tr>
