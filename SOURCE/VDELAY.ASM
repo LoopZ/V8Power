@@ -22,7 +22,6 @@
 
     CommandLineParser       ; insert code for command line parsing
 
-ProgramMain:
 	mov		ax, [DelayTime]
 	call	DelayFunc
 

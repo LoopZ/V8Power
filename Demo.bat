@@ -52,20 +52,21 @@ vecho /n "Next " /fWhite "(" /fRed "Alt+N" /fWhite ")"
 vgotoxy /x68 
 vecho /n "Quit " /fWhite "(" /fRed "Alt+Q" /fWhite ")"
 
-vframe /bBlue /fGray /x16 /y7 /w46 /h10 Hidden Shadow
-vframe /x18 /y7 /w42 /h10 DoubleSides
+vframe /bBlue /fGray /x16 /y7 /w48 /h11 Hidden Shadow
+vframe /x18 /y7 /w44 /h11 DoubleSides
 vcls /L /fYellow
+vecho
+vecho /fLightGreen " What would you like to see?"
+vline Hidden
 
 :TryAgain
-vecho
-vecho /fLightCyan  " A. " /fYellow "Progress and Multi-Window Demo "
-vecho /fLightGreen " B) " /fYellow "Display Locations and Writing Demo "
-vecho /fLightGreen " C: " /fYellow "Cursor Movement Demo "
-vecho
+vecho /fLightCyan  "   A. " /fYellow "Progress and Multi-Window Demo "
+vecho /fLightGreen "   B) " /fYellow "Display Locations and Writing Demo "
+vecho /fLightGreen "   C: " /fYellow "Cursor Movement Demo "
 vecho
 vgotoxy /l /x8
 vecho /n /fWhite " 0" /fGray " - " /fLightRed "Return to " 
-vecho /fLightMagenta "DOS "
+vecho /n /fLightMagenta "DOS "
 
 vchoice auto /d100/t15/fWhite/bRed
 

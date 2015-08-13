@@ -18,6 +18,8 @@
 
 %include "COMMON.INC"
 
+    ; SetMaxSize
+    
     CommandLineParser       ; insert code for command line parsing
 
     mov         cx, [WindMin]

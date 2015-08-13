@@ -21,10 +21,10 @@
 ProgramMain:
 	; WhereXY
 	; mov			[CurrentXY], dx
+	SetMaxSize
+	
 	CommandLineParser       ; insert code for command line parsing
 		
-	
-	
 	mov			cx, [CurrentXY]
 	mov			[WindMin], cx
 	mov			dx, [CurrentSize]

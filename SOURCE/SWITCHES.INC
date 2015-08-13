@@ -100,6 +100,20 @@ CurrentSize:
 	CurrentH:	DB 25
 %endmacro
 
+%imacro SetMaxSize 0
+	push		ax
+	push		bx
+	mov			ax, [WindMax]
+	mov			bx, [WindMin]
+	sub			ah, bh
+	sub			al, bl
+	inc			ah
+	inc			al
+	mov			[CurrentSize], ax
+	pop			bx
+	pop			ax
+%endmacro
+
 %imacro LocalSwitchHandlers 0
 	SwitchL:
 		FrameBounds

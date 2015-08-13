@@ -18,6 +18,28 @@
 
 %include "COMMON.INC"
 
-PlaceHolder 
+    CommandLineParser       ; insert code for command line parsing
 
-Terminate 0
+    Terminate 0
+    
+NoSwitch:
+    LookupParam OptionsTable
+    cmp         ax, 0xffff
+    je	        .NotOption
+	jmp			ax	    
+
+.NotOption:
+	NumberParam
+	; do something with ax
+	
+.InvalidOption:
+	WriteStr	CommandLineErrorMsg
+	Terminate	100
+    
+CommandLineSwitches:
+	SwitchData  0,  0, NoSwitch  
+    SwitchData  0,  0, 0
+    
+OptionsTable:
+	TableEnd
+	
