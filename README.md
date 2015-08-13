@@ -61,7 +61,7 @@ It will create an <b>DIST</b> folder containing everything you need.</i><br>
 <br>
 Here is color table used for all /A, /F and /B switches:
 <table>
-<th><td>Decimal</td><td>Hex</td><td>Label(Not case specific)</td></th>
+<tr><th>Decimal</th><td>Hex</td><td>Label(Not case specific)</td></th>
 <tr><td>0</td><td>0x00</td><td>Black</td)</tr>
 <tr><td>1</td><td>0x01</td><td>Blue</td)</tr>
 <tr><td>2</td><td>0x02</td><td>Green</td)</tr>
