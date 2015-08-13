@@ -9,15 +9,14 @@ goto DoDemo
 :MakeDemo
 if not exist mkV8.bat goto NoJoy
 call mkV8.bat
+if ERRORLEVEL 1 goto NoJoy
 goto DoDemo
 
 :NoJoy
 echo Unable to do demo.
-goto :Done
+goto Done
 
 :DoDemo
-if not exist BIN\VCURSOR.COM goto NoJoy
-
 cd bin
 
 rem DosBOX Test

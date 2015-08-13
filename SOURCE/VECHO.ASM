@@ -33,7 +33,7 @@ ReturnLoop:
 	loop	ReturnLoop
 Done:
     Terminate 0
-    
+
 NoSwitch:
 	xor 		al, al
 	mov			[si], al

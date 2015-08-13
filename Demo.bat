@@ -9,9 +9,8 @@ goto Maybe
 :MakeDemo
 if not exist mkV8.bat goto NoJoy
 call mkV8.bat
+if ERRORLEVEL 1 goto NoJoy
 
-:Maybe
-if not exist BIN\VCURSOR.COM goto NoJoy
 goto LetsGo
 
 :NoJoy
