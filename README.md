@@ -203,7 +203,11 @@ Choose an option. (returns an errorlevel of choice selected)
 <b><i>color</i></b> for selected item.</td></tr>
 <tr><td><b>/D <i>n</i></a></td><td>Preselect item number <b><i>n</i></b></td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
-</table>
+<tr><td><i>type</i></td><td>Direct keypress selection type.<br>
+	 <b><i>off</i></b> Select with only arrow keys.<br>
+	 <b><i>alpha</i></b> Jump to selections using A-Z.<br>
+	 <b><i>digit</i></b> Jump to selections using 1-9 (+0).<br>
+</td></tr></table>
 * * *
 #### vline ######
 TBA
