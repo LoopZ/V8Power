@@ -30,7 +30,9 @@ increased functionality.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;All executibles will be placed in newly
 created BIN directory.<br><br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-( To create a redistributable version use the mkDist.bat script. It will create an DIST folder containing everything you need. )<br>
+<i>To create a redistributable version use the mkDist.bat script.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+It will create an DIST folder containing everything you need.</i><br>
 * * *
 
 ## V8Power Tools Tested Compatibility
