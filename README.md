@@ -115,7 +115,7 @@ Output text to display.
 <tr><td><b>/N</td><td>Do not write a CRLF when done.</td></tr>
 <tr><td><b>/C <i>code</i></b></td><td>Write an ASCII character 
 <b><i>code</i></b>.</td></tr>
-<tr><td><b>/R <i>times</i></b></td><td>Repeat the next write <b><i>times</i></b> number of times.</td></tr>
+<tr><td><b>/R <i>times</i></b></td><td>Repeat the next write <b><i>times</i></b> number of times. (1-65535)</td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
 * * *
