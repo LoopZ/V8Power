@@ -211,7 +211,7 @@ TBA
 #### vpause ######
 TBA
 * * *
-#### vdiskinf ######
+#### vinfo ######
 TBA
 * * *
 #### vmode ######
