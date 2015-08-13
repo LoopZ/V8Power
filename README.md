@@ -205,6 +205,7 @@ Choose an option. (returns an errorlevel of choice selected)
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 <tr><td><i>type</i></td><td>Direct keypress selection type.<br>
 	 <b><i>off</i></b> Select with only arrow keys.<br>
+	 <b><i>auto</i></b> Detect direct jump characters (Default)<br>
 	 <b><i>alpha</i></b> Jump to selections using A-Z.<br>
 	 <b><i>digit</i></b> Jump to selections using 1-9 (+0).<br>
 </td></tr></table>
