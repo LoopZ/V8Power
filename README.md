@@ -130,7 +130,7 @@ Move or query cursor position.
 <tr><td><b>/G</b></td><td>Move cursor based on entire screen. (default)</td></tr>
 <tr><td><b>/L</b></td><td>Move cursor based on its surroundings.</td></tr>
 <tr><td><i>direction</i></td><td>Move cursor <b><i>up</i></b>, <b><i>down</i></b>, 
-<b><i>left</i></b> or <b><i>right</i></b> one space</td></tr>
+<b><i>left</i></b> or <b><i>right</i></b> one space.</td></tr>
 <tr><td><i>shift</i></td><td>Move cursor to the <b><i>previous</i></b> or <b><i>next</i></b>
 position and change rows if needed.</td></tr>
 <tr><td><i>position</i></td><td>Move cursor to the <b><i>SOP</i></b> <i>(Start of Page)</i>, 
@@ -218,7 +218,7 @@ you prefix with a letter or number.
 <tr><td><b>/D <i>n</i></a></td><td>Preselect item number <b><i>n</i></b>.</td></tr>
 <tr><td><i>type</i></td><td>Direct keypress selection type.<br>
 	 <b><i>off</i></b> Select with only arrow keys.<br>
-	 <b><i>auto</i></b> Detect direct jump characters (Default)<br>
+	 <b><i>auto</i></b> Detect direct jump characters. (Default)<br>
 	 <b><i>alpha</i></b> Jump to selections using A-Z.<br>
 	 <b><i>digit</i></b> Jump to selections using 1-9 (+0).<br>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
