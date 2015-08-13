@@ -21,6 +21,7 @@
 	FrameBounds
 	WhereXY
     mov			al, [TextAttr]
+    mov			[FirstAttr], al
     or			al, 0x08
     mov			[SelectedAttr], al
     and			al, 0x77
@@ -80,6 +81,10 @@ TimedOut:
 ShowTimeOut:
 	push		bx
 	push		dx
+	mov			dl, [TextAttr]
+	push		dx
+	mov			dl, [FirstAttr]
+	mov			[TextAttr], dl
 	push		cx
 
 	mov			dx, [WindMax]
@@ -98,10 +103,13 @@ ShowTimeOut:
 	mul			cx
 	mov			cx, 200
 	div			cx
-    WriteIntNoAttr	ax
+    WriteInt	ax
    	mov			al, 0x20
    	WriteChar	0x0a 
-	pop			cx
+   	pop			cx
+   	
+   	pop			dx
+	mov			[TextAttr], dl
     pop			dx
 	pop			bx
 	ret
@@ -578,6 +586,8 @@ HotChoice:
 LastHot:
 	db 0
 SelectedAttr:
+	db 0
+FirstAttr:
 	db 0
 HotAttr:
 	db 0
