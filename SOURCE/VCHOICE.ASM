@@ -189,8 +189,18 @@ WaitLoop:
     
 Done:
 	push		ax
+
 	mov			dx, [Position]
 	GotoXY		dx
+
+	mov			al, [Querying]
+	cmp			al, 0
+	je			NoSTDOUT
+	mov			di, StdOutChoice
+	call 		EachChoice
+	StdOutCRLF
+
+NoSTDOUT:
 	
 	FreeTempVideoPage
 	pop			ax
@@ -348,6 +358,41 @@ SelectChoice:
 	pop			bx
 	ret
 	
+StdOutChoice:
+	mov			al, [Selected]
+	cmp			bl, al
+	jne			.NotThis
+	push		bx
+	push		dx
+	mov			cl, [OptionBox + 2]
+	mov			ch, [OptionBox + 0]
+	sub			cl, ch
+	inc			cl
+	xor			ch, ch
+	mov			bh, [VideoPage]
+	xor			dl, dl
+.OutLoop:
+	push		cx
+	push		dx
+	push		bx
+	GotoXY		dx
+	pop			bx
+	push		bx
+	mov			ah, 0x08
+	int			0x10
+	mov			ah, 0x02
+	mov			dl, al
+	int			0x21
+	pop			bx
+	pop			dx
+	pop			cx
+	inc			dl
+	loop		.OutLoop
+	pop			dx
+	pop			bx	
+.NotThis:
+	ret
+	
 ; Switches
 	ColorSwitchHandlers
 	
@@ -378,6 +423,10 @@ ValidateD:
 	mov			al, ah
 .Done:
 	mov			[Selected], al
+	ret
+SwitchQ:
+	mov			al, 1
+	mov			[Querying], al
 	ret
 
 OptNone:
@@ -415,6 +464,7 @@ CommandLineSwitches:
 	SwitchData  0,  0, NoSwitch  
 	SwitchData  'D',  1, SwitchD
 	SwitchData  'T',  1, SwitchT
+	SwitchData  'Q',  0, SwitchQ
 	ColorSwitchData
     SwitchData  0,  0, 0
 
@@ -432,6 +482,8 @@ StyleTable:
 	TableData 'YESNO', OptYesNo
 	TableEnd
 
+Querying:
+	db 0
 TimeOut:
 	dw 0	
 SelectChars:
