@@ -149,7 +149,7 @@ Draw a box windowing thingy and move cursor to its inside top left position.
 <tr><td><b>/Y <i>row</i></b></td><td>Screen <b><i>row</i></b> to start the box.</td></tr>
 <tr><td><b>/W <i>width</i></b></td><td>Total <b><i>width</i></b> of the box.</td></tr>
 <tr><td><b>/H <i>height</i></b></td><td>Total <b><i>height</i></b> of the box.</td></tr>
-<tr><td><b><i>style</i></b></td><td>Box <i>styles</i> are <b><i>Single</i></b>, <b><i>Double</i></b>, 
+<tr><td><i>style</i></td><td>Box <i>styles</i> are <b><i>Single</i></b>, <b><i>Double</i></b>, 
 <b><i>SingleSides</i></b>, <b><i>DoubleSides</i></b> and <b><i>Hidden</i></b></td></tr>
 <tr><td><i><b>shadow</b></i></td><td>Add a 3D style <b><i>shadow</i></b></td></tr>
 </table>
@@ -158,7 +158,7 @@ Draw a box windowing thingy and move cursor to its inside top left position.
 Generate a tone using the built in speaker.
 <table>
 <tr><td width="125pt"></td><td>No output.</td></tr>
-<tr><td><b><i>hz:ms</i></b></td><td>Use the PC Speaker to generate a <b><i>hz</i></b> frequency tone. 
+<tr><td><i>hz:ms</i></td><td>Use the PC Speaker to generate a <b><i>hz</i></b> frequency tone. 
 Then Delay for <b><i>ms</i></b> milliseconds. (Note: 0 frequency turns off speaker. If no frequency is provided
 then 0 is assumed)</td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
@@ -186,9 +186,9 @@ Draw a progress bar at current location without moving cursor.
 <tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to 
 <b><i>color</i></b> (or <b><i>value</i></b>)</td></tr>
 <tr><td><b>/W <i>width</i></b></td><td>Override default <b><i>width</i></b> of the bar (default is from cursor to end of line)</td></tr>
-<tr><td><b><i>percent</i></b></td><td>Sets the value in <b><i>percent</i></b> of progress</td></tr>
+<tr><td><i>percent</i></td><td>Sets the value in <b><i>percent</i></b> of progress</td></tr>
 <tr><td><b><i>off</i></b></td><td>Do not display percentage number</td></tr>
-<tr><td><b><i>align</i></b></td><td>Percentage number in <b><i>left</i></b>, 
+<tr><td><i>align</i></td><td>Percentage number in <b><i>left</i></b>, 
 <b><i>center</i></b> (Default) or <b><i>right</i></b> of the progress bar</td></tr>
 </table>
 * * *
