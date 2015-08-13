@@ -70,13 +70,68 @@ ShowChoices:
 	mov			bl, [HotChoice]
 	mov			[LastHot], bl
 	ret
-    
+	
+TimedOut:
+	pop			es
+	mov			al, [DefaultChoice]
+	mov			[Selected], al
+	jmp			Chosen
+	
+ShowTimeOut:
+	push		bx
+	push		dx
+	push		cx
+
+	mov			dx, [WindMax]
+	sub			dl, 10
+    mov         ah, 0x02
+    mov         bh, [VideoPage]
+    int         0x10
+   
+   	mov			al, 0x20
+   	WriteChar	0x0a 
+	pop			cx
+	push		cx
+	xor			dx, dx
+	mov			ax, 11
+	xchg		ax, cx
+	mul			cx
+	mov			cx, 200
+	div			cx
+    WriteIntNoAttr	ax
+   	mov			al, 0x20
+   	WriteChar	0x0a 
+	pop			cx
+    pop			dx
+	pop			bx
+	ret
+	
 KeyBoardLoop:
 	call		ShowChoices
-WaitLoop:
+	mov			cx, [TimeOut]
+	push		es
+	mov			bx, 0x0040
+	mov			es, bx
+	mov			bx, 0x006c
+	mov			dx, [es:bx]
+.WaitLoop:
+	mov			ax, [TimeOut]
+	cmp			ax, 0
+	je			.NoTimeOut
+	cmp			cx, 0
+	je			TimedOut
+	mov			ax, [es:bx]
+	cmp			ax, dx
+	je			.NoTimeOut
+	dec			cx
+	mov			dx, ax
+	call		ShowTimeOut
+.NoTimeOut:
 	mov			ax, 0x0100
 	int			0x16
-	jz			WaitLoop
+	jz			.WaitLoop
+	pop			es
+	
 	mov			ax, 0x0000
 	int			0x16
 	; up down to navigate
@@ -86,9 +141,9 @@ WaitLoop:
 	je			.GoDown
 	; Space or Enter to Choose
 	cmp			al, 0x20
-	je			.Chosen
+	je			Chosen
 	cmp			al, 0x0d
-	je			.Chosen
+	je			Chosen
 	; test selection type off
 	mov			bl, [SelectChars]
 	cmp			bl, 0
@@ -155,6 +210,7 @@ WaitLoop:
 	jmp			KeyBoardLoop
 	
 .Changed:
+	; need to do polling here
 	jmp			KeyBoardLoop
 	
 .GoUp:
@@ -180,7 +236,8 @@ WaitLoop:
 	je			KeyBoardLoop
 	mov			[Selected], al
 	jmp 		.Changed
-.Chosen:
+
+Chosen:
 	xor			al, al
 	mov			[HotChoice], al
 	mov			di, SelectChoice
@@ -199,6 +256,9 @@ Done:
 	mov			di, StdOutChoice
 	call 		EachChoice
 	StdOutCRLF
+
+	mov			dx, [Position]
+	GotoXY		dx
 
 NoSTDOUT:
 	
@@ -398,8 +458,22 @@ StdOutChoice:
 	
 SwitchT:
 	NumberParam
+	cmp			ax, 0
+	je			.SwitchOff
+	cmp			ax, 3600
+	jle			.SwitchOK
+	mov			ax, 3600
+.SwitchOK:
+	inc			ax
+	mov			cx, 200
+	mul			cx
+	mov			cx, 11
+	div			cx
+	inc			ax
+.SwitchOff:
 	mov			[TimeOut], ax
 	ret
+	
 SwitchD:
 	mov			al, [di]
 	cmp         al, 0x61
@@ -423,6 +497,7 @@ ValidateD:
 	mov			al, ah
 .Done:
 	mov			[Selected], al
+	mov			[DefaultChoice], al
 	ret
 SwitchQ:
 	mov			al, 1
@@ -486,9 +561,13 @@ Querying:
 	db 0
 TimeOut:
 	dw 0	
+LastTick:
+	dw 0
 SelectChars:
 	db 1
 Max: 
+	db 0
+DefaultChoice:
 	db 0
 Selected:
 	db 1
