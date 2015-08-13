@@ -4,7 +4,7 @@ rem inconsistent command formating, is demonstrate the flexibility
 rem of the V8Power Tools option parsing.
 
 if not exist BIN\NUL goto MakeDemo
-goto Maybe
+goto LetsGo
 
 :MakeDemo
 if not exist mkV8.bat goto NoJoy
