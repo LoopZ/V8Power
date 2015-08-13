@@ -59,7 +59,7 @@ It will create an <b>DIST</b> folder containing everything you need.</i><br>
 > * Use multiple qoutes to use quotes. Like **"Jack's house"** or **'Say "What?"'**.<br>
 > * Unless overriden, most utilities use the text attribute at the current cursor location.<br>
 <br>
-Here is color table used for all /A, /F and /B switches:
+Here is color table used for all **/A**, **/F** and **/B** switches:
 <table>
 <tr><th>Decimal</th><th>Hex</th><th>Label(Not case specific)</th></tr>
 <tr><td>0</td><td>0x00</td><td>Black</td)</tr>
