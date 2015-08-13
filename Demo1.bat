@@ -28,11 +28,8 @@ set CURSOR=small
 :NotDosBOX
 vcursor hide
 
-pause
 vcls /b Red /f White
 vdelay 500
-
-rem goto current
 
 vcls /b Green /f LightCyan
 vdelay 500
@@ -108,8 +105,6 @@ vecho "Box characters cause interesting things with the vecho command"
 vgotoxy /g/x1/y1
 vecho "Box characters cause interesting things with the vecho command"
 vdelay 3000
-
-:current
 
 vcls /b Green /f LightCyan
 vecho "This screen is environmentally friendly."
