@@ -247,13 +247,13 @@ you prefix with a letter or number.
                     auto    Detect direct jump characters. (Default)
                     alpha   Jump to selections using A-Z.
                     digit   Jump to selections using 1-9 (+0).
-    /Q			Query for result. When the choice is made, it's text will be
-    			sent to STDOUT.
-	/T seconds	Delay in seconds before the default item is automatically 
-				selected (0-3600). Note that even if the user navigates to a 
-				different item, the original default item will be selected when
-				the timeout is achieved.
-				
+    /Q          Query for result. When the choice is made, it's text will be
+                sent to STDOUT.
+    /T seconds  Delay in seconds before the default item is automatically 
+                selected (0-3600). Note that even if the user navigates to a 
+                different item, the original default item will be selected when
+                the timeout is achieved.
+                
     tba         (Still under development, more to be announced)
 
 

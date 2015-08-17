@@ -33,6 +33,8 @@ goto NotDosBOX
 set CURSOR=small
 :NotDosBOX
 
+rem do demo here
+
 :Done
 rem Clear screen, restore the cursor size and shape
 vcls 	/a0x07

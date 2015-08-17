@@ -33,7 +33,16 @@ goto NotDosBOX
 set CURSOR=small
 :NotDosBOX
 
+rem The Demo
+vcursor hide
+vcls /fWhite/bBlue
+
+vline Single
+vdelay 1000
+vline  Double
+
 :Done
+vdelay 3000
 rem Clear screen, restore the cursor size and shape
 vcls 	/a0x07
 vcursor %CURSOR%

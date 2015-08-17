@@ -45,11 +45,15 @@
     
 .NotHidden:
     xor		ch, ch
+    mov		cl, [LineDir]
+    cmp		cl, 1
+    je		Vertical
     mov		cl, [CurrentW]
     cmp		cl, 0
     je		Vertical
     
 Horizontal:
+    mov		cl, [CurrentW]
 	push	cx
 	mov		bh, [VideoPage]
 	mov		dx, [CurrentXY]
@@ -103,26 +107,31 @@ SizeSwitchHandlers
 OptHidden:
 	mov		al, 0
 	mov		[LineStyle], al
-	mov		[LineEnds], al
+	mov		[LineSmart], al
 	ret
-	
 OptSingle:
 	mov		al, 1
 	mov		[LineStyle], al
 	ret
-	
 OptDouble:
 	mov		al, 2
 	mov		[LineStyle], al
 	ret
-
-OptEnds:
+OptSmart:
 	mov		al, 1
-	mov		[LineEnds], al
+	mov		[LineSmart], al
 	ret
-OptNoEnds:
+OptDumb:
 	mov		al, 0
-	mov		[LineEnds], al
+	mov		[LineSmart], al
+	ret
+OptHorizontal:
+	mov		al, 0
+	mov		[LineDir], al
+	ret
+OptVertical:
+	mov		al, 1
+	mov		[LineDir], al
 	ret
 	   
 CommandLineSwitches:
@@ -137,13 +146,21 @@ OptionsTable:
 	TableData "HIDDEN",			OptHidden
 	TableData "SINGLE", 		OptSingle
 	TableData "DOUBLE",			OptDouble
-	TableData "ENDS",			OptEnds
-	TableData "NOENDS",			OptNoEnds
+	TableData "SMART",			OptSmart
+	TableData "DUMB",			OptDumb
+	TableData "HORIZONTAL",		OptHorizontal
+	TableData "VERTIVAL",		OptVertical
+	TableData "HORZ",			OptHorizontal
+	TableData "VERT",			OptVertical
+	TableData "HOR",			OptHorizontal
+	TableData "VER",			OptVertical
 	TableEnd
 	
 Position:
 	dw 0
 LineStyle:
-	db 0
-LineEnds:
 	db 1
+LineSmart:
+	db 1
+LineDir:
+	db 0
