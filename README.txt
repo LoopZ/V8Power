@@ -191,7 +191,7 @@ Generate a tone using the built in speaker.
 
 -------------------------------------------------------------------------------
 
-vversion [options]
+vver [options]
 
 V8Power information program.
 

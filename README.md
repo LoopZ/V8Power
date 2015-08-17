@@ -193,7 +193,7 @@ then 0 is assumed)</td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
 * * *
-#### vversion *[options]* ######
+#### vver *[options]* ######
 V8Power information program.
 <table>
 <tr><td width="125pt"></td><td>Outputs all info to <b>STDOUT</b>.</td></tr>

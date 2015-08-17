@@ -84,10 +84,10 @@ NASM.EXE -ISOURCE\ SOURCE\VPCSPKR.ASM -fbin -O9 -o BIN\VPCSPKR.COM
 if ERRORLEVEL 1 goto Error
 if not "%1" == "" goto Done
 
-:vversion
-set VSTAGE=vversion
+:vver
+set VSTAGE=vver
 bin\vecho "Referencing " /f 11 "Zen and the Art of Motorcycle Maintenance" /f gray ...
-NASM.EXE -ISOURCE\ SOURCE\VVERSION.ASM -fbin -O9 -o BIN\VVERSION.COM
+NASM.EXE -ISOURCE\ SOURCE\VVER.ASM -fbin -O9 -o BIN\VVER.COM
 if ERRORLEVEL 1 goto Error
 if not "%1" == "" goto Done
 
