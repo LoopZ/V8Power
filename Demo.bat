@@ -60,9 +60,9 @@ vecho /fLightGreen " What would you like to see?"
 vline Hidden
 
 :TryAgain
-vecho /fLightCyan  "   A. " /fYellow "Progress and Multi-Window Demo "
-vecho /fLightGreen "   B) " /fYellow "Display Locations and Writing Demo "
-vecho /fLightGreen "   C: " /fYellow "Cursor Movement Demo "
+vecho /fLightCyan  "   X. " /fYellow "Progress and Multi-Window Demo "
+vecho /fLightGreen "   5) " /fYellow "Display Locations and Writing Demo "
+vecho /fLightGreen "   b: " /fYellow "Cursor Movement Demo "
 vecho
 vgotoxy /l /x8
 vecho /n /fWhite " 0" /fGray " - " /fLightRed "Return to " 
@@ -224,7 +224,23 @@ vprogres 99
 vdelay 1000
 vgotoxy /x7 /y19
 vprogres 100
+vdelay 3000
+
+vgotoxy /x5/y6
+vcls /l/fBlue
+vecho "Now I will write " /fRed "V8Power Tools!" 
+vecho /n /fBlue "in the other box "
+vecho /fBlack 10,000 /fBlue " times."
+vgotoxy /x43/y6/l
+vcls /l/fRed
 vdelay 2000
+vecho /fRed /r10000 "V8Power Tools! "
+vgotoxy /x5/y6/l eot next
+vecho
+vecho
+vecho /fRed "Pretty neat, eh?"
+vdelay 2000
+
 goto NextPart
 
 :PartB
