@@ -35,11 +35,25 @@ NASM.EXE -ISOURCE\ SOURCE\VGOTOXY.ASM -fbin -O9 -o BIN\VGOTOXY.COM
 if ERRORLEVEL 1 goto Error
 if not "%1" == "" goto Done
 
-:vcursor
-set VSTAGE=vcursor
-bin\vecho /n "Adjusting "
-bin\vecho /f 13 carburetor /f gray ...
-NASM.EXE -ISOURCE\ SOURCE\VCURSOR.ASM -fbin -O9 -o BIN\VCURSOR.COM
+:vdelay
+set VSTAGE=vdelay
+bin\vecho "Cleaning " /f 15 "air filter" /f gray ...
+NASM.EXE -ISOURCE\ SOURCE\VDELAY.ASM -fbin -O9 -o BIN\VDELAY.COM
+if ERRORLEVEL 1 goto Error
+if not "%1" == "" goto Done
+
+:vmath
+set VSTAGE=vmath
+bin\vecho /n "Studying "
+bin\vecho /f 13 belts /f gray ...
+NASM.EXE -ISOURCE\ SOURCE\VMATH.ASM -fbin -O9 -o BIN\VMATH.COM
+if ERRORLEVEL 1 goto Error
+if not "%1" == "" goto Done
+
+:vstr
+set VSTAGE=vstr
+bin\vecho "Turning " /f 10 "the key" /f gray ...
+NASM.EXE -ISOURCE\ SOURCE\VSTR.ASM -fbin -O9 -o BIN\VSTR.COM
 if ERRORLEVEL 1 goto Error
 if not "%1" == "" goto Done
 
@@ -49,10 +63,11 @@ bin\vecho "Verifying " /f 12 "timing" /f gray ...
 NASM.EXE -ISOURCE\ SOURCE\VCHOICE.ASM -fbin -O9 -o BIN\VCHOICE.COM
 if not "%1" == "" goto Done
 
-:vdelay
-set VSTAGE=vdelay
-bin\vecho "Cleaning " /f 15 "air filter" /f gray ...
-NASM.EXE -ISOURCE\ SOURCE\VDELAY.ASM -fbin -O9 -o BIN\VDELAY.COM
+:vcursor
+set VSTAGE=vcursor
+bin\vecho /n "Adjusting "
+bin\vecho /f 13 carburetor /f gray ...
+NASM.EXE -ISOURCE\ SOURCE\VCURSOR.ASM -fbin -O9 -o BIN\VCURSOR.COM
 if ERRORLEVEL 1 goto Error
 if not "%1" == "" goto Done
 
@@ -118,7 +133,6 @@ bin\vecho "Mashing " /f 12 accelerator /f gray ...
 NASM.EXE -ISOURCE\ SOURCE\VVIEW.ASM -fbin -O9 -o BIN\VVIEW.COM
 if ERRORLEVEL 1 goto Error
 if not "%1" == "" goto Done
-
 
 set VSTAGE=
 bin\vecho
