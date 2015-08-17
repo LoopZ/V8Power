@@ -33,6 +33,11 @@ created <b>BIN</b> directory.<br><br>
 <i>To create a redistributable version use the mkDist.bat script.<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 It will create an <b>DIST</b> folder containing everything you need.</i><br>
+
+#### &nbsp;&nbsp; For lazy people, like me ######
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Precompiled versions are available at [http://up.lod.bz/V8Power](http://up.lod.bz/V8Power).<br>
+
 * * *
 
 ## V8Power Tools Tested Compatibility

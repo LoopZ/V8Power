@@ -35,6 +35,10 @@ Compiling V8Power Tools
         ( To create a redistributable version use the mkDist.bat script.
         It will create an DIST folder containing everything you need.)
 
+    For lazy people, like me:
+
+        Precompiled versions are available at http://up.lod.bz/V8Power.
+
 -------------------------------------------------------------------------------
 
 V8Power Tools Tested Compatibility

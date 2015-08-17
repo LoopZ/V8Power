@@ -24,6 +24,9 @@ org 0x100
 
 jmp BasicInitialize
 
+VersionID:
+	dd 0
+	
 %idefine VideoOutput
 
 %ifdef NoVideoOutput

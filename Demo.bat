@@ -57,7 +57,7 @@ vframe /x18 /y7 /w44 /h11 DoubleSides
 vcls /L /fYellow
 vecho
 vecho /fLightGreen " What would you like to see?"
-vline Hidden
+vline Hidden Dumb
 
 :TryAgain
 vecho /fLightCyan  "   X. " /fYellow "Progress and Multi-Window Demo "
