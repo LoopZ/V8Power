@@ -18,12 +18,44 @@
 
 %include "COMMON.INC"
 
-;	PlaceHolder 
-
     CommandLineParser       ; insert code for command line parsing
+    
+KeyBoardLoop:
+	mov			cx, [TimeOut]
+	push		es
+	mov			bx, 0x0040
+	mov			es, bx
+	mov			bx, 0x006c
+	mov			dx, [es:bx]
+.WaitLoop:
+	mov			ax, [TimeOut]
+	cmp			ax, 0
+	je			.NoTimeOut
+	cmp			cx, 0
+	je			TimedOut
+	mov			ax, [es:bx]
+	cmp			ax, dx
+	je			.NoTimeOut
+	dec			cx
+	mov			dx, ax
+	call		ShowTimeOut
+.NoTimeOut:
+	mov			ax, 0x0100
+	int			0x16
+	jz			.WaitLoop
+	pop			es
+	
+	mov			ax, 0x0000
+	int			0x16
 
     Terminate 0
     
+TimedOut:
+	Terminate 1
+    
+ShowTimeOut:
+	ret
+
 NoSwitch:
     LookupParam OptionsTable
     cmp         ax, 0xffff
@@ -37,10 +69,32 @@ NoSwitch:
 .InvalidOption:
 	WriteStr	CommandLineErrorMsg
 	Terminate	100
+
+SwitchT:
+	NumberParam
+	cmp			ax, 0
+	je			.SwitchOff
+	cmp			ax, 3600
+	jle			.SwitchOK
+	mov			ax, 3600
+.SwitchOK:
+	inc			ax
+	mov			cx, 200
+	mul			cx
+	mov			cx, 11
+	div			cx
+	inc			ax
+.SwitchOff:
+	mov			[TimeOut], ax
+	ret
     
 CommandLineSwitches:
 	SwitchData  0,  0, NoSwitch  
+	SwitchData  'T',  1, SwitchT
     SwitchData  0,  0, 0
     
 OptionsTable:
 	TableEnd
+	
+TimeOut:
+	dw 0	

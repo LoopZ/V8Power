@@ -610,8 +610,6 @@ Querying:
 	db 0
 TimeOut:
 	dw 0	
-LastTick:
-	dw 0
 SelectChars:
 	db 1
 Max: 

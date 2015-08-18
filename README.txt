@@ -260,16 +260,20 @@ you prefix with a letter or number.
                 
     tba         (Still under development, more to be announced)
 
+-------------------------------------------------------------------------------
+
+vpause [options]
+
+Simple wait for keypress or time-out.
+
+	[none]		Wait forever for keypress.
+	/T seconds	Delay in seconds to wait before the pause times-out. (returns
+				errorlevel 1)
+    tba        	(Still under development, more to be announced)
 
 -------------------------------------------------------------------------------
 
 vline
-
-TBA
-
--------------------------------------------------------------------------------
-
-vpause
 
 TBA
 

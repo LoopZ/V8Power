@@ -256,10 +256,15 @@ selected when the timeout is achieved.</td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </td></tr></table>
 * * *
+#### vpause *[options]* ######
+Simple wait for keypress or  time-out.
+<table>
+<tr><td width="125pt"></td><td>Wait forever for keypress.</td></tr>
+<tr><td><b>/T <i>seconds</i></a></td><td>Delay in <b><i>seconds</i></b> to wait before the 
+pause times-out. (returns errorlevel 1)</td></tr>
+<tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
+</table>
 #### vline ######
-TBA
-* * *
-#### vpause ######
 TBA
 * * *
 #### vinfo ######
