@@ -264,6 +264,7 @@ Simple wait for keypress or  time-out.
 pause times-out. (returns errorlevel 1)</td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
+* * *
 #### vline ######
 TBA
 * * *
