@@ -254,7 +254,7 @@ sent to STDOUT.</td></tr>
 Note that even if the user navigates to a different item, the original default item will be
 selected when the timeout is achieved.</td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
-</td></tr></table>
+</table>
 * * *
 #### vpause *[options]* ######
 Simple wait for keypress or  time-out.
