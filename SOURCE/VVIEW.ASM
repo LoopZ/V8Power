@@ -18,9 +18,9 @@
 
 %include "COMMON.INC"
 
-;	PlaceHolder 
-
     CommandLineParser       ; insert code for command line parsing
+
+	PlaceHolder 
 
     Terminate 0
     
