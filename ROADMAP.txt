@@ -1,0 +1,26 @@
+*******************************************************************************
+V8Power Tools
+Copyright 2015 Jerome Shidel
+Released under GPL v2.0 License.
+*******************************************************************************
+
+Putting the power of an 8-cylinder engine under the hood of DOS batch files.
+
+===============================================================================
+
+Probably roadmap for the future of V8Power Tools:
+
+	vline - line drawing utility, single, double, smart, dumb...
+	vpause - wait for keypress.
+	vinfo - system information utility. 
+	vmode - video mode get/set utility.
+	vview - Text file viewer.
+	vask - Single line text input and editor.
+	vstr - Simple I/O redirection string processing. Like trim, squeaze, case...
+	vmath - Simple integer math.
+	vecho - Word wrapping and more control-code ascii support.
+	vpcspkr - More music style support like maybe, C#, C. and such.
+	vver - Email bugs to v8power@shidel.net
+
+	vchoice, vpause, vask, vview - Mouse, Hot Key and button support.
+
