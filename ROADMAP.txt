@@ -16,13 +16,14 @@ Probably roadmap for the future of V8Power Tools:
 	vmode - video mode get/set utility.
 	vview - Text file viewer.
 	vask - Single line text input and editor.
-	vstr - Simple I/O redirection string processing. Like trim, squeaze, case...
+	vstr - Simple I/O redirection string processing. Like trim, squeeze, case...
 	vmath - Simple integer math.
 	vecho - Word wrapping and more control-code ascii support.
 	vecho - Support text from stdin.
 	vpcspkr - More music style support like maybe, C#, C. and such.
 	vver - Email bugs to v8power@shidel.net
 	vver - verify all utils are present and proper version.
+	vchoice - change polling.
 
 	vchoice, vpause, vask, vview - Mouse, Hot Key and button support.
 
