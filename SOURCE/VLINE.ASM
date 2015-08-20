@@ -62,9 +62,16 @@ Horizontal:
 	add		dl, al
 	mov		ah, 0x02
 	int		0x10
-	mov		ah, 0x09
 	mov		bl, [TextAttr]
+	mov		ah, [LineStyle]
+	cmp		ah, 2
+	je		.DoubleLine	
 	mov		al, 0xc4
+	jmp		.CharSet
+.DoubleLine:
+	mov		al, 0xcd
+.CharSet:
+	mov		ah, 0x09
 	int 	0x10	
 	pop		cx
     mov		dx, [Position]

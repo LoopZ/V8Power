@@ -275,7 +275,13 @@ Simple wait for keypress or time-out.
 
 vline
 
-TBA
+	[none]		Draws as local single dumb line on the current row.
+	single		Draws a single line.
+	double		Draws a double line.
+	hidden		Draws a invisible dumb line.
+	dumb		Draws a dumb line without regard to what already exists.
+
+    tba        	(Still under development, more to be announced)
 
 -------------------------------------------------------------------------------
 
