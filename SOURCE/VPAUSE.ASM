@@ -18,7 +18,10 @@
 
 %include "COMMON.INC"
 
-    CommandLineParser       ; insert code for command line parsing
+	WhereXY
+	mov		[Position], dx
+
+	CommandLineParser       ; insert code for command line parsing
     
 KeyBoardLoop:
 	mov			cx, [TimeOut]
@@ -48,12 +51,61 @@ KeyBoardLoop:
 	mov			ax, 0x0000
 	int			0x16
 
+	mov			dx, [Position]
+	GotoXY		dx
     Terminate 0
     
 TimedOut:
+	mov			dx, [Position]
+	GotoXY		dx
 	Terminate 1
     
 ShowTimeOut:
+	push		cx
+	push		bx
+	push		dx
+
+	xor			dx, dx
+	mov			ax, 11
+	xchg		ax, cx
+	mul			cx
+	mov			cx, 200
+	div			cx
+
+	push		ax
+;    mov			cx, 0
+;	cmp			ax, 1000
+;	jge			.SetWidth
+;	inc			cx
+;	cmp			ax, 100
+;	jge			.SetWidth
+;	inc			cx
+;	cmp			ax, 10
+;	jge			.SetWidth
+;	inc			cx
+; .SetWidth:
+	mov			bl, [TextAttr]
+    mov         bh, [VideoPage]
+    mov			dx, [Position]
+    mov         ah, 0x02
+    int         0x10
+;    cmp			cx, 0
+;    je			.NoSpace
+;    mov			ax, 0x0920
+;    int			0x10
+;    add			dl, cl
+; .NoSpace:
+    mov         ah, 0x02
+    int         0x10
+   
+	pop			ax
+    WriteInt	ax
+    mov			al, 0x20
+    WriteChar	0x09
+NoDisplayTimeOut:
+    pop			dx
+	pop			bx
+ 	pop			cx   	
 	ret
 
 NoSwitch:
@@ -87,10 +139,13 @@ SwitchT:
 .SwitchOff:
 	mov			[TimeOut], ax
 	ret
+
+	ColorSwitchHandlers
     
 CommandLineSwitches:
 	SwitchData  0,  0, NoSwitch  
 	SwitchData  'T',  1, SwitchT
+	ColorSwitchData	
     SwitchData  0,  0, 0
     
 OptionsTable:
@@ -98,3 +153,5 @@ OptionsTable:
 	
 TimeOut:
 	dw 0	
+Position:
+	dw 0
