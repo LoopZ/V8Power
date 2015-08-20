@@ -266,7 +266,7 @@ pause times-out. (returns errorlevel 1)</td></tr>
 </table>
 * * *
 #### vline ######
-<table>Draws as local single dumb line on the current row.Wait forever for keypress.</td></tr>
+<table><tr><td width="125pt"></td><td>Draws as local single dumb line on the current row.Wait forever for keypress.</td></tr>
 <tr><td><b><i>single</i></a></td><td>Draws a <b><i>single</i></b> line.</td></tr>
 <tr><td><b><i>double</i></a></td><td>Draws a <b><i>double</i></b> line.</td></tr>
 <tr><td><b><i>hidden</i></a></td><td>Draws a <b><i>hidden</i></b> dumb line.</td></tr>
