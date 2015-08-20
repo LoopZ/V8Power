@@ -11,7 +11,6 @@ Putting the power of an 8-cylinder engine under the hood of DOS batch files.
 Probably roadmap for the future of V8Power Tools:
 
 	vline - line drawing utility, single, double, smart, dumb...
-	vpause - show if/when will timeout.
 	vinfo - system information utility. 
 	vmode - video mode get/set utility.
 	vview - Text file viewer.
