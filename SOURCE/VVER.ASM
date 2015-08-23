@@ -34,6 +34,7 @@ OptAll:
 	call	OptCopy
 	call	OptVer
 	call	OptURL
+	call	OptEMail
 	StdOutCRLF
 	call	OptLic
 	ret
@@ -56,6 +57,10 @@ OptLic:
 	ret
 OptURL:
 	StdOutStr OptURLMsg
+	StdOutCRLF
+	ret
+OptEMail:
+	StdOutStr OptEmailMsg
 	StdOutCRLF
 	ret
 
@@ -91,6 +96,7 @@ OptionsTable:
 	TableData "VER", OptVer
 	TableData "LIC", OptLic
 	TableData "URL", OptURL
+	TableData "EMAIL", OptEMail
 	TableEnd
 	
 OptNameMsg:
@@ -99,6 +105,8 @@ OptVerMsg:
 	DB 'Version 0/0/2015 (Pre-release)',0
 OptCopyMsg:
 	DB 'Copyright (C) 2015 Jerome Shidel',0
+OptEmailMsg:
+	DB 'mailto:V8Power@LoopZ.org',0
 OptURLMsg:
 	DB 'https://github.com/LoopZ/V8Power',0
 OptLicMsg:

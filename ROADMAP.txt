@@ -20,7 +20,6 @@ Probably roadmap for the future of V8Power Tools:
 	vecho - Word wrapping and more control-code ascii support.
 	vecho - Support text from stdin.
 	vpcspkr - More music style support like maybe, C#, C. and such.
-	vver - Email bugs to v8power@shidel.net
 	vver - verify all utils are present and proper version.
 	vchoice - change polling.
 
