@@ -29,10 +29,6 @@
 
 %include "COMMON.INC"
 	
-	push	ds
-	pop		bx
-	mov		[ControlBlock+0x08], bx
-
     CommandLineParser       ; insert code for command line parsing
 
 	mov		ax, [OptionProcessed]
@@ -130,10 +126,7 @@ ShowQuery:
 		mov			[ExitCode], al		
     %%Done:
 %endmacro
-	
-InvalidDriveMsg:
-	db		'Invalid Drive',CRLF,0
-	
+		
 SwitchC:
 	ret
 	
@@ -187,6 +180,9 @@ OptionsTable:
 	TableData "QUERY", ShowQuery
 	TableEnd
 	
+MsgInvalidDrive:
+	db 'Invalid Drive',CRLF,0
+	
 OptionProcessed:
 	dw 0xffff
 QueryMode:
@@ -197,12 +193,3 @@ ExitCode:
 Drive:
 	db 0
 	
-ControlBlock:
-	dw	1, 0
-	dw	1
-	dw	Buffer, 0
-	
-Buffer:
-	Times 512 db 0
-	db 0xff,0xff
-	Times 1024 db 0
