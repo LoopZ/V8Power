@@ -136,6 +136,7 @@ SwitchV:
 	ret
 		
 SwitchD:
+
 	mov		al, [di]
 	xor		ah, ah
 	cmp		ax, 0x5e
@@ -148,6 +149,14 @@ SwitchD:
 	jg		InvalidOption
 	sub		ax, 0x40
 	mov		[Drive], al
+	
+	cmp		al, 3
+	jl		.NotFloppy
+	Floppies
+	mov		ah, [Drive]
+	cmp		al, ah
+	jg		.BadDriveLetter
+.NotFloppy:
 	IsValidDrive [Drive]
 	; ax = 0, At least it is exists and partitioned
 	cmp		ax, 0
@@ -156,6 +165,9 @@ SwitchD:
 	mov			al, [QueryMode]
 	cmp			al, 1
 	jne			.Done
+.BadDriveLetter:
+	mov			al, erNotValid
+	mov			[ExitCode], al
 	WriteStr  	MsgInvalidDrive
 	jmp			.Done
 .DriveExists:

@@ -126,6 +126,21 @@
 	pop		ds
 %endmacro
 
+%imacro Floppies 0 ; BIOS Function
+		int		0x11
+		test	al, 0x01
+		jz   	%%NoFloppies
+		xor		ah, ah
+		and		al, 0xc0
+		mov		cl, 0x06
+		shr		ax, cl
+		inc		ax
+		jmp		%%Done
+    %%NoFloppies:
+		xor		ax, ax
+    @@Done:
+%endmacro
+
 MyInt24:
 	push	ax
 	mov		ax, di
