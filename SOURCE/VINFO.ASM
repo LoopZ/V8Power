@@ -32,15 +32,15 @@
 ;   0x0f - Not Present
 
 %idefine erNotValid 0x0f
-%idefine erNotReadable 8
-%idefine erNotPartitioned 7
-%idefine erNotPrimary 6
-%idefine erNotActive 5
-%idefine erNotFormatted 4
-%idefine erIsNetwork 3
-%idefine erIsCDROM 2
-%idefine erRemovable 1
-%idefine erNone 0
+%idefine erNotReadable 0x08
+%idefine erNotPartitioned 0x07
+%idefine erNotPrimary 0x06
+%idefine erNotActive 0x05
+%idefine erNotFormatted 0x04
+%idefine erIsNetwork 0x03
+%idefine erIsCDROM 0x02
+%idefine erRemovable 0x01
+%idefine erNone 0x00
 
 %include "COMMON.INC"
 	
@@ -164,10 +164,10 @@ SwitchD:
 	cmp		ax, 0
 	je		.DriveExists
 	; Drive not found, so se if a hard drive actually exists
+.BadDriveLetter:
 	mov			al, [QueryMode]
 	cmp			al, 1
 	jne			.Done
-.BadDriveLetter:
 	mov			al, erNotValid
 	mov			[ExitCode], al
 	WriteStr  	MsgInvalidDrive
