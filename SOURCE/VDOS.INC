@@ -73,9 +73,15 @@
 		int		0x21
 		pop		ds
 		
-		mov		ah, 0x36
-		mov		dh, %1
-		int		0x21
+		xor		al, al
+		mov		[ErrorCode], al
+		
+		; mov		ah, 0x36
+		; mov		dl, %1
+		; int		0x21
+		; cmp		ax, 0xffff
+		; je		%%Error
+		
 
 		mov		al, %1
 		add		al, 0x40
@@ -88,21 +94,21 @@
 		jmp		%%Done
         
 	%%FileName: 
-		DB '?:*.*',0
+		DB '?:\*.*',0
 
 	%%DTA: 
 		times 23 DD 0
 
     %%Error:
 ;    	mov		[ExitCode], al
-;    	; mov		ax, 3
+    	 mov		ax, 3
  
 	%%Done:
 		push		ax
 		SetIntVec 0x24, SavedInt24
 		pop			ax
-		xor			ah, ah
-		mov			al, [ExitCode]
+		; xor			ah, ah
+		; mov			al, [ExitCode]
 
 %endmacro
 
@@ -130,6 +136,9 @@
 
 MyInt24:
 	mov		al, 0x03
-	mov		[cs:ExitCode], al
-	xor		ax, ax
+	mov		[cs:ErrorCode], al
+	; xor		ax, ax
 	iret
+	
+ErrorCode:
+	db 0
