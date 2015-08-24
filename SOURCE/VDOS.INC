@@ -47,7 +47,7 @@
 		xor			ax, ax
 		jmp			%%Done
     %%Error:
-		mov			al, 0x0f	; Invalid Drive Number
+		mov			al, erNotValid	; Invalid Drive Number
 		mov			[ExitCode], al		
     %%Done:
 %endmacro
@@ -76,13 +76,6 @@
 		xor		al, al
 		mov		[ErrorCode], al
 		
-		; mov		ah, 0x36
-		; mov		dl, %1
-		; int		0x21
-		; cmp		ax, 0xffff
-		; je		%%Error
-		
-
 		mov		al, %1
 		add		al, 0x40
 		mov		[%%FileName], al
@@ -100,15 +93,14 @@
 		times 23 DD 0
 
     %%Error:
-;    	mov		[ExitCode], al
-    	 mov		ax, 3
+		mov			al, 1
+		mov			[ExitCode], al
+    	mov			ax, erNotPartitioned
  
 	%%Done:
 		push		ax
 		SetIntVec 0x24, SavedInt24
 		pop			ax
-		; xor			ah, ah
-		; mov			al, [ExitCode]
 
 %endmacro
 
@@ -135,10 +127,12 @@
 %endmacro
 
 MyInt24:
-	mov		al, 0x03
+	push	ax
+	mov		ax, di
 	mov		[cs:ErrorCode], al
-	; xor		ax, ax
+	pop		ax
+	mov		al, 0x03		
 	iret
 	
 ErrorCode:
-	db 0
+	dw 0

@@ -21,12 +21,26 @@
 
 ; /D n exit codes
 ;	0 - A-OK
-;	1 - Not This OS Version (Later)
-;   2 - Not This OS (Later)
-;   3 - Not Formatted
-; 	4 - Not Partitioned
-;   5 - Not Readable/Error
-;   6 - Not Present
+;   1 - Removable
+;   2 - Is CDRom
+;   3 - Network
+;   4 - Not Formatted / Invalid Format
+;	5 - Not Active Partition
+;   6 - Not Primary Partition
+; 	7 - Not Partitioned
+;   8 - Not Readable/Error
+;   0x0f - Not Present
+
+%idefine erNotValid 0x0f
+%idefine erNotReadable 8
+%idefine erNotPartitioned 7
+%idefine erNotPrimary 6
+%idefine erNotActive 5
+%idefine erNotFormatted 4
+%idefine erIsNetwork 3
+%idefine erIsCDROM 2
+%idefine erRemovable 1
+%idefine erNone 0
 
 %include "COMMON.INC"
 	
@@ -36,7 +50,7 @@
 	cmp		ax, 0xffff
 	jne		Done
 
-	PlaceHolder 
+	; PlaceHolder 
 
 Done:
 	mov			al, [ExitCode]
@@ -44,7 +58,7 @@ Done:
 
 %include "VDOS.INC"
 
-%ifdef ASCII_Table    
+%ifdef ASCII_Table
 ShowAscii:
 	mov			al, 0x20
 	WriteChar	0x09
@@ -112,14 +126,15 @@ ShowAscii:
 	db  		CRLF,0
 %endif
 
-ShowQuery:
+SwitchQ:
+	mov			al, 0
+	mov			[QueryMode], al
+	ret
+SwitchV:
 	mov			al, 1
 	mov			[QueryMode], al
 	ret
-	
-SwitchC:
-	ret
-	
+		
 SwitchD:
 	mov		al, [di]
 	xor		ah, ah
@@ -138,10 +153,12 @@ SwitchD:
 	cmp		ax, 0
 	je		.DriveExists
 	; Drive not found, so se if a hard drive actually exists
-	WriteStr  MsgInvalidDrive
+	mov			al, [QueryMode]
+	cmp			al, 1
+	jne			.Done
+	WriteStr  	MsgInvalidDrive
 	jmp			.Done
 .DriveExists:
-	WriteStr	MsgExists
 	IsFormatted	[Drive]
 	cmp			ax, 0
 	jne			.FormatError
@@ -152,8 +169,6 @@ SwitchD:
 	WriteStr	MsgDriveReady
 	ret
 .FormatError:
-	mov			al, 3
-	mov			[ExitCode], al
 	mov			al, [QueryMode]
 	cmp			al, 1
 	jne			.Done
@@ -179,14 +194,14 @@ InvalidOption:
 CommandLineSwitches:
 	SwitchData  0,  0, NoSwitch
 	SwitchData  'D', 1, SwitchD
-	SwitchData  'C', 0, SwitchC
+	SwitchData  'V', 0, SwitchV
+	SwitchData  'Q', 0, SwitchQ
     SwitchData  0,  0, 0
     
 OptionsTable:
 %ifdef ASCII_Table
 	TableData "ASCII", ShowAscii
 %endif
-	TableData "QUERY", ShowQuery
 	TableEnd
 	
 MsgInvalidDrive:
@@ -201,7 +216,7 @@ MsgDriveReady:
 OptionProcessed:
 	dw 0xffff
 QueryMode:
-	db	1
+	db	0
 ExitCode:
 	db  0
 SavedInt24:
