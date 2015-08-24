@@ -1,3 +1,4 @@
+
 ; Copyright (C) 2015 Jerome Shidel
 ;
 ;	This program is free software; you can redistribute it and/or modify
@@ -40,6 +41,8 @@
 Done:
 	mov			al, [ExitCode]
     Terminate 	al
+
+%include "VDOS.INC"
 
 %ifdef ASCII_Table    
 ShowAscii:
@@ -114,19 +117,6 @@ ShowQuery:
 	mov			[QueryMode], al
 	ret
 	
-%imacro IsValidDrive 1
-		mov  		ax, 0x4408
-		mov			bl, %1
-		int			0x21
-		jc			%%Error
-		xor			ax, ax
-		jmp			%%Done
-    %%Error:
-		mov			al, 0x0f	; Invalid Drive Number
-		mov			[ExitCode], al		
-    %%Done:
-%endmacro
-		
 SwitchC:
 	ret
 	
@@ -148,8 +138,27 @@ SwitchD:
 	cmp		ax, 0
 	je		.DriveExists
 	; Drive not found, so se if a hard drive actually exists
-	
+	WriteStr  MsgInvalidDrive
+	jmp			.Done
 .DriveExists:
+	WriteStr	MsgExists
+	IsFormatted	[Drive]
+	cmp			ax, 0
+	jne			.FormatError
+	; Fails if it is partitioned but is not formatted.
+	mov			al, [QueryMode]
+	cmp			al, 1
+	jne			.Done
+	WriteStr	MsgDriveReady
+	ret
+.FormatError:
+	mov			al, 3
+	mov			[ExitCode], al
+	mov			al, [QueryMode]
+	cmp			al, 1
+	jne			.Done
+	WriteStr	MsgDriveNotFormated
+.Done:
 	ret
 	
 NoSwitch:
@@ -181,15 +190,22 @@ OptionsTable:
 	TableEnd
 	
 MsgInvalidDrive:
-	db 'Invalid Drive',CRLF,0
+	db 'Invalid drive letter',CRLF,0
+MsgExists:
+	db 'Drive exists',CRLF,0
+MsgDriveNotFormated:
+	db 'Drive not formatted',CRLF,0
+MsgDriveReady:
+	db 'Drive is ready',CRLF,0
 	
 OptionProcessed:
 	dw 0xffff
 QueryMode:
-	db	0
+	db	1
 ExitCode:
 	db  0
-	
+SavedInt24:
+	dw 0, 0	
 Drive:
 	db 0
 	
