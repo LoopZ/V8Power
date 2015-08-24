@@ -72,6 +72,10 @@
 		mov		ax, 0x2524
 		int		0x21
 		pop		ds
+		
+		mov		ah, 0x36
+		mov		dh, %1
+		int		0x21
 
 		mov		al, %1
 		add		al, 0x40
