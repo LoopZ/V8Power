@@ -170,15 +170,15 @@ GotoXYProc:
 %imacro PlaceHolder 0
     push        cs
     pop         ds
-    mov         dx, Message
+    mov         dx, %%Message
     mov         ah, 0x09
     int         0x21
-    jmp         Done
-Message:
+    jmp         %%Done
+%%Message:
     DB "This program is only a placeholder executable. "
     DB "It will be replaced by a program",0x0d,0x0a
     DB "that actually does something at a later time.$"
-Done:
+%%Done:
 %endmacro
     
 ; Write Word in AX
