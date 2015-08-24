@@ -18,7 +18,20 @@
 
 %idefine ASCII_Table
 
+; /D n exit codes
+;	0 - A-OK
+;	1 - Not This OS Version (Later)
+;   2 - Not This OS (Later)
+;   3 - Not Formatted
+; 	4 - Not Partitioned
+;   5 - Not Readable/Error
+;   6 - Not Present
+
 %include "COMMON.INC"
+	
+	push	ds
+	pop		bx
+	mov		[ControlBlock+0x08], bx
 
     CommandLineParser       ; insert code for command line parsing
 
@@ -29,7 +42,8 @@
 	PlaceHolder 
 
 Done:
-    Terminate 0
+	mov			al, [ExitCode]
+    Terminate 	al
 
 %ifdef ASCII_Table    
 ShowAscii:
@@ -98,7 +112,53 @@ ShowAscii:
 .ShowAscii_CRLF:
 	db  		CRLF,0
 %endif
-    
+
+ShowQuery:
+	mov			al, 1
+	mov			[QueryMode], al
+	ret
+	
+%imacro IsValidDrive 1
+		mov  		ax, 0x4408
+		mov			bl, %1
+		int			0x21
+		jc			%%Error
+		xor			ax, ax
+		jmp			%%Done
+    %%Error:
+		mov			al, 0x0f	; Invalid Drive Number
+		mov			[ExitCode], al		
+    %%Done:
+%endmacro
+	
+InvalidDriveMsg:
+	db		'Invalid Drive',CRLF,0
+	
+SwitchC:
+	ret
+	
+SwitchD:
+	mov		al, [di]
+	xor		ah, ah
+	cmp		ax, 0x5e
+	jl		.NotLowercase
+	sub		ax, 0x20
+.NotLowercase:
+	cmp		ax, 0x41
+	jl		InvalidOption
+	cmp		ax, 0x5a
+	jg		InvalidOption
+	sub		ax, 0x40
+	mov		[Drive], al
+	IsValidDrive [Drive]
+	; ax = 0, At least it is exists and partitioned
+	cmp		ax, 0
+	je		.DriveExists
+	; Drive not found, so se if a hard drive actually exists
+	
+.DriveExists:
+	ret
+	
 NoSwitch:
     LookupParam OptionsTable
     cmp         ax, 0xffff
@@ -110,19 +170,39 @@ NoSwitch:
 	NumberParam
 	; do something with ax
 	
-.InvalidOption:
+InvalidOption:
 	WriteStr	CommandLineErrorMsg
 	Terminate	100
     
 CommandLineSwitches:
-	SwitchData  0,  0, NoSwitch  
+	SwitchData  0,  0, NoSwitch
+	SwitchData  'D', 1, SwitchD
+	SwitchData  'C', 0, SwitchC
     SwitchData  0,  0, 0
     
 OptionsTable:
 %ifdef ASCII_Table
 	TableData "ASCII", ShowAscii
 %endif
+	TableData "QUERY", ShowQuery
 	TableEnd
 	
 OptionProcessed:
 	dw 0xffff
+QueryMode:
+	db	0
+ExitCode:
+	db  0
+	
+Drive:
+	db 0
+	
+ControlBlock:
+	dw	1, 0
+	dw	1
+	dw	Buffer, 0
+	
+Buffer:
+	Times 512 db 0
+	db 0xff,0xff
+	Times 1024 db 0

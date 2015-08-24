@@ -1096,12 +1096,14 @@ CopyFromTempVideo:
 
 ; Write a single character
 WriteCharProc:
+	push		ax ; some hardware destroys al (mainly vmware)
 ;    mov         ah, 0x09
     mov         bh, [VideoPage]
     mov         bl, [TextAttr]
     mov         cx, 0x0001
     int         0x10
     GotoNextXY
+    pop			ax
     ret
     
 ; Write a ASCIIZ String using control codes
