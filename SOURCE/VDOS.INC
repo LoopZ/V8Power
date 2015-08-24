@@ -138,7 +138,7 @@
 		jmp		%%Done
     %%NoFloppies:
 		xor		ax, ax
-    @@Done:
+    %%Done:
 %endmacro
 
 MyInt24:

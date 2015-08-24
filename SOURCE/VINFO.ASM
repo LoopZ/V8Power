@@ -151,10 +151,12 @@ SwitchD:
 	mov		[Drive], al
 	
 	cmp		al, 3
-	jl		.NotFloppy
+	jnl		.NotFloppy
+	
 	Floppies
-	mov		ah, [Drive]
-	cmp		al, ah
+	mov		bl, al
+	mov		al, [Drive]
+	cmp		al, bl
 	jg		.BadDriveLetter
 .NotFloppy:
 	IsValidDrive [Drive]
