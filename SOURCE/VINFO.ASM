@@ -30,7 +30,7 @@
 ;   7 - Not Primary Partition
 ; 	8 - Not Partitioned
 ;   9 - Not Readable/Error
-;   0x0f - Not Present
+;   15 - Not Present
 
 %idefine erNotValid 0x0f
 %idefine erNotReadable 0x09
@@ -166,6 +166,9 @@ SwitchD:
 	cmp		ax, 0
 	je		.DriveExists
 	; Drive not found, so se if a hard drive actually exists
+	
+	; Test Drive just not partitioned
+	
 .BadDriveLetter:
 	mov			al, [QueryMode]
 	cmp			al, 1
@@ -180,6 +183,17 @@ SwitchD:
 	jne			.FormatError
 	; Fails if it is partitioned but is not formatted.
 	; Check Drive Type
+	IsCDROM		[Drive]
+	cmp			al, 0x01
+	je			.IsCDROM
+	IsNetwork	[Drive]
+	cmp			al, 0x01
+	je			.IsRemote
+	IsRemovable	[Drive]
+	cmp			al, 0x01
+	je			.IsRemovable
+	
+	; Test Active and Primary
 	
 	mov			al, [QueryMode]
 	cmp			al, 1

@@ -151,3 +151,55 @@ MyInt24:
 	
 ErrorCode:
 	dw 0
+	
+%imacro IsCDROM 1
+	mov  	ax, 0x1500
+	xor  	bx, bx
+	int  	0x2f
+	cmp  	bx, 0
+	je   	%%NotCDRom
+	xor  	ah, ah
+	mov  	al, %1
+	inc  	cx
+	dec  	bx
+	cmp  	ax, cx
+	jl   	%%NotCDRom ; less then first cd 
+	add  	cx, bx
+	cmp  	ax, cx
+	jg   	%%NotCDRom ; greater then last cd 
+	mov  	al, 0x01
+	jmp  	%%Done
+%%NotInstalled:
+%%NotCDRom:
+	xor  ax, ax
+%%Done:
+%endmacro
+
+%imacro IsNetwork 1
+	mov  	ax, 0x4409
+	mov  	bl, %1
+	int  	0x21
+	jc  	%%Not
+	and		dx, 1000000000000b
+	cmp  	dx, 0
+	je      %%Not
+	mov		ax, 1
+	jmp  	%%Done
+%%Not:
+	xor		ax, ax
+%%Done:
+%endmacro
+
+%imacro IsRemovable 1
+	mov  	ax, 0x4408
+	mov  	bl, %1
+	int  	0x21
+	jc  	%%Not
+	cmp  	ax, 0
+	jne      %%Not
+	mov		ax, 1
+	jmp  	%%Done
+%%Not:
+	xor		ax, ax
+%%Done:
+%endmacro
