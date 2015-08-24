@@ -21,25 +21,27 @@
 
 ; /D n exit codes
 ;	0 - A-OK
-;   1 - Removable
-;   2 - Is CDRom
-;   3 - Network
-;   4 - Not Formatted / Invalid Format
-;	5 - Not Active Partition
-;   6 - Not Primary Partition
-; 	7 - Not Partitioned
-;   8 - Not Readable/Error
+;   1 - Not First HDD
+;   2 - Removable
+;   3 - Is CDRom
+;   4 - Network
+;   5 - Not Formatted / Invalid Format
+;	6 - Not Active Partition
+;   7 - Not Primary Partition
+; 	8 - Not Partitioned
+;   9 - Not Readable/Error
 ;   0x0f - Not Present
 
 %idefine erNotValid 0x0f
-%idefine erNotReadable 0x08
-%idefine erNotPartitioned 0x07
-%idefine erNotPrimary 0x06
-%idefine erNotActive 0x05
-%idefine erNotFormatted 0x04
-%idefine erIsNetwork 0x03
-%idefine erIsCDROM 0x02
-%idefine erRemovable 0x01
+%idefine erNotReadable 0x09
+%idefine erNotPartitioned 0x08
+%idefine erNotPrimary 0x07
+%idefine erNotActive 0x06
+%idefine erNotFormatted 0x05
+%idefine erIsNetwork 0x04
+%idefine erIsCDROM 0x03
+%idefine erIsRemovable 0x02
+%Idefine erNotFirstHDD 0x01
 %idefine erNone 0x00
 
 %include "COMMON.INC"
@@ -177,12 +179,80 @@ SwitchD:
 	cmp			ax, 0
 	jne			.FormatError
 	; Fails if it is partitioned but is not formatted.
+	; Check Drive Type
+	
 	mov			al, [QueryMode]
 	cmp			al, 1
 	jne			.Done
 	WriteStr	MsgDriveReady
-	ret
+	jmp			.Done
+.IsCDROM:
+	mov			al, erIsCDROM
+	mov			[ExitCode], al
+	mov			al, [QueryMode]
+	cmp			al, 1
+	jne			.Done
+	WriteStr	MsgCDROM
+	jmp			.Done
+.IsRemovable:
+	mov			al, erIsRemovable
+	mov			[ExitCode], al
+	mov			al, [QueryMode]
+	cmp			al, 1
+	jne			.Done
+	WriteStr	MsgRemovable
+	jmp			.Done
+.IsRemote:
+	mov			al, erIsNetwork
+	mov			[ExitCode], al
+	mov			al, [QueryMode]
+	cmp			al, 1
+	jne			.Done
+	WriteStr	MsgRemote
+	jmp			.Done
+.NotPartitioned:
+	mov			al, erNotPartitioned
+	mov			[ExitCode], al
+	mov			al, [QueryMode]
+	cmp			al, 1
+	jne			.Done
+	WriteStr	MsgNotPartitioned
+	jmp			.Done
+.NotPrimary:
+	mov			al, erNotPrimary
+	mov			[ExitCode], al
+	mov			al, [QueryMode]
+	cmp			al, 1
+	jne			.Done
+	WriteStr	MsgNotPrimary
+	jmp			.Done
+.NotActive:
+	mov			al, erNotActive
+	mov			[ExitCode], al
+	mov			al, [QueryMode]
+	cmp			al, 1
+	jne			.Done
+	WriteStr	MsgNotActive
+	jmp			.Done
+.NotReadable:
+	mov			al, erNotReadable
+	mov			[ExitCode], al
+	mov			al, [QueryMode]
+	cmp			al, 1
+	jne			.Done
+	WriteStr	MsgNotReadable
+	jmp			.Done
+.NotFirstHDD:
+	mov			al, erNotFirstHDD
+	mov			[ExitCode], al
+	mov			al, [QueryMode]
+	cmp			al, 1
+	jne			.Done
+	WriteStr	MsgNotFirstHDD
+	jmp			.Done
 .FormatError:
+	mov			al, erNotFormatted
+	mov			[ExitCode], al
 	mov			al, [QueryMode]
 	cmp			al, 1
 	jne			.Done
@@ -220,10 +290,24 @@ OptionsTable:
 	
 MsgInvalidDrive:
 	db 'Invalid drive letter',CRLF,0
-MsgExists:
-	db 'Drive exists',CRLF,0
+MsgNotReadable:
+	db 'Drive not readable`',CRLF,0
+MsgNotPartitioned:
+	db 'Drive not partitioned',CRLF,0
+MsgNotPrimary:
+	db 'Drive not primary',CRLF,0
+MsgNotActive:
+	db 'Drive not active',CRLF,0
+MsgCDROM:
+	db	'Drive is CD/DVD-ROM',CRLF,0
+MsgRemote:
+	db 'Drive is remote',CRLF,0
+MsgRemovable:
+	db	'Drive is removable',CRLF,0
 MsgDriveNotFormated:
 	db 'Drive not formatted',CRLF,0
+MsgNotFirstHDD:
+	db 'Drive is not disk 0',CRLF,0
 MsgDriveReady:
 	db 'Drive is ready',CRLF,0
 	
