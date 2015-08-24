@@ -147,6 +147,9 @@ goto VeryEnd
 
 :Done
 
+if not "%1" == "" goto VeryEnd
+
+:vdocs
 if not exist BIN goto VeryEnd
 copy LICENSE BIN
 if exist README.TXT copy README.TXT BIN\V8POWER.TXT
