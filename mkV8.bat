@@ -143,4 +143,13 @@ bin\vecho /fYellow "Lets roll" /fWhite "! " /fGray
 goto Done
 :Error
 echo Error creating utility %VSTAGE%.com.
+goto VeryEnd
+
 :Done
+
+if not exist BIN goto VeryEnd
+copy LICENSE BIN
+if exist README.TXT copy README.TXT BIN\V8POWER.TXT
+if not exist README.TXT copy README.md BIN\V8POWER.md
+
+:VeryEnd

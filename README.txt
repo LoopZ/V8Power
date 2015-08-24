@@ -266,28 +266,45 @@ vpause [options]
 
 Simple wait for keypress or time-out.
 
-	[none]		Wait forever for keypress.
-	/T seconds	Delay in seconds to wait before the pause times-out. (returns
-				errorlevel 1)
-    tba        	(Still under development, more to be announced)
+    [none]      Wait forever for keypress.
+    /T seconds  Delay in seconds to wait before the pause times-out. (returns
+                errorlevel 1)
+    tba         (Still under development, more to be announced)
 
 -------------------------------------------------------------------------------
 
 vline
 
-	[none]		Draws as local single dumb line on the current row.
-	single		Draws a single line.
-	double		Draws a double line.
-	hidden		Draws a invisible dumb line.
-	dumb		Draws a dumb line without regard to what already exists.
+    [none]      Draws as local single dumb line on the current row.
+    single      Draws a single line.
+    double      Draws a double line.
+    hidden      Draws a invisible dumb line.
+    dumb        Draws a dumb line without regard to what already exists.
 
-    tba        	(Still under development, more to be announced)
+    tba         (Still under development, more to be announced)
 
 -------------------------------------------------------------------------------
 
-vinfo
+vinfo [options]
 
-TBA
+    [none]      Does nothing.
+    /V          Verbose Mode.
+    /Q          Quite Mode. (Default)
+    /D a        Test drive status.
+                Returns these error codes:
+                    15 - Not Present
+                     9 - tba
+                     8 - tba
+                     7 - tba
+                     6 - tba
+                     5 - Not Formatted (for DOS)
+                     4 - Network Drive (untested)
+                     3 - CD/DVD-ROM (this may return error 15)
+                     2 - Removable Media (like Floppy)
+                     1 - tba
+                     0 - No Special Conditions              
+
+    tba         (Still under development, more to be announced)
 
 -------------------------------------------------------------------------------
 
