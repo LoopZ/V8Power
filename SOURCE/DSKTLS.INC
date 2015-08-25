@@ -18,16 +18,17 @@
 ; NASM for DOS 
 
 %idefine erNotValid 0x0f
-%idefine erNotReadable 0x0a
-%idefine erNotPartitioned 0x09
-%idefine erNoDosPartition 0x08
-%idefine erNotPrimary 0x07
-%idefine erNotActive 0x06
+%idefine erNotReadable 0x0b
+%idefine erNotPartitioned 0x0a
+%idefine erNoDosPartition 0x09
+%idefine erNotPrimary 0x08
+%idefine erNotActive 0x07
+%Idefine erNotFirstHDD 0x06
+
 %idefine erNotFormatted 0x05
 %idefine erIsNetwork 0x04
 %idefine erIsCDROM 0x03
 %idefine erIsRemovable 0x02
-%Idefine erNotFirstHDD 0x01
 %idefine erNone 0x00
 
 %imacro FindFirst 2
@@ -353,13 +354,12 @@ ErrorCode:
 	
 %endmacro
 
-%imacro PartitionInfo 1
+%imacro PartitionStatus 1
+	xor		ah, ah
+	mov		[%%Result], ah
 	IsPartitioned [Drive]
 	cmp		ax, 1
 	je		%%NotPartitioned
-	IsDOSPartition [Drive]
-	cmp		ax, 1
-	je		%%NoDOSPartition
 	IsPrimaryPartition [Drive]
 	cmp		ax, 1
 	je		%%NotPrimary
@@ -367,6 +367,9 @@ ErrorCode:
 	cmp		ax, 1
 	je		%%NotActive
 	jmp		%%Done
+	IsDOSPartition [Drive]
+	cmp		ax, 1
+	je		%%NoDOSPartition
 %%NotPartitioned:
 	mov			al, erNotPartitioned
 	mov			[%%Result], al
@@ -391,5 +394,8 @@ ErrorCode:
 	mov			al, erNotFirstHDD
 	mov			[%%Result], al
 	jmp			%%Done
+%%Result:
+	db 0
 %%Done:
+	mov	al, [%%Result]
 %endmacro

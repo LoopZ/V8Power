@@ -19,20 +19,6 @@
 
 %idefine ASCII_Table
 
-; /D n exit codes
-;	0 - A-OK
-;   1 - Not First HDD
-;   2 - Removable
-;   3 - Is CDRom
-;   4 - Network
-;   5 - Not Formatted / Invalid Format
-;	6 - Not Active Partition
-;   7 - Not Primary Partition
-; 	8 - Not Partitioned
-;   9 - Not Readable/Error
-;   15 - Not Present
-
-
 %include "COMMON.INC"
 	
     CommandLineParser       ; insert code for command line parsing
@@ -136,6 +122,20 @@ SwitchD:
 	DiskStatusMessage  al
 .Done:
 	ret
+
+SwitchP:
+    mov			[OptionProcessed], cx
+	PartitionStatus		[di]
+	cmp			al, 0
+	je			.Skip
+	mov			[ExitCode], al
+.Skip:
+	mov			ah, [QueryMode]
+	cmp			ah, 1
+	jne			.Done
+	DiskStatusMessage  al
+.Done:
+	ret
 	
 NoSwitch:
     LookupParam OptionsTable
@@ -154,8 +154,9 @@ InvalidOption:
     
 CommandLineSwitches:
 	SwitchData  0,  0, NoSwitch
-	SwitchData  'D', 1, SwitchD
-	SwitchData  'V', 0, SwitchV
+	SwitchData 'D', 1, SwitchD
+	SwitchData 'V', 0, SwitchV
+	SwitchData 'P', 1, SwitchP
     SwitchData  0,  0, 0
     
 OptionsTable:

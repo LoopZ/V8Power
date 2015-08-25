@@ -292,18 +292,21 @@ vinfo [options]
     /D a        Test drive status.
                 Returns these error codes:
                     15 - Not Present
-                    10 - tba
-                     9 - tba
-                     8 - tba
-                     7 - tba
-                     6 - tba
                      5 - Not Formatted (for DOS)
                      4 - Network Drive (untested)
                      3 - CD/DVD-ROM (MSCDEX Only, most report error 15)
                      2 - Removable Media (like Floppy)
-                     1 - tba
-                     0 - No Special Conditions              
-
+                     1 - (Reserved)
+                     0 - No Special Conditions
+    /P a		Test Drive Partition Status:
+    				15 - Not Present
+    				11 - tba
+    				10 - tba
+    				 9 - tba
+    				 8 - tba
+    				 7 - tba
+    				 6 - tba
+    				
     tba         (Still under development, more to be announced)
 
 -------------------------------------------------------------------------------
