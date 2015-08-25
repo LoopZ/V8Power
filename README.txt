@@ -289,17 +289,17 @@ vinfo [options]
 
     [none]      Does nothing.
     /V          Verbose Mode.
-    /Q          Quite Mode. (Default)
     /D a        Test drive status.
                 Returns these error codes:
                     15 - Not Present
+                    10 - tba
                      9 - tba
                      8 - tba
                      7 - tba
                      6 - tba
                      5 - Not Formatted (for DOS)
                      4 - Network Drive (untested)
-                     3 - CD/DVD-ROM (this may return error 15)
+                     3 - CD/DVD-ROM (MSCDEX Only, most report error 15)
                      2 - Removable Media (like Floppy)
                      1 - tba
                      0 - No Special Conditions              

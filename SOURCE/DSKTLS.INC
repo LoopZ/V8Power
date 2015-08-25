@@ -18,8 +18,9 @@
 ; NASM for DOS 
 
 %idefine erNotValid 0x0f
-%idefine erNotReadable 0x09
-%idefine erNotPartitioned 0x08
+%idefine erNotReadable 0x0a
+%idefine erNotPartitioned 0x09
+%idefine erNoDosPartition 0x08
 %idefine erNotPrimary 0x07
 %idefine erNotActive 0x06
 %idefine erNotFormatted 0x05
@@ -216,6 +217,22 @@ ErrorCode:
 %%Done:
 %endmacro
 
+%imacro IsPartitioned 1
+	xor ax, ax
+%endmacro
+
+%imacro IsDOSPartition 1
+	xor ax, ax
+%endmacro
+
+%imacro IsActivePartition 1
+	xor ax, ax
+%endmacro
+
+%imacro IsPrimaryPartition 1
+	xor ax, ax
+%endmacro
+
 %imacro DiskStatus 1
 	mov		al, %1
 	xor		ah, ah
@@ -240,14 +257,17 @@ ErrorCode:
 	cmp		al, bl
 	jg		%%BadDriveLetter
 %%NotFloppy:
+	; CD-ROM Fails Valid Test, Only works with MSCDEX driver.
+	IsCDROM		[Drive]
+	cmp			al, 0x01
+	je			%%IsCDROM
+
 	IsValidDrive [Drive]
 	; ax = 0, At least it is exists and partitioned
 	cmp		ax, 0
 	je		%%DriveExists
 	; Drive not found, so se if a hard drive actually exists
-	
-	; Test Drive just not partitioned
-	
+		
 %%BadDriveLetter:
 	mov			al, erNotValid
 	mov			[%%Result], al
@@ -258,9 +278,6 @@ ErrorCode:
 	jne			%%FormatError
 	; Fails if it is partitioned but is not formatted
 	; Check Drive Type
-	IsCDROM		[Drive]
-	cmp			al, 0x01
-	je			%%IsCDROM
 	IsNetwork	[Drive]
 	cmp			al, 0x01
 	je			%%IsRemote
@@ -268,7 +285,6 @@ ErrorCode:
 	cmp			al, 0x01
 	je			%%IsRemovable
 	
-	; Test Active and Primary
 	
 	xor			al, al
 	mov			[%%Result], al
@@ -283,26 +299,6 @@ ErrorCode:
 	jmp			%%Done
 %%IsRemote:
 	mov			al, erIsNetwork
-	mov			[%%Result], al
-	jmp			%%Done
-%%NotPartitioned:
-	mov			al, erNotPartitioned
-	mov			[%%Result], al
-	jmp			%%Done
-%%NotPrimary:
-	mov			al, erNotPrimary
-	mov			[%%Result], al
-	jmp			%%Done
-%%NotActive:
-	mov			al, erNotActive
-	mov			[%%Result], al
-	jmp			%%Done
-%%NotReadable:
-	mov			al, erNotReadable
-	mov			[%%Result], al
-	jmp			%%Done
-%%NotFirstHDD:
-	mov			al, erNotFirstHDD
 	mov			[%%Result], al
 	jmp			%%Done
 %%FormatError:
@@ -336,20 +332,64 @@ ErrorCode:
 %%Found:
 	WriteStr	bx
 %%NotFound:
+	WriteStr	%%MsgCRLF
 	jmp			%%Done
-	
+%%MsgCRLF:
+	db CRLF,0
 %%Messages:
 	db erNotValid,'Invalid drive letter',0
 	db erNotReadable,'Drive not readable`',0
 	db erNotPartitioned,'Drive not partitioned',0
+	db erNoDosPartition,'No DOS partitions found',0
 	db erNotPrimary,'Drive not primary',0
 	db erNotActive,'Drive not active',0
+	db erNotFirstHDD,'Drive is not disk 0',0
+	db erNotFormatted,'Drive not formatted',0
 	db erIsCDROM,'Drive is CD/DVD-ROM',0
 	db erIsNetwork,'Drive is remote',0
 	db erIsRemovable,'Drive is removable',0
-	db erNotFormatted,'Drive not formatted',0
-	db erNotFirstHDD,'Drive is not disk 0',0
 	db erNone,'Drive is ready',0
 %%Done:
 	
+%endmacro
+
+%imacro PartitionInfo 1
+	IsPartitioned [Drive]
+	cmp		ax, 1
+	je		%%NotPartitioned
+	IsDOSPartition [Drive]
+	cmp		ax, 1
+	je		%%NoDOSPartition
+	IsPrimaryPartition [Drive]
+	cmp		ax, 1
+	je		%%NotPrimary
+	IsActivePartition [Drive]
+	cmp		ax, 1
+	je		%%NotActive
+	jmp		%%Done
+%%NotPartitioned:
+	mov			al, erNotPartitioned
+	mov			[%%Result], al
+	jmp			%%Done
+%%NoDOSPartition:
+	mov			al, erNoDosPartition
+	mov			[%%Result], al
+	jmp			%%Done
+%%NotPrimary:
+	mov			al, erNotPrimary
+	mov			[%%Result], al
+	jmp			%%Done
+%%NotActive:
+	mov			al, erNotActive
+	mov			[%%Result], al
+	jmp			%%Done
+%%NotReadable:
+	mov			al, erNotReadable
+	mov			[%%Result], al
+	jmp			%%Done
+%%NotFirstHDD:
+	mov			al, erNotFirstHDD
+	mov			[%%Result], al
+	jmp			%%Done
+%%Done:
 %endmacro

@@ -117,18 +117,19 @@ ShowAscii:
 	db  		CRLF,0
 %endif
 
-SwitchQ:
-	mov			al, 0
-	mov			[QueryMode], al
-	ret
 SwitchV:
+    mov			[OptionProcessed], cx
 	mov			al, 1
 	mov			[QueryMode], al
 	ret
 		
 SwitchD:
+    mov			[OptionProcessed], cx
 	DiskStatus		[di]
+	cmp			al, 0
+	je			.Skip
 	mov			[ExitCode], al
+.Skip:
 	mov			ah, [QueryMode]
 	cmp			ah, 1
 	jne			.Done
@@ -155,7 +156,6 @@ CommandLineSwitches:
 	SwitchData  0,  0, NoSwitch
 	SwitchData  'D', 1, SwitchD
 	SwitchData  'V', 0, SwitchV
-	SwitchData  'Q', 0, SwitchQ
     SwitchData  0,  0, 0
     
 OptionsTable:
