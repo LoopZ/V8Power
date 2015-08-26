@@ -122,20 +122,6 @@ SwitchD:
 	DiskStatusMessage  al
 .Done:
 	ret
-
-SwitchP:
-    mov			[OptionProcessed], cx
-	PartitionStatus		[di]
-	cmp			al, 0
-	je			.Skip
-	mov			[ExitCode], al
-.Skip:
-	mov			ah, [QueryMode]
-	cmp			ah, 1
-	jne			.Done
-	DiskStatusMessage  al
-.Done:
-	ret
 	
 NoSwitch:
     LookupParam OptionsTable
@@ -156,7 +142,6 @@ CommandLineSwitches:
 	SwitchData  0,  0, NoSwitch
 	SwitchData 'D', 1, SwitchD
 	SwitchData 'V', 0, SwitchV
-	SwitchData 'P', 1, SwitchP
     SwitchData  0,  0, 0
     
 OptionsTable:

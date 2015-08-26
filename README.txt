@@ -298,15 +298,7 @@ vinfo [options]
                      2 - Removable Media (like Floppy)
                      1 - (Reserved)
                      0 - No Special Conditions
-    /P a		Test Drive Partition Status:
-    				15 - Not Present
-    				11 - tba
-    				10 - tba
-    				 9 - tba
-    				 8 - tba
-    				 7 - tba
-    				 6 - tba
-    				
+     				
     tba         (Still under development, more to be announced)
 
 -------------------------------------------------------------------------------

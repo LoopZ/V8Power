@@ -18,13 +18,6 @@
 ; NASM for DOS 
 
 %idefine erNotValid 0x0f
-%idefine erNotReadable 0x0b
-%idefine erNotPartitioned 0x0a
-%idefine erNoDosPartition 0x09
-%idefine erNotPrimary 0x08
-%idefine erNotActive 0x07
-%Idefine erNotFirstHDD 0x06
-
 %idefine erNotFormatted 0x05
 %idefine erIsNetwork 0x04
 %idefine erIsCDROM 0x03
@@ -218,22 +211,6 @@ ErrorCode:
 %%Done:
 %endmacro
 
-%imacro IsPartitioned 1
-	xor ax, ax
-%endmacro
-
-%imacro IsDOSPartition 1
-	xor ax, ax
-%endmacro
-
-%imacro IsActivePartition 1
-	xor ax, ax
-%endmacro
-
-%imacro IsPrimaryPartition 1
-	xor ax, ax
-%endmacro
-
 %imacro DiskStatus 1
 	mov		al, %1
 	xor		ah, ah
@@ -286,7 +263,6 @@ ErrorCode:
 	cmp			al, 0x01
 	je			%%IsRemovable
 	
-	
 	xor			al, al
 	mov			[%%Result], al
 	jmp			%%Done
@@ -311,7 +287,6 @@ ErrorCode:
 %%Done:
 	mov			al, [%%Result]
 %endmacro
-
 
 %imacro DiskStatusMessage 1
 	mov			al, %1
@@ -339,12 +314,6 @@ ErrorCode:
 	db CRLF,0
 %%Messages:
 	db erNotValid,'Invalid drive letter',0
-	db erNotReadable,'Drive not readable`',0
-	db erNotPartitioned,'Drive not partitioned',0
-	db erNoDosPartition,'No DOS partitions found',0
-	db erNotPrimary,'Drive not primary',0
-	db erNotActive,'Drive not active',0
-	db erNotFirstHDD,'Drive is not disk 0',0
 	db erNotFormatted,'Drive not formatted',0
 	db erIsCDROM,'Drive is CD/DVD-ROM',0
 	db erIsNetwork,'Drive is remote',0
@@ -354,48 +323,3 @@ ErrorCode:
 	
 %endmacro
 
-%imacro PartitionStatus 1
-	xor		ah, ah
-	mov		[%%Result], ah
-	IsPartitioned [Drive]
-	cmp		ax, 1
-	je		%%NotPartitioned
-	IsPrimaryPartition [Drive]
-	cmp		ax, 1
-	je		%%NotPrimary
-	IsActivePartition [Drive]
-	cmp		ax, 1
-	je		%%NotActive
-	jmp		%%Done
-	IsDOSPartition [Drive]
-	cmp		ax, 1
-	je		%%NoDOSPartition
-%%NotPartitioned:
-	mov			al, erNotPartitioned
-	mov			[%%Result], al
-	jmp			%%Done
-%%NoDOSPartition:
-	mov			al, erNoDosPartition
-	mov			[%%Result], al
-	jmp			%%Done
-%%NotPrimary:
-	mov			al, erNotPrimary
-	mov			[%%Result], al
-	jmp			%%Done
-%%NotActive:
-	mov			al, erNotActive
-	mov			[%%Result], al
-	jmp			%%Done
-%%NotReadable:
-	mov			al, erNotReadable
-	mov			[%%Result], al
-	jmp			%%Done
-%%NotFirstHDD:
-	mov			al, erNotFirstHDD
-	mov			[%%Result], al
-	jmp			%%Done
-%%Result:
-	db 0
-%%Done:
-	mov	al, [%%Result]
-%endmacro
