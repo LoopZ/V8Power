@@ -265,7 +265,8 @@ pause times-out. (returns errorlevel 1)</td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
 * * *
-#### vline ######
+#### vline *[options]* ######
+Draws a line.
 <table><tr><td width="125pt"></td><td>Draws as local single dumb line on the current row.Wait forever for keypress.</td></tr>
 <tr><td><b><i>single</i></a></td><td>Draws a <b><i>single</i></b> line.</td></tr>
 <tr><td><b><i>double</i></a></td><td>Draws a <b><i>double</i></b> line.</td></tr>
@@ -274,8 +275,16 @@ pause times-out. (returns errorlevel 1)</td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
 * * *
-#### vinfo ######
+#### vinfo *[options]* ######
+General system information utility.
 TBA
+* * *
+#### verrlvl *[options]* ######
+Sets current errorlevel. Mostly for testing batch file logic.
+<table>
+<tr><td width="125pt"></td><td>Sets errorlevel to 0</td></tr>
+<tr><td><b><i>n</i></a></td><td>Sets errorlevel to<b><i>n</i></b>(0-255)</td></tr>
+</table>
 * * *
 #### vmode ######
 TBA

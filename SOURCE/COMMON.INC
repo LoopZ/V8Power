@@ -24,6 +24,32 @@ org 0x100
 
 jmp BasicInitialize
 
+%imacro pushall 0
+	pushf
+	push	ax
+	push 	bx
+	push	cx
+	push	dx
+	push	si
+	push	di
+	push	bp
+	push	es
+	push	ds
+%endmacro
+
+%imacro popall 0
+	pop 	ds
+	pop		es
+	pop		bp
+	pop		di
+	pop		si
+	pop		dx
+	pop		cx
+	pop		bx
+	pop		ax
+	popf
+%endmacro
+
 VersionID:
 	dd 0
 	

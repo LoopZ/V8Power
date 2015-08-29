@@ -2,7 +2,7 @@
 
 if not "%1" == "" goto %1
 
-if not "%1" == "" call mkClean.bat
+if "%1" == "" call mkClean.bat
 if not exist BIN mkdir BIN
 
 echo V8 Power!
@@ -23,8 +23,15 @@ if not "%1" == "" goto Done
 
 :vframe
 set VSTAGE=vframe
-bin\vecho "Examining " /f lightgreen fluids /f Gray ...
+bin\vecho "Examining " /f lightgreen coolant /f Gray ...
 NASM.EXE -ISOURCE\ SOURCE\VFRAME.ASM -fbin -O9 -o BIN\VFRAME.COM
+if ERRORLEVEL 1 goto Error
+if not "%1" == "" goto Done
+
+:verrlvl
+set VSTAGE=vdelay
+bin\vecho "Studying " /f 10 "dipstick" /f gray ...
+NASM.EXE -ISOURCE\ SOURCE\VERRLVL.ASM -fbin -O9 -o BIN\VERRLVL.COM
 if ERRORLEVEL 1 goto Error
 if not "%1" == "" goto Done
 

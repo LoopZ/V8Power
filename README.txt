@@ -275,6 +275,8 @@ Simple wait for keypress or time-out.
 
 vline
 
+Draws a line.
+
     [none]      Draws as local single dumb line on the current row.
     single      Draws a single line.
     double      Draws a double line.
@@ -286,6 +288,8 @@ vline
 -------------------------------------------------------------------------------
 
 vinfo [options]
+
+General system information utility.
 
     [none]      Does nothing.
     /V          Verbose Mode.
@@ -300,6 +304,15 @@ vinfo [options]
                      0 - No Special Conditions
      				
     tba         (Still under development, more to be announced)
+
+-------------------------------------------------------------------------------
+
+verrlvl [options]
+
+Sets current errorlevel. Mostly for testing batch file logic.
+
+	[none]		Sets errorlevel to 0
+	n			Sets errorlevel to n (0-255)
 
 -------------------------------------------------------------------------------
 
