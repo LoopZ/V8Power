@@ -203,7 +203,7 @@ V8Power information program.
     all         Outputs all info to STDOUT.
     title       Outputs full title to STDOUT.
     copyright   Outputs the copyright message to STDOUT.
-    version<    Outputs the version information to STDOUT.
+    version     Outputs the version information to STDOUT.
     license     Outputs license information to STDOUT.
     url         Outputs the website url information to STDOUT.
     
@@ -220,7 +220,7 @@ Draw a progress bar at current location without moving cursor.
     /B color    Set the background text attribute to color (or a value).
     /F color    Set the forground text attribute to color (or a value).
     /X column   Screen column to start the box.
-    /W  width   Override default width of the bar.
+    /W width    Override default width of the bar.
                 (default is from cursor to end of line)
     value       Sets the value in a percent of progress.
     off         Do not display percentage number.
@@ -302,7 +302,7 @@ General system information utility.
                      2 - Removable Media (like Floppy)
                      1 - (Reserved)
                      0 - No Special Conditions
-     				
+                    
     tba         (Still under development, more to be announced)
 
 -------------------------------------------------------------------------------
@@ -311,8 +311,8 @@ verrlvl [options]
 
 Sets current errorlevel. Mostly for testing batch file logic.
 
-	[none]		Sets errorlevel to 0
-	n			Sets errorlevel to n (0-255)
+    [none]      Sets errorlevel to 0
+    n           Sets errorlevel to n (0-255)
 
 -------------------------------------------------------------------------------
 
