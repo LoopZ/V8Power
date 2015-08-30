@@ -376,6 +376,70 @@ GotoXYProc:
 	int		0x21
 %endmacro
 
+%imacro StdIn 0
+	mov		ah, 0x0b
+	int		0x21
+	cmp		al, 0
+	je		%%NoInput
+	mov		ah, 0x08
+	int		0x21
+	stc
+	jmp		%%Done
+%%NoInput:
+	clc
+%%Done:
+%endmacro
+
+; Very last CR/LF is ignored.
+%imacro WriteStdIn 0
+%%CheckInput:
+	StdIn
+	jnc			%%Done	
+%%Ready:
+	cmp			al, 0x0d
+	je			%%CR_Found
+	cmp			al, 0x0a
+	je			%%LF_Found
+	push		ax
+%%WriteCR:
+	mov			ah, [%%CRLF_Data]
+	cmp			ah, 0
+	je			%%WriteLF
+	dec			ah
+	mov			[%%CRLF_Data], ah	
+	WriteStr	%%CR_String
+	jmp			%%WriteCR
+%%WriteLF:
+	mov			ah, [%%CRLF_Data + 1]
+	cmp			ah, 0
+	je			%%WriteChar
+	dec			ah
+	mov			[%%CRLF_Data + 1], ah	
+	WriteStr	%%LF_String
+	jmp			%%WriteLF
+%%WriteChar:
+	pop			ax
+	WriteChar  
+	jmp			%%CheckInput
+%%CR_String:
+	db	0x0d,0
+%%LF_String:
+	db	0x0a,0
+%%CRLF_Data:
+	dw 0
+%%CR_Found:
+	mov			ah, [%%CRLF_Data]
+	inc			ah
+	mov			[%%CRLF_Data], ah	
+	jmp			%%CheckInput
+%%LF_Found:
+	mov			ah, [%%CRLF_Data + 1]
+	inc			ah
+	mov			[%%CRLF_Data + 1], ah	
+	jmp			%%CheckInput
+%%Done:
+%endmacro
+
 ; Pre-286 High bits of flags are always set to 1
 %imacro Is286 0
     pushf

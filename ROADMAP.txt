@@ -18,7 +18,6 @@ Probably roadmap for the future of V8Power Tools:
 	vstr - Simple I/O redirection string processing. Like trim, squeeze, case...
 	vmath - Simple integer math.
 	vecho - Word wrapping and more control-code ascii support.
-	vecho - Support text from stdin.
 	vpcspkr - More music style support like maybe, C#, C. and such.
 	vver - verify all utils are present and proper version.
 	vchoice - add change polling.

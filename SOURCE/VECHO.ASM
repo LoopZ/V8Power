@@ -65,6 +65,10 @@ SwitchC:
 	inc		cx
 	mov		[Repeat], cx
 	ret
+	
+SwitchI:
+	WriteStdIn
+	ret	
 
 SwitchR:
 	NumberParam
@@ -79,6 +83,7 @@ CommandLineSwitches:
 	SwitchData	'N', 0, SwitchN
 	SwitchData	'C', 1, SwitchC
 	SwitchData	'R', 1, SwitchR
+	SwitchData  'I', 0, SwitchI
     SwitchData  0,  0, 0
 
 CRLFString:

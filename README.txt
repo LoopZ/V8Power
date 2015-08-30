@@ -132,6 +132,7 @@ Output text to display.
     /N          Do not write a CRLF when done.
     /C code     Write an ASCII character code.
     /R times    Repeat the next write times number of times. (1-65535)
+    /I			Write text that may waiting from the STDIN device.
     
     tba         (Still under development, more to be announced)
     
