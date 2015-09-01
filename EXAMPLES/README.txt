@@ -9,3 +9,9 @@ V8Power Tools.
 
 The V8Power Tools must be present in your PATH environment variable to use
 these demos.
+
+-------------------------------------------------------------------------------
+
+Example 0 (EX00.BAT)
+
+Simple test to see if V8Power Tools are installed.
