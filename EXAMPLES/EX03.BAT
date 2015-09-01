@@ -29,7 +29,7 @@ set EX03_CURSOR=small
 goto StartBatch
 
 :NotDOSBox
-vcursor /q | set /p EX03_CURSOR=
+vcursor | set /p EX03_CURSOR=
 goto StartBatch
 
 :StartBatch
