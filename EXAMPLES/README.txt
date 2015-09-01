@@ -40,3 +40,9 @@ Example 3 (EX03.BAT)
 
 Simple application style screen drawing with a delay and cleared screen on
 exit.
+
+-------------------------------------------------------------------------------
+
+Example 4 (EX04.BAT)
+
+Simple pause with timeout example.
