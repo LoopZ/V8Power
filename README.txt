@@ -32,9 +32,6 @@ Compiling V8Power Tools
         Run the mkV8.bat script.
         All executibles will be placed in newly created BIN directory.
         
-        ( To create a redistributable version use the mkDist.bat script.
-        It will create an DIST folder containing everything you need.)
-
     For lazy people, like me:
 
         Precompiled versions are available at http://up.lod.bz/V8Power.
@@ -50,7 +47,7 @@ V8Power Tools Tested Compatibility
     Windows 3.11 Shell
     Windows 98 Shell and Command Line
     Windows XP SP3 Shell (except vcursor)
-    DosBOX (no i/o redirection, polling or querying stdout will not work)
+    DosBOX (no i/o redirection or querying using stdout will work)
 
 -------------------------------------------------------------------------------
 
