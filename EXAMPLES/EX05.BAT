@@ -53,7 +53,10 @@ vline hidden
 REM Display the choices.
 REM Note: if you write do many choices, they will begin to scroll off. So,
 REM the first choice "Leave me alone" will be missing and technically will
-REM not exist and "Absolutely" will become choice 1
+REM not exist and "Absolutely" will become choice 1. One other thing to
+REM note about vchoice. If it is unable to allocate memory to preserve
+REM the pre-existing colors, they will be flattened. This occurs in DOSBox
+REM and in FreeDOS if a memory manager is not loaded.
 vecho "  Leave me alone."
 vecho "  Absolutely!"
 vecho "  Only on "/fGreen "Thursdays."
