@@ -3,23 +3,18 @@ rem Please note, the only reason this demo uses very poor and
 rem inconsistent command formating, is demonstrate the flexibility
 rem of the V8Power Tools option parsing.
 
-if not exist BIN\NUL goto MakeDemo
-goto LetsGo
 
-:MakeDemo
-if not exist mkV8.bat goto NoJoy
-call mkV8.bat
-if ERRORLEVEL 1 goto NoJoy
+if exist ..\VCLS.COM goto LetsGo
 
-goto LetsGo
-
-:NoJoy
-echo Unable to do demo.
+:MissingTools
+echo Unable to locate V8Power Tools.
+echo You may need to build them using the mkV8.bat script.
 goto Done
 
 :LetsGo
+goto Done
 
-cd bin
+rem cd bin
 
 rem DosBOX Test
 set DBTEST=yes
@@ -268,5 +263,5 @@ rem restore the cursor size and shape
 vcursor %MYCURSOR%
 set MYCURSOR=
 set DOSBOX_TEST=
-cd ..
+rem cd ..
 :Done
