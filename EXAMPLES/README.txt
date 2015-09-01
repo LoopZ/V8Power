@@ -52,11 +52,13 @@ Simple pause with timeout example.
 Example 5 (EX05.BAT)
 
 Simple choice box with intentional to many choices that returns errorlevel 
-of selected choice.
+of selected choice. Please note that under DOSBox or under FreeDOS without
+a memory manager installed, choices with multiple colors are flattened to
+to a single color.
 
 -------------------------------------------------------------------------------
 
 Example 6 (EX06.BAT)
 
-Simple choice box that returns the text of the selected choice to stdout.
-
+Simple choice box that returns the text of the selected choice to stdout. Will
+not work under DOSBox. 
