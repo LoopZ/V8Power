@@ -46,3 +46,17 @@ exit.
 Example 4 (EX04.BAT)
 
 Simple pause with timeout example.
+
+-------------------------------------------------------------------------------
+
+Example 5 (EX05.BAT)
+
+Simple choice box with intentional to many choices that returns errorlevel 
+of selected choice.
+
+-------------------------------------------------------------------------------
+
+Example 6 (EX06.BAT)
+
+Simple choice box that returns the text of the selected choice to stdout.
+
