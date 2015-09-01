@@ -38,8 +38,10 @@ vcursor hide
 REM Do Some Stuff Here
 
 :DoneBatch
+REM Batch file has completed.
 
 :AbortBatch
+REM Abort and cleanup
 
 REM Restore the original cursor size and shape.
 vcursor %EX02_CURSOR%

@@ -20,11 +20,12 @@ echo V8Power Tools are installed.
 verrlvl 0
 
 :StartBatch
-
 REM Do Some Stuff Here
 
 :DoneBatch
+REM Batch file has completed.
 
 :AbortBatch
+REM Abort and cleanup
 
 :DontDoAnything

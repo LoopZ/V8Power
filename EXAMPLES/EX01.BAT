@@ -33,12 +33,13 @@ echo We are not using DOSBox.
 goto StartBatch
 
 :StartBatch
-
 REM Do Some Stuff Here
 
 :DoneBatch
+REM Batch file has completed.
 
 :AbortBatch
+REM Abort and cleanup
 
 set EX01_InDOSBOX=
 
