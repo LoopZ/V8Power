@@ -19,17 +19,17 @@ if errorlevel 1 goto V8Missing
 verrlvl 0
 
 REM Test if running under DOSBox
-set EX02_InDOSBox=yes
-echo. | set /p EX02_InDOSBox=
+set EX04_InDOSBox=yes
+echo. | set /p EX04_InDOSBox=
 if "%EX01_InDOSBox%" == "yes" goto DOSBox
 goto NotDOSBox
 
 :DOSBox
-set EX02_CURSOR=small
+set EX04_CURSOR=small
 goto StartBatch
 
 :NotDOSBox
-vcursor /q | set /p EX02_CURSOR=
+vcursor /q | set /p EX04_CURSOR=
 goto StartBatch
 
 :StartBatch
@@ -44,6 +44,7 @@ REM Move cursor to end of page, then start of line
 vgotoxy eop sol
 vecho /n /fWhite "Press a key to continue... "
 vpause /fYellow /t10
+
 :DoneBatch
 REM Batch file has completed.
 
@@ -53,8 +54,8 @@ REM Abort and cleanup
 vcls /a0x07
 
 REM Restore the original cursor size and shape.
-vcursor %EX02_CURSOR%
-set EX02_InDOSBOX=
-set EX02_CURSOR=
+vcursor %EX04_CURSOR%
+set EX04_InDOSBOX=
+set EX04_CURSOR=
 
 :DontDoAnything
