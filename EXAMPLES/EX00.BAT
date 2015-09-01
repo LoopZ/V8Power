@@ -5,7 +5,10 @@ if errorlevel 255 goto ClearError
 :CheckPresence
 verrlvl 255
 if errorlevel 255 goto V8Present
-goto V8Missing
+
+:V8Missing
+echo V8Power Tools were not found.
+goto AbortBatch
 
 :ClearError
 verrlvl 0
@@ -17,9 +20,6 @@ verrlvl 0
 
 REM Do Some Stuff Here
 
-goto Done
-
-:V8Missing
-echo V8Power Tools were not found.
-
 :Done
+
+:AbortBatch
