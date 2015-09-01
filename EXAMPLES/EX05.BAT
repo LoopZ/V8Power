@@ -70,6 +70,41 @@ REM frame and below the line, we can just call vchoice and set it's
 REM selected color and default value.
 vchoice /fLightGreen /bBlack /t15 /d3
 
+REM error 100 is always a bad parameter regardless of what tool is called.
+if errorlevel 100 goto AbortBatch
+
+if errorlevel 4 goto CHOICE4
+if errorlevel 3 goto CHOICE3
+if errorlevel 2 goto CHOICE2
+if errorlevel 1 goto CHOICE1
+
+REM Should never get here.
+goto AbortBatch
+
+:CHOICE4
+vcls /fWhite /bBlack
+vecho "Choice 4"
+vdelay 2000
+goto DoneBatch
+
+:CHOICE3
+vcls /fWhite /bBlack
+vecho "Choice 3"
+vdelay 2000
+goto DoneBatch
+
+:CHOICE2
+vcls /fWhite /bBlack
+vecho "Choice 2"
+vdelay 2000
+goto DoneBatch
+
+:CHOICE1
+vcls /fWhite /bBlack
+vecho "Choice 1"
+vdelay 2000
+goto DoneBatch
+
 :DoneBatch
 REM Batch file has completed.
 
