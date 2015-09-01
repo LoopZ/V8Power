@@ -41,7 +41,7 @@ REM the ascii/hex table.
 vcls /fGray /bBlue /c0xb0
 
 REM Draw a frame to contain our question and choices
-vframe /x20 /y7 /h12 /w40 /fBlack /bGray Single Shadow
+vframe /x20 /y7 /h12 /w40 /fBlack /bGray Double Shadow
 
 REM Cursor is inside frame by default. So, just ask our question.
 vecho 
