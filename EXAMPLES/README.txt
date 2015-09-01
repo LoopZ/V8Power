@@ -33,3 +33,10 @@ is now way to save it's output. See Example 2 for a workaround to this issue.
 Example 2 (EX02.BAT)
 
 Hiding and restoring the cursor.
+
+-------------------------------------------------------------------------------
+
+Example 3 (EX03.BAT)
+
+Simple application style screen drawing with a delay and cleared screen on
+exit.
