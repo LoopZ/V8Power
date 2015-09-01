@@ -9,7 +9,7 @@ if errorlevel 255 goto V8Present
 
 :V8Missing
 echo V8Power Tools were not found.
-goto AbortBatch
+goto DontDoAnything
 
 :ClearError
 verrlvl 0
@@ -41,3 +41,5 @@ REM Do Some Stuff Here
 :AbortBatch
 
 set EX01_InDOSBOX=
+
+:DontDoAnything
