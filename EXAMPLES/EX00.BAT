@@ -19,8 +19,10 @@ if errorlevel 1 goto V8Missing
 echo V8Power Tools are installed.
 verrlvl 0
 
+:StartBatch
+
 REM Do Some Stuff Here
 
-:Done
+:DoneBatch
 
 :AbortBatch

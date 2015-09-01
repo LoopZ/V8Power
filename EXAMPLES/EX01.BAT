@@ -16,11 +16,28 @@ verrlvl 0
 if errorlevel 1 goto V8Missing
 
 :V8Present
-echo V8Power Tools are installed.
 verrlvl 0
+
+REM Test if running under DOSBox
+set EX01_InDOSBox=yes
+echo. | set /p EX01_InDOSBox=
+if "%EX01_InDOSBox%" == "yes" goto DOSBox
+goto NotDOSBox
+
+:DOSBox
+echo This Example is running inside DOSBox.
+goto StartBatch
+
+:NotDOSBox
+echo We are not using DOSBox.
+goto StartBatch
+
+:StartBatch
 
 REM Do Some Stuff Here
 
-:Done
+:DoneBatch
 
 :AbortBatch
+
+set EX01_InDOSBOX=
