@@ -174,6 +174,7 @@ Draw a box windowing thingy and move cursor to its inside top left position.
     /Y row      Screen row to start the box.
     /W width    Total width of the box.
     /H height   Total height of the box.
+    /C			Centers the box horizontally and vertically.
     style       Box styles are Single, Double, SingleSides, DoubleSides
                 and Hidden.
     shadow      Add a 3D style shadow.

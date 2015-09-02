@@ -222,8 +222,43 @@ NoSwitch:
 	WriteStr 	CommandLineErrorMsg
 	Terminate   100
 	
-SwitchD:
-	
+SwitchC:
+	mov			ax, [WindMax]
+	xor			dx, dx
+	xor			ah, ah
+	mov			cx, 2
+	div 		cx
+	inc			ax
+	xor			dx, dx
+	push		ax
+	mov			al, [CurrentW]
+	div			cx
+	pop			bx
+	cmp			bx, ax
+;	jge			.OkX
+;	xor			bx, bx
+;	xor			ax, ax
+;.OkX:
+	sub			bx, ax
+	mov			[CurrentX], bl	
+	mov			ax, [WindMax]
+	xor			dx, dx
+	xor			al, al
+	xchg		al, ah
+	mov			cx, 2
+	div 		cx
+	xor			dx, dx
+	push		ax
+	mov			al, [CurrentH]
+	div			cx
+	pop			bx
+	cmp			bx, ax
+	jge			.OkY
+	xor			bx, bx
+	xor			ax, ax
+.OkY:
+	sub			bx, ax
+	mov			[CurrentY], bl
 	ret
 
 ColorSwitchHandlers
@@ -260,6 +295,7 @@ BoxStyleTable:
 		
 CommandLineSwitches:
 	SwitchData  0,  0, NoSwitch  
+	SwitchData 'C',  0, SwitchC
 	ColorSwitchData
 	XYSwitchData
 	SizeSwitchData
