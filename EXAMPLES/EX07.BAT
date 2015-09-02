@@ -19,33 +19,38 @@ if errorlevel 1 goto V8Missing
 verrlvl 0
 
 REM Test if running under DOSBox
-set EX02_InDOSBox=yes
-echo. | set /p EX02_InDOSBox=
-if "%EX02_InDOSBox%" == "yes" goto DOSBox
+set EX07_InDOSBox=yes
+echo. | set /p EX07_InDOSBox=
+if "%EX07_InDOSBox%" == "yes" goto DOSBox
 goto NotDOSBox
 
 :DOSBox
-set EX02_CURSOR=small
-goto StartBatch
+echo This example will not work in DOSBox.
+goto  DontDoAnything
 
 :NotDOSBox
-vcursor | set /p EX02_CURSOR=
-goto StartBatch
 
 :StartBatch
-vcursor hide
+vcls
+set EX07_COUNTER=1
+vecho "Counting to 10"
+
+:LoopBatch
+vecho /bGray /f %EX07_COUNTER% %EX07_COUNTER%
+vmath %EX07_COUNTER% + 1 | set /p EX07_COUNTER=
+if not "%EX07_COUNTER%" == "11" goto LoopBatch
 
 REM Do Some Stuff Here
 
 :DoneBatch
+vecho Done.
+
 REM Batch file has completed.
 
 :AbortBatch
 REM Abort and cleanup
 
 REM Restore the original cursor size and shape.
-vcursor %EX02_CURSOR%
 set EX02_InDOSBOX=
-set EX02_CURSOR=
 
 :DontDoAnything

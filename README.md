@@ -283,6 +283,20 @@ Sets current errorlevel. Mostly for testing batch file logic.
 <tr><td><b><i>n</i></a></td><td>Sets errorlevel to<b><i>n</i></b>(0-255)</td></tr>
 </table>
 * * *
+#### vmath *[options]* ######
+Super simple math utility. It is NOT as a calculator and is limited to working 
+on numbers from 0-65535. Good for looping, determining screen offsets and etc.
+<table>
+<tr><td width="125pt"><b><i>+</i></a>,<b><i>ADD</i></a></td><td>Add next number to sum.</td></tr>
+<tr><td><b><i>-</i></a>,<b><i>SUB</i></a></td><td>Subtract next number from sum.</td></tr>
+<tr><td><b><i>*</i></a>,<b><i>MUL</i></a></td><td>Multiply sum by next number.</td></tr>
+<tr><td><b><i>/</i></a>,<b><i>DIV</i></a></td><td>Divide sum by next number.</td></tr>
+<tr><td><b><i>\</i></a>,<b><i>MOD</i></a></td><td>Divide sum by next number and set sum to the remainder.</td></tr>
+<tr><td><b><i>/H</i></a></td><td>Set output to hexadecimal.</td></tr>
+<tr><td><b><i>/D</i></a></td><td>Set output to decimal.</td></tr>
+<tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
+</table>
+* * *
 #### vmode ######
 TBA
 * * *
@@ -293,7 +307,4 @@ TBA
 TBA
 * * *
 #### vstr ######
-TBA
-* * *
-#### vmath ######
 TBA

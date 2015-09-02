@@ -16,32 +16,127 @@
 
 ; NASM for DOS 
 
+%idefine NoVideoOutput
+
 %include "COMMON.INC"
 
+	%idefine SwitchChar '^'
+
     CommandLineParser       ; insert code for command line parsing
-
-	PlaceHolder 
-
-    Terminate 0
     
+    mov		al, [OutStyle]
+    cmp		al, 1
+    je		OutHex
+    StdOutIntWord [OutResult]
+    jmp		Done
+OutHex:
+	mov		ax, [OutResult]
+	StdOutHexWord 
+Done:
+	StdOutCRLF
+    Terminate 0
+        
+ClearLastOpt:
+	mov		ax, OptNone
+	mov		[LastOpt], ax
+	ret
+    
+OptNone:
+	mov		[OutResult], ax
+	jmp 	ClearLastOpt
+	
+OptPlus:
+	mov		cx, [OutResult]
+	add		cx, ax
+	mov		[OutResult], cx
+	jmp 	ClearLastOpt
+	
+OptMinus:
+	mov		cx, [OutResult]
+	sub		cx, ax
+	mov		[OutResult], cx
+	jmp 	ClearLastOpt
+    
+OptMultiply:
+	xor		dx, dx
+	mov		cx, [OutResult]
+	mul		cx
+	mov		[OutResult], ax
+	jmp 	ClearLastOpt
+
+OptDivide:
+	xor		dx, dx
+	mov		cx, [OutResult]
+	xchg	ax, cx
+	div		cx
+	mov		[OutResult], ax
+	jmp 	ClearLastOpt
+
+OptMod:
+	xor		dx, dx
+	mov		cx, [OutResult]
+	xchg	ax, cx
+	div		cx
+	mov		[OutResult], dx
+	jmp 	ClearLastOpt
+	
+RealSwitches:
+
+SwitchH:
+	mov		al, 1
+	mov		[OutStyle], al
+	ret
+    
+SwitchD:
+	mov		al, 0
+	mov		[OutStyle], al
+	ret
+
 NoSwitch:
     LookupParam OptionsTable
     cmp         ax, 0xffff
     je	        .NotOption
-	jmp			ax	    
-
+    cmp			ax, RealSwitches
+    jl			.NotSwitch
+    jmp			ax
+.NotSwitch:
+	mov			[LastOpt], ax
+	ret    
+	
 .NotOption:
 	NumberParam
-	; do something with ax
+	jmp			[LastOpt]
 	
 .InvalidOption:
 	WriteStr	CommandLineErrorMsg
 	Terminate	100
+	
+LastOpt:
+	dw OptNone
+	
+OutResult:
+	dw 0
+	
+OutStyle:
+	db 0
     
 CommandLineSwitches:
-	SwitchData  0,  0, NoSwitch  
+	SwitchData  0,  0, NoSwitch
     SwitchData  0,  0, 0
     
 OptionsTable:
+	TableData '/H', SwitchH
+	TableData '/D', SwitchD
+	TableData 'ADD', OptPlus
+	TableData '+', OptPlus
+	TableData 'ADD', OptPlus
+	TableData '-', OptMinus
+	TableData 'SUB', OptMinus
+	TableData '*', OptMultiply
+	TableData 'MUL', OptMultiply
+	TableData '/', OptDivide
+	TableData 'DIV', OptDivide
+	TableData '\', OptMod
+	TableData 'MOD', OptMod
 	TableEnd
 	

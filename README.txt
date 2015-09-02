@@ -314,6 +314,24 @@ Sets current errorlevel. Mostly for testing batch file logic.
 
 -------------------------------------------------------------------------------
 
+vmath [options]
+
+Super simple math utility. It is NOT as a calculator and is limited to working 
+on numbers from 0-65535. Good for looping, determining screen offsets and etc.
+
+	+, ADD		Add next number to sum.
+	-, SUB		Subtract next number from sum.
+	*, MUL		Multiply sum by next number.
+	/, DIV		Divide sum by next number.
+	\, MOD		Divide sum by next number and set sum to the remainder.
+	
+	/H			Set output to hexadecimal.
+	/D			Set output to decimal.
+
+   tba         (Still under development, more to be announced)
+
+-------------------------------------------------------------------------------
+
 vmode
 
 TBA
@@ -333,11 +351,5 @@ TBA
 -------------------------------------------------------------------------------
 
 vstr
-
-TBA
-
--------------------------------------------------------------------------------
-
-vmath
 
 TBA

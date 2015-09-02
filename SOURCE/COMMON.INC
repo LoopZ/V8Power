@@ -283,6 +283,52 @@ GotoXYProc:
 	%endif
 %endmacro
 
+%imacro StdOutIntWord 0-1 ax
+	%ifnidni 1, ax
+		push	ax
+		mov		ax, %1
+	%endif
+	push		ax
+	push		bx
+	push		cx
+	push		dx
+	mov         bx, 0x000a
+	mov         cx, 0x0001
+%%PrintLoop:
+	cmp         ax, bx
+	jge         %%WayTooBig
+	push        ax
+%%IsJustRight:
+	pop         ax
+	add         ax, 0x0030
+	push        ax
+	push        bx
+	push        cx
+	mov			ah, 0x02
+	mov			dl, al
+	int			0x21
+	pop         cx
+	pop         bx
+	pop         ax
+	loop        %%IsJustRight
+	jmp         %%Done
+%%WayTooBig:   
+	inc         cx
+	xor         dx, dx
+	div         bx
+	push        dx
+	jmp         %%PrintLoop
+%%Done:
+	pop			dx
+	pop			cx
+	pop			bx
+	pop			ax
+	%ifnidni 1, ax
+		pop		ax
+	%endif
+%endmacro
+
+
 %imacro StdOutStr 1
 	mov		di, %1
 %%OutLoop:
@@ -555,7 +601,7 @@ GotoXYProc:
     je          %%Next
     cmp         al, 0x09
     je          %%Next
-    cmp         al, "/"
+    cmp         al, SwitchChar
     je          %%Next
     jmp         %%Loop
 %%Quote:

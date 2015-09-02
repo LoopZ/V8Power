@@ -21,7 +21,7 @@ verrlvl 0
 REM Test if running under DOSBox
 set EX05_InDOSBox=yes
 echo. | set /p EX05_InDOSBox=
-if "%EX01_InDOSBox%" == "yes" goto DOSBox
+if "%EX05_InDOSBox%" == "yes" goto DOSBox
 goto NotDOSBox
 
 :DOSBox
