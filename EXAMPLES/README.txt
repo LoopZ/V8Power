@@ -68,3 +68,9 @@ not work under DOSBox.
 Example 7 (EX07.BAT)
 
 Simple vmath example of counting to 10. Will not work under DOSBox. 
+
+-------------------------------------------------------------------------------
+
+Example 8 (EX08.BAT)
+
+Progress bar updating and multi-window example. Will not work under DOSBox. 

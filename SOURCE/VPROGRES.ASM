@@ -91,6 +91,12 @@ WidthKnown:
     mov         bh, [VideoPage]
     mov         bl, [TextAttr]
     int         0x10
+    push		cx
+    xor			ch, ch
+    mov			cl, [Percent]
+    cmp			cx, 100
+    pop			cx
+    jge			.NoPartial
     mov			dl, [Partial]
     cmp			dl, 25
     jl			.NoPartial
