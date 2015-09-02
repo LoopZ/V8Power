@@ -62,3 +62,9 @@ Example 6 (EX06.BAT)
 
 Simple choice box that returns the text of the selected choice to stdout. Will
 not work under DOSBox. 
+
+-------------------------------------------------------------------------------
+
+Example 7 (EX07.BAT)
+
+Simple vmath example of counting to 10. Will not work under DOSBox. 
