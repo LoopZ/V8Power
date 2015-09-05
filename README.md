@@ -275,7 +275,21 @@ Draws a line.
 * * *
 #### vinfo *[options]* ######
 General system information utility.
-TBA
+<table><tr><td width="125pt"></td><td>Does nothing.</td></tr>
+<tr><td><b><i>/V </i></a></td><td>Verbose Mode.</td></tr>
+<tr><td><b>/D<i>a</i></a></td><td>Test <b><i>a</i></b> drives status.<br>
+Returns these error codes:<br>
+<br>
++15 - Not Present<br>
+5 - Not Formatted (for DOS)<br>
+4 - Network Drive (untested)<br>
+3 - CD/DVD-ROM (MSCDEX Only, most report error 15)<br>
+2 - Removable Media (like Floppy)<br>
+1 - (Reserved)<br>
+0 - No Special Conditions<br>
+</td></tr>
+<tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
+</table>
 * * *
 #### verrlvl *[options]* ######
 Sets current errorlevel. Mostly for testing batch file logic.
