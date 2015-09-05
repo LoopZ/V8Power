@@ -74,3 +74,11 @@ Simple vmath example of counting to 10. Will not work under DOSBox.
 Example 8 (EX08.BAT)
 
 Progress bar updating and multi-window example. Will not work under DOSBox. 
+
+-------------------------------------------------------------------------------
+
+Example 9 (EX09.BAT)
+
+Non-windowed hard disk drive status scanning example with Progress bar.
+Will not work under DOSBox. 
+
