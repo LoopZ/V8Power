@@ -333,6 +333,18 @@ on numbers from 0-65535. Good for looping, determining screen offsets and etc.
 
 -------------------------------------------------------------------------------
 
+vstr [options]
+
+Simple String processing utility. Outputs results to STDOUT.
+
+    /N          Do not write a CRLF when done.
+    /C code     Write an ASCII character code.
+    /R times    Repeat the next write times number of times. (1-65535)
+
+   tba         (Still under development, more to be announced)
+
+-------------------------------------------------------------------------------
+
 vmode
 
 TBA
@@ -349,8 +361,3 @@ vask
 
 TBA
 
--------------------------------------------------------------------------------
-
-vstr
-
-TBA

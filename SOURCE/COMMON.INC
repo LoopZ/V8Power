@@ -422,6 +422,12 @@ GotoXYProc:
 	int		0x21
 %endmacro
 
+%imacro StdOutChar 0-1 dl
+	mov		dl, %1
+	mov		ah, 0x02
+	int		0x21
+%endmacro
+
 %imacro StdIn 0
 	mov		ah, 0x0b
 	int		0x21
