@@ -280,13 +280,15 @@ General system information utility.
 <tr><td><b>/D<i>a</i></a></td><td>Test <b><i>a</i></b> drives status.<br>
 Returns these error codes:<br>
 <br>
-+15 - Not Present<br>
+<pre>
+15 - Not Present<br>
 5 - Not Formatted (for DOS)<br>
 4 - Network Drive (untested)<br>
 3 - CD/DVD-ROM (MSCDEX Only, most report error 15)<br>
 2 - Removable Media (like Floppy)<br>
 1 - (Reserved)<br>
 0 - No Special Conditions<br>
+</pre>
 </td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
@@ -312,6 +314,17 @@ on numbers from 0-65535. Good for looping, determining screen offsets and etc.
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
 * * *
+#### vstr *[options]* ######
+Simple String processing utility. Outputs results to STDOUT.
+<table>
+<tr><td width="125pt"></td><td>Preforms a Carriage Return and Line Feed to STDOUT.</td></tr>
+<tr><td><b>/N</td><td>Do not write a CRLF when done.</td></tr>
+<tr><td><b>/C <i>code</i></b></td><td>Write an ASCII character 
+<b><i>code</i></b>.</td></tr>
+<tr><td><b>/R <i>times</i></b></td><td>Repeat the next write <b><i>times</i></b> number of times. (1-65535)</td></tr>
+<tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
+</table>
+* * *
 #### vmode ######
 TBA
 * * *
@@ -319,7 +332,4 @@ TBA
 TBA
 * * *
 #### vask ######
-TBA
-* * *
-#### vstr ######
 TBA
