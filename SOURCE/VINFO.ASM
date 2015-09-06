@@ -72,7 +72,22 @@ ShowAscii:
     pop         bx
     push        bx
     mov         ax, bx
-    StdOutHexByte           ; Dos output not BIOS output. Don't Care.
+    push		ax
+    mov         al, '0'
+    WriteChar   0x09
+    mov         al, 'x'
+    WriteChar   0x09    
+    pop			ax
+    mov			cl, 4
+    shr			al, cl
+    cmp         al, 0x0a
+    jl         .ShowAlpha
+    add         al, 0x07
+.ShowAlpha:
+	add			al, 0x30
+    WriteChar   0x09    
+    mov         al, '0'
+    WriteChar   0x09    
     mov         al, 0x20
     WriteChar   0x09
     

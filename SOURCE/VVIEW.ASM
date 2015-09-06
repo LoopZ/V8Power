@@ -20,7 +20,7 @@
 
     CommandLineParser       ; insert code for command line parsing
 
-    PlaceHolder 
+    ; PlaceHolder 
 
     Terminate 0
     
