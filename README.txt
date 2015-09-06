@@ -130,6 +130,8 @@ Output text to display.
     /C code     Write an ASCII character code.
     /R times    Repeat the next write times number of times. (1-65535)
     /I			Write text that may waiting from the STDIN device.
+    /G          Write text ignoring all framing. 
+    /L          Write text with locally with regards to framing. (DEFAULT)
     
     tba         (Still under development, more to be announced)
     

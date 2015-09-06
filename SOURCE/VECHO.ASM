@@ -77,6 +77,17 @@ SwitchR:
 
 	ColorSwitchHandlers
     
+SwitchL:
+	FrameBounds
+	ret
+	
+SwitchG:
+	xor		ax, ax
+	mov		[WindMin], ax
+	mov		ax, [ScreenMax]
+	mov		[WindMax], ax
+	ret
+
 CommandLineSwitches:
 	SwitchData  0,  0, NoSwitch  
 	ColorSwitchData
@@ -84,6 +95,7 @@ CommandLineSwitches:
 	SwitchData	'C', 1, SwitchC
 	SwitchData	'R', 1, SwitchR
 	SwitchData  'I', 0, SwitchI
+	LocalSwitchData
     SwitchData  0,  0, 0
 
 CRLFString:
