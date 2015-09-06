@@ -70,12 +70,13 @@ REM Compute Drive Letter
 vmath %EX09_COUNTER% + 65 | set /p EX09_DRIVE=
 vstr /c %EX09_DRIVE% | set /p EX09_DRIVE=
 
+REM Show what we are doing now.
 vecho /n /fGray "Scanning Drive " /fYellow %EX09_DRIVE% /fGray "..."
 
+REM Get the drive status.
 vinfo /d %EX09_DRIVE%
 
 if errorlevel 15 goto NoSuchDrive
-
 if errorlevel 5 goto NotFormatted
 if errorlevel 4 goto NetworkDrive
 if errorlevel 3 goto DiscDrive
@@ -116,17 +117,22 @@ goto Continued
 
 :Continued
 
+REM Increment the counter and see if we are done.
 vmath %EX09_COUNTER% + 1 | set /p EX09_COUNTER=
 if not "%EX09_COUNTER%" == "26" goto LoopBatch
 
+REM Since VCLS starts knowing entire screen, there is a better way
+REM of doing this to clear the vline an vprogres bar.
 vgotoxy eop /qX | set /p EX09_WIDTH=
 vgotoxy up /qY | set /p EX09_LINE=
 
 vcls /x1 /y %EX09_LINE% /h2 /w %EX09_WIDTH% /a 0x07
 
+REM Go to Last text on screen, then start of that line.
 vgotoxy eot sol
-vcls eol
 
+REM clear from cursor to end of line.
+vcls eol
 
 vecho
 vecho "Scan complete."
@@ -142,6 +148,7 @@ vcursor %EX09_CURSOR%
 set EX09_CURSOR=
 set EX09_COUNTER=
 set EX09_AMOUNT=
+set EX09_WIDTH=
 set EX09_LINE=
 set EX09_DRIVE=
 
