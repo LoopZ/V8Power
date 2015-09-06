@@ -49,94 +49,110 @@ SwitchB:
     or          ah, al
     mov         [TextAttr], ah
     ret
-	
-	ColorTableData      ; insert color name table
+    
+    ColorTableData      ; insert color name table
 
 %endmacro
 
 %imacro SwitchData 3
-	db 			%1
-	db 			%2
-	dw			%3
+    db          %1
+    db          %2
+    dw          %3
 %endmacro
 
 %imacro ColorSwitchData 0
-	SwitchData 'A', 1, SwitchA
+    SwitchData 'A', 1, SwitchA
     SwitchData 'F', 1, SwitchF
     SwitchData 'B', 1, SwitchB
 %endmacro
 
 %imacro XYSwitchHandlers 0
 SwitchX:
-	NumberParam
-	dec			al
-	mov			[CurrentX], al
-	ret
-	
+    NumberParam
+    dec         al
+    mov         [CurrentX], al
+    ret
+    
 SwitchY:
-	call		NumberParam
-	dec			al
-	mov			[CurrentY], al
-	ret
+    call        NumberParam
+    dec         al
+    mov         [CurrentY], al
+    ret
 
 CurrentXY:
-	CurrentX: 	DB 0
-	CurrentY:	DB 0
+    CurrentX:   DB 0
+    CurrentY:   DB 0
 %endmacro
 
 %imacro SizeSwitchHandlers 0
 SwitchW:
-	NumberParam
-	mov			[CurrentW], al
-	ret
-	
+    NumberParam
+    mov         [CurrentW], al
+    ret
+    
 SwitchH:
-	NumberParam
-	mov			[CurrentH], al
-	ret
+    NumberParam
+    mov         [CurrentH], al
+    ret
 
 CurrentSize:
-	CurrentW: 	DB 80
-	CurrentH:	DB 25
+    CurrentW:   DB 80
+    CurrentH:   DB 25
 %endmacro
 
 %imacro SetMaxSize 0
-	push		ax
-	push		bx
-	mov			ax, [WindMax]
-	mov			bx, [WindMin]
-	sub			ah, bh
-	sub			al, bl
-	inc			ah
-	inc			al
-	mov			[CurrentSize], ax
-	pop			bx
-	pop			ax
+    push        ax
+    push        bx
+    mov         ax, [WindMax]
+    mov         bx, [WindMin]
+    sub         ah, bh
+    sub         al, bl
+    inc         ah
+    inc         al
+    mov         [CurrentSize], ax
+    pop         bx
+    pop         ax
 %endmacro
 
 %imacro LocalSwitchHandlers 0
-	SwitchL:
-		FrameBounds
-		ret
-	SwitchG:
-		mov		ax, 0x0000
-		mov		[WindMin], ax
-		mov		ax, [ScreenMax]
-		mov		[WindMax], ax
-		ret
+    SwitchL:
+        FrameBounds
+        ret
+    SwitchG:
+        mov     ax, 0x0000
+        mov     [WindMin], ax
+        mov     ax, [ScreenMax]
+        mov     [WindMax], ax
+        ret
 %endmacro
 
-%imacro	XYSwitchData 0
-	SwitchData 'X', 1, SwitchX
-	SwitchData 'Y', 1, SwitchY
+%imacro XYSwitchData 0
+    SwitchData 'X', 1, SwitchX
+    SwitchData 'Y', 1, SwitchY
 %endmacro
 
 %imacro SizeSwitchData 0
-	SwitchData  'W', 1, SwitchW
-	SwitchData  'H', 1, SwitchH
+    SwitchData  'W', 1, SwitchW
+    SwitchData  'H', 1, SwitchH
 %endmacro
 
 %imacro LocalSwitchData 0
     SwitchData 'L', 0, SwitchL
     SwitchData 'G', 0, SwitchG
+%endmacro
+
+%imacro HelpSwitchData 0
+    SwitchData '?', 0, SwitchHelp
+%endmacro
+
+%imacro HelpSwitchHandler 0
+SwitchHelp:
+%ifdef NoVideoOutput
+    StdOutStr   %%Message
+%else
+    WriteStr 	%%Message
+%endif
+	ret
+    %%Message:
+        DB 'See vinfo /? for help.',CRLF,0
 %endmacro

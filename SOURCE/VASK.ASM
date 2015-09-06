@@ -37,9 +37,12 @@ NoSwitch:
 .InvalidOption:
 	WriteStr	CommandLineErrorMsg
 	Terminate	100
+
+	HelpSwitchHandler
     
 CommandLineSwitches:
 	SwitchData  0,  0, NoSwitch  
+ 	HelpSwitchData
     SwitchData  0,  0, 0
     
 OptionsTable:

@@ -22,25 +22,28 @@
 
     CommandLineParser       ; insert code for command line parsing
 
-	mov		ax, [DelayTime]
-	call	DelayFunc
+    mov     ax, [DelayTime]
+    call    DelayFunc
 
     Terminate 0
     
 DelayFunc:
-	Delay	ax
-	ret
+    Delay   ax
+    ret
 
 NoSwitch:
-	NumberParam
-	call 		DelayFunc
-	xor			ax, ax
-	mov			[DelayTime], ax
-	ret    
+    NumberParam
+    call        DelayFunc
+    xor         ax, ax
+    mov         [DelayTime], ax
+    ret    
     
+    HelpSwitchHandler
+
 CommandLineSwitches:
-	SwitchData  0,  0, NoSwitch  
+    SwitchData  0,  0, NoSwitch  
+    HelpSwitchData
     SwitchData  0,  0, 0
     
 DelayTime: 
-	DW 1000
+    DW 1000

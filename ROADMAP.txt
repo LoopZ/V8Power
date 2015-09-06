@@ -10,24 +10,24 @@ Putting the power of an 8-cylinder engine under the hood of DOS batch files.
 
 Probable roadmap for the future of V8Power Tools:
 
-	vline - line drawing utility, single, double, smart, dumb, vertical...
-	vinfo - more system information provided by utility. 
-	vmode - video mode get/set utility.
-	vview - Text file viewer, user license agreement and whatnots..
-	vask - Single line text input and editor.
-	vstr - Simple I/O redirection string processing. Like trim, squeeze, case...
-	vmath - Simple integer math.
-	vecho - Word wrapping and more control-code ascii support.
-	vpcspkr - More music style support like maybe, C#, C. and such.
-	vver - verify all utils are present and proper version.
-	vchoice - add change polling.
+    vline - line drawing utility, single, double, smart, dumb, vertical...
+    vinfo - more system information provided by utility. 
+    vmode - video mode get/set utility.
+    vview - Text file viewer, user license agreement and whatnots..
+    vask - Single line text input and editor.
+    vstr - Simple I/O redirection string processing. Like trim, squeeze, case...
+    vmath - Simple integer math.
+    vecho - Word wrapping and more control-code ascii support.
+    vpcspkr - More music style support like maybe, C#, C. and such.
+    vver - verify all utils are present and proper version.
+    vchoice - add change polling.
 
-	vchoice, vpause, vask, vview - Mouse, Hot Key and button support.
+    vchoice, vpause, vask, vview - Mouse, Hot Key and button support.
 
-	More range checking, prevent possible freeze when really 
-	bad settings are given.
-	
-	Optimizations and byte squeezing.
-	
-	
-	
+    More range checking, prevent possible freeze when really 
+    bad settings are given.
+    
+    Optimizations and byte squeezing.
+    
+    
+    

@@ -22,17 +22,20 @@
 
     CommandLineParser       ; insert code for command line parsing
 
-	mov		al, [ExitCode]
+    mov     al, [ExitCode]
     Terminate al
     
 NoSwitch:
-	NumberParam
-	mov		[ExitCode], al
-	ret    
+    NumberParam
+    mov     [ExitCode], al
+    ret    
     
+    HelpSwitchHandler
+
 CommandLineSwitches:
-	SwitchData  0,  0, NoSwitch  
+    SwitchData  0,  0, NoSwitch  
+    HelpSwitchData
     SwitchData  0,  0, 0
     
 ExitCode:
-	db 0
+    db 0
