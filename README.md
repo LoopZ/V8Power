@@ -1,13 +1,13 @@
 # V8Power Tools
 #### Putting the power of an 8-cylinder engine under the hood of DOS batch files. ######
-Copyright 2015 Jerome Shidel.<br> 
+Copyright 2015 Jerome Shidel.<br>
 Released under the GPL v2.0 License.<br>
 
 * * *
 
 The V8Power Tools project is being designed in cooperation with
-[Jim Hall](http://www.freedos.org/jhall) for the [FreeDOS™](http://www.freedos.org) 
-operating system. It is intended to expand the functionality of scripts written 
+[Jim Hall](http://www.freedos.org/jhall) for the [FreeDOS™](http://www.freedos.org)
+operating system. It is intended to expand the functionality of scripts written
 using batch files and to provide them with a better looking user interface with
 increased functionality.
 
@@ -37,8 +37,11 @@ created <b>BIN</b> directory.<br>
 * * *
 
 ## V8Power Tools Tested Compatibility
-	
+
 > FreeDOS 1.1+<br>
+
+Limited compatiblilty of advanced features.
+
 > MS-DOS 6.2 and 6.22<br>
 > PC-DOS 7.0, 7.01 and 2000<br>
 > DR-DOS 7.03<br>
@@ -88,17 +91,17 @@ Clear screen, area or row (line).
 <tr><td width="125pt"></td><td>Clear the screen with the current text attribute.</td></tr>
 <tr><td><b><i>n</i></b></td><td>Set text attribute to <b><i>n</i></b>.</td></tr>
 <tr><td><b>/A <i>n</i></a></td><td>Set text attribute to <b><i>n</i></b>.</td></tr>
-<tr><td><b>/B <i>color</i></b></td><td>Set the background text attribute to 
+<tr><td><b>/B <i>color</i></b></td><td>Set the background text attribute to
 <b><i>color</i></b> (or a <b><i>value</i></b>).</td></tr>
-<tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to 
+<tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to
 <b><i>color</i></b> (or a <b><i>value</i></b>).</td></tr>
 <tr><td><b>/G</a></td><td>Global Screen Clear. (Default)</b></td></tr>
 <tr><td><b>/L</a></td><td>Local Screen Clear. Detects its surroundings and only clears that.
-	Probably, a box or line or something. You don't really need this option. Because, 
+	Probably, a box or line or something. You don't really need this option. Because,
 	you can just redraw the box, maybe.</b></td></tr>
 <tr><td><b>TEXT</b></td><td>Clear the text only. Leave all colors intact and ignore their color attributes.</td></tr>
 <tr><td><b>EOL</b></td><td>Clear from cursor to End of Line only.</td></tr>
-<tr><td><b>/C <i>code</i></b></td><td>Clear by filling with an ASCII character 
+<tr><td><b>/C <i>code</i></b></td><td>Clear by filling with an ASCII character
 <b><i>code</i></b>.</td></tr>
 <tr><td><b>/X <i>column</i></b></td><td>Absolute screen <b><i>column</i></b> to start clear.</td></tr>
 <tr><td><b>/Y <i>row</i></b></td><td>Absolute screen <b><i>row</i></b> to start clear.</td></tr>
@@ -118,7 +121,7 @@ Change or query the cursor size and shape.
 </table>
 <i>Note: Although this utility is fully compatible with DOSBox, there is no
 way to store the current cursor shape. See the examples, on how to work
-around this issue. Also, this utility will not have any effect in a 
+around this issue. Also, this utility will not have any effect in a
 Windows terminal.</i>
 * * *
 #### vdelay *[ms]* ######
@@ -134,12 +137,12 @@ Output text to display.
 <tr><td width="125pt"></td><td>Preforms a Carriage Return and Line Feed to the display.</td></tr>
 <tr><td><b><i>text</i></b></td><td>Writes <b><i>text</i></b> to the display.</td></tr>
 <tr><td><b>/A <i>n</i></a></td><td>Set text attribute to <b><i>n</i></b>.</td></tr>
-<tr><td><b>/B <i>color</i></b></td><td>Set the background text attribute to 
+<tr><td><b>/B <i>color</i></b></td><td>Set the background text attribute to
 <b><i>color</i></b> (or <b><i>value</i></b>).</td></tr>
-<tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to 
+<tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to
 <b><i>color</i></b> (or <b><i>value</i></b>).</td></tr>
 <tr><td><b>/N</td><td>Do not write a CRLF when done.</td></tr>
-<tr><td><b>/C <i>code</i></b></td><td>Write an ASCII character 
+<tr><td><b>/C <i>code</i></b></td><td>Write an ASCII character
 <b><i>code</i></b>.</td></tr>
 <tr><td><b>/R <i>times</i></b></td><td>Repeat the next write <b><i>times</i></b> number of times. (1-65535)</td></tr>
 <tr><td><b>/I</td><td>Write text that may waiting from the STDIN device.</td></tr>
@@ -158,18 +161,18 @@ Move or query cursor position.
 <tr><td><b>/Y <i>row</i></b></td><td>Move cursor to <b><i>row</i></b>.</td></tr>
 <tr><td><b>/G</b></td><td>Move cursor based on entire screen. (default)</td></tr>
 <tr><td><b>/L</b></td><td>Move cursor based on its surroundings.</td></tr>
-<tr><td><i>direction</i></td><td>Move cursor <b><i>up</i></b>, <b><i>down</i></b>, 
+<tr><td><i>direction</i></td><td>Move cursor <b><i>up</i></b>, <b><i>down</i></b>,
 <b><i>left</i></b> or <b><i>right</i></b> one space.</td></tr>
 <tr><td><i>shift</i></td><td>Move cursor to the <b><i>previous</i></b> or <b><i>next</i></b>
 position and change rows if needed.</td></tr>
-<tr><td><i>position</i></td><td>Move cursor to the <b><i>SOP</i></b> <i>(Start of Page)</i>, 
-<b><i>EOP</i></b> <i>(End of Page)</i>, 
-<b><i>SOR</i></b> <i>(Start of Row)</i>, 
-<b><i>EOR</i></b> <i>(End of Row)</i>, 
-<b><i>SOL</i></b> <i>(Start of Text on Line)</i>, 
-<b><i>EOL</i></b> <i>(End of Text on Line)</i>, 
-<b><i>SOT</i></b> <i>(Start of All Text)</i> or  
-<b><i>EOT</i></b> <i>(End of All Text)</i> 
+<tr><td><i>position</i></td><td>Move cursor to the <b><i>SOP</i></b> <i>(Start of Page)</i>,
+<b><i>EOP</i></b> <i>(End of Page)</i>,
+<b><i>SOR</i></b> <i>(Start of Row)</i>,
+<b><i>EOR</i></b> <i>(End of Row)</i>,
+<b><i>SOL</i></b> <i>(Start of Text on Line)</i>,
+<b><i>EOL</i></b> <i>(End of Text on Line)</i>,
+<b><i>SOT</i></b> <i>(Start of All Text)</i> or
+<b><i>EOT</i></b> <i>(End of All Text)</i>
 position.</td></tr>
 </table>
 * * *
@@ -178,16 +181,16 @@ Draw a box windowing thingy and move cursor to its inside top left position.
 <table>
 <tr><td width="125pt"></td><td>Draw a box that encloses the entire screen.</td></tr>
 <tr><td><b>/A <i>n</i></a></td><td>Set text attribute to <b><i>n</i></b>.</td></tr>
-<tr><td><b>/B <i>color</i></b></td><td>Set the background text attribute to 
+<tr><td><b>/B <i>color</i></b></td><td>Set the background text attribute to
 <b><i>color</i></b> (or <b><i>value</i></b>).</td></tr>
-<tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to 
+<tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to
 <b><i>color</i></b> (or <b><i>value</i></b>).</td></tr>
 <tr><td><b>/X <i>column</i></b></td><td>Screen <b><i>column</i></b> to start the box.</td></tr>
 <tr><td><b>/Y <i>row</i></b></td><td>Screen <b><i>row</i></b> to start the box.</td></tr>
 <tr><td><b>/W <i>width</i></b></td><td>Total <b><i>width</i></b> of the box.</td></tr>
 <tr><td><b>/H <i>height</i></b></td><td>Total <b><i>height</i></b> of the box.</td></tr>
 <tr><td><b><i>/C</i></b></td><td>Centers the box horizontally and vertically.</td></tr>
-<tr><td><i>style</i></td><td>Box <i>styles</i> are <b><i>Single</i></b>, <b><i>Double</i></b>, 
+<tr><td><i>style</i></td><td>Box <i>styles</i> are <b><i>Single</i></b>, <b><i>Double</i></b>,
 <b><i>SingleSides</i></b>, <b><i>DoubleSides</i></b> and <b><i>Hidden</i></b>.</td></tr>
 <tr><td><i><b>shadow</b></i></td><td>Add a 3D style <b><i>shadow</i></b>.</td></tr>
 </table>
@@ -196,7 +199,7 @@ Draw a box windowing thingy and move cursor to its inside top left position.
 Generate a tone using the built in speaker.
 <table>
 <tr><td width="125pt"></td><td>No output.</td></tr>
-<tr><td><i>hz:ms</i></td><td>Use the PC Speaker to generate a <b><i>hz</i></b> frequency tone. 
+<tr><td><i>hz:ms</i></td><td>Use the PC Speaker to generate a <b><i>hz</i></b> frequency tone.
 Then, delay for <b><i>ms</i></b> milliseconds. (Note: 0 frequency turns off speaker. If no frequency is provided
 then 0 is assumed)</td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
@@ -219,15 +222,15 @@ Draw a progress bar at current location without moving cursor.
 <table>
 <tr><td width="125pt"></td><td>Draw a progress bar at 0%.</td></tr>
 <tr><td><b>/A <i>n</i></a></td><td>Set text attribute to <b><i>n</i></b>.</td></tr>
-<tr><td><b>/B <i>color</i></b></td><td>Set the background text attribute to 
+<tr><td><b>/B <i>color</i></b></td><td>Set the background text attribute to
 <b><i>color</i></b> (or <b><i>value</i></b>).</td></tr>
-<tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to 
+<tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to
 <b><i>color</i></b> (or <b><i>value</i></b>).</td></tr>
-<tr><td><b>/W <i>width</i></b></td><td>Override default <b><i>width</i></b> 
+<tr><td><b>/W <i>width</i></b></td><td>Override default <b><i>width</i></b>
 of the bar (default is from cursor to end of line).</td></tr>
 <tr><td><i>value</i></td><td>Sets the <b><i>value</i></b> in a percent of progress.</td></tr>
 <tr><td><b><i>off</i></b></td><td>Do not display percentage number.</td></tr>
-<tr><td><i>align</i></td><td>Percentage number on <b><i>left</i></b>, 
+<tr><td><i>align</i></td><td>Percentage number on <b><i>left</i></b>,
 <b><i>center</i></b> (Default) or <b><i>right</i></b> side of the progress bar.</td></tr>
 </table>
 * * *
@@ -235,17 +238,17 @@ of the bar (default is from cursor to end of line).</td></tr>
 Choose an option.<br>
 It returns an errorlevel of choice selected based on its entry number. Not
 the letter/number of the choice. For example, if the second item is chosen,
-it will return an errorlevel of 2. Regardless of any prefix (Like C, 1, R, etc). 
+it will return an errorlevel of 2. Regardless of any prefix (Like C, 1, R, etc).
 Also, I personally recommend using <b><i>auto</i></b> for any set of choices that
-you prefix with a letter or number. 
+you prefix with a letter or number.
 <table>
 <tr><td width="125pt"></td><td>Perform using all automatic defaults settings.</td></tr>
 <tr><td><b>/A <i>n</i></a></td><td>Set text attribute to <b><i>n</i></b> for selected item.</td></tr>
-<tr><td><b>/B <i>color</i></b></td><td>Set the background text attribute to 
+<tr><td><b>/B <i>color</i></b></td><td>Set the background text attribute to
 <b><i>color</i></b> for selected item.</td></tr>
-<tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to 
+<tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to
 <b><i>color</i></b> for selected item.</td></tr>
-<tr><td><b>/D <i>n</i></a></td><td>Preselect item number <b><i>n</i></b> 
+<tr><td><b>/D <i>n</i></a></td><td>Preselect item number <b><i>n</i></b>
 as the default choice.</td></tr>
 <tr><td><i>type</i></td><td>Direct keypress selection type.<br>
 	 <b><i>off</i></b> Select with only arrow keys.<br>
@@ -254,7 +257,7 @@ as the default choice.</td></tr>
 	 <b><i>digit</i></b> Jump to selections using 1-9 (+0).<br>
 <tr><td><b>/Q</td><td>Query for result. When the choice is made, it's text will be
 sent to STDOUT.</td></tr>
-<tr><td><b>/T <i>seconds</i></a></td><td>Delay in <b><i>seconds</i></b> before the default item is automatically selected (0-3600). 
+<tr><td><b>/T <i>seconds</i></a></td><td>Delay in <b><i>seconds</i></b> before the default item is automatically selected (0-3600).
 Note that even if the user navigates to a different item, the original default item will be
 selected when the timeout is achieved.</td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
@@ -264,7 +267,7 @@ selected when the timeout is achieved.</td></tr>
 Simple wait for keypress or  time-out.
 <table>
 <tr><td width="125pt"></td><td>Wait forever for keypress.</td></tr>
-<tr><td><b>/T <i>seconds</i></a></td><td>Delay in <b><i>seconds</i></b> to wait before the 
+<tr><td><b>/T <i>seconds</i></a></td><td>Delay in <b><i>seconds</i></b> to wait before the
 pause times-out. (returns errorlevel 1)</td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
@@ -307,7 +310,7 @@ Sets current errorlevel. Mostly for testing batch file logic.
 </table>
 * * *
 #### vmath *[options]* ######
-Super simple math utility. It is NOT as a calculator and is limited to working 
+Super simple math utility. It is NOT as a calculator and is limited to working
 on numbers from 0-65535. Good for looping, determining screen offsets and etc.
 <table>
 <tr><td width="125pt"><b><i>+</i></a>,<b><i>ADD</i></a></td><td>Add next number to sum.</td></tr>
@@ -325,7 +328,7 @@ Simple String processing utility. Outputs results to STDOUT.
 <table>
 <tr><td width="125pt"></td><td>Preforms a Carriage Return and Line Feed to STDOUT.</td></tr>
 <tr><td><b>/N</td><td>Do not write a CRLF when done.</td></tr>
-<tr><td><b>/C <i>code</i></b></td><td>Write an ASCII character 
+<tr><td><b>/C <i>code</i></b></td><td>Write an ASCII character
 <b><i>code</i></b>.</td></tr>
 <tr><td><b>/R <i>times</i></b></td><td>Repeat the next write <b><i>times</i></b> number of times. (1-65535)</td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>

@@ -41,6 +41,9 @@ Compiling V8Power Tools
 V8Power Tools Tested Compatibility
 
     FreeDOS 1.1+
+
+Limited compatiblilty of advanced features.
+
     MS-DOS 6.2 and 6.22
     PC-DOS 7.0, 7.01 and 2000
     DR-DOS 7.03
