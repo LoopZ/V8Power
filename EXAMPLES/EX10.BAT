@@ -42,7 +42,6 @@ REM ASCII values can easily be found using the "vinfo ascii" to display
 REM the ascii/hex table.
 vcls /fGray /bBlue /c0xb0
 
-:PollingLoop
 REM Draw a frame to contain our question and choices
 vframe /x20 /y7 /h12 /w40 /fBlack /bGray Single Shadow
 
@@ -52,6 +51,11 @@ vecho /fBlue "  Do you like pizza?"
 
 REM Separate the question from choices.
 vline hidden
+
+:PollingLoop
+REM Put cursor back at start of choices area. "/x40/y15 /l sop" is a better
+REM method.
+vgotoxy /x21 /y11
 
 REM Display the choices.
 vecho "  Leave me alone."
@@ -68,6 +72,10 @@ REM selected color and default value.
 vchoice /fLightGreen /bBlack /t15 /d5 /p %POLLING%
 
 REM errorlevel 101-199 is a Polling result, not a selection.
+if errorlevel 105 goto POLLING105
+if errorlevel 104 goto POLLING104
+if errorlevel 103 goto POLLING103
+if errorlevel 102 goto POLLING102
 if errorlevel 101 goto POLLING101
 
 REM error 100 is always a bad parameter regardless of what tool is called.
@@ -83,18 +91,33 @@ REM Should never get here.
 goto AbortBatch
 
 :POLLING101
+set POLLING=1
+vframe /w60/h3/c/y21 /a0x17 hidden shadow
+vecho /n /fWhite "Choice 1 - Don't bug me!"
 goto PollingLoop
 
 :POLLING102
+set POLLING=2
+vframe /w60/h3/c/y21 /a0x17 hidden shadow
+vecho /n /fLightCyan "Choice 2 - Awesome, lets eat!"
 goto PollingLoop
 
 :POLLING103
+set POLLING=3
+vframe /w60/h3/c/y21 /a0x17 hidden shadow
+vecho /n /fLightMagenta "Choice 3 - I'm antisocial."
 goto PollingLoop
 
 :POLLING104
+set POLLING=4
+vframe /w60/h3/c/y21 /a0x17 hidden shadow
+vecho /n /fLightGreen "Choice 4 - I'm on a diet."
 goto PollingLoop
 
 :POLLING105
+set POLLING=5
+vframe /w60/h3/c/y21 /a0x17 hidden shadow
+vecho /n /fLightRed "Choice 5 - I'm offended you would ask."
 goto PollingLoop
 
 :CHOICE5
