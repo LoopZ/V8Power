@@ -28,8 +28,7 @@ goto NotDOSBox
 echo This example will not work inside DOSBox or without "SET /P"
 goto DontDoAnything
 
-:NotDOSBox
-echo No | set /p EX08_InDOSBox=
+echo No| set /p EX08_InDOSBox=
 if not "%EX08_InDOSBox%" == "No" goto DOSBox
 vcursor | set /p EX08_CURSOR=
 goto StartBatch

@@ -29,7 +29,7 @@ echo This Example is running inside DOSBox.
 goto StartBatch
 
 :NotDOSBox
-echo No | set /p EX01_InDOSBox=
+echo No| set /p EX01_InDOSBox=
 if not "%EX01_InDOSBox%" == "No" goto NoSetP
 echo We are not using DOSBox.
 goto StartBatch

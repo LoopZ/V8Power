@@ -29,7 +29,7 @@ echo This example will not work inside DOSBox or without "SET /P"
 goto DontDoAnything
 
 :NotDOSBox
-echo No | set /p EX09_InDOSBox=
+echo No| set /p EX09_InDOSBox=
 if not "%EX09_InDOSBox%" == "No" goto DOSBox
 vcursor | set /p EX09_CURSOR=
 goto StartBatch
