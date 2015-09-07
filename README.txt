@@ -105,6 +105,11 @@ Change or query the cursor size and shape.
     SMALL       Sets a small cursor.
     HALF        Sets the cursor to 1/2 of the text height.
     FULL        Sets the cursro to the full height of text.
+    
+Note: Although this utility is fully compatible with DOSBox, there is no
+way to store the current cursor shape. See the examples, on how to work
+around this issue. Also, this utility will not have any effect in a 
+Windows terminal. 
 
 -------------------------------------------------------------------------------
 
@@ -349,17 +354,23 @@ Simple String processing utility. Outputs results to STDOUT.
 
 vmode
 
+Set and query current video text modes.
+
 TBA
 
 -------------------------------------------------------------------------------
 
 vview
 
+Text file and license agreement viewer.
+
 TBA
 
 -------------------------------------------------------------------------------
 
 vask
+
+Text input prompt.
 
 TBA
 

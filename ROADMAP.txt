@@ -16,7 +16,6 @@ Probable roadmap for the future of V8Power Tools:
     vview - Text file viewer, user license agreement and whatnots..
     vask - Single line text input and editor.
     vstr - Simple I/O redirection string processing. Like trim, squeeze, case...
-    vmath - Simple integer math.
     vecho - Word wrapping and more control-code ascii support.
     vpcspkr - More music style support like maybe, C#, C. and such.
     vver - verify all utils are present and proper version.
