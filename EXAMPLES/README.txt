@@ -83,3 +83,8 @@ Example 9 (EX09.BAT)
 Non-windowed hard disk drive status scanning example with Progress bar.
 Will not work under DOSBox.
 
+-------------------------------------------------------------------------------
+
+Example 10 (EX10.BAT)
+
+Choice Polling example.
