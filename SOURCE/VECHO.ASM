@@ -86,8 +86,8 @@ FillLine:
     push        ax
     WhereXY
     pop         ax
-    mov			cl, [WindMaxX]
-    sub			cl, [WindMinX]
+    mov         cl, [WindMaxX]
+    sub         cl, [WindMinX]
     inc         cl
     sub         cl, dl
     xor         ch, ch

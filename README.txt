@@ -163,6 +163,8 @@ Output text to display.
     /I          Write text that may waiting from the STDIN device.
     /G          Write text ignoring all framing.
     /L          Write text with locally with regards to framing. (DEFAULT)
+    /X code		Erase rest of line using ascii code, but don't move the cursor.
+    /E			Same as using "/X 0x20".
 
     tba         (Still under development, more to be announced)
 
@@ -288,6 +290,9 @@ you prefix with a letter or number.
                 selected (0-3600). Note that even if the user navigates to a
                 different item, the original default item will be selected when
                 the timeout is achieved.
+    /P n        Use polling mode and preselect item number n as the current
+    			choice. Note, any change of selection will exit vchoice and
+    			return 100+ the current choice number.
 
     tba         (Still under development, more to be announced)
 

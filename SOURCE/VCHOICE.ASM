@@ -259,10 +259,10 @@ KeyBoardLoop:
 ;    jmp         .Changed
 
 .Changed:
-	; When polling exit if changed
-	mov			al, [Polling]
-	cmp			al, 1
-	je			FakeChosen
+    ; When polling exit if changed
+    mov         al, [Polling]
+    cmp         al, 1
+    je          FakeChosen
 
     jmp         KeyBoardLoop
 
@@ -292,21 +292,21 @@ KeyBoardLoop:
 
 Chosen:
     xor         al, al
-	mov			[Polling], al
+    mov         [Polling], al
 FakeChosen:
     xor         al, al
     mov         [HotChoice], al
-    mov			al, [Selected]
-    mov			ah, [Polling]
-    push		ax
-    cmp			ah, 1
-    jne			.NotPolling
-    xor			al, al
+    mov         al, [Selected]
+    mov         ah, [Polling]
+    push        ax
+    cmp         ah, 1
+    jne         .NotPolling
+    xor         al, al
     mov         [Selected], al
     mov         di, SelectChoice
 .NotPolling:
     call        EachChoice
-    pop			ax
+    pop         ax
     mov         [Selected], al
 
 Done:
@@ -330,11 +330,11 @@ NoSTDOUT:
     FreeTempVideoPage
     pop         ax
 
-    mov			ah, [Polling]
-    cmp			ah, 0
-    je			.NotPolling
+    mov         ah, [Polling]
+    cmp         ah, 0
+    je          .NotPolling
 
-    add			al, 100
+    add         al, 100
 
 .NotPolling:
     Terminate   al

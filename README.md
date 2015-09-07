@@ -148,6 +148,9 @@ Output text to display.
 <tr><td><b>/I</td><td>Write text that may waiting from the STDIN device.</td></tr>
 <tr><td><b>/G</td><td>Write text ignoring all framing.</td></tr>
 <tr><td><b>/L</td><td>Write text with locally with regards to framing. <b>(DEFAULT)</b></td></tr>
+<tr><td><b>/x <i>code</i></b></td><td>Erase rest of line using ASCII
+<b><i>code</i></b>, but don't move the cursor.</td></tr>
+<tr><td><b>/E</td><td>Same as using <b><i>/X 0x20</i></b></td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
 * * *
@@ -260,6 +263,9 @@ sent to STDOUT.</td></tr>
 <tr><td><b>/T <i>seconds</i></a></td><td>Delay in <b><i>seconds</i></b> before the default item is automatically selected (0-3600).
 Note that even if the user navigates to a different item, the original default item will be
 selected when the timeout is achieved.</td></tr>
+<tr><td><b>/P <i>n</i></a></td><td>Use <b>polling</b> mode and preselect item
+number <b><i>n</i></b> as the current choice. Note, any change of selection
+will exit vchoice and return 100+ the current choice number.</td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
 * * *
