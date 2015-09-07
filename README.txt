@@ -11,7 +11,7 @@ Putting the power of an 8-cylinder engine under the hood of DOS batch files.
 The V8Power Tools project is being designed in cooperation with
 Jim Hall for the FreeDOS(TM) (http://www.freedos.org) operating system. It is
 intended to expand the functionality of scripts written using batch files and
-to provide them with a better looking user interface with increased 
+to provide them with a better looking user interface with increased
 functionality.
 
 ===============================================================================
@@ -20,7 +20,7 @@ Compiling V8Power Tools
 
     Prerequisites:
 
-        8086 or better cpu. 
+        8086 or better cpu.
         EGA or better video adapter.
         FreeDOS(TM) 1.1 or higher (http://www.freedos.org)
         NASM for DOS version 2.11.08 (http://wwww.nasm.us)
@@ -31,7 +31,7 @@ Compiling V8Power Tools
         Download the latest sources from http://github.com/LoopZ/V8Power
         Run the mkV8.bat script.
         All executibles will be placed in newly created BIN directory.
-        
+
     For lazy people, like me:
 
         Precompiled versions are available at http://up.lod.bz/V8Power.
@@ -39,7 +39,7 @@ Compiling V8Power Tools
 -------------------------------------------------------------------------------
 
 V8Power Tools Tested Compatibility
-    
+
     FreeDOS 1.1+
     MS-DOS 6.2 and 6.22
     PC-DOS 7.0, 7.01 and 2000
@@ -55,44 +55,44 @@ V8Power Tools Usage
 
 Here is some basic information reguarding all utilities and how they operate.
 
-    Options, values and hexidecimal numbers are not case specific /f white is 
+    Options, values and hexidecimal numbers are not case specific /f white is
     the same as /F wHIte.
 
-    Hexidecimal numbers may be prefixed with 0x to prevent them from being 
+    Hexidecimal numbers may be prefixed with 0x to prevent them from being
     treated as base ten. (Example: 10 and 0x10)
-    
-    Spaces are mostly optional. /B7/f0 is the same as /B 7 /F 0. 
+
+    Spaces are mostly optional. /B7/f0 is the same as /B 7 /F 0.
     But, not / B7 / F0.
-    
+
     To use a / or spaces in a value, put it in qoutes. Like "Jack and/or Jill".
-    
+
     Use multiple qoutes to use quotes. Like "Jack's house" or 'Say "What?"'.
-    
-    Unless overriden, most utilities use the text attribute at the current 
+
+    Unless overriden, most utilities use the text attribute at the current
     cursor location.
 
 -------------------------------------------------------------------------------
 
 Here is color table used for all **/A**, **/F** and **/B** switches:
 
-	Decimal		Hex			Label (Not case specific)
+    Decimal     Hex         Label (Not case specific)
 
-	0			0x00		Black
-	1			0x01		Blue
-	2			0x02		Green
-	3			0x03		Cyan
-	4			0x04		Red
-	5			0x05		Magenta
-	6			0x06		Brown
-	7			0x07		Gray
-	8			0x08		DarkGray
-	9			0x09		LightBlue
-	10			0x0a		LightGreen
-	11			0x0b		LightCyan
-	12			0x0c		LightRed
-	13			0x0d		LightMagenta
-	14			0x0e		Yellow
-	15			0x0f		White
+    0           0x00        Black
+    1           0x01        Blue
+    2           0x02        Green
+    3           0x03        Cyan
+    4           0x04        Red
+    5           0x05        Magenta
+    6           0x06        Brown
+    7           0x07        Gray
+    8           0x08        DarkGray
+    9           0x09        LightBlue
+    10          0x0a        LightGreen
+    11          0x0b        LightCyan
+    12          0x0c        LightRed
+    13          0x0d        LightMagenta
+    14          0x0e        Yellow
+    15          0x0f        White
 
 ===============================================================================
 vcls [options]
@@ -105,10 +105,10 @@ Clear screen, area or row (line).
     /B color    Set the background text attribute to color (or a value).
     /F color    Set the forground text attribute to color (or a value).
     /G          Global Screen Clear. (Default)
-    /L          Local Screen Clear. Detects its surroundings and only clears 
-                that.  Probably, a box or line or something. You don't really 
-                need this option. Because, you can just redraw the box, maybe.          
-    TEXT        Clear the text only. Leave all colors intact and ignore their 
+    /L          Local Screen Clear. Detects its surroundings and only clears
+                that.  Probably, a box or line or something. You don't really
+                need this option. Because, you can just redraw the box, maybe.
+    TEXT        Clear the text only. Leave all colors intact and ignore their
                 color attributes.
     EOL         Clear from cursor to End of Line only.
     /C code     Clear by filling with an ASCII character code.
@@ -116,7 +116,7 @@ Clear screen, area or row (line).
     /Y row      Absolute screen row to start clear.
     /W width    Total width of area to clear.
     /H height   Total height of area to clear.
-    
+
 -------------------------------------------------------------------------------
 vcursor [options]
 
@@ -128,27 +128,27 @@ Change or query the cursor size and shape.
     SMALL       Sets a small cursor.
     HALF        Sets the cursor to 1/2 of the text height.
     FULL        Sets the cursro to the full height of text.
-    
+
 Note: Although this utility is fully compatible with DOSBox, there is no
 way to store the current cursor shape. See the examples, on how to work
-around this issue. Also, this utility will not have any effect in a 
-Windows terminal. 
+around this issue. Also, this utility will not have any effect in a
+Windows terminal.
 
 -------------------------------------------------------------------------------
 
 vdelay [ms]
 
 Simple delay in milliseconds.
-    
+
     [none]      Default is 1000ms (1 second) delay.
     ms          Delay for ms milliseconds. (0-65535, 0x0000-0xffff)
-    
+
 -------------------------------------------------------------------------------
 
 vecho [options] [text]
 
 Output text to display.
-    
+
     [none]      Preforms a Carriage Return and Line Feed to the display.
     text        Writes text to the display.
     /A n        Set text attribute to n.
@@ -157,12 +157,12 @@ Output text to display.
     /N          Do not write a CRLF when done.
     /C code     Write an ASCII character code.
     /R times    Repeat the next write times number of times. (1-65535)
-    /I			Write text that may waiting from the STDIN device.
-    /G          Write text ignoring all framing. 
+    /I          Write text that may waiting from the STDIN device.
+    /G          Write text ignoring all framing.
     /L          Write text with locally with regards to framing. (DEFAULT)
-    
+
     tba         (Still under development, more to be announced)
-    
+
 -------------------------------------------------------------------------------
 
 vgotoxy [options]
@@ -170,25 +170,24 @@ vgotoxy [options]
 Move or query cursor position.
 
     [none]      Preforms no action.
-    /Q x or y   Queries the current X or Y position of the cursor and outputs 
+    /Q x or y   Queries the current X or Y position of the cursor and outputs
                 it to STDOUT.
     /X column   Move cursor to column.
     /Y row      Move cursor to row.
     /G          Move cursor based on entire screen. (default)
     /L          Move cursor based on its surroundings.
     direction   Move cursor up, down, left or right one space.
-    shift       Move cursor to the previous or next position and change 
+    shift       Move cursor to the previous or next position and change
                 rows if needed.
-    position    Move cursor to the 
+    position    Move cursor to the
                     SOP (Start of Page),
                     EOP (End of Page),
                     SOR (Start of Row),
-                    EOR (End of Row), 
-                    SOL (Start of Text on Line), 
-                    EOL (End of Text on Line), 
-                    SOT (Start of All Text) or  
+                    EOR (End of Row),
+                    SOL (Start of Text on Line),
+                    EOL (End of Text on Line),
+                    SOT (Start of All Text) or
                     EOT (End of All Text) position.
-
 
 -------------------------------------------------------------------------------
 
@@ -204,7 +203,7 @@ Draw a box windowing thingy and move cursor to its inside top left position.
     /Y row      Screen row to start the box.
     /W width    Total width of the box.
     /H height   Total height of the box.
-    /C			Centers the box horizontally and vertically.
+    /C          Centers the box horizontally and vertically.
     style       Box styles are Single, Double, SingleSides, DoubleSides
                 and Hidden.
     shadow      Add a 3D style shadow.
@@ -217,9 +216,9 @@ Generate a tone using the built in speaker.
 
     [none]      No output.
     hz:ms       Use the PC Speaker to generate a hz frequency tone. Then, delay
-                for ms milliseconds. (Note: 0 frequency turns off speaker. 
+                for ms milliseconds. (Note: 0 frequency turns off speaker.
                 If no frequency is provided then 0 is assumed)
-    
+
     tba         (Still under development, more to be announced)
 
 -------------------------------------------------------------------------------
@@ -235,7 +234,7 @@ V8Power information program.
     version     Outputs the version information to STDOUT.
     license     Outputs license information to STDOUT.
     url         Outputs the website url information to STDOUT.
-    
+
     tba         (Still under development, more to be announced)
 
 -------------------------------------------------------------------------------
@@ -243,7 +242,7 @@ V8Power information program.
 vprogres [options]
 
 Draw a progress bar at current location without moving cursor.
-    
+
     [none]      Draw a progress bar at 0%.
     /A n        Set text attribute to n.
     /B color    Set the background text attribute to color (or a value).
@@ -253,7 +252,7 @@ Draw a progress bar at current location without moving cursor.
                 (default is from cursor to end of line)
     value       Sets the value in a percent of progress.
     off         Do not display percentage number.
-    align       Percentage number on left, center (Default) or right side of 
+    align       Percentage number on left, center (Default) or right side of
                 the progress bar.
 
 -------------------------------------------------------------------------------
@@ -264,15 +263,15 @@ Choose an option.
 
 It returns an errorlevel of choice selected based on its entry number. Not
 the letter/number of the choice. For example, if the second item is chosen,
-it will return an errorlevel of 2. Regardless of any prefix (Like C, 1, R, etc). 
+it will return an errorlevel of 2. Regardless of any prefix (Like C, 1, R, etc).
 Also, I personally recommend using auto for any set of choices that
 you prefix with a letter or number.
- 
+
     [none]      Perform using all automatic defaults settings.</td></tr>
     /A n        Set text attribute to n for selected item.
-    /B color    Set the background text attribute to color (or a value) for 
+    /B color    Set the background text attribute to color (or a value) for
                 selected item.
-    /F color    Set the forground text attribute to color (or a value) for 
+    /F color    Set the forground text attribute to color (or a value) for
                 selected item.
     /D n        Preselect item number n as the default choice.
     type        Direct keypress selection type.
@@ -282,11 +281,11 @@ you prefix with a letter or number.
                     digit   Jump to selections using 1-9 (+0).
     /Q          Query for result. When the choice is made, it's text will be
                 sent to STDOUT.
-    /T seconds  Delay in seconds before the default item is automatically 
-                selected (0-3600). Note that even if the user navigates to a 
+    /T seconds  Delay in seconds before the default item is automatically
+                selected (0-3600). Note that even if the user navigates to a
                 different item, the original default item will be selected when
                 the timeout is achieved.
-                
+
     tba         (Still under development, more to be announced)
 
 -------------------------------------------------------------------------------
@@ -331,7 +330,7 @@ General system information utility.
                      2 - Removable Media (like Floppy)
                      1 - (Reserved)
                      0 - No Special Conditions
-                    
+
     tba         (Still under development, more to be announced)
 
 -------------------------------------------------------------------------------
@@ -347,17 +346,17 @@ Sets current errorlevel. Mostly for testing batch file logic.
 
 vmath [options]
 
-Super simple math utility. It is NOT as a calculator and is limited to working 
+Super simple math utility. It is NOT as a calculator and is limited to working
 on numbers from 0-65535. Good for looping, determining screen offsets and etc.
 
-	+, ADD		Add next number to sum.
-	-, SUB		Subtract next number from sum.
-	*, MUL		Multiply sum by next number.
-	/, DIV		Divide sum by next number.
-	\, MOD		Divide sum by next number and set sum to the remainder.
-	
-	/H			Set output to hexadecimal.
-	/D			Set output to decimal.
+    +, ADD      Add next number to sum.
+    -, SUB      Subtract next number from sum.
+    *, MUL      Multiply sum by next number.
+    /, DIV      Divide sum by next number.
+    \, MOD      Divide sum by next number and set sum to the remainder.
+
+    /H          Set output to hexadecimal.
+    /D          Set output to decimal.
 
    tba         (Still under development, more to be announced)
 
