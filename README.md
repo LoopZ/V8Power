@@ -39,13 +39,13 @@ created <b>BIN</b> directory.<br>
 ## V8Power Tools Tested Compatibility
 	
 > FreeDOS 1.1+<br>
-> MS-DOS 3.3, 6.2 and 6.22<br>
+> MS-DOS 6.2 and 6.22<br>
 > PC-DOS 7.0, 7.01 and 2000<br>
 > DR-DOS 7.03<br>
+> DosBOX (i/o redirection or querying using stdout will NOT work)<br>
 > Windows 3.11 Shell<br>
 > Windows 98 Shell and Command Line<br>
 > Windows XP SP3 Shell (except vcursor)<br>
-> DosBOX (no i/o redirection or querying using stdout will work)<br>
 
 * * *
 
