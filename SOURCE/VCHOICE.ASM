@@ -262,7 +262,7 @@ KeyBoardLoop:
 	; When polling exit if changed
 	mov			al, [Polling]
 	cmp			al, 1
-	je			Chosen
+	je			FakeChosen
 
     jmp         KeyBoardLoop
 
@@ -291,6 +291,9 @@ KeyBoardLoop:
     jmp         .Changed
 
 Chosen:
+    xor         al, al
+	mov			[Polling], al
+FakeChosen:
     xor         al, al
     mov         [HotChoice], al
     mov         di, SelectChoice
@@ -548,10 +551,10 @@ SwitchD:
     cmp         al, 0x5a
     jg          .NotUpper
     sub         al, 0x40
-    jmp         ValidateD
+    jmp         .ValidateP
 .NotUpper:
     NumberParam
-ValidateD:
+.ValidateP:
     mov         ah, [Max]
     cmp         al, ah
     jle         .Done
@@ -566,6 +569,28 @@ SwitchQ:
     mov         [Querying], al
     ret
 SwitchP:
+    mov         al, [di]
+    cmp         al, 0x61
+    jl          .NotLower
+    cmp         al, 0x7a
+    jg          .NotLower
+    sub         al, 0x20
+.NotLower:
+    cmp         al, 0x41
+    jl          .NotUpper
+    cmp         al, 0x5a
+    jg          .NotUpper
+    sub         al, 0x40
+    jmp         ValidateD
+.NotUpper:
+    NumberParam
+ValidateD:
+    mov         ah, [Max]
+    cmp         al, ah
+    jle         .Done
+    mov         al, ah
+.Done:
+    mov         [Selected], al
     mov         al, 1
     mov         [Polling], al
     ret
@@ -607,7 +632,7 @@ CommandLineSwitches:
     SwitchData  'D',  1, SwitchD
     SwitchData  'T',  1, SwitchT
     SwitchData  'Q',  0, SwitchQ
-    SwitchData  'P',  0, SwitchP
+    SwitchData  'P',  1, SwitchP
     ColorSwitchData
     HelpSwitchData
     SwitchData  0,  0, 0
