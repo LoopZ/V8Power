@@ -50,27 +50,23 @@ vecho /fBlue "  Do you like pizza?"
 REM Separate the question from choices.
 vline hidden
 
-set POLLING=0
-
-:PollingLoop
 vgotoxy /x21/y11
 
 REM Display the choices.
-vecho /fBlack /bGray "  Leave me alone." /e
-vecho /fBlack /bGray "  Absolutely!" /e
-vecho /fBlack /bGray "  Only on "/fGreen "Thursdays." /e
-vecho /fBlack /bGray "  Never on " /fRed "Wednesdays." /e
+vecho /fBlack /bGray "  Leave me alone."
+vecho /fBlack /bGray "  Absolutely!"
+vecho /fBlack /bGray "  Only on "/fGreen "Thursdays."
+vecho /fBlack /bGray "  Never on " /fRed "Wednesdays."
 vecho
-vecho /fBlack /bGray "  How dare you ask me such a thing!" /e
+vecho /fBlack /bGray "  How dare you ask me such a thing!"
 
-REM First pass, all were default colors. But polling should start at 1.
-if "%POLLING%" == "0" set POLLING=1
+REM Polling should start at 1.
+set POLLING=1
+:PollingLoop
 
 REM vchoice will use the use the current cursor location to detect the
-REM area that contains the choices. Since the cursor is still inside the
-REM frame and below the line, we can just call vchoice and set it's
-REM selected color and default value.
-vgotoxy /l eop
+REM the background color. So move cursor to end and use that color.
+vgotoxy /x40/y11 /l eop
 vchoice /fLightGreen /bBlack /t15 /d5 /p %POLLING%
 
 REM errorlevel 101-199 is a Polling result, not a selection.

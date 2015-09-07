@@ -296,9 +296,18 @@ Chosen:
 FakeChosen:
     xor         al, al
     mov         [HotChoice], al
+    mov			al, [Selected]
+    mov			ah, [Polling]
+    push		ax
+    cmp			ah, 1
+    jne			.NotPolling
+    xor			al, al
+    mov         [Selected], al
     mov         di, SelectChoice
+.NotPolling:
     call        EachChoice
-    mov         al, [Selected]
+    pop			ax
+    mov         [Selected], al
 
 Done:
     push        ax
