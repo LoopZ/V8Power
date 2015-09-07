@@ -56,30 +56,12 @@ set POLLING=0
 vgotoxy /x21/y11
 
 REM Display the choices.
-if "%POLLING%" == "1" goto NotThisOne1
-vgotoxy /l /y1 sor
 vecho /fBlack /bGray "  Leave me alone." /e
-:NotThisOne1
-
-if "%POLLING%" == "1" goto NotThisOne2
-vgotoxy /l /y2 sor
 vecho /fBlack /bGray "  Absolutely!" /e
-:NotThisOne2
-
-if "%POLLING%" == "1" goto NotThisOne3
-vgotoxy /l /y3 sor
 vecho /fBlack /bGray "  Only on "/fGreen "Thursdays." /e
-:NotThisOne3
-
-if "%POLLING%" == "1" goto NotThisOne4
-vgotoxy /l /y4 sor
 vecho /fBlack /bGray "  Never on " /fRed "Wednesdays." /e
-:NotThisOne4
-
-if "%POLLING%" == "1" goto NotThisOne5
-vgotoxy /l /y6 sor
+vecho
 vecho /fBlack /bGray "  How dare you ask me such a thing!" /e
-:NotThisOne5
 
 REM First pass, all were default colors. But polling should start at 1.
 if "%POLLING%" == "0" set POLLING=1
