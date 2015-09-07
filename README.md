@@ -40,7 +40,7 @@ created <b>BIN</b> directory.<br>
 
 > FreeDOS 1.1+<br>
 
-Limited compatiblilty of advanced features.
+Limited compatiblilty of advanced features <i>(no "set /p" batch support)</i>:
 
 > MS-DOS 6.2 and 6.22<br>
 > PC-DOS 7.0, 7.01 and 2000<br>
