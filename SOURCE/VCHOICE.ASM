@@ -618,7 +618,7 @@ StyleTable:
 Querying:
     db 0
 Polling:
-	db 0
+    db 0
 TimeOut:
     dw 0
 SelectChars:
