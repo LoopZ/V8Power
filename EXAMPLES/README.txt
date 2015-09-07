@@ -20,10 +20,11 @@ Simple test to see if V8Power Tools are installed.
 
 Example 1 (EX01.BAT)
 
-Simple test to determine if the batch file is running under DOSBox.
+Simple test to determine if the batch file is running under DOSBox or other
+versions of DOS that don't support "set /p".
 
 DOSBox does not support I/O redirection at present.  This is not a limitation
-of V8PT. But, it is to be noted that DOSBox does not support it. Therefore, 
+of V8PT. But, it is to be noted that DOSBox does not support it. Therefore,
 batch files that run on DOSBox must work around this limitation. Things like
 querying the current cursor shape with "vcursor /q" will function, but there
 is now way to save it's output. See Example 2 for a workaround to this issue.
@@ -51,7 +52,7 @@ Simple pause with timeout example.
 
 Example 5 (EX05.BAT)
 
-Simple choice box with intentional to many choices that returns errorlevel 
+Simple choice box with intentional to many choices that returns errorlevel
 of selected choice. Please note that under DOSBox or under FreeDOS without
 a memory manager installed, choices with multiple colors are flattened to
 to a single color.
@@ -61,24 +62,24 @@ to a single color.
 Example 6 (EX06.BAT)
 
 Simple choice box that returns the text of the selected choice to stdout. Will
-not work under DOSBox. 
+not work under DOSBox.
 
 -------------------------------------------------------------------------------
 
 Example 7 (EX07.BAT)
 
-Simple vmath example of counting to 10. Will not work under DOSBox. 
+Simple vmath example of counting to 10. Will not work under DOSBox.
 
 -------------------------------------------------------------------------------
 
 Example 8 (EX08.BAT)
 
-Progress bar updating and multi-window example. Will not work under DOSBox. 
+Progress bar updating and multi-window example. Will not work under DOSBox.
 
 -------------------------------------------------------------------------------
 
 Example 9 (EX09.BAT)
 
 Non-windowed hard disk drive status scanning example with Progress bar.
-Will not work under DOSBox. 
+Will not work under DOSBox.
 
