@@ -234,17 +234,17 @@ KeyBoardLoop:
     mov         [Searching], al
     mov         di, SearchChoice
     call        EachChoice
-    jmp         KeyBoardLoop
+    jmp         .Changed
 .AlphaPress:
     mov         bl, [SelectChars]
     cmp         bl, 2
-    jne         KeyBoardLoop
+    jne         .Changed
     sub         al, 0x40
     jmp         .DoKeySelect
 .NumberPress:
     mov         bl, [SelectChars]
     cmp         bl, 3
-    jne         KeyBoardLoop
+    jne         .Changed
     sub         al, 0x30
     cmp         al, 0
     jne         .DoKeySelect
@@ -256,10 +256,14 @@ KeyBoardLoop:
     mov         al, ah
 .OkKeySelect:
     mov         [Selected], al
-    jmp         KeyBoardLoop
+;    jmp         .Changed
 
 .Changed:
-    ; need to do polling here
+	; When polling exit if changed
+	mov			al, [Polling]
+	cmp			al, 1
+	je			Chosen
+
     jmp         KeyBoardLoop
 
 .GoUp:
@@ -313,6 +317,14 @@ NoSTDOUT:
 
     FreeTempVideoPage
     pop         ax
+
+    mov			ah, [Polling]
+    cmp			ah, 0
+    je			.NotPolling
+
+    add			al, 100
+
+.NotPolling:
     Terminate   al
 
 EachChoice:
@@ -577,7 +589,6 @@ OptNumber:
 OptYesNo:
     mov         al, 4
     mov         [SelectChars], al
-    ret
     ret
 
 NoSwitch:
