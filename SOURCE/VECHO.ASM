@@ -14,7 +14,7 @@
 ;   with this program; if not, write to the Free Software Foundation, Inc.,
 ;   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-; NASM for DOS 
+; NASM for DOS
 
 %include "COMMON.INC"
 
@@ -65,22 +65,48 @@ SwitchC:
     inc     cx
     mov     [Repeat], cx
     ret
-    
+
 SwitchI:
     WriteStdIn
-    ret 
+    ret
 
 SwitchR:
     NumberParam
     mov         [Repeat], ax
     ret
 
+SwitchE:
+    mov         ax, 0x20
+    jmp         FillLine
+
+SwitchX:
+    NumberParam
+
+FillLine:
+    push        ax
+    WhereXY
+    pop         ax
+    mov			cl, [WindMaxX]
+    sub			cl, [WindMinX]
+    inc         cl
+    sub         cl, dl
+    xor         ch, ch
+    cmp         cx, 0
+    je          .Done
+.Fill:
+    mov         ah, 0x09
+    mov         bh, [VideoPage]
+    mov         bl, [TextAttr]
+    int         0x10
+.Done:
+    ret
+
     ColorSwitchHandlers
-    
+
 SwitchL:
     FrameBounds
     ret
-    
+
 SwitchG:
     xor     ax, ax
     mov     [WindMin], ax
@@ -91,19 +117,21 @@ SwitchG:
     HelpSwitchHandler
 
 CommandLineSwitches:
-    SwitchData  0,  0, NoSwitch  
+    SwitchData  0,  0, NoSwitch
     ColorSwitchData
     SwitchData  'N', 0, SwitchN
     SwitchData  'C', 1, SwitchC
     SwitchData  'R', 1, SwitchR
     SwitchData  'I', 0, SwitchI
+    SwitchData  'E', 0, SwitchE
+    SwitchData  'X', 1, SwitchX
     LocalSwitchData
     HelpSwitchData
     SwitchData  0,  0, 0
 
 CRLFString:
     db  CRLF,0
-    
+
 Repeat:
     dw 1
 NoNewLine:

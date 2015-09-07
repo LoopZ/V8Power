@@ -35,8 +35,6 @@ goto StartBatch
 :StartBatch
 vcursor hide
 
-set POLLING=1
-
 REM Clear entire screen and fill with character 0xb0.
 REM ASCII values can easily be found using the "vinfo ascii" to display
 REM the ascii/hex table.
@@ -52,23 +50,45 @@ vecho /fBlue "  Do you like pizza?"
 REM Separate the question from choices.
 vline hidden
 
+set POLLING=0
+
 :PollingLoop
-REM Put cursor back at start of choices area. "/x40/y15 /l sop" is a better
-REM method.
-vgotoxy /x21 /y11
+vgotoxy /x21/y11
 
 REM Display the choices.
-vecho "  Leave me alone."
-vecho "  Absolutely!"
-vecho "  Only on "/fGreen "Thursdays."
-vecho "  Never on " /fRed "Wednesdays."
-vecho
-vecho "  How dare you ask me such a thing!"
+if "%POLLING%" == "1" goto NotThisOne1
+vgotoxy /l /y1 sor
+vecho /fBlack /bGray "  Leave me alone." /e
+:NotThisOne1
+
+if "%POLLING%" == "1" goto NotThisOne2
+vgotoxy /l /y2 sor
+vecho /fBlack /bGray "  Absolutely!" /e
+:NotThisOne2
+
+if "%POLLING%" == "1" goto NotThisOne3
+vgotoxy /l /y3 sor
+vecho /fBlack /bGray "  Only on "/fGreen "Thursdays." /e
+:NotThisOne3
+
+if "%POLLING%" == "1" goto NotThisOne4
+vgotoxy /l /y4 sor
+vecho /fBlack /bGray "  Never on " /fRed "Wednesdays." /e
+:NotThisOne4
+
+if "%POLLING%" == "1" goto NotThisOne5
+vgotoxy /l /y6 sor
+vecho /fBlack /bGray "  How dare you ask me such a thing!" /e
+:NotThisOne5
+
+REM First pass, all were default colors. But polling should start at 1.
+if "%POLLING%" == "0" set POLLING=1
 
 REM vchoice will use the use the current cursor location to detect the
 REM area that contains the choices. Since the cursor is still inside the
 REM frame and below the line, we can just call vchoice and set it's
 REM selected color and default value.
+vgotoxy /l eop
 vchoice /fLightGreen /bBlack /t15 /d5 /p %POLLING%
 
 REM errorlevel 101-199 is a Polling result, not a selection.
