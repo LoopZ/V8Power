@@ -14,7 +14,7 @@
 ;   with this program; if not, write to the Free Software Foundation, Inc.,
 ;   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-; NASM for DOS 
+; NASM for DOS
 
 %include "COMMON.INC"
 
@@ -36,14 +36,14 @@
     mov         [OptionBox], ax
     mov         ax, [WindMax]
     mov         [OptionBox + 2], ax
-    
+
     mov         di, CountChoice
     call        EachChoice
-    
+
     CommandLineParser       ; insert code for command line parsing
-    
-    AllocTempVideoPage 
-    
+
+    AllocTempVideoPage
+
     mov         al, [TextAttr]
     mov         [SelectedAttr], al
 ;   mov         ah, [HotAttr]
@@ -53,9 +53,9 @@
 ;   not         al
 ;   and         al, 0x7f
 ;   mov         [HotAttr], al
-    
+
     jmp         KeyBoardLoop
-    
+
 ShowChoices:
 ;   mov         al, [SelectedAttr]
 ;   mov         ah, [HotAttr]
@@ -71,13 +71,13 @@ ShowChoices:
     mov         bl, [HotChoice]
     mov         [LastHot], bl
     ret
-    
+
 TimedOut:
     pop         es
     mov         al, [DefaultChoice]
     mov         [Selected], al
     jmp         Chosen
-    
+
 ShowTimeOut:
     push        cx
     push        bx
@@ -102,7 +102,7 @@ ShowTimeOut:
     mov         [WindMax], bx
     inc         dh
     sub         dl, 8
-    
+
     push        ax
     mov         ah, 0x02
     mov         bh, [VideoPage]
@@ -110,7 +110,7 @@ ShowTimeOut:
     mov         ah, 0x08
     int         0x10
     mov         bx, ax
-    
+
     pop         ax
     push        ax
     mov         cx, 1
@@ -127,7 +127,7 @@ ShowTimeOut:
     mov         al, bl
     mov         bl, [VideoPage]
     xchg        bl, bh
-    
+
     inc         dl
     mov         ah, 0x02
     int         0x10
@@ -137,14 +137,14 @@ ShowTimeOut:
     add         dl, cl
     mov         ah, 0x02
     int         0x10
-   
+
     mov         al, 0x20
-    WriteChar   0x09 
+    WriteChar   0x09
 
     pop         ax
     WriteInt    ax
     mov         al, 0x20
-    WriteChar   0x09 
+    WriteChar   0x09
 NoDisplayTimeOut:
     pop         dx
     mov         [WindMax], dx
@@ -152,9 +152,9 @@ NoDisplayTimeOut:
     mov         [TextAttr], dl
     pop         dx
     pop         bx
-    pop         cx      
+    pop         cx
     ret
-    
+
 KeyBoardLoop:
     call        ShowChoices
     mov         cx, [TimeOut]
@@ -180,7 +180,7 @@ KeyBoardLoop:
     int         0x16
     jz          .WaitLoop
     pop         es
-    
+
     mov         ax, 0x0000
     int         0x16
     ; up down to navigate
@@ -230,7 +230,7 @@ KeyBoardLoop:
 
 .YesNoPress:
     jmp         KeyBoardLoop
-.AutoPress: 
+.AutoPress:
     mov         [Searching], al
     mov         di, SearchChoice
     call        EachChoice
@@ -257,11 +257,11 @@ KeyBoardLoop:
 .OkKeySelect:
     mov         [Selected], al
     jmp         KeyBoardLoop
-    
+
 .Changed:
     ; need to do polling here
     jmp         KeyBoardLoop
-    
+
 .GoUp:
     mov         al, [Selected]
     cmp         al, 1
@@ -277,7 +277,7 @@ KeyBoardLoop:
     inc         al
     mov         [Selected], al
     jmp         .Changed
-    
+
 .Select:
     mov         al, [HotChoice]
     mov         ah, [Selected]
@@ -292,7 +292,7 @@ Chosen:
     mov         di, SelectChoice
     call        EachChoice
     mov         al, [Selected]
-    
+
 Done:
     push        ax
 
@@ -310,7 +310,7 @@ Done:
     GotoXY      dx
 
 NoSTDOUT:
-    
+
     FreeTempVideoPage
     pop         ax
     Terminate   al
@@ -411,7 +411,7 @@ SelectChoice:
     add         dl, bl
     add         dh, bh
     call        CopyFromTempVideo
-    jmp         .Done   
+    jmp         .Done
 .IsHot:
     mov         bl, [HotAttr]
     mov         ax, [TempVideoPagePtr]
@@ -423,7 +423,7 @@ SelectChoice:
     add         dl, bl
     add         dh, bh
     call        CopyFromTempVideo
-    jmp         .Done   
+    jmp         .Done
 .NotThis:
     push        ax
     mov         ax, [TempVideoPagePtr]
@@ -446,7 +446,7 @@ SelectChoice:
     add         dl, bl
     add         dh, bh
     call        CopyFromTempVideo
-    jmp         .Done   
+    jmp         .Done
 .ChangeLoop:
     push        cx
     push        bx
@@ -466,7 +466,7 @@ SelectChoice:
     pop         dx
     pop         bx
     ret
-    
+
 StdOutChoice:
     mov         al, [Selected]
     cmp         bl, al
@@ -498,13 +498,13 @@ StdOutChoice:
     inc         dl
     loop        .OutLoop
     pop         dx
-    pop         bx  
+    pop         bx
 .NotThis:
     ret
-    
+
 ; Switches
     ColorSwitchHandlers
-    
+
 SwitchT:
     NumberParam
     cmp         ax, 0
@@ -522,7 +522,7 @@ SwitchT:
 .SwitchOff:
     mov         [TimeOut], ax
     ret
-    
+
 SwitchD:
     mov         al, [di]
     cmp         al, 0x61
@@ -537,7 +537,7 @@ SwitchD:
     jg          .NotUpper
     sub         al, 0x40
     jmp         ValidateD
-.NotUpper:  
+.NotUpper:
     NumberParam
 ValidateD:
     mov         ah, [Max]
@@ -548,9 +548,14 @@ ValidateD:
     mov         [Selected], al
     mov         [DefaultChoice], al
     ret
+
 SwitchQ:
     mov         al, 1
     mov         [Querying], al
+    ret
+SwitchP:
+    mov         al, 1
+    mov         [Polling], al
     ret
 
 OptNone:
@@ -560,7 +565,7 @@ OptNone:
 OptAuto:
     mov         al, 1
     mov         [SelectChars], al
-    ret 
+    ret
 OptAlpha:
     mov         al, 2
     mov         [SelectChars], al
@@ -573,7 +578,7 @@ OptYesNo:
     mov         al, 4
     mov         [SelectChars], al
     ret
-    ret 
+    ret
 
 NoSwitch:
     LookupParam StyleTable
@@ -583,14 +588,15 @@ NoSwitch:
 .Error:
     WriteStr    CommandLineErrorMsg
     Terminate   100
-    
+
     HelpSwitchHandler
 
 CommandLineSwitches:
-    SwitchData  0,  0, NoSwitch  
+    SwitchData  0,  0, NoSwitch
     SwitchData  'D',  1, SwitchD
     SwitchData  'T',  1, SwitchT
     SwitchData  'Q',  0, SwitchQ
+    SwitchData  'P',  0, SwitchP
     ColorSwitchData
     HelpSwitchData
     SwitchData  0,  0, 0
@@ -611,11 +617,13 @@ StyleTable:
 
 Querying:
     db 0
+Polling:
+	db 0
 TimeOut:
-    dw 0    
+    dw 0
 SelectChars:
     db 1
-Max: 
+Max:
     db 0
 DefaultChoice:
     db 0

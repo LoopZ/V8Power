@@ -1,5 +1,5 @@
 @echo off
-rem Please note, the only reason this demo uses very poor and 
+rem Please note, the only reason this demo uses very poor and
 rem inconsistent command formating, is demonstrate the flexibility
 rem of the V8Power Tools option parsing.
 
@@ -44,7 +44,7 @@ vgotoxy right
 vecho /n "|"
 vgotoxy right
 vecho /n "Next " /fWhite "(" /fRed "Alt+N" /fWhite ")"
-vgotoxy /x68 
+vgotoxy /x68
 vecho /n "Quit " /fWhite "(" /fRed "Alt+Q" /fWhite ")"
 
 vframe /bBlue /fGray /x16 /y7 /w48 /h11 Hidden Shadow
@@ -60,7 +60,7 @@ vecho /fLightGreen "   5) " /fYellow "Display Locations and Writing Demo "
 vecho /fLightGreen "   b: " /fYellow "Cursor Movement Demo "
 vecho
 vgotoxy /l /x8
-vecho /n /fWhite " 0" /fGray " - " /fLightRed "Return to " 
+vecho /n /fWhite " 0" /fGray " - " /fLightRed "Return to "
 vecho /n /fLightMagenta "DOS "
 
 vchoice auto /d100/t15/fWhite/bRed
@@ -93,7 +93,7 @@ vframe /bBlue /fLightCyan /x6 /y18 /w70 /h3 Hidden Shadow
 vprogres 0 left
 
 rem back to Top Left Frame
-vgotoxy /g /x5 /y6 
+vgotoxy /g /x5 /y6
 vgotoxy /l eot next next
 vecho /fRed "Blah, Blah, Blah."
 vdelay 500
@@ -101,7 +101,7 @@ vgotoxy /x7 /y19
 vprogres 1 left
 
 rem back to Top Left Frame
-vgotoxy /g /x43 /y6 
+vgotoxy /g /x43 /y6
 vgotoxy /l eot next next
 vecho /fBlue "Blah, Blah, Blah."
 vdelay 500
@@ -182,7 +182,7 @@ vgotoxy /x7 /y19
 vprogres 52
 vdelay 500
 
-vgotoxy /x5/y6/l eot 
+vgotoxy /x5/y6/l eot
 vecho
 vecho
 vecho /fBlue "Faster, faster and faster."
@@ -223,7 +223,7 @@ vdelay 3000
 
 vgotoxy /x5/y6
 vcls /l/fBlue
-vecho "Now I will write " /fRed "V8Power Tools!" 
+vecho "Now I will write " /fRed "V8Power Tools!"
 vecho /n /fBlue "in the other box "
 vecho /fBlack 10,000 /fBlue " times."
 vgotoxy /x43/y6/l
@@ -246,7 +246,7 @@ vcls /b Green /f LightCyan
 vdelay 500
 vcls /b Blue /f Yellow
 vgotoxy /x20 /y20
-vecho /n "You have just experienced a blue screen. " 
+vecho /n "You have just experienced a blue screen. "
 vdelay 3000
 vecho /fGray "(" /fWhite "Of Life!" /fgray ')'
 vdelay 2000
@@ -319,7 +319,9 @@ vdelay 3000
 
 vcls /b Green /f LightCyan
 vecho "This screen is environmentally friendly."
-vdelay 2000goto NextPart
+vdelay 2000
+
+goto NextPart
 
 :PartC
 vcursor Full
@@ -357,7 +359,7 @@ vecho "Now move to start of page."
 vgotoxy /l sop
 vdelay 2000
 
-vcls /l 
+vcls /l
 vgotoxy /x25/y13
 vecho "Now move to end of page."
 vgotoxy /l eop
