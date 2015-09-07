@@ -1,6 +1,6 @@
 @echo off
 
-REM Test for Presence of V8Power Tools 
+REM Test for Presence of V8Power Tools
 if errorlevel 255 goto ClearError
 
 :CheckPresence
@@ -25,10 +25,12 @@ if "%EX07_InDOSBox%" == "yes" goto DOSBox
 goto NotDOSBox
 
 :DOSBox
-echo This example will not work in DOSBox.
-goto  DontDoAnything
+echo This example will not work inside DOSBox or without "SET /P"
+goto DontDoAnything
 
 :NotDOSBox
+echo No | set /p EX07_InDOSBox=
+if not "%EX07_InDOSBox%" == "No" goto DOSBox
 
 :StartBatch
 vcls

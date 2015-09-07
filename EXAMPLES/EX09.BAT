@@ -1,6 +1,6 @@
 @echo off
 
-REM Test for Presence of V8Power Tools 
+REM Test for Presence of V8Power Tools
 if errorlevel 255 goto ClearError
 
 :CheckPresence
@@ -25,10 +25,12 @@ if "%EX09_InDOSBox%" == "yes" goto DOSBox
 goto NotDOSBox
 
 :DOSBox
-echo This example will not work inside DOSBox.
+echo This example will not work inside DOSBox or without "SET /P"
 goto DontDoAnything
 
 :NotDOSBox
+echo No | set /p EX09_InDOSBox=
+if not "%EX09_InDOSBox%" == "No" goto DOSBox
 vcursor | set /p EX09_CURSOR=
 goto StartBatch
 
@@ -59,7 +61,7 @@ REM Save Current Line
 vgotoxy /Qy | set /p EX09_LINE=
 
 REM Update Progress Bar
-vgotoxy eop sor 
+vgotoxy eop sor
 vmath %EX09_COUNTER%  * 4 | set /p EX09_AMOUNT=
 vprogress /fGreen %EX09_AMOUNT%
 
@@ -82,7 +84,7 @@ if errorlevel 4 goto NetworkDrive
 if errorlevel 3 goto DiscDrive
 if errorlevel 2 goto FloppyDrive
 
-vgotoxy /x1 
+vgotoxy /x1
 vecho /n /fGray "Drive " /fWhite %EX09_DRIVE% /fGray " appears, " /fGreen "OK"
 vecho /fGray "."
 goto Continued
@@ -92,26 +94,26 @@ REM Just Ignore it.
 goto Continued
 
 :NotFormatted
-vgotoxy /x1 
-vecho /n /fGray "Drive " /fWhite %EX09_DRIVE% /fGray " appears, " 
+vgotoxy /x1
+vecho /n /fGray "Drive " /fWhite %EX09_DRIVE% /fGray " appears, "
 vecho /fLightRed "UNFORMATTED" /fGray "."
 goto Continued
 
 :NetworkDrive
-vgotoxy /x1 
-vecho /n /fGray "Drive " /fWhite %EX09_DRIVE% /fGray " is " 
+vgotoxy /x1
+vecho /n /fGray "Drive " /fWhite %EX09_DRIVE% /fGray " is "
 vecho /fLightMagenta "Remote" /fGray "."
 goto Continued
 
 :DiscDrive
-vgotoxy /x1 
-vecho /n /fGray "Drive " /fWhite %EX09_DRIVE% /fGray " is a " 
+vgotoxy /x1
+vecho /n /fGray "Drive " /fWhite %EX09_DRIVE% /fGray " is a "
 vecho /fLightCyan "CD/DVD" /fGray " drive."
 goto Continued
 
 :FloppyDrive
-vgotoxy /x1 
-vecho /n /fGray "Drive " /fWhite %EX09_DRIVE% /fGray " uses " 
+vgotoxy /x1
+vecho /n /fGray "Drive " /fWhite %EX09_DRIVE% /fGray " uses "
 vecho /fLightBlue "Removable" /fGray " media."
 goto Continued
 

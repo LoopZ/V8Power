@@ -1,6 +1,6 @@
 @echo off
 
-REM Test for Presence of V8Power Tools 
+REM Test for Presence of V8Power Tools
 if errorlevel 255 goto ClearError
 
 :CheckPresence
@@ -29,7 +29,13 @@ echo This Example is running inside DOSBox.
 goto StartBatch
 
 :NotDOSBox
+echo No | set /p EX01_InDOSBox=
+if not "%EX01_InDOSBox%" == "No" goto NoSetP
 echo We are not using DOSBox.
+goto StartBatch
+
+:NoSetP
+echo Advanced "SET /P" not functional.
 goto StartBatch
 
 :StartBatch

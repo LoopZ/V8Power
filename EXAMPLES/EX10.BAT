@@ -29,6 +29,8 @@ set EX10_CURSOR=small
 goto StartBatch
 
 :NotDOSBox
+echo No | set /p EX10_InDOSBox=
+if not "%EX10_InDOSBox%" == "No" goto DOSBox
 vcursor | set /p EX10_CURSOR=
 goto StartBatch
 

@@ -1,6 +1,6 @@
 @echo off
 
-REM Test for Presence of V8Power Tools 
+REM Test for Presence of V8Power Tools
 if errorlevel 255 goto ClearError
 
 :CheckPresence
@@ -29,6 +29,8 @@ set EX03_CURSOR=small
 goto StartBatch
 
 :NotDOSBox
+echo No | set /p EX03_InDOSBox=
+if not "%EX03_InDOSBox%" == "No" goto DOSBox
 vcursor | set /p EX03_CURSOR=
 goto StartBatch
 
@@ -46,7 +48,7 @@ vcls /bGray /fBlack EOL
 vgotoxy /x22 /y1
 vecho /fBlack "Some kind of program " /fRed '1.2.3' /fBlack " Installer"
 
-REM Move cursor to end of the page, then column 1. You should use this 
+REM Move cursor to end of the page, then column 1. You should use this
 REM method to prevent issues if the screen is not using 25 rows of text.
 vgotoxy eop /x1
 
