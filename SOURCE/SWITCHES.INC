@@ -14,16 +14,16 @@
 ;   with this program; if not, write to the Free Software Foundation, Inc.,
 ;   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-; NASM for DOS 
+; NASM for DOS
 
 ; common code for command line switches
 
 %imacro ColorSwitchHandlers 0
 SwitchA:
-    NumberParam 
+    NumberParam
     mov         [TextAttr], al
     ret
-      
+
 SwitchColor:
     LookupParam ColorTable
     cmp         ax, 0xffff
@@ -31,7 +31,7 @@ SwitchColor:
     NumberParam
 .Found:
     ret
-    
+
 SwitchF:
     call        SwitchColor
     mov         ah, [TextAttr]
@@ -49,7 +49,7 @@ SwitchB:
     or          ah, al
     mov         [TextAttr], ah
     ret
-    
+
     ColorTableData      ; insert color name table
 
 %endmacro
@@ -72,7 +72,7 @@ SwitchX:
     dec         al
     mov         [CurrentX], al
     ret
-    
+
 SwitchY:
     call        NumberParam
     dec         al
@@ -89,7 +89,7 @@ SwitchW:
     NumberParam
     mov         [CurrentW], al
     ret
-    
+
 SwitchH:
     NumberParam
     mov         [CurrentH], al
@@ -145,7 +145,7 @@ CurrentSize:
     SwitchData '?', 0, SwitchHelp
 %endmacro
 
-%imacro HelpSwitchHandler 0
+%imacro HelpSwitchHandler 0-1 'See vinfo /? for help.'
 SwitchHelp:
 %ifdef NoVideoOutput
     StdOutStr   %%Message
@@ -154,5 +154,6 @@ SwitchHelp:
 %endif
 	ret
     %%Message:
-        DB 'See vinfo /? for help.',CRLF,0
+        DB %1
+        DB CRLF,0
 %endmacro

@@ -15,19 +15,19 @@
 ;   with this program; if not, write to the Free Software Foundation, Inc.,
 ;   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-; NASM for DOS 
+; NASM for DOS
 
 %idefine ASCII_Table
 
 %include "COMMON.INC"
-    
+
     CommandLineParser       ; insert code for command line parsing
 
     mov     ax, [OptionProcessed]
     cmp     ax, 0xffff
     jne     Done
 
-    ; PlaceHolder 
+    ; PlaceHolder
 
 Done:
     mov         al, [ExitCode]
@@ -44,7 +44,7 @@ ShowAscii:
     WriteChar   0x09
     WriteChar   0x09
     mov         bx, 0x30
-    
+
 .ShowAscii_1:
     push        bx
     mov         al, 0x20
@@ -76,7 +76,7 @@ ShowAscii:
     mov         al, '0'
     WriteChar   0x09
     mov         al, 'x'
-    WriteChar   0x09    
+    WriteChar   0x09
     pop			ax
     mov			cl, 4
     shr			al, cl
@@ -85,12 +85,12 @@ ShowAscii:
     add         al, 0x07
 .ShowAlpha:
 	add			al, 0x30
-    WriteChar   0x09    
+    WriteChar   0x09
     mov         al, '0'
-    WriteChar   0x09    
+    WriteChar   0x09
     mov         al, 0x20
     WriteChar   0x09
-    
+
     pop         bx
     xor         cx, cx
 .ShowAscii_4:
@@ -123,7 +123,7 @@ SwitchV:
     mov         al, 1
     mov         [QueryMode], al
     ret
-        
+
 SwitchD:
     mov         [OptionProcessed], cx
     DiskStatus      [di]
@@ -137,23 +137,23 @@ SwitchD:
     DiskStatusMessage  al
 .Done:
     ret
-    
+
 NoSwitch:
     LookupParam OptionsTable
     cmp         ax, 0xffff
     je          .NotOption
     mov         [OptionProcessed], ax
-    jmp         ax      
+    jmp         ax
 
 .NotOption:
     NumberParam
     ; do something with ax
-    
+
 InvalidOption:
     WriteStr    CommandLineErrorMsg
     Terminate   100
-    
-    HelpSwitchHandler
+
+    HelpSwitchHandler 'At present all help information is only in the V8Power Tools Readme text file.'
 
 CommandLineSwitches:
     SwitchData  0,  0, NoSwitch
@@ -161,14 +161,14 @@ CommandLineSwitches:
     SwitchData 'V', 0, SwitchV
     HelpSwitchData
     SwitchData  0,  0, 0
-    
+
 OptionsTable:
 %ifdef ASCII_Table
     TableData "ASCII", ShowAscii
 %endif
     TableEnd
-    
-    
+
+
 OptionProcessed:
     dw 0xffff
 QueryMode:
@@ -176,7 +176,7 @@ QueryMode:
 ExitCode:
     db  0
 SavedInt24:
-    dw 0, 0 
+    dw 0, 0
 Drive:
     db 0
-    
+
