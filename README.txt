@@ -71,6 +71,29 @@ Here is some basic information reguarding all utilities and how they operate.
     Unless overriden, most utilities use the text attribute at the current 
     cursor location.
 
+-------------------------------------------------------------------------------
+
+Here is color table used for all **/A**, **/F** and **/B** switches:
+
+	Decimal		Hex			Label (Not case specific)
+
+	0			0x00		Black
+	1			0x01		Blue
+	2			0x02		Green
+	3			0x03		Cyan
+	4			0x04		Red
+	5			0x05		Magenta
+	6			0x06		Brown
+	7			0x07		Gray
+	8			0x08		DarkGray
+	9			0x09		LightBlue
+	10			0x0a		LightGreen
+	11			0x0b		LightCyan
+	12			0x0c		LightRed
+	13			0x0d		LightMagenta
+	14			0x0e		Yellow
+	15			0x0f		White
+
 ===============================================================================
 vcls [options]
 
