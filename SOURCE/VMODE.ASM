@@ -17,6 +17,7 @@
 ; NASM for DOS
 
 %idefine NoVideoOutput
+%idefine SuperVGA
 
 %include "COMMON.INC"
 
@@ -39,6 +40,11 @@ GoodBye:
     Terminate 0
 
 ReadMode:
+    %ifdef SuperVGA
+        call    ReadModeSVGA
+        cmp     ax, 0x100
+        jge     .Done
+    %endif
     mov     ah, 0x0f
     int     0x10
     xor     ah, ah
@@ -117,8 +123,74 @@ WriteMode:
     int     0x10
     jmp     .Done
 .NotStandard:
+    %ifdef SuperVGA
+        call    WriteModeSVGA
+        jmp     .Done
+    %endif
 .Invalid:
+    Terminate 100
 .Done:
+    ret
+
+ReadModeSVGA:
+    push    di
+    mov     ax, 0x4f00
+    mov     di, SVGABuffer
+    int     0x10
+    cmp     ax, 0x004f
+    jne     .NoVesa
+    ; quick dirty VESA test
+    mov     dx, [SVGABuffer]
+    cmp     dx, 'VE'
+    jne     .NoVesa
+    mov     dx, [SVGABuffer + 2]
+    cmp     dx, 'SA'
+    jne     .NoVesa
+    ; get mode
+    mov     ax, 0x4f03
+    int     0x10
+    cmp     ax, 0x004f
+    jne     .NoVesa
+    mov     ax, bx
+    jmp     .Done
+.NoVesa:
+    xor     ax, ax
+.Done:
+    pop     di
+    ret
+
+WriteModeSVGA:
+    push    di
+    mov     ax, 0x4f00
+    mov     di, SVGABuffer
+    int     0x10
+    cmp     ax, 0x004f
+    jne     .NoVesa
+    ; quick dirty VESA test
+    mov     dx, [SVGABuffer]
+    cmp     dx, 'VE'
+    jne     .NoVesa
+    mov     dx, [SVGABuffer + 2]
+    cmp     dx, 'SA'
+    jne     .NoVesa
+    ; get mode
+    mov     ax, 0x4f02
+    mov     bx, [ModeCurrent]
+    int     0x10
+    cmp     ax, 0x004f
+    je      .Done
+    pop     di
+    StdOutStr .FailVesaMsg
+    Terminate 100
+.NoVesa:
+    StdOutStr .NoVesaMsg
+    Terminate 101
+.FailVesaMsg:
+    DB 'Bad Vesa Mode.',CRLF,0
+.NoVesaMsg:
+    DB 'No Vesa Support Present.',CRLF,0
+.Done:
+    pop     di
     ret
 
     LookupParamProc
@@ -213,6 +285,10 @@ OptionsTable:
     TableData 'F16',    OptFont16
     TableEnd
 
+%ifdef SuperVGA
+SVGABuffer:
+    times 0x100 db 0
+%endif
 ModeCurrent:
     dw      0
 ModeFirst:
