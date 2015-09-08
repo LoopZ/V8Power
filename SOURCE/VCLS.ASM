@@ -19,7 +19,7 @@
 %include "COMMON.INC"
 
     ; SetMaxSize
-    
+
     CommandLineParser       ; insert code for command line parsing
 
     mov         cx, [WindMin]
@@ -35,8 +35,8 @@
     mov         cx, dx
     pop         dx
     mov         dh, ch
-    mov         [WindMin], cx 
-    mov         [WindMax], dx 
+    mov         [WindMin], cx
+    mov         [WindMax], dx
 .NotEolOnly:
     mov         ah, 0x0a
     mov         al, [TextOnly]
@@ -46,12 +46,12 @@
     mov         al, [FillChar]
     cmp         al, 0x20
     jne         .WriteClear
-    
+
    mov         ax, 0x0600
     mov         bh, [TextAttr]
     int         0x10
     jmp         .Done
-    
+
 .WriteClear:
     sub         dh, ch
     sub         dl, cl
@@ -80,11 +80,11 @@
     dec         ch
     cmp         ch, 0
     jne         .ClearTextLoop
-    mov         cx, [WindMin]   
-        
+    mov         cx, [WindMin]
+
 .Done:
     xor         cx, cx
-    GotoXY      cx  
+    GotoXY      cx
     Terminate 0
 
 FillCode:
@@ -98,8 +98,8 @@ NoSwitch:
     je          .NotOptional
     jmp         ax
     ret
-        
-    
+
+
 .NotOptional:
     ; NoSwitch falls through to SwitchA
     ColorSwitchHandlers     ; Procedures for handling color switches.
@@ -115,7 +115,7 @@ SwitchX:
 .Ok:
     mov         [WindMinX], al
     ret
-    
+
 SwitchY:
     call        NumberParam
     dec         al
@@ -132,13 +132,13 @@ SwitchW:
     dec         al
     mov         bl, [WindMinX]
     add         al, bl
-    mov         cl, [ScreenMaxX]
+    mov         cl, [WindMaxX]
     cmp         al, cl
     jle         .Ok
     mov         al, cl
 .Ok:
     mov         [WindMaxX], al
-    ret 
+    ret
 SwitchH:
     NumberParam
     dec         al
@@ -151,7 +151,7 @@ SwitchH:
 .Ok:
     mov         [WindMaxY], al
     ret
-    
+
 OptionText:
     mov         al, 1
     mov         [TextOnly], al
@@ -161,11 +161,11 @@ OptionEol:
     mov         al, 1
     mov         [EolOnly], al
     ret
-        
+
     HelpSwitchHandler
 
 CommandLineSwitches:
-    SwitchData  0,  0, NoSwitch      
+    SwitchData  0,  0, NoSwitch
     ColorSwitchData
     LocalSwitchData
     XYSwitchData
@@ -178,10 +178,10 @@ OptionalTable:
     TableData "EOL",OptionEol
     TableData "TEXT",OptionText
     TableEnd
-    
+
 FillChar:
     db 0x20
 EolOnly:
     DB 0
-TextOnly: 
+TextOnly:
     DB 0
