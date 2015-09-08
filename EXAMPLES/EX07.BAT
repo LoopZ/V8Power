@@ -53,6 +53,6 @@ REM Batch file has completed.
 REM Abort and cleanup
 
 REM Restore the original cursor size and shape.
-set EX02_InDOSBOX=
+set EX07_InDOSBOX=
 
 :DontDoAnything
