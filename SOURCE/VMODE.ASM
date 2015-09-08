@@ -180,15 +180,11 @@ WriteModeSVGA:
     cmp     ax, 0x004f
     je      .Done
     pop     di
-    StdOutStr .FailVesaMsg
+    StdOutStr FailVesaMsg
     Terminate 100
 .NoVesa:
-    StdOutStr .NoVesaMsg
+    StdOutStr NoVesaMsg
     Terminate 101
-.FailVesaMsg:
-    DB 'Bad Vesa Mode.',CRLF,0
-.NoVesaMsg:
-    DB 'No Vesa Support Present.',CRLF,0
 .Done:
     pop     di
     ret
@@ -196,6 +192,41 @@ WriteModeSVGA:
     LookupParamProc
     NumberParamProc
 
+OptVesa:
+    push    es
+    push    si
+    push    di
+    mov     ax, 0x4f00
+    mov     di, SVGABuffer
+    int     0x10
+    cmp     ax, 0x004f
+    jne     .NoVesa
+    ; quick dirty VESA test
+    mov     dx, [SVGABuffer]
+    cmp     dx, 'VE'
+    jne     .NoVesa
+    mov     dx, [SVGABuffer + 2]
+    cmp     dx, 'SA'
+    jne     .NoVesa
+    les     si, [SVGABuffer + 0x0e]
+.Looping:
+    mov     ax, [es:si]
+    cmp     ax, 0xffff
+    je      .Done
+    StdOutHexWord
+    StdOutCRLF
+    add     si, 2
+    jmp     .Looping
+.NoVesa:
+    pop     di
+    StdOutStr NoVesaMsg
+    push    di
+.Done:
+    pop     di
+    pop     si
+    pop     es
+    Terminate 0
+;    ret
 
 OptBW40:
     mov     ax, 0x0000
@@ -283,9 +314,14 @@ OptionsTable:
     TableData 'F8',     OptFont8
     TableData 'F14',    OptFont14
     TableData 'F16',    OptFont16
+    TableData 'VESA',   OptVesa
     TableEnd
 
 %ifdef SuperVGA
+FailVesaMsg:
+    DB 'Bad Vesa Mode.',CRLF,0
+NoVesaMsg:
+    DB 'No Vesa Support Present.',CRLF,0
 SVGABuffer:
     times 0x100 db 0
 %endif

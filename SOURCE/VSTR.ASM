@@ -14,21 +14,21 @@
 ;   with this program; if not, write to the Free Software Foundation, Inc.,
 ;   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-; NASM for DOS 
+; NASM for DOS
 
 %idefine NoVideoOutput
 
 %include "COMMON.INC"
 
     CommandLineParser       ; insert code for command line parsing
-    
+
     mov al, [NoNewLine]
     cmp al, 1
     je  Done
     StdOutCRLF
 Done:
     Terminate 0
-    
+
 SwitchN:
     mov         al, 1
     mov         [NoNewLine], al
@@ -52,35 +52,68 @@ SwitchR:
     NumberParam
     mov         [Repeat], ax
     ret
-    
+
+SwitchL:
+    NumberParam
+    mov         bx, ax
+    cmp         bx, 0
+    je          .ThisLine
+.Looping:
+    push        bx
+    StdIn
+    pop         bx
+    jnc         .Done
+    cmp         al, 0x0d
+    jne         .Looping
+    dec         bx
+    cmp         bx, 0
+    je          .ThisLine
+    jmp         .Looping
+.ThisLine:
+    StdIn
+    jnc          .Done
+    cmp         al, 0x0a
+    je          .ThisLine
+    cmp         al, 0x0d
+    je          .Done
+    mov         dl, al
+    StdOutChar
+    jmp         .ThisLine
+.Done:
+    StdIn
+    jc          .Done
+    ret
+
+
 HelpSwitchHandler
 
 NoSwitch:
     LookupParam OptionsTable
     cmp         ax, 0xffff
     je          .NotOption
-    jmp         ax      
+    jmp         ax
 
 .NotOption:
     NumberParam
     ; do something with ax
-    
+
 .InvalidOption:
     WriteStr    CommandLineErrorMsg
     Terminate   100
-    
+
 CommandLineSwitches:
-    SwitchData  0,  0, NoSwitch  
+    SwitchData  0,  0, NoSwitch
     SwitchData  'N', 0, SwitchN
     SwitchData  'C', 1, SwitchC
     SwitchData  'R', 1, SwitchR
+    SwitchData  'L', 1, SwitchL
     HelpSwitchData
     SwitchData  0,  0, 0
-    
+
 OptionsTable:
     TableEnd
 
 Repeat:
     dw 1
 NoNewLine:
-    db 0    
+    db 0
