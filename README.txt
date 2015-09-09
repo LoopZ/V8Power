@@ -239,8 +239,7 @@ V8Power information program.
     version     Outputs the version information to STDOUT.
     license     Outputs license information to STDOUT.
     url         Outputs the website url information to STDOUT.
-
-    tba         (Still under development, more to be announced)
+	email		Outputs email address to STDOUT.
 
 -------------------------------------------------------------------------------
 
@@ -305,6 +304,7 @@ Simple wait for keypress or time-out.
     [none]      Wait forever for keypress.
     /T seconds  Delay in seconds to wait before the pause times-out. (returns
                 errorlevel 1)
+
     tba         (Still under development, more to be announced)
 
 -------------------------------------------------------------------------------
@@ -366,8 +366,6 @@ on numbers from 0-65535. Good for looping, determining screen offsets and etc.
     /H          Set output to hexadecimal.
     /D          Set output to decimal.
 
-   tba         (Still under development, more to be announced)
-
 -------------------------------------------------------------------------------
 
 vstr [options]
@@ -377,16 +375,30 @@ Simple String processing utility. Outputs results to STDOUT.
     /N          Do not write a CRLF when done.
     /C code     Write an ASCII character code.
     /R times    Repeat the next write times number of times. (1-65535)
+    /L n		Return only line n from standard input. (0-65535)
 
    tba         (Still under development, more to be announced)
 
 -------------------------------------------------------------------------------
 
-vmode
+vmode [options]
 
 Set and query current video text modes.
 
-TBA
+	[none]		Outputs current video mode and font to STDOUT.
+	VESA		Outputs a list of VESA modes to STDOUT.
+	mode		Set current video mode. (0-0xffff) or a mode label with
+				optional font setting.
+
+				Modes:	BW40	Black and White 40 Column (also B40).
+						BW80	Black and White 80 Column (also B80, BW).
+						CO40	Color 40 Column (also C40).
+						CO80	Color 80 Column (also C80, COLOR).
+						MONO	Mono 80 Column.
+
+				Fonts:	Font8	Select 8x8 ROM font. (also F8)
+						Font14	Select 8x8 EGA ROM font. (also F14)
+						Font16	Select 8x8 VGA ROM font. (also F16)
 
 -------------------------------------------------------------------------------
 

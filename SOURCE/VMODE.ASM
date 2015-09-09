@@ -48,13 +48,8 @@ ReadMode:
     mov     ah, 0x0f
     int     0x10
     xor     ah, ah
-    cmp     al, 0x03
-    jle     .Normal
     cmp     al, 0x07
-    jne     .Invalid
-    mov     al, 0x04
-    jmp     .Normal
-.Invalid:
+    jle     .Normal
     mov     ax, 0xffff
     jmp     .Done
 .Normal:
@@ -86,11 +81,7 @@ WriteMode:
     je      .Invalid
     cmp     ax, 0x0100
     jge     .NotStandard
-    and     al, 00000111b
-    test    al, 00000100b
-    jz      .NotMono
-    mov     al, 0x07
-.NotMono:
+    and     al, 00001111b
     mov     ah, 0x00
     int     0x10
     mov     ax, [ModeCurrent]
@@ -245,7 +236,7 @@ OptColor80:
     jmp     SetModeCurrent
 
 OptMono80:
-    mov     ax, 0x0004
+    mov     ax, 0x0007
     jmp     SetModeCurrent
 
 OptFont8:

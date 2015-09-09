@@ -12,7 +12,6 @@ Probable roadmap for the future of V8Power Tools:
 
     vline - line drawing utility, single, double, smart, dumb, vertical...
     vinfo - more system information provided by utility.
-    vmode - video mode get/set utility.
     vview - Text file viewer, user license agreement and whatnots..
     vask - Single line text input and editor.
     vstr - Simple I/O redirection string processing. Like trim, squeeze, case...
