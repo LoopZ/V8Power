@@ -90,13 +90,13 @@ Clear screen, area or row (line).
 <table>
 <tr><td width="125pt"></td><td>Clear the screen with the current text attribute.</td></tr>
 <tr><td><b><i>n</i></b></td><td>Set text attribute to <b><i>n</i></b>.</td></tr>
-<tr><td><b>/A <i>n</i></a></td><td>Set text attribute to <b><i>n</i></b>.</td></tr>
+<tr><td><b>/A <i>n</i></b></td><td>Set text attribute to <b><i>n</i></b>.</td></tr>
 <tr><td><b>/B <i>color</i></b></td><td>Set the background text attribute to
 <b><i>color</i></b> (or a <b><i>value</i></b>).</td></tr>
 <tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to
 <b><i>color</i></b> (or a <b><i>value</i></b>).</td></tr>
-<tr><td><b>/G</a></td><td>Global Screen Clear. (Default)</b></td></tr>
-<tr><td><b>/L</a></td><td>Local Screen Clear. Detects its surroundings and only clears that.
+<tr><td><b>/G</b></td><td>Global Screen Clear. (Default)</b></td></tr>
+<tr><td><b>/L</b></td><td>Local Screen Clear. Detects its surroundings and only clears that.
 	Probably, a box or line or something. You don't really need this option. Because,
 	you can just redraw the box, maybe.</b></td></tr>
 <tr><td><b>TEXT</b></td><td>Clear the text only. Leave all colors intact and ignore their color attributes.</td></tr>
@@ -136,7 +136,7 @@ Output text to display.
 <table>
 <tr><td width="125pt"></td><td>Preforms a Carriage Return and Line Feed to the display.</td></tr>
 <tr><td><b><i>text</i></b></td><td>Writes <b><i>text</i></b> to the display.</td></tr>
-<tr><td><b>/A <i>n</i></a></td><td>Set text attribute to <b><i>n</i></b>.</td></tr>
+<tr><td><b>/A <i>n</i></b></td><td>Set text attribute to <b><i>n</i></b>.</td></tr>
 <tr><td><b>/B <i>color</i></b></td><td>Set the background text attribute to
 <b><i>color</i></b> (or <b><i>value</i></b>).</td></tr>
 <tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to
@@ -183,7 +183,7 @@ position.</td></tr>
 Draw a box windowing thingy and move cursor to its inside top left position.
 <table>
 <tr><td width="125pt"></td><td>Draw a box that encloses the entire screen.</td></tr>
-<tr><td><b>/A <i>n</i></a></td><td>Set text attribute to <b><i>n</i></b>.</td></tr>
+<tr><td><b>/A <i>n</i></b></td><td>Set text attribute to <b><i>n</i></b>.</td></tr>
 <tr><td><b>/B <i>color</i></b></td><td>Set the background text attribute to
 <b><i>color</i></b> (or <b><i>value</i></b>).</td></tr>
 <tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to
@@ -224,7 +224,7 @@ V8Power information program.
 Draw a progress bar at current location without moving cursor.
 <table>
 <tr><td width="125pt"></td><td>Draw a progress bar at 0%.</td></tr>
-<tr><td><b>/A <i>n</i></a></td><td>Set text attribute to <b><i>n</i></b>.</td></tr>
+<tr><td><b>/A <i>n</i></b></td><td>Set text attribute to <b><i>n</i></b>.</td></tr>
 <tr><td><b>/B <i>color</i></b></td><td>Set the background text attribute to
 <b><i>color</i></b> (or <b><i>value</i></b>).</td></tr>
 <tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to
@@ -246,12 +246,12 @@ Also, I personally recommend using <b><i>auto</i></b> for any set of choices tha
 you prefix with a letter or number.
 <table>
 <tr><td width="125pt"></td><td>Perform using all automatic defaults settings.</td></tr>
-<tr><td><b>/A <i>n</i></a></td><td>Set text attribute to <b><i>n</i></b> for selected item.</td></tr>
+<tr><td><b>/A <i>n</i></b></td><td>Set text attribute to <b><i>n</i></b> for selected item.</td></tr>
 <tr><td><b>/B <i>color</i></b></td><td>Set the background text attribute to
 <b><i>color</i></b> for selected item.</td></tr>
 <tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to
 <b><i>color</i></b> for selected item.</td></tr>
-<tr><td><b>/D <i>n</i></a></td><td>Preselect item number <b><i>n</i></b>
+<tr><td><b>/D <i>n</i></b></td><td>Preselect item number <b><i>n</i></b>
 as the default choice.</td></tr>
 <tr><td><i>type</i></td><td>Direct keypress selection type.<br>
 	 <b><i>off</i></b> Select with only arrow keys.<br>
@@ -260,10 +260,10 @@ as the default choice.</td></tr>
 	 <b><i>digit</i></b> Jump to selections using 1-9 (+0).<br>
 <tr><td><b>/Q</td><td>Query for result. When the choice is made, it's text will be
 sent to STDOUT.</td></tr>
-<tr><td><b>/T <i>seconds</i></a></td><td>Delay in <b><i>seconds</i></b> before the default item is automatically selected (0-3600).
+<tr><td><b>/T <i>seconds</i></b></td><td>Delay in <b><i>seconds</i></b> before the default item is automatically selected (0-3600).
 Note that even if the user navigates to a different item, the original default item will be
 selected when the timeout is achieved.</td></tr>
-<tr><td><b>/P <i>n</i></a></td><td>Use <b>polling</b> mode and preselect item
+<tr><td><b>/P <i>n</i></b></td><td>Use <b>polling</b> mode and preselect item
 number <b><i>n</i></b> as the current choice. Note, any change of selection
 will exit vchoice and return 100+ the current choice number.</td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
@@ -273,7 +273,7 @@ will exit vchoice and return 100+ the current choice number.</td></tr>
 Simple wait for keypress or  time-out.
 <table>
 <tr><td width="125pt"></td><td>Wait forever for keypress.</td></tr>
-<tr><td><b>/T <i>seconds</i></a></td><td>Delay in <b><i>seconds</i></b> to wait before the
+<tr><td><b>/T <i>seconds</i></b></td><td>Delay in <b><i>seconds</i></b> to wait before the
 pause times-out. (returns errorlevel 1)</td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
@@ -281,18 +281,18 @@ pause times-out. (returns errorlevel 1)</td></tr>
 #### vline *[options]* ######
 Draws a line.
 <table><tr><td width="125pt"></td><td>Draws as local single dumb line on the current row.Wait forever for keypress.</td></tr>
-<tr><td><b><i>single</i></a></td><td>Draws a <b><i>single</i></b> line.</td></tr>
-<tr><td><b><i>double</i></a></td><td>Draws a <b><i>double</i></b> line.</td></tr>
-<tr><td><b><i>hidden</i></a></td><td>Draws a <b><i>hidden</i></b> dumb line.</td></tr>
-<tr><td><b><i>dumb</i></a></td><td>Draws a <b><i>dumb</i></b> without regard to what already exists.</td></tr>
+<tr><td><b><i>single</i></b></td><td>Draws a <b><i>single</i></b> line.</td></tr>
+<tr><td><b><i>double</i></b></td><td>Draws a <b><i>double</i></b> line.</td></tr>
+<tr><td><b><i>hidden</i></b></td><td>Draws a <b><i>hidden</i></b> dumb line.</td></tr>
+<tr><td><b><i>dumb</i></b></td><td>Draws a <b><i>dumb</i></b> without regard to what already exists.</td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
 * * *
 #### vinfo *[options]* ######
 General system information utility.
 <table><tr><td width="125pt"></td><td>Does nothing.</td></tr>
-<tr><td><b><i>/V </i></a></td><td>Verbose Mode.</td></tr>
-<tr><td><b>/D<i>a</i></a></td><td>Test <b><i>a</i></b> drives status.<br>
+<tr><td><b><i>/V </i></b></td><td>Verbose Mode.</td></tr>
+<tr><td><b>/D<i>a</i></b></td><td>Test <b><i>a</i></b> drives status.<br>
 Returns these error codes:<br>
 <br>
 <pre>
@@ -312,20 +312,20 @@ Returns these error codes:<br>
 Sets current errorlevel. Mostly for testing batch file logic.
 <table>
 <tr><td width="125pt"></td><td>Sets errorlevel to 0</td></tr>
-<tr><td><b><i>n</i></a></td><td>Sets errorlevel to<b><i>n</i></b>(0-255)</td></tr>
+<tr><td><b><i>n</i></b></td><td>Sets errorlevel to<b><i>n</i></b>(0-255)</td></tr>
 </table>
 * * *
 #### vmath *[options]* ######
 Super simple math utility. It is NOT as a calculator and is limited to working
 on numbers from 0-65535. Good for looping, determining screen offsets and etc.
 <table>
-<tr><td width="125pt"><b><i>+</i></a>,<b><i>ADD</i></a></td><td>Add next number to sum.</td></tr>
-<tr><td><b><i>-</i></a>,<b><i>SUB</i></a></td><td>Subtract next number from sum.</td></tr>
-<tr><td><b><i>*</i></a>,<b><i>MUL</i></a></td><td>Multiply sum by next number.</td></tr>
-<tr><td><b><i>/</i></a>,<b><i>DIV</i></a></td><td>Divide sum by next number.</td></tr>
-<tr><td><b><i>\</i></a>,<b><i>MOD</i></a></td><td>Divide sum by next number and set sum to the remainder.</td></tr>
-<tr><td><b><i>/H</i></a></td><td>Set output to hexadecimal.</td></tr>
-<tr><td><b><i>/D</i></a></td><td>Set output to decimal.</td></tr>
+<tr><td width="125pt"><b><i>+</i></b>,<b><i>ADD</i></b></td><td>Add next number to sum.</td></tr>
+<tr><td><b><i>-</i></b>,<b><i>SUB</i></b></td><td>Subtract next number from sum.</td></tr>
+<tr><td><b><i>*</i></b>,<b><i>MUL</i></b></td><td>Multiply sum by next number.</td></tr>
+<tr><td><b><i>/</i></b>,<b><i>DIV</i></b></td><td>Divide sum by next number.</td></tr>
+<tr><td><b><i>\</i></b>,<b><i>MOD</i></b></td><td>Divide sum by next number and set sum to the remainder.</td></tr>
+<tr><td><b><i>/H</i></b></td><td>Set output to hexadecimal.</td></tr>
+<tr><td><b><i>/D</i></b></td><td>Set output to decimal.</td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
 * * *
@@ -337,13 +337,29 @@ Simple String processing utility. Outputs results to STDOUT.
 <tr><td><b>/C <i>code</i></b></td><td>Write an ASCII character
 <b><i>code</i></b>.</td></tr>
 <tr><td><b>/R <i>times</i></b></td><td>Repeat the next write <b><i>times</i></b> number of times. (1-65535)</td></tr>
+<tr><td><b>/L <i>line</i></b></td><td>Return only this <b><i>line</i></b> from standard input. (0-65535)</td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
 * * *
-#### vmode ######
+#### vmode *[options]* ######
 Set and query current video text modes.
+<table>
+<tr><td width="125pt"></td><td>Outputs current video mode and font to STDOUT.</td></tr>
+<tr><td><b>VESA<i></i></b></td><td>Outputs a list of <b><i>VESA</i></b>modes to STDOUT.</td></tr>
+<tr><td><b>mode<i></i></b></td><td>Set current video <b><i>mode</i></b>.
+(0-0xffff) or a mode label with optional font setting.</td></tr>
+<tr><td></td><td>
+	BW40	Black and White 40 Column (also B40).
+	BW80	Black and White 80 Column (also B80, BW).
+	CO40	Color 40 Column (also C40).
+	CO80	Color 80 Column (also C80, COLOR).
+	MONO	Mono 80 Column.
 
-TBA
+	Font8	Select 8x8 ROM font. (also F8)
+	Font14	Select 8x8 EGA ROM font. (also F14)
+	Font16	Select 8x8 VGA ROM font. (also F16)
+</td></tr>
+</table>
 * * *
 #### vview ######
 Text file and license agreement viewer.
