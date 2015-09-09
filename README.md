@@ -347,15 +347,16 @@ Set and query current video text modes.
 <tr><td width="125pt"></td><td>Outputs current video mode and font to STDOUT.</td></tr>
 <tr><td><b>VESA<i></i></b></td><td>Outputs a list of <b><i>VESA</i></b>modes to STDOUT.</td></tr>
 <tr><td><b>mode<i></i></b></td><td>Set current video <b><i>mode</i></b>.
-(0-0xffff) or a mode label with optional font setting.</td></tr>
-<tr><td></td><td>
+(0-0xffff) or a mode label with optional font setting.<br><br>
 <pre>
+Modes:
 	BW40	Black and White 40 Column (also B40).
 	BW80	Black and White 80 Column (also B80, BW).
 	CO40	Color 40 Column (also C40).
 	CO80	Color 80 Column (also C80, COLOR).
 	MONO	Mono 80 Column.
 
+Fonts:
 	Font8	Select 8x8 ROM font. (also F8)
 	Font14	Select 8x8 EGA ROM font. (also F14)
 	Font16	Select 8x8 VGA ROM font. (also F16)
