@@ -349,6 +349,7 @@ Set and query current video text modes.
 <tr><td><b>mode<i></i></b></td><td>Set current video <b><i>mode</i></b>.
 (0-0xffff) or a mode label with optional font setting.</td></tr>
 <tr><td></td><td>
+<pre>
 	BW40	Black and White 40 Column (also B40).
 	BW80	Black and White 80 Column (also B80, BW).
 	CO40	Color 40 Column (also C40).
@@ -358,6 +359,7 @@ Set and query current video text modes.
 	Font8	Select 8x8 ROM font. (also F8)
 	Font14	Select 8x8 EGA ROM font. (also F14)
 	Font16	Select 8x8 VGA ROM font. (also F16)
+</pre>
 </td></tr>
 </table>
 * * *
