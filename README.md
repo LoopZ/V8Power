@@ -345,7 +345,7 @@ Simple String processing utility. Outputs results to STDOUT.
 Set and query current video text modes.
 <table>
 <tr><td width="125pt"></td><td>Outputs current video mode and font to STDOUT.</td></tr>
-<tr><td><b>VESA<i></i></b></td><td>Outputs a list of <b><i>VESA</i></b>modes to STDOUT.</td></tr>
+<tr><td><b>VESA<i></i></b></td><td>Outputs a list of <b><i>VESA</i></b> modes to STDOUT.</td></tr>
 <tr><td><b>mode<i></i></b></td><td>Set current video <b><i>mode</i></b>.
 (0-0xffff) or a mode label with optional font setting.<br>
 <pre>
