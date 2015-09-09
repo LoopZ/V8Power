@@ -292,7 +292,7 @@ Draws a line.
 General system information utility.
 <table><tr><td width="125pt"></td><td>Does nothing.</td></tr>
 <tr><td><b><i>/V </i></b></td><td>Verbose Mode.</td></tr>
-<tr><td><b>/D<i>a</i></b></td><td>Test <b><i>a</i></b> drives status.<br>
+<tr><td><b>/D <i>a</i></b></td><td>Test <b><i>a</i></b> drives status.<br>
 Returns these error codes:<br>
 <br>
 <pre>
