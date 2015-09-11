@@ -18,6 +18,8 @@
 
 %include "COMMON.INC"
 
+    DumpKeystrokes
+
     FrameBounds
     WhereXY
     mov         al, [TextAttr]

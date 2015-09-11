@@ -14,15 +14,17 @@
 ;   with this program; if not, write to the Free Software Foundation, Inc.,
 ;   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-; NASM for DOS 
+; NASM for DOS
 
 %include "COMMON.INC"
+
+    DumpKeystrokes
 
     WhereXY
     mov     [Position], dx
 
     CommandLineParser       ; insert code for command line parsing
-    
+
 KeyBoardLoop:
     mov         cx, [TimeOut]
     push        es
@@ -47,19 +49,19 @@ KeyBoardLoop:
     int         0x16
     jz          .WaitLoop
     pop         es
-    
+
     mov         ax, 0x0000
     int         0x16
 
     mov         dx, [Position]
     GotoXY      dx
     Terminate 0
-    
+
 TimedOut:
     mov         dx, [Position]
     GotoXY      dx
     Terminate 1
-    
+
 ShowTimeOut:
     push        cx
     push        bx
@@ -97,7 +99,7 @@ ShowTimeOut:
 ; .NoSpace:
     mov         ah, 0x02
     int         0x10
-   
+
     pop         ax
     WriteInt    ax
     mov         al, 0x20
@@ -105,19 +107,19 @@ ShowTimeOut:
 NoDisplayTimeOut:
     pop         dx
     pop         bx
-    pop         cx      
+    pop         cx
     ret
 
 NoSwitch:
     LookupParam OptionsTable
     cmp         ax, 0xffff
     je          .NotOption
-    jmp         ax      
+    jmp         ax
 
 .NotOption:
     NumberParam
     ; do something with ax
-    
+
 .InvalidOption:
     WriteStr    CommandLineErrorMsg
     Terminate   100
@@ -141,20 +143,20 @@ SwitchT:
     ret
 
     ColorSwitchHandlers
-    
+
     HelpSwitchHandler
 
 CommandLineSwitches:
-    SwitchData  0,  0, NoSwitch  
+    SwitchData  0,  0, NoSwitch
     SwitchData  'T',  1, SwitchT
-    ColorSwitchData 
+    ColorSwitchData
     HelpSwitchData
     SwitchData  0,  0, 0
-    
+
 OptionsTable:
     TableEnd
-    
+
 TimeOut:
-    dw 0    
+    dw 0
 Position:
     dw 0

@@ -14,7 +14,7 @@
 ;   with this program; if not, write to the Free Software Foundation, Inc.,
 ;   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-; NASM for DOS 
+; NASM for DOS
 
 use16
 
@@ -52,7 +52,7 @@ jmp BasicInitialize
 
 VersionID:
 	dd 0
-	
+
 %idefine VideoOutput
 
 %ifdef NoVideoOutput
@@ -69,10 +69,10 @@ SECTION _DATA
 	ScreenMax:
 		ScreenMaxX:	DB 0
 		ScreenMaxY	DB 0
-	WindMin:        
+	WindMin:
 		WindMinX:	DB 0
 		WindMinY	DB 0
-	WindMax:        
+	WindMax:
 		WindMaxX:	DB 0
 		WindMaxY	DB 0
 
@@ -84,7 +84,21 @@ SECTION _TEXT
 
 %idefine CRLF 0x0d,0x0a
 %idefine SwitchChar '/'
-    
+
+
+%imacro DumpKeystrokes 0
+    push        ax
+%%WaitKeys:
+    mov         ax, 0x0100
+    int         0x16
+    jz          %%NoKeys
+    mov         ax, 0x0000
+    int         0x16
+    jmp         %%WaitKeys
+%%NoKeys:
+    pop         ax
+%endmacro
+
 ; get cursor position and size
 WhereXYProc:
     mov         ah, 0x03
@@ -97,7 +111,7 @@ WhereXYProc:
     sub			dh, ch
     pop			cx
     ret
-    
+
 ; move cursor to absolute position
 GotoXYProc:
     mov         ah, 0x02
@@ -121,7 +135,7 @@ GotoXYProc:
 %imacro WhereXY 0
     call        WhereXYProc
 %endmacro
-    
+
 %imacro GotoXY 1-2
     %if %0 = 2
         mov     dl, %1
@@ -168,10 +182,10 @@ GotoXYProc:
     mov         bh, [VideoPage]
     int         0x10
 %endmacro
-    
+
 %imacro WriteChar 0-1 0x09
 	mov			ah, %1
-    call        WriteCharProc 
+    call        WriteCharProc
 %endmacro
 
 ; Write a ASCIIZ String and display control codes as characters
@@ -186,7 +200,7 @@ GotoXYProc:
     jmp         %%WriteRawLoop
 %%WriteRawDone:
 %endmacro
-    
+
 %imacro WriteStr 1
     mov         si, %1
     call        WriteStrProc
@@ -206,11 +220,11 @@ GotoXYProc:
     DB "that actually does something at a later time.$"
 %%Done:
 %endmacro
-    
+
 ; Write Word in AX
 %imacro WriteInt 1
     mov         ax, %1
-	call		WriteIntProc    
+	call		WriteIntProc
 	%ifndef WriteIntProc_Declared
 		%idefine 	WriteIntProc_Declared
 		jmp			%%Done
@@ -233,7 +247,7 @@ GotoXYProc:
 		pop         ax
 		loop        %%IsJustRight
 		jmp         %%WriteIntDone
-	%%WayTooBig:   
+	%%WayTooBig:
 		inc         cx
 		xor         dx, dx
 		div         bx
@@ -248,7 +262,7 @@ GotoXYProc:
 ; Write Word in AX
 %imacro WriteIntNoAttr 1
     mov         ax, %1
-	call		WriteIntNAProc    
+	call		WriteIntNAProc
 	%ifndef WriteIntNAProc_Declared
 		%idefine 	WriteIntNAProc_Declared
 		jmp			%%Done
@@ -271,7 +285,7 @@ GotoXYProc:
 		pop         ax
 		loop        %%IsJustRight
 		jmp         %%WriteIntDone
-	%%WayTooBig:   
+	%%WayTooBig:
 		inc         cx
 		xor         dx, dx
 		div         bx
@@ -312,7 +326,7 @@ GotoXYProc:
 	pop         ax
 	loop        %%IsJustRight
 	jmp         %%Done
-%%WayTooBig:   
+%%WayTooBig:
 	inc         cx
 	xor         dx, dx
 	div         bx
@@ -446,7 +460,7 @@ GotoXYProc:
 %imacro WriteStdIn 0
 %%CheckInput:
 	StdIn
-	jnc			%%Done	
+	jnc			%%Done
 %%Ready:
 	cmp			al, 0x0d
 	je			%%CR_Found
@@ -458,7 +472,7 @@ GotoXYProc:
 	cmp			ah, 0
 	je			%%WriteLF
 	dec			ah
-	mov			[%%CRLF_Data], ah	
+	mov			[%%CRLF_Data], ah
 	WriteStr	%%CR_String
 	jmp			%%WriteCR
 %%WriteLF:
@@ -466,12 +480,12 @@ GotoXYProc:
 	cmp			ah, 0
 	je			%%WriteChar
 	dec			ah
-	mov			[%%CRLF_Data + 1], ah	
+	mov			[%%CRLF_Data + 1], ah
 	WriteStr	%%LF_String
 	jmp			%%WriteLF
 %%WriteChar:
 	pop			ax
-	WriteChar  
+	WriteChar
 	jmp			%%CheckInput
 %%CR_String:
 	db	0x0d,0
@@ -482,12 +496,12 @@ GotoXYProc:
 %%CR_Found:
 	mov			ah, [%%CRLF_Data]
 	inc			ah
-	mov			[%%CRLF_Data], ah	
+	mov			[%%CRLF_Data], ah
 	jmp			%%CheckInput
 %%LF_Found:
 	mov			ah, [%%CRLF_Data + 1]
 	inc			ah
-	mov			[%%CRLF_Data + 1], ah	
+	mov			[%%CRLF_Data + 1], ah
 	jmp			%%CheckInput
 %%Done:
 %endmacro
@@ -500,7 +514,7 @@ GotoXYProc:
     and         ax, 0x0fff
     push        ax
     popf
-    pushf       
+    pushf
     pop         ax
     and         ax, 0xf000
     cmp         ax, 0xf000
@@ -522,7 +536,7 @@ GotoXYProc:
 	cmp			dx, 23
 	jl			%%NoRoundUp
 	inc			ax
-%%NoRoundUp:	
+%%NoRoundUp:
 	cmp			ax, 0
 	je			%%Done
 	mov			cx, ax
@@ -552,7 +566,7 @@ GotoXYProc:
 	pop			ax
 	mov			cl, 0x06
 	shr			ax, cl
-	mov			cx, ax	
+	mov			cx, ax
 
 	mov			bx, %%DelayData
 	mov  		ax, 0x8300
@@ -586,7 +600,7 @@ GotoXYProc:
 ; CommandLineSwitches label must exit
 ; it will call functions listed as DB Character, 0/1 Needs Param; DW Address
 ; first is no switch, last is 0,0,0
-; on call dl is switch character, cx is data length, di is start of data, 
+; on call dl is switch character, cx is data length, di is start of data,
 ; si is end of data.
 %imacro CommandLineParser 0
     cld
@@ -602,7 +616,7 @@ GotoXYProc:
     cmp         al, 0x27
     je          %%Quote
     cmp         al, 0x60
-    je          %%Quote 
+    je          %%Quote
     cmp         al, 0x20
     je          %%Next
     cmp         al, 0x09
@@ -669,7 +683,7 @@ GotoXYProc:
     jne         %%ResetBX
     cmp         cx, 1
     jle         %%KeepBX
-%%ResetBX:  
+%%ResetBX:
     xor         bx, bx
 %%KeepBX:
     mov         di, si
@@ -702,7 +716,7 @@ GotoXYProc:
     mov         dl, al
     call        bx
     xor         dh, dh
-    xor         bx,bx   
+    xor         bx,bx
     pop         si
     mov         di, si
     jmp         %%Loop
@@ -736,7 +750,7 @@ GotoXYProc:
 		je          %%ForceHex
 		cmp         bl, 'X'
 		je          %%ForceHex
-	
+
 		cmp         bl, 0x41
 		jl          %%NotUpperCase
 		cmp         bl, 0x5a
@@ -810,7 +824,7 @@ GotoXYProc:
 		xor         bh, bh
 		add         ax, bx
 		loop        %%MakeHex
-		ret     
+		ret
 	%%SkipOver:
 	%endif
 %endmacro
@@ -847,13 +861,13 @@ GotoXYProc:
 		cmp         al, ah
 		jne         %%Different
 		loop        %%Checking
-		lodsb       
+		lodsb
 		cmp         al, 0
 		je          %%EndOfKey
 	%%Different:
 		cmp         al, 0
 		je          %%NotThisOne
-		lodsb       
+		lodsb
 		jmp         %%Different
 	%%EndOfKey:
 		cmp         cl, 0
@@ -904,7 +918,7 @@ GotoXYProc:
 		je				%%ScanLeft
 		dec				dh
 		jmp				%%ScanUp
-	%%FrameTop:	
+	%%FrameTop:
 		inc				dh
 	%%ScanLeft:
 		mov				[WindMinY], dh
@@ -930,7 +944,7 @@ GotoXYProc:
 		je				%%ScanRight
 		inc				dh
 		jmp				%%ScanDownLoop
-	%%FrameBottom:	
+	%%FrameBottom:
 		dec				dh
 	%%ScanRight:
 		mov				[WindMaxY], dh
@@ -950,7 +964,7 @@ GotoXYProc:
 		pop				dx
 		mov				ah, 0x02
 		int				0x10
-	
+
 		jmp				%%Done
 	%%Check:
 		mov				ah, 0x02
@@ -1020,7 +1034,7 @@ GotoXYProc:
     pop     ax
     popf
 %endmacro
- 
+
  ; macro that shows command line switch and data, mostly for debuging the
 ; command line parser
 %imacro DebugCmdLn 0
@@ -1116,7 +1130,7 @@ TempVideoPageSize:
 	dw 0
 TempVideoPagePtr:
 	dw 0
-%%Done:	
+%%Done:
 %endmacro
 
 %imacro FreeTempVideoPage 0
@@ -1168,7 +1182,7 @@ TempVideoPagePtr:
 	jne		%%CopyLoop
 	pop		si
 	pop		es
-%%NoTemp:	
+%%NoTemp:
 %endmacro
 
 ; CX is count, DX is coordinate, ax is attribute or 00 for restore
@@ -1194,7 +1208,7 @@ CopyFromTempVideo:
 	xor		dh, dh
 	add		ax, dx
 	mov		cx, 1
-	shl 	ax, cl	
+	shl 	ax, cl
 	pop		dx
 	pop		cx
 	mov		si, ax
@@ -1230,7 +1244,7 @@ CopyFromTempVideo:
 	pop		si
 	pop		es
 %%NoTemp:
-	ret	
+	ret
 %endmacro
 
 %include "SWITCHES.INC"
@@ -1247,7 +1261,7 @@ WriteCharProc:
     GotoNextXY
     pop			ax
     ret
-    
+
 ; Write a ASCIIZ String using control codes
 WriteStrProc:
     cld
@@ -1307,12 +1321,12 @@ WriteStrProc:
     jmp         .WriteStrLoop
 .WriteStrDone:
     ret
-    
+
 ; Terminate with exit code and return to DOS
 ProgramTerminate:
 	%ifdef VideoOutput
 		push        ax
-		WhereXY     
+		WhereXY
 		cmp         cx, [CursorShape]
 		je          .Done
 		mov         ah, 0x01
@@ -1321,7 +1335,7 @@ ProgramTerminate:
 	.Done:
 		pop         ax
     %endif
-    mov         ah, 4ch  
+    mov         ah, 4ch
     int         0x21
 
 ; Basic Initialization Stuff
@@ -1330,21 +1344,21 @@ BasicInitialize:
     mov         bx, 0x0040
     push        bx
     pop         es
-    
+
     ; detect current video mode
     mov         al, [es:0x0049]
     mov         [VideoMode], al
     xor         ah, ah
     cmp         al, 0x03
     jg          .NoTextAttr
-    ReadChar    
+    ReadChar
     mov         [TextAttr], ah
-.NoTextAttr:    
-    
+.NoTextAttr:
+
     ; detect active video page
     mov         al, [es:0x0062]
     mov         [VideoPage], al
-    
+
     ; get current cursor shape and position
     WhereXY
     mov         [CursorShape], cx
@@ -1356,7 +1370,7 @@ BasicInitialize:
     mov         bh, bl
     mov         bl, [es:0x0084]
     xchg        bl, bh
-    mov         [ScreenMax], bx     
+    mov         [ScreenMax], bx
     mov         [WindMax], bx
 
 	%ifdef VideoOutput
@@ -1365,13 +1379,12 @@ BasicInitialize:
 		mov         cx, 0x2000
 		int         0x10
 	%endif
-            
+
     pop         es
-    
+
     mov         si, 0x0081
-    
+
     ; CX is Cursor Shape
     ; DX is Cursor Position
     ; BX is Screen Max
     ; SI is Pointed to Command Line
-    
