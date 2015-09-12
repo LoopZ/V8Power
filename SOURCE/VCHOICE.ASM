@@ -185,6 +185,12 @@ KeyBoardLoop:
 
     mov         ax, 0x0000
     int         0x16
+    push		ax
+    mov			ah, [ControlC]
+    cmp			ax, 0x0103
+    pop			ax
+    je			ControlCQuit
+
     ; up down to navigate
     cmp         ah, 0x48
     je          .GoUp
@@ -340,6 +346,12 @@ NoSTDOUT:
 
 .NotPolling:
     Terminate   al
+
+ControlCQuit:
+    FreeTempVideoPage
+    mov			al, 200
+    Terminate   al
+
 
 EachChoice:
     mov         cl, [OptionBox + 3]
@@ -627,6 +639,11 @@ OptYesNo:
     mov         [SelectChars], al
     ret
 
+OptCtrlC:
+    mov         al, 1
+    mov         [ControlC], al
+    ret
+
 NoSwitch:
     LookupParam StyleTable
     cmp         ax, 0xffff
@@ -666,6 +683,8 @@ Querying:
     db 0
 Polling:
     db 0
+ControlC:
+	db 0
 TimeOut:
     dw 0
 SelectChars:

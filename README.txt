@@ -292,6 +292,8 @@ you prefix with a letter or number.
     /P n        Use polling mode and preselect item number n as the current
     			choice. Note, any change of selection will exit vchoice and
     			return 100+ the current choice number.
+    CTRL-C		When specified and Control-C is pressed, will exit with
+    			errorlevel of 200.
 
     tba         (Still under development, more to be announced)
 
@@ -304,6 +306,8 @@ Simple wait for keypress or time-out.
     [none]      Wait forever for keypress.
     /T seconds  Delay in seconds to wait before the pause times-out. (returns
                 errorlevel 1)
+    CTRL-C		When specified and Control-C is pressed, will exit with
+    			errorlevel of 200.
 
     tba         (Still under development, more to be announced)
 

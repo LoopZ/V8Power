@@ -53,6 +53,12 @@ KeyBoardLoop:
     mov         ax, 0x0000
     int         0x16
 
+    push		ax
+    mov			ah, [ControlC]
+    cmp			ax, 0x0103
+    pop			ax
+    je			ControlCQuit
+
     mov         dx, [Position]
     GotoXY      dx
     Terminate 0
@@ -61,6 +67,10 @@ TimedOut:
     mov         dx, [Position]
     GotoXY      dx
     Terminate 1
+
+ControlCQuit:
+    mov			al, 200
+    Terminate   al
 
 ShowTimeOut:
     push        cx
@@ -124,6 +134,11 @@ NoSwitch:
     WriteStr    CommandLineErrorMsg
     Terminate   100
 
+OptCtrlC:
+    mov         al, 1
+    mov         [ControlC], al
+    ret
+
 SwitchT:
     NumberParam
     cmp         ax, 0
@@ -154,9 +169,12 @@ CommandLineSwitches:
     SwitchData  0,  0, 0
 
 OptionsTable:
+    TableData 'CTRL-C', OptCtrlC
     TableEnd
 
 TimeOut:
     dw 0
 Position:
     dw 0
+ControlC:
+	db 0
