@@ -380,6 +380,7 @@ Simple String processing utility. Outputs results to STDOUT.
     /C code     Write an ASCII character code.
     /R times    Repeat the next write times number of times. (1-65535)
     /L line		Return only this line from standard input. (0-65535)
+    			(Note: vline /L TOTAL will return the total number of lines.)
 
    tba         (Still under development, more to be announced)
 

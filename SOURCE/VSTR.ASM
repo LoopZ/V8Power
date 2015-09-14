@@ -53,7 +53,42 @@ SwitchR:
     mov         [Repeat], ax
     ret
 
+TotalLines:
+    xor         bx, bx
+    xor         dx, dx
+.Looping:
+    push        dx
+    push        bx
+    StdIn
+    pop         bx
+    pop         dx
+    jnc         .EndOfStdIn
+    cmp         al, 0x0a
+    je          .Looping
+    cmp         al, 0x0d
+    je          .NewLine
+    inc         dx
+    jmp         .Looping
+.NewLine:
+    xor         dx, dx
+    inc         bx
+    jmp         .Looping
+.EndOfStdIn:
+    cmp         dx, 0
+    je          .Done
+    inc         bx
+.Done:
+    mov         ax, bx
+    StdOutIntWord
+    ret
+
 SwitchL:
+    LookupParam OptionsLines
+    cmp         ax, 0xffff
+    je          .NotOption
+    jmp         ax
+
+.NotOption:
     NumberParam
     mov         bx, ax
     cmp         bx, 0
@@ -111,6 +146,10 @@ CommandLineSwitches:
     SwitchData  0,  0, 0
 
 OptionsTable:
+    TableEnd
+
+OptionsLines:
+    TableData "TOTAL", TotalLines
     TableEnd
 
 Repeat:
