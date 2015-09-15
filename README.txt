@@ -162,7 +162,7 @@ Output text to display.
     /R times    Repeat the next write times number of times. (1-65535)
     /I          Write text that may waiting from the STDIN device.
     /G          Write text ignoring all framing.
-    /L          Write text with locally with regards to framing. (DEFAULT)
+    /L          Write text locally with regards to framing. (DEFAULT)
     /X code		Erase rest of line using ascii code, but don't move the cursor.
     /E			Same as using "/X 0x20".
 
