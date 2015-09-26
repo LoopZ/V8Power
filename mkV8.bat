@@ -134,6 +134,13 @@ NASM.EXE -ISOURCE\ SOURCE\VASK.ASM -fbin -O9 -o BIN\VASK.COM
 if ERRORLEVEL 1 goto Error
 if not "%1" == "" goto Done
 
+:vfdutil
+set VSTAGE=vfdutil
+bin\vecho "Releasing " /f 14 clutch /f gray ...
+NASM.EXE -ISOURCE\ SOURCE\VFDUTIL.ASM -fbin -O9 -o BIN\VFDUTIL.COM
+if ERRORLEVEL 1 goto Error
+if not "%1" == "" goto Done
+
 :vview
 set VSTAGE=vview
 bin\vecho "Mashing " /f 12 accelerator /f gray ...
@@ -143,8 +150,8 @@ if not "%1" == "" goto Done
 
 set VSTAGE=
 bin\vecho
-bin\vecho /n /fLightCyan Vroom /fWhite "! " 
-bin\vecho /n /fLightRed Vroom /fWhite "! " 
+bin\vecho /n /fLightCyan Vroom /fWhite "! "
+bin\vecho /n /fLightRed Vroom /fWhite "! "
 bin\vecho /fYellow "Lets roll" /fWhite "! " /fGray
 
 goto Done

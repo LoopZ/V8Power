@@ -163,8 +163,8 @@ Output text to display.
     /I          Write text that may waiting from the STDIN device.
     /G          Write text ignoring all framing.
     /L          Write text locally with regards to framing. (DEFAULT)
-    /X code		Erase rest of line using ascii code, but don't move the cursor.
-    /E			Same as using "/X 0x20".
+    /X code     Erase rest of line using ascii code, but don't move the cursor.
+    /E          Same as using "/X 0x20".
 
     tba         (Still under development, more to be announced)
 
@@ -239,7 +239,7 @@ V8Power information program.
     version     Outputs the version information to STDOUT.
     license     Outputs license information to STDOUT.
     url         Outputs the website url information to STDOUT.
-	email		Outputs email address to STDOUT.
+    email       Outputs email address to STDOUT.
 
 -------------------------------------------------------------------------------
 
@@ -290,10 +290,10 @@ you prefix with a letter or number.
                 different item, the original default item will be selected when
                 the timeout is achieved.
     /P n        Use polling mode and preselect item number n as the current
-    			choice. Note, any change of selection will exit vchoice and
-    			return 100+ the current choice number.
-    CTRL-C		When specified and Control-C is pressed, will exit with
-    			errorlevel of 200.
+                choice. Note, any change of selection will exit vchoice and
+                return 100+ the current choice number.
+    CTRL-C      When specified and Control-C is pressed, will exit with
+                errorlevel of 200.
 
     tba         (Still under development, more to be announced)
 
@@ -306,8 +306,8 @@ Simple wait for keypress or time-out.
     [none]      Wait forever for keypress.
     /T seconds  Delay in seconds to wait before the pause times-out. (returns
                 errorlevel 1)
-    CTRL-C		When specified and Control-C is pressed, will exit with
-    			errorlevel of 200.
+    CTRL-C      When specified and Control-C is pressed, will exit with
+                errorlevel of 200.
 
     tba         (Still under development, more to be announced)
 
@@ -379,8 +379,8 @@ Simple String processing utility. Outputs results to STDOUT.
     /N          Do not write a CRLF when done.
     /C code     Write an ASCII character code.
     /R times    Repeat the next write times number of times. (1-65535)
-    /L line		Return only this line from standard input. (0-65535)
-    			(Note: vline /L TOTAL will return the total number of lines.)
+    /L line     Return only this line from standard input. (0-65535)
+                (Note: vline /L TOTAL will return the total number of lines.)
 
    tba         (Still under development, more to be announced)
 
@@ -390,20 +390,28 @@ vmode [options]
 
 Set and query current video text modes.
 
-	[none]		Outputs current video mode and font to STDOUT.
-	VESA		Outputs a list of VESA modes to STDOUT.
-	mode		Set current video mode. (0-0xffff) or a mode label with
-				optional font setting.
+    [none]      Outputs current video mode and font to STDOUT.
+    VESA        Outputs a list of VESA modes to STDOUT.
+    mode        Set current video mode. (0-0xffff) or a mode label with
+                optional font setting.
 
-				Modes:	BW40	Black and White 40 Column (also B40).
-						BW80	Black and White 80 Column (also B80, BW).
-						CO40	Color 40 Column (also C40).
-						CO80	Color 80 Column (also C80, COLOR).
-						MONO	Mono 80 Column.
+                Modes:  BW40    Black and White 40 Column (also B40).
+                        BW80    Black and White 80 Column (also B80, BW).
+                        CO40    Color 40 Column (also C40).
+                        CO80    Color 80 Column (also C80, COLOR).
+                        MONO    Mono 80 Column.
 
-				Fonts:	Font8	Select 8x8 ROM font. (also F8)
-						Font14	Select 8x8 EGA ROM font. (also F14)
-						Font16	Select 8x8 VGA ROM font. (also F16)
+                Fonts:  Font8   Select 8x8 ROM font. (also F8)
+                        Font14  Select 8x8 EGA ROM font. (also F14)
+                        Font16  Select 8x8 VGA ROM font. (also F16)
+
+-------------------------------------------------------------------------------
+
+vfdutil
+
+File and directory utility.
+
+TBA
 
 -------------------------------------------------------------------------------
 
