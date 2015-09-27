@@ -369,8 +369,8 @@ Fonts:
 </td></tr>
 </table>
 * * *
-#### vinfo *[options]* ######
-General system information utility.
+#### vfdutil *[options]* ######
+File and directory utility.
 <table><tr><td width="125pt"></td><td>Does nothing.</td></tr>
 <tr><td><b><i>/D file</i></b></td><td>Calculate and output drive letter of file to STDOUT.</td></tr>
 <tr><td><b><i>/P file</i></b></td><td>Calculate and output path of file to STDOUT.</td></tr>
