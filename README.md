@@ -369,6 +369,17 @@ Fonts:
 </td></tr>
 </table>
 * * *
+#### vinfo *[options]* ######
+General system information utility.
+<table><tr><td width="125pt"></td><td>Does nothing.</td></tr>
+<tr><td><b><i>/D file</i></b></td><td>Calculate and output drive letter of file to STDOUT.</td></tr>
+<tr><td><b><i>/P file</i></b></td><td>Calculate and output path of file to STDOUT.</td></tr>
+<tr><td><b><i>/C</i></b></td><td>Use before /D or /P to change drive or path without text output.</td></tr>
+<tr><td><b><i>/F file</i></b></td><td>Calculate and output complete filename to STDOUT.</td></tr>
+<tr><td><b><i>/N file</i></b></td><td>Calculate and output file's basename to STDOUT.</td></tr>
+<tr><td><b><i>/E file</i></b></td><td>Calculate and output file's extension to STDOUT.</td></tr>
+</table>
+* * *
 #### vview ######
 Text file and license agreement viewer.
 

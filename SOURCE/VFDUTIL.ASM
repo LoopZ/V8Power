@@ -253,6 +253,8 @@ OptionsTable:
 
 Buffer:
     times 128 db 0
+    times 128 db 0  ; extra padding to prevent overflow if bad data is
+                    ; entered from command line.
 BufferEnd:
 
 ChangeFlag:
