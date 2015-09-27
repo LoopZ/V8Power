@@ -24,31 +24,13 @@
 
     Terminate 0
 
-ValidateFilename:
-    cmp     cx, 2
-    jl      InvalidOption
-    mov     ax, [di]
-    cmp     ah, 0x3a
-    jne     InvalidOption
-    cmp     al, 0x41
-    jl      InvalidOption
-    cmp     al, 0x7a
-    jg      InvalidOption
-    cmp     al, 0x5a
-    jle     .OK_Drive
-    cmp     al, 0x61
-    jge     .OK_Drive
-    jmp     InvalidOption
-.OK_Drive:
-    ret
-
 ExpandFileName:
     push    si
     push    di
     push    cx
     push    di
     push    ax
-    mov     cx, 127
+    mov     cx, BufferEnd - Buffer
     xor     ax, ax
     mov     di, Buffer
     cld
@@ -90,9 +72,36 @@ ExpandFileName:
     sub     cx, 2
 .DriveAdded:
     cmp     cx, 0
-    je .Done
+    je      .NoPath
+    mov     al, [si]
+    cmp     al, 0x5c        ; '\'
+    je      .CopyData
+.NoPath:
+    mov     al, 0x5c
+    stosb
+    mov     dl, [Buffer]
+    sub     dl, 0x40
+    push    si
+    push    cx
+    mov     si, di
+    mov     ah, 0x47
+    int     0x21
+    cld
+    pop     cx
+    pop     si
+    xor     al, al
+.FindEnd:
+    mov     al, [di]
+    cmp     al, 0x00
+    je      .FoundEnd
+    inc     di
+    jmp     .FindEnd
+.FoundEnd:
+    mov     al, 0x5c
+    stosb
+    cmp     cx, 0
+    je      .Done
 .CopyData:
-
     lodsb
     cmp     al, 0x61
     jl      .NotLower
@@ -110,6 +119,7 @@ ExpandFileName:
 
 DoPrint:
     StdOutStr Buffer
+DoPrint2:
     StdOutCRLF
     xor     al, al
     mov     [TextFlag], al
@@ -122,38 +132,95 @@ SwitchT:
 
 SwitchD:
     call    ExpandFileName
+    xor     al, al
+    mov     [Buffer+2], al
     mov     al, [Buffer]
     mov     ah, [TextFlag]
     cmp     ah, 0
-    jne     .PrintIt
+    jne     DoPrint
     sub     al, 0x41
     mov     ah, 0x0e
     mov     dl, al
     int     0x21
     ret
-.PrintIt:
-    call    DoPrint
-    ret
 
 SwitchP:
     call    ExpandFileName
+    mov     ax, BufferEnd
+    mov     di, ax
+.Search:
+    dec     di
+    mov     al, [di]
+    cmp     al, 0x5c
+    jne     .Search
+    cmp     di, Buffer + 2
+    jg      .NotFirst
+    inc     di
+.NotFirst:
+    xor     al, al
+    mov     [di], al
+    mov     al, [Buffer]
+    mov     ah, [TextFlag]
+    cmp     ah, 0
+    jne     DoPrint
+    sub     al, 0x41
+    mov     ah, 0x0e
+    mov     dl, al
+    int     0x21
+    mov     dx, Buffer
+    mov     ah, 0x3b
+    int     0x21
     ret
 
 SwitchF:
     call    ExpandFileName
-    call    DoPrint
-    ret
+    jmp     DoPrint
 
 SwitchN:
     call    ExpandFileName
-    ret
+    mov     ax, BufferEnd
+    mov     di, ax
+    mov     ah, 1
+.Search1:
+    dec     di
+    cmp     ah, 1
+    jne     .Search2
+    mov     al, [di]
+    cmp     al, 0x2e        ; '.'
+    jne     .Search2
+    xor     ax, ax
+    mov     [di], al
+.Search2:
+    cmp     al, 0x5c        ; '\'
+    jne     .Search1
+    inc     di
+    StdOutStr di
+    jmp     DoPrint2
 
 SwitchE:
     call    ExpandFileName
+    mov     ax, BufferEnd
+    mov     di, ax
+    mov     ah, 1
+.Search1:
+    dec     di
+    cmp     ah, 1
+    jne     .Search2
+    mov     al, [di]
+    cmp     al, 0x2e        ; '.'
+    jne     .Search2
+    inc     di
+    StdOutStr di
+    jmp     DoPrint2
+.Search2:
+    cmp     al, 0x5c        ; '\'
+    jne     .Search1
     ret
 
 SwitchU:
     call    ExpandFileName
+.PrintIt:
+    call    DoPrint
     ret
 
 NoSwitch:
@@ -185,6 +252,7 @@ OptionsTable:
 
 Buffer:
     times 128 db 0
+BufferEnd:
 
 TextFlag:
     db 0

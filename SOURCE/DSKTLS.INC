@@ -15,7 +15,7 @@
 ;   with this program; if not, write to the Free Software Foundation, Inc.,
 ;   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-; NASM for DOS 
+; NASM for DOS
 
 %idefine erNotValid 0x0f
 %idefine erNotFormatted 0x05
@@ -55,7 +55,7 @@
         jmp         %%Done
     %%Error:
         mov         al, erNotValid  ; Invalid Drive Number
-        mov         [ExitCode], al      
+        mov         [ExitCode], al
     %%Done:
 %endmacro
 
@@ -79,31 +79,31 @@
         mov     ax, 0x2524
         int     0x21
         pop     ds
-        
+
         xor     al, al
         mov     [ErrorCode], al
-        
+
         mov     al, %1
         add     al, 0x40
         mov     [%%FileName], al
- 
+
         FindFirst [%%DTA], [%%FileName]
         jc          %%Error
     %%NoError:
         xor     ax, ax
         jmp     %%Done
-        
-    %%FileName: 
+
+    %%FileName:
         DB '?:\*.*',0
 
-    %%DTA: 
+    %%DTA:
         times 23 DD 0
 
     %%Error:
         mov         al, 1
         mov         [ExitCode], al
         mov         ax, erNotFormatted
- 
+
     %%Done:
         push        ax
         SetIntVec 0x24, SavedInt24
@@ -123,6 +123,7 @@
 %endmacro
 
 %imacro SetIntVec 2
+    cli
     push    ds
     mov     dx, [cs:%2+2]
     mov     ds, dx
@@ -131,6 +132,7 @@
     mov     ah, 0x25
     int     0x21
     pop     ds
+    sti
 %endmacro
 
 %imacro Floppies 0 ; BIOS Function
@@ -153,12 +155,12 @@ MyInt24:
     mov     ax, di
     mov     [cs:ErrorCode], al
     pop     ax
-    mov     al, 0x03        
+    mov     al, 0x03
     iret
-    
+
 ErrorCode:
     dw 0
-    
+
 %imacro IsCDROM 1
     mov     ax, 0x1500
     xor     bx, bx
@@ -170,10 +172,10 @@ ErrorCode:
     inc     cx
     dec     bx
     cmp     ax, cx
-    jl      %%NotCDRom ; less then first cd 
+    jl      %%NotCDRom ; less then first cd
     add     cx, bx
     cmp     ax, cx
-    jg      %%NotCDRom ; greater then last cd 
+    jg      %%NotCDRom ; greater then last cd
     mov     al, 0x01
     jmp     %%Done
 %%NotInstalled:
@@ -225,10 +227,10 @@ ErrorCode:
     jg      InvalidOption
     sub     ax, 0x40
     mov     [Drive], al
-    
+
     cmp     al, 3
     jnl     %%NotFloppy
-    
+
     Floppies
     mov     bl, al
     mov     al, [Drive]
@@ -245,7 +247,7 @@ ErrorCode:
     cmp     ax, 0
     je      %%DriveExists
     ; Drive not found, so se if a hard drive actually exists
-        
+
 %%BadDriveLetter:
     mov         al, erNotValid
     mov         [%%Result], al
@@ -262,7 +264,7 @@ ErrorCode:
     IsRemovable [Drive]
     cmp         al, 0x01
     je          %%IsRemovable
-    
+
     xor         al, al
     mov         [%%Result], al
     jmp         %%Done
@@ -320,6 +322,6 @@ ErrorCode:
     db erIsRemovable,'Drive is removable',0
     db erNone,'Drive is ready',0
 %%Done:
-    
+
 %endmacro
 
