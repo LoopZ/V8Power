@@ -122,12 +122,12 @@ DoPrint:
 DoPrint2:
     StdOutCRLF
     xor     al, al
-    mov     [TextFlag], al
+    mov     [ChangeFlag], al
     ret
 
-SwitchT:
+SwitchC:
     mov     al, 1
-    mov     [TextFlag], al
+    mov     [ChangeFlag], al
     ret
 
 SwitchD:
@@ -135,8 +135,8 @@ SwitchD:
     xor     al, al
     mov     [Buffer+2], al
     mov     al, [Buffer]
-    mov     ah, [TextFlag]
-    cmp     ah, 0
+    mov     ah, [ChangeFlag]
+    cmp     ah, 1
     jne     DoPrint
     sub     al, 0x41
     mov     ah, 0x0e
@@ -160,8 +160,8 @@ SwitchP:
     xor     al, al
     mov     [di], al
     mov     al, [Buffer]
-    mov     ah, [TextFlag]
-    cmp     ah, 0
+    mov     ah, [ChangeFlag]
+    cmp     ah, 1
     jne     DoPrint
     sub     al, 0x41
     mov     ah, 0x0e
@@ -183,13 +183,14 @@ SwitchN:
     mov     ah, 1
 .Search1:
     dec     di
+    mov     al, [di]
     cmp     ah, 1
     jne     .Search2
-    mov     al, [di]
     cmp     al, 0x2e        ; '.'
     jne     .Search2
     xor     ax, ax
     mov     [di], al
+    jmp     .Search1
 .Search2:
     cmp     al, 0x5c        ; '\'
     jne     .Search1
@@ -204,9 +205,9 @@ SwitchE:
     mov     ah, 1
 .Search1:
     dec     di
+    mov     al, [di]
     cmp     ah, 1
     jne     .Search2
-    mov     al, [di]
     cmp     al, 0x2e        ; '.'
     jne     .Search2
     inc     di
@@ -215,7 +216,7 @@ SwitchE:
 .Search2:
     cmp     al, 0x5c        ; '\'
     jne     .Search1
-    ret
+    jmp     DoPrint2
 
 SwitchU:
     call    ExpandFileName
@@ -238,7 +239,7 @@ InvalidOption:
 CommandLineSwitches:
     SwitchData  0,  0, NoSwitch
     HelpSwitchData
-    SwitchData 'T', 0, SwitchT
+    SwitchData 'C', 0, SwitchC
     SwitchData 'F', 1, SwitchF
     SwitchData 'D', 1, SwitchD
     SwitchData 'P', 1, SwitchP
@@ -254,5 +255,5 @@ Buffer:
     times 128 db 0
 BufferEnd:
 
-TextFlag:
+ChangeFlag:
     db 0
