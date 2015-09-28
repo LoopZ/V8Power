@@ -228,19 +228,37 @@ SwitchU:
     xchg    ax, cx
     div     cx
     xchg    cx, ax
-    add     dx, 0x30
+    add     dx, 0x0030
     mov     [si+1], dl
     jmp     .NextQuest
 .DoneFill:
     cmp     cx, 0
     jne     .NumbOverflow
     pop     cx
+
+    push    dx
+    push    cx
+    mov     ah, 1Ah          ;Set DTA
+    mov     dx, DTA
+    int     0x21
+    mov     cx, 0xffff
+    mov     dx, Unique
+    mov     ah, 0x4E         ;Find First File
+    int     0x21
+    pop     cx
+    pop     dx
+    jnc      .Exists          ; File was found
+    cmp     ax, 0x0012        ; No Matching files
+    je      .NotFound
+    jmp     .OutOfNumbs
+.Exists:
     inc     cx
     cmp     cx, 0x0000
     je      .OutOfNumbs
+    jmp     .Searching
+.NotFound:
     StdOutStr Unique
     StdOutCRLF
-    jmp     .Searching
     jmp    DoPrint2
 .NumbOverflow:
     pop     cx
@@ -282,5 +300,8 @@ Unique:
     times 128 db 0  ; extra padding to prevent overflow if bad data is
                     ; entered from command line.
 UniqueEnd:
+DTA:
+    times 128 db 0
+DTAEnd:
 ChangeFlag:
     db 0
