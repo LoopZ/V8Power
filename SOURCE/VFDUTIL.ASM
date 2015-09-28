@@ -27,19 +27,7 @@
 ExpandFileName:
     push    si
     push    di
-    push    cx
-    push    di
-    push    ax
-    mov     cx, BufferEnd - Buffer
-    xor     ax, ax
-    mov     di, Buffer
-    cld
-.ClearBuffer:
-    stosb
-    loop    .ClearBuffer
-    pop     ax
-    pop     di
-    pop     cx
+    ZeroMemory Buffer, BufferEnd - Buffer
     xchg    si, di
     mov     di, Buffer
     mov     al, [si+1]
@@ -220,7 +208,11 @@ SwitchE:
 
 SwitchU:
     call    ExpandFileName
-.PrintIt:
+    mov     al, [Unique]
+    cmp     al, 0x00
+    jne     InvalidOption
+
+    ZeroMemory Unique, UniqueEnd - Unique
     call    DoPrint
     ret
 
@@ -253,9 +245,10 @@ OptionsTable:
 
 Buffer:
     times 128 db 0
+BufferEnd:
+Unique:
     times 128 db 0  ; extra padding to prevent overflow if bad data is
                     ; entered from command line.
-BufferEnd:
-
+UniqueEnd:
 ChangeFlag:
     db 0

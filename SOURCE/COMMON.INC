@@ -1142,6 +1142,22 @@ TempVideoPagePtr:
 %%Done:
 %endmacro
 
+%imacro ZeroMemory 2
+    push    cx
+    push    di
+    push    ax
+    mov     cx, %2
+    xor     ax, ax
+    mov     di, %1
+    cld
+%%Zeroing:
+    stosb
+    loop    %%Zeroing
+    pop     ax
+    pop     di
+    pop     cx
+%endmacro
+
 %imacro	CopyToTempVideo 0
 	mov		bx, [TempVideoPagePtr]
 	cmp		bx, 0
