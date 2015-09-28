@@ -352,7 +352,6 @@ ControlCQuit:
     mov			al, 200
     Terminate   al
 
-
 EachChoice:
     mov         cl, [OptionBox + 3]
     mov         ch, [OptionBox + 1]
@@ -677,6 +676,7 @@ StyleTable:
     TableData 'YN', OptYesNo
     TableData 'YES', OptYesNo
     TableData 'YESNO', OptYesNo
+    TableData 'CTRL-C', OptCtrlC
     TableEnd
 
 Querying:
