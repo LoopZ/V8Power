@@ -211,10 +211,42 @@ SwitchU:
     mov     al, [Unique]
     cmp     al, 0x00
     jne     InvalidOption
-
-    ZeroMemory Unique, UniqueEnd - Unique
-    call    DoPrint
-    ret
+    xor     cx, cx
+.Searching:
+    push    cx
+    CopyMemory Buffer, Unique, UniqueEnd - Unique
+    mov     si, UniqueEnd
+    std
+.NextQuest:
+    lodsb
+    cmp     si, Unique
+    je      .DoneFill
+    cmp     al, 0x3f    ; '?'
+    jne      .NextQuest
+    xor     dx, dx
+    mov     ax, 0x000a
+    xchg    ax, cx
+    div     cx
+    xchg    cx, ax
+    add     dx, 0x30
+    mov     [si+1], dl
+    jmp     .NextQuest
+.DoneFill:
+    cmp     cx, 0
+    jne     .NumbOverflow
+    pop     cx
+    inc     cx
+    cmp     cx, 0x0000
+    je      .OutOfNumbs
+    StdOutStr Unique
+    StdOutCRLF
+    jmp     .Searching
+    jmp    DoPrint2
+.NumbOverflow:
+    pop     cx
+.OutOfNumbs:
+    StdOutCRLF
+    Terminate 101
 
 NoSwitch:
     LookupParam OptionsTable
