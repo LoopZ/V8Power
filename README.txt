@@ -418,6 +418,9 @@ File and directory utility.
 	/F file		Calculate and output complete filename to STDOUT.
 	/N file		Calculate and output file's basename to STDOUT.
 	/E file		Calculate and output file's extension to STDOUT.
+	/U template Calculate and output unique file name based on template to STDOUT.
+				The drive and path must exist.
+				Example: "vfdutil /u C:\TEMP\TEST????.$$$"
 
 TBA
 
