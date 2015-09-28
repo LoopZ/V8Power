@@ -379,7 +379,7 @@ File and directory utility.
 <tr><td><b><i>/N file</i></b></td><td>Calculate and output file's basename to STDOUT.</td></tr>
 <tr><td><b><i>/E file</i></b></td><td>Calculate and output file's extension to STDOUT.</td></tr>
 <tr><td><b><i>/U template</i></b></td><td>Calculate and output unique file/dir name based on template to STDOUT.
-The drive and path must exist. Example: "vfdutil /u C:\TEMP\TEST????.$$$"</td></tr>
+The drive and path must exist.<br> Example: "vfdutil /u C:\TEMP\TEST????.$$$"</td></tr>
 </table>
 * * *
 #### vview ######
