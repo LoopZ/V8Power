@@ -24,6 +24,8 @@
 
     Terminate 0
 
+%include "DSKTLS.INC"
+
 ExpandFileName:
     push    si
     push    di
@@ -207,13 +209,20 @@ SwitchE:
     jmp     DoPrint2
 
 SwitchU:
+    GetIntVec   0x24, SavedInt24
+    push    ds
+    mov     dx, MyInt24
+    mov     ax, 0x2524
+    int     0x21
+    pop     ds
     call    ExpandFileName
     mov     al, [Unique]
     cmp     al, 0x00
     jne     InvalidOption
     xor     cx, cx
 .Searching:
-    push    cx
+    push    cx              ; warning if leave func before .CWasPopped you must
+                            ; pop it!
     CopyMemory Buffer, Unique, UniqueEnd - Unique
     mov     si, UniqueEnd
     std
@@ -235,6 +244,7 @@ SwitchU:
     cmp     cx, 0
     jne     .NumbOverflow
     pop     cx
+.CWasPopped:
 
     push    dx
     push    cx
@@ -259,11 +269,13 @@ SwitchU:
 .NotFound:
     StdOutStr Unique
     StdOutCRLF
+    SetIntVec 0x24, SavedInt24
     jmp    DoPrint2
 .NumbOverflow:
     pop     cx
 .OutOfNumbs:
     StdOutCRLF
+    SetIntVec 0x24, SavedInt24
     Terminate 101
 
 NoSwitch:
@@ -305,3 +317,5 @@ DTA:
 DTAEnd:
 ChangeFlag:
     db 0
+SavedInt24:
+    dw 0, 0
