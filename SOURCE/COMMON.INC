@@ -54,14 +54,21 @@ VersionID:
 	dd 0
 
 %idefine VideoOutput
+%idefine TextOutput
 
 %ifdef NoVideoOutput
 	%undef VideoOutput
 %endif
 
+%ifdef NoTextOutput
+	%undef VideoOutput
+	%undef TextOutput
+%endif
+
 ; Common Data Section
 SECTION _DATA
 
+%ifdef TextOutput
 	VideoMode:      DB 0
 	VideoPage:      DB 0
 	CursorShape:    DW 0
@@ -75,6 +82,7 @@ SECTION _DATA
 	WindMax:
 		WindMaxX:	DB 0
 		WindMaxY	DB 0
+%endif
 
 CommandLineErrorMsg:
     DB          "Parameter Error",0
@@ -99,6 +107,7 @@ SECTION _TEXT
     pop         ax
 %endmacro
 
+%ifdef TextOutput
 ; get cursor position and size
 WhereXYProc:
     mov         ah, 0x03
@@ -111,7 +120,9 @@ WhereXYProc:
     sub			dh, ch
     pop			cx
     ret
+%endif
 
+%ifdef TextOutput
 ; move cursor to absolute position
 GotoXYProc:
     mov         ah, 0x02
@@ -125,6 +136,7 @@ GotoXYProc:
     int         0x10
     pop			dx
     ret
+%endif
 
 ; Exit program and return to DOS with or without errorcode
 %imacro Terminate 0-1 0
@@ -1285,6 +1297,7 @@ CopyFromTempVideo:
 %include "SWITCHES.INC"
 %include "TABLES.INC"
 
+%ifdef TextOutput
 ; Write a single character
 WriteCharProc:
 	push		ax ; some hardware destroys al (mainly vmware)
@@ -1356,6 +1369,7 @@ WriteStrProc:
     jmp         .WriteStrLoop
 .WriteStrDone:
     ret
+%endif
 
 ; Terminate with exit code and return to DOS
 ProgramTerminate:
@@ -1376,6 +1390,8 @@ ProgramTerminate:
 ; Basic Initialization Stuff
 BasicInitialize:
     push        es
+
+%ifdef TextOutput
     mov         bx, 0x0040
     push        bx
     pop         es
@@ -1407,6 +1423,7 @@ BasicInitialize:
     xchg        bl, bh
     mov         [ScreenMax], bx
     mov         [WindMax], bx
+%endif
 
 	%ifdef VideoOutput
 		; Hide cursor while we run

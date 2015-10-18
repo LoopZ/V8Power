@@ -14,37 +14,143 @@
 ;   with this program; if not, write to the Free Software Foundation, Inc.,
 ;   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-; NASM for DOS 
+; NASM for DOS
+
+%idefine NoVideoOutput
 
 %include "COMMON.INC"
 
-    CommandLineParser       ; insert code for command line parsing
+LoadCmdLnPtr:
+    push    ds
+    pop     ax
+    mov     [ParamBlock + 4], ax
 
-    ; PlaceHolder 
+SetFileNamePtr:
+    cld
+.Looping:
+    lodsb
+    cmp     al, 0x0d
+    je      BadParams
+    cmp     al, 0x20
+    je      .DoneYet
+    mov     ax, [FileNamePtr]
+    cmp     ax, 0
+    jne     .Looping
+    dec     si
+    mov     [FileNamePtr], si
+    ; inc si not needed, it won't get here twice
+    jmp     .Looping
+.DoneYet:
+    mov     ax, [FileNamePtr]
+    cmp     ax, 0
+    je      .Looping
+    dec     si
+    xor     al, al
+    mov     [si], al
+
+    inc     si
+    mov     ax, ExecLine
+    mov     di, ax
+
+AddExpandedFilename:
+    mov     bx, di
+    mov     al, [si+1]
+    cmp     al, 0x3a
+    je      .HasDriveLetter
+    mov     ah, 0x19
+    int     0x21
+    add     al, 0x41
+    stosb
+    mov     al, 0x3a
+    stosb
+    jmp     .DriveAdded
+.HasDriveLetter:
+    lodsb
+    cmp     al, 0x60
+    jle     .NotLower1
+    cmp     al, 0x7a
+    jg      .NotLower1
+    sub     al, 0x20
+.NotLower1:
+    stosb
+    lodsb
+    cmp     al, 0x60
+    jle     .NotLower2
+    cmp     al, 0x7a
+    jg      .NotLower2
+    sub     al, 0x20
+.NotLower2:
+    stosb
+.DriveAdded:
+;    cmp     al, 0
+;    je      .NoPath
+    mov     al, [si]
+    cmp     al, 0x5c        ; '\'
+    je      .CopyData
+.NoPath:
+    mov     al, 0x5c
+    stosb
+    mov     dl, [bx]
+    sub     dl, 0x40
+    push    si
+    mov     si, di
+    mov     ah, 0x47
+    int     0x21
+    cld
+    pop     si
+.FindEnd:
+    mov     al, [di]
+    cmp     al, 0x00
+    je      .FoundEnd
+    inc     di
+    jmp     .FindEnd
+.FoundEnd:
+    mov     al, 0x5c
+    stosb
+.CopyData:
+.CopyLoop:
+    lodsb
+    cmp     al, 0x00
+    je      .Done
+    cmp     al, 0x0d
+    je      .Done
+    cmp     al, 0x20
+    je      .Done
+    cmp     al, 0x61
+    jl      .NotLower
+    cmp     al, 0x7a
+    jg      .NotLower
+    sub     al, 0x20
+.NotLower:
+    stosb
+    jmp    .CopyLoop
+.Done:
+    cmp     al, 0x0d
+    je      .NoParams
+    mov     al, 0x20
+    stosb
+
+.CopyParams:
+    lodsb
+    cmp     al, 0x0d
+    stosb
+    jne     .CopyParams
+.NoParams:
+
+    StdOutStr ExecLine
 
     Terminate 0
-    
-NoSwitch:
-    LookupParam OptionsTable
-    cmp         ax, 0xffff
-    je          .NotOption
-    jmp         ax      
 
-.NotOption:
-    NumberParam
-    ; do something with ax
-    
-.InvalidOption:
-    WriteStr    CommandLineErrorMsg
-    Terminate   100
+BadParams:
+    StdOutStr CommandLineErrorMsg
+    Terminate 100
 
-    HelpSwitchHandler
+FileNamePtr:
+    dw 0
 
-    
-CommandLineSwitches:
-    SwitchData  0,  0, NoSwitch  
-    HelpSwitchData
-    SwitchData  0,  0, 0
-    
-OptionsTable:
-    TableEnd
+ParamBlock:
+    .EnvSeg:    dw 0
+    .CmdLnPtr:  dw ExecLine,0
+    .FCBS:      dw 0,0
+ExecLine:       times 127 db 0x0d
+    db 0
