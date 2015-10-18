@@ -134,6 +134,20 @@ NASM.EXE -ISOURCE\ SOURCE\VASK.ASM -fbin -O9 -o BIN\VASK.COM
 if ERRORLEVEL 1 goto Error
 if not "%1" == "" goto Done
 
+:vchkbox
+set VSTAGE=vchkbox
+bin\vecho "Eyeing up " /f 0x0a "traffic" /f gray ...
+NASM.EXE -ISOURCE\ SOURCE\VCHKBOX.ASM -fbin -O9 -o BIN\VCHKBOX.COM
+if ERRORLEVEL 1 goto Error
+if not "%1" == "" goto Done
+
+:vlocal
+set VSTAGE=vlocal
+bin\vecho "Engaging " /f 0x0e "turn signal" /f gray ...
+NASM.EXE -ISOURCE\ SOURCE\VLOCAL.ASM -fbin -O9 -o BIN\VLOCAL.COM
+if ERRORLEVEL 1 goto Error
+if not "%1" == "" goto Done
+
 :vfdutil
 set VSTAGE=vfdutil
 bin\vecho "Releasing " /f 14 clutch /f gray ...
