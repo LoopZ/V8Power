@@ -391,3 +391,13 @@ TBA
 Text input prompt.
 
 TBA
+* * *
+#### vchkbox ######
+Checkboxes input.
+
+TBA
+* * *
+#### vlocal ######
+Localization translation utility,
+
+TBA

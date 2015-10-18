@@ -19,19 +19,19 @@ if errorlevel 1 goto V8Missing
 verrlvl 0
 
 REM Test if running under DOSBox
-set EX03_InDOSBox=yes
+set EX03_InDOSBox=y
 echo. | set /p EX03_InDOSBox=
-if "%EX03_InDOSBox%" == "yes" goto DOSBox
+if "%EX03_InDOSBox%" == "y" goto DOSBox
 goto NotDOSBox
 
 :DOSBox
-set EX03_CURSOR=small
+set EX03FCURSOR=small
 goto StartBatch
 
 :NotDOSBox
 echo No| set /p EX03_InDOSBox=
 if not "%EX03_InDOSBox%" == "No" goto DOSBox
-vcursor | set /p EX03_CURSOR=
+vcursor | set /p EX03FCURSOR=
 goto StartBatch
 
 :StartBatch
@@ -69,8 +69,8 @@ REM Clear the screen with DOS default text attribute Light Grey on Black.
 vcls /a0x07
 
 REM Restore the original cursor size and shape.
-vcursor %EX03_CURSOR%
+vcursor %EX03FCURSOR%
 set EX03_InDOSBOX=
-set EX03_CURSOR=
+set EX03FCURSOR=
 
 :DontDoAnything

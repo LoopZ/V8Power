@@ -10,6 +10,8 @@ Putting the power of an 8-cylinder engine under the hood of DOS batch files.
 
 Probable roadmap for the future of V8Power Tools:
 
+    vchkbox - Checkboxes.
+    vlocal - Localization utility.
     vline - line drawing utility, single, double, smart, dumb, vertical...
     vinfo - more system information provided by utility.
     vview - Text file viewer, user license agreement and whatnots..
@@ -19,7 +21,7 @@ Probable roadmap for the future of V8Power Tools:
     vpcspkr - More music style support like maybe, C#, C. and such.
     vver - verify all utils are present and proper version.
 
-    vchoice, vpause, vask, vview - Mouse, Hot Key and button support.
+    vchoice, vpause, vask, vview, vchkbox - Mouse, Hot Key and button support.
 
     More range checking, prevent possible freeze when really
     bad settings are given.

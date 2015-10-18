@@ -19,19 +19,19 @@ if errorlevel 1 goto V8Missing
 verrlvl 0
 
 REM Test if running under DOSBox
-set EX02_InDOSBox=yes
+set EX02_InDOSBox=y
 echo. | set /p EX02_InDOSBox=
-if "%EX02_InDOSBox%" == "yes" goto DOSBox
+if "%EX02_InDOSBox%" == "y" goto DOSBox
 goto NotDOSBox
 
 :DOSBox
-set EX02_CURSOR=small
+set EX02FCURSOR=small
 goto StartBatch
 
 :NotDOSBox
 echo No| set /p EX02_InDOSBox=
 if not "%EX02_InDOSBox%" == "No" goto DOSBox
-vcursor | set /p EX02_CURSOR=
+vcursor | set /p EX02FCURSOR=
 goto StartBatch
 
 :StartBatch
@@ -46,8 +46,8 @@ REM Batch file has completed.
 REM Abort and cleanup
 
 REM Restore the original cursor size and shape.
-vcursor %EX02_CURSOR%
+vcursor %EX02FCURSOR%
 set EX02_InDOSBOX=
-set EX02_CURSOR=
+set EX02FCURSOR=
 
 :DontDoAnything

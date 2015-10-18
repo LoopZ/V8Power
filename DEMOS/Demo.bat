@@ -17,9 +17,9 @@ cd ..
 if exist BIN\VCLS.COM cd BIN
 
 rem DosBOX Test
-set DBTEST=yes
+set DBTEST=y
 echo. | set /p DBTEST=
-if "%DBTEST%" == "yes" goto DosBOX
+if "%DBTEST%" == "y" goto DosBOX
 vcursor | set /p MYCURSOR=
 goto NotDosBOX
 :DosBOX

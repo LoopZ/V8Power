@@ -19,9 +19,9 @@ if errorlevel 1 goto V8Missing
 verrlvl 0
 
 REM Test if running under DOSBox
-set EX01_InDOSBox=yes
+set EX01_InDOSBox=y
 echo. | set /p EX01_InDOSBox=
-if "%EX01_InDOSBox%" == "yes" goto DOSBox
+if "%EX01_InDOSBox%" == "y" goto DOSBox
 goto NotDOSBox
 
 :DOSBox
