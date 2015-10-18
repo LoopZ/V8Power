@@ -25,13 +25,13 @@ if "%EX05_InDOSBox%" == "y" goto DOSBox
 goto NotDOSBox
 
 :DOSBox
-set EX05FCURSOR=small
+set EX05_CURSOR=small
 goto StartBatch
 
 :NotDOSBox
 echo No| set /p EX05_InDOSBox=
 if not "%EX05_InDOSBox%" == "No" goto DOSBox
-vcursor | set /p EX05FCURSOR=
+vcursor | set /p EX05_CURSOR=
 goto StartBatch
 
 :StartBatch
@@ -116,8 +116,8 @@ REM Abort and cleanup
 vcls /a0x07
 
 REM Restore the original cursor size and shape.
-vcursor %EX05FCURSOR%
+vcursor %EX05_CURSOR%
 set EX05_InDOSBOX=
-set EX05FCURSOR=
+set EX05_CURSOR=
 
 :DontDoAnything

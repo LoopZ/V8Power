@@ -25,13 +25,13 @@ if "%EX03_InDOSBox%" == "y" goto DOSBox
 goto NotDOSBox
 
 :DOSBox
-set EX03FCURSOR=small
+set EX03_CURSOR=small
 goto StartBatch
 
 :NotDOSBox
 echo No| set /p EX03_InDOSBox=
 if not "%EX03_InDOSBox%" == "No" goto DOSBox
-vcursor | set /p EX03FCURSOR=
+vcursor | set /p EX03_CURSOR=
 goto StartBatch
 
 :StartBatch
@@ -69,8 +69,8 @@ REM Clear the screen with DOS default text attribute Light Grey on Black.
 vcls /a0x07
 
 REM Restore the original cursor size and shape.
-vcursor %EX03FCURSOR%
+vcursor %EX03_CURSOR%
 set EX03_InDOSBOX=
-set EX03FCURSOR=
+set EX03_CURSOR=
 
 :DontDoAnything

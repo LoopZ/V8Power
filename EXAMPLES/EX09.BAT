@@ -31,7 +31,7 @@ goto DontDoAnything
 :NotDOSBox
 echo No| set /p EX09_InDOSBox=
 if not "%EX09_InDOSBox%" == "No" goto DOSBox
-vcursor | set /p EX09FCURSOR=
+vcursor | set /p EX09_CURSOR=
 goto StartBatch
 
 :StartBatch
@@ -146,8 +146,8 @@ REM Batch file has completed.
 REM Abort and cleanup
 
 REM Restore the original cursor size and shape.
-vcursor %EX09FCURSOR%
-set EX09FCURSOR=
+vcursor %EX09_CURSOR%
+set EX09_CURSOR=
 set EX09_COUNTER=
 set EX09_AMOUNT=
 set EX09_WIDTH=

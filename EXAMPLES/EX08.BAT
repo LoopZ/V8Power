@@ -30,7 +30,7 @@ goto DontDoAnything
 
 echo No| set /p EX08_InDOSBox=
 if not "%EX08_InDOSBox%" == "No" goto DOSBox
-vcursor | set /p EX08FCURSOR=
+vcursor | set /p EX08_CURSOR=
 goto StartBatch
 
 :StartBatch
@@ -80,8 +80,8 @@ REM Abort and cleanup
 vcls /a0x07
 
 REM Restore the original cursor size and shape.
-vcursor %EX08FCURSOR%
-set EX08FCURSOR=
+vcursor %EX08_CURSOR%
+set EX08_CURSOR=
 set EX08_COUNTER=
 
 :DontDoAnything

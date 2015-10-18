@@ -31,7 +31,7 @@ goto DontDoAnything
 :NotDOSBox
 echo No| set /p EX06_InDOSBox=
 if not "%EX06_InDOSBox%" == "No" goto DOSBox
-vcursor | set /p EX06FCURSOR=
+vcursor | set /p EX06_CURSOR=
 goto StartBatch
 
 :StartBatch
@@ -82,8 +82,8 @@ REM Abort and cleanup
 vcls /a0x07
 
 REM Restore the original cursor size and shape.
-vcursor %EX06FCURSOR%
-set EX06FCURSOR=
+vcursor %EX06_CURSOR%
+set EX06_CURSOR=
 set EX06_CHOICE=
 
 :DontDoAnything
