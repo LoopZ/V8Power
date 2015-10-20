@@ -149,17 +149,9 @@ AddExpandedFilename:
     jmp    .CopyLoop
 .Done:
     cmp     al, 0x0d
-    je      .NoParams
+    je      BadParams
     mov     al, 0x20
     stosb
-
-; Just copy rest of command line text to buffer
-.CopyParams:
-    lodsb
-    cmp     al, 0x0d
-    stosb
-    jne     .CopyParams
-.NoParams:
 
 ; open translation file
     mov     dx, [FileNamePtr]
@@ -168,15 +160,47 @@ AddExpandedFilename:
     jc      ReadError   ; file missing or something
     mov     [FileHandle], ax
 
-ReadLoop:
+    ; save output position
+    mov     [OutPosition], di
+    mov     [ParmPosition], si
+
+; starting searching for string
+    ; started new line
+    mov     ah, 0x01
+    xor     cx, cx
+
+SearchForString:
+    mov     di, ReadBuffer
+KeepSearching:
+    cmp     cx, 0
+    je      ReadMoreData
+BufferNotEmpty:
+    cmp     al, 0x0a
+    je      SkipChar
+
+SkipChar:
+    dec     cx
+    jmp     KeepSearching
+
+ReadMoreData:
+    push    ax
+    push    dx
     ZeroMemory ReadBuffer, ReadBufferEnd - ReadBuffer
     mov     ah, 0x3f
     mov     bx, [FileHandle]
     mov     cx, ReadBufferEnd - ReadBuffer
     mov     dx, ReadBuffer
     int     0x21
+    mov     cx, ax
+    pop     dx
+    pop     ax
     jc      ReadError
+    cmp     cx, 0
+    je      MatchNotFound
+    jmp     BufferNotEmpty
     ; ax is bytes read
+
+
     StdOutStr ReadBuffer
 
 ; temporary development displayed output.
@@ -186,6 +210,8 @@ ReadLoop:
 
     Terminate 0
 
+MatchNotFound:
+    ; Nothing at present
 ReadError:
     ; Nothing at present
 BadParams:
@@ -201,6 +227,11 @@ CloseFile:
     int     0x21
 .NotOpen:
     ret
+
+OutPosition:
+    dw 0
+ParmPosition:
+    dw 0
 
 FileNamePtr:
     dw 0

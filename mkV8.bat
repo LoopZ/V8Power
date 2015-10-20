@@ -175,6 +175,8 @@ goto VeryEnd
 
 :Done
 
+if not "%1" == "" echo.
+if not "%1" == "" dir BIN\%1.COM
 if not "%1" == "" goto VeryEnd
 
 :vdocs
