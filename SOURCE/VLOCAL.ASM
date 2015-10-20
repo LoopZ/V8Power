@@ -171,42 +171,43 @@ AddExpandedFilename:
 
 SearchForString:
     mov     di, ReadBuffer
-KeepSearching:
+.KeepSearching:
     cmp     cx, 0
-    jne     .BufferNotEmpty
+    jne     .NotEmpty
     call    ReadMoreData
     jc      ReadError
     cmp     cx, 0
     je      MatchNotFound
-.BufferNotEmpty:
+.NotEmpty:
     mov     al, [di]
-    cmp     al, 0x0d
-    je      NewLine
-    cmp     al, 0x0a
-    je      NewLine
-    cmp     ah, 0x00
-    je      NextChar
-    inc     ah
     mov     bl, [si]
+    inc     di
+    inc     si
+    dec     cx
+    cmp     al, 0x0d
+    je      .NewLine
+    cmp     al, 0x0a
+    je      .NewLine
+    cmp     ah, 0x00
+    je      .KeepSearching
+    inc     ah
     cmp     al, bl
-    je      NextChar
+    je      .KeepSearching
     cmp     bl, 0x20
-    jne     MissMatch
+    je      .TestEqual
+    cmp     bl, 0x0d
+    jne     .MissMatch
+.TestEqual:
     cmp     al, 0x3d  ; '='
-    jne     MissMatch
+    jne     .MissMatch
     jmp     FoundString
-MissMatch:
+.MissMatch:
     xor     ah, ah
-    jmp     NextChar
-NewLine:
+    jmp     .KeepSearching
+.NewLine:
     mov     ah, 0x01
     mov     si, [ParmPosition]
-    dec     si
-NextChar:
-    inc     si
-    inc     di
-    dec     cx
-    jmp     KeepSearching
+    jmp     .KeepSearching
 
 ReadMoreData:
     push    ax
@@ -230,7 +231,7 @@ ReadMoreData:
     ret
 
 FoundString:
-    StdOutStr di
+
     StdOutCRLF
 
 ; temporary development displayed output.
@@ -276,6 +277,6 @@ ExecLine:       times 127 db 0x0d
     db 0
 
 ReadBuffer:
-    times 128 db 0
+    times 16 db 0
 ReadBufferEnd:
     db 0
