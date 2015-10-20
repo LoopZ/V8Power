@@ -173,40 +173,68 @@ SearchForString:
     mov     di, ReadBuffer
 KeepSearching:
     cmp     cx, 0
-    je      ReadMoreData
-BufferNotEmpty:
+    jne     .BufferNotEmpty
+    call    ReadMoreData
+    jc      ReadError
+    cmp     cx, 0
+    je      MatchNotFound
+.BufferNotEmpty:
+    mov     al, [di]
+    cmp     al, 0x0d
+    je      NewLine
     cmp     al, 0x0a
-    je      SkipChar
-
-SkipChar:
+    je      NewLine
+    cmp     ah, 0x00
+    je      NextChar
+    inc     ah
+    mov     bl, [si]
+    cmp     al, bl
+    je      NextChar
+    cmp     bl, 0x20
+    jne     MissMatch
+    cmp     al, 0x3d  ; '='
+    jne     MissMatch
+    jmp     FoundString
+MissMatch:
+    xor     ah, ah
+    jmp     NextChar
+NewLine:
+    mov     ah, 0x01
+    mov     si, [ParmPosition]
+    dec     si
+NextChar:
+    inc     si
+    inc     di
     dec     cx
     jmp     KeepSearching
 
 ReadMoreData:
     push    ax
-    push    dx
+    push    di
     ZeroMemory ReadBuffer, ReadBufferEnd - ReadBuffer
+    pop     di
     mov     ah, 0x3f
     mov     bx, [FileHandle]
     mov     cx, ReadBufferEnd - ReadBuffer
     mov     dx, ReadBuffer
     int     0x21
+    mov     di, ReadBuffer
     mov     cx, ax
-    pop     dx
     pop     ax
-    jc      ReadError
-    cmp     cx, 0
-    je      MatchNotFound
-    jmp     BufferNotEmpty
-    ; ax is bytes read
+    jnc     .ReadOK
+    xor     cx, cx
+    stc
+    ret
+.ReadOK:
+    clc
+    ret
 
-
-    StdOutStr ReadBuffer
+FoundString:
+    StdOutStr di
+    StdOutCRLF
 
 ; temporary development displayed output.
-    StdOutStr ExecLine
-; Close the file
-    call    CloseFile
+;    StdOutStr ExecLine
 
     Terminate 0
 
@@ -215,15 +243,17 @@ MatchNotFound:
 ReadError:
     ; Nothing at present
 BadParams:
-    call      CloseFile
     StdOutStr CommandLineErrorMsg
+    StdOutCRLF
+ErrorExit:
+    call    CloseFile
     Terminate 100
 
 CloseFile:
     mov     bx, [FileHandle]
     cmp     bx, 0
     je      .NotOpen
-    mov     ax, 0x3e
+    mov     ah, 0x3e
     int     0x21
 .NotOpen:
     ret
