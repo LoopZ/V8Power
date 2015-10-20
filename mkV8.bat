@@ -184,3 +184,4 @@ if exist README.TXT copy README.TXT BIN\V8POWER.TXT
 if not exist README.TXT copy README.md BIN\V8POWER.md
 
 :VeryEnd
+set VSTAGE=

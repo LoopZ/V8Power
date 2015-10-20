@@ -20,11 +20,15 @@
 
 %include "COMMON.INC"
 
+; set up command line pointer in ParamBlock for later.
 LoadCmdLnPtr:
     push    ds
     pop     ax
     mov     [ParamBlock + 4], ax
 
+
+; Setup pointer to translation file in original command line and append a
+; nul character to it's end.
 SetFileNamePtr:
     cld
 .Looping:
@@ -52,6 +56,27 @@ SetFileNamePtr:
     mov     ax, ExecLine
     mov     di, ax
 
+; Check if contains a '\', if so don't search current dir and pathspec.
+HasDirSlash:
+    push    si
+.CheckNext:
+    lodsb
+    cmp     al, 0x00
+    je      .NotFound
+    cmp     al, 0x20
+    je      .NotFound
+    cmp     al, 0x0d
+    je      .NotFound
+    cmp     al, 0x5c
+    je      .Found
+    jmp     .CheckNext
+.Found:
+    jmp     .Finished
+.NotFound:
+.Finished:
+    pop     si
+
+; Add expanded filename of command to execute after translation.
 AddExpandedFilename:
     mov     bx, di
     mov     al, [si+1]
@@ -82,10 +107,8 @@ AddExpandedFilename:
 .NotLower2:
     stosb
 .DriveAdded:
-;    cmp     al, 0
-;    je      .NoPath
     mov     al, [si]
-    cmp     al, 0x5c        ; '\'
+    cmp     al, 0x5c
     je      .CopyData
 .NoPath:
     mov     al, 0x5c
@@ -130,6 +153,7 @@ AddExpandedFilename:
     mov     al, 0x20
     stosb
 
+; Just copy rest of command line text to buffer
 .CopyParams:
     lodsb
     cmp     al, 0x0d
@@ -137,15 +161,50 @@ AddExpandedFilename:
     jne     .CopyParams
 .NoParams:
 
+; open translation file
+    mov     dx, [FileNamePtr]
+    mov     ax, 0x3d00
+    int     0x21
+    jc      ReadError   ; file missing or something
+    mov     [FileHandle], ax
+
+ReadLoop:
+    ZeroMemory ReadBuffer, ReadBufferEnd - ReadBuffer
+    mov     ah, 0x3f
+    mov     bx, [FileHandle]
+    mov     cx, ReadBufferEnd - ReadBuffer
+    mov     dx, ReadBuffer
+    int     0x21
+    jc      ReadError
+    ; ax is bytes read
+    StdOutStr ReadBuffer
+
+; temporary development displayed output.
     StdOutStr ExecLine
+; Close the file
+    call    CloseFile
 
     Terminate 0
 
+ReadError:
+    ; Nothing at present
 BadParams:
+    call      CloseFile
     StdOutStr CommandLineErrorMsg
     Terminate 100
 
+CloseFile:
+    mov     bx, [FileHandle]
+    cmp     bx, 0
+    je      .NotOpen
+    mov     ax, 0x3e
+    int     0x21
+.NotOpen:
+    ret
+
 FileNamePtr:
+    dw 0
+FileHandle:
     dw 0
 
 ParamBlock:
@@ -153,4 +212,9 @@ ParamBlock:
     .CmdLnPtr:  dw ExecLine,0
     .FCBS:      dw 0,0
 ExecLine:       times 127 db 0x0d
+    db 0
+
+ReadBuffer:
+    times 128 db 0
+ReadBufferEnd:
     db 0
