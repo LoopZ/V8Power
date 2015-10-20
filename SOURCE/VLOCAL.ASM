@@ -200,7 +200,8 @@ SearchForString:
 .TestEqual:
     cmp     al, 0x3d  ; '='
     jne     .MissMatch
-    jmp     FoundString
+    mov     [ParmPosition], si
+    jmp     ReadString
 .MissMatch:
     xor     ah, ah
     jmp     .KeepSearching
@@ -230,8 +231,30 @@ ReadMoreData:
     clc
     ret
 
-FoundString:
+ReadString:
+.KeepReading:
+    cmp     cx, 0
+    jne     .NotEmpty
+    call    ReadMoreData
+    jc      ReadError
+    cmp     cx, 0
+    je      EndofString
+.NotEmpty:
+    mov     al, [di]
+    inc     di
+    inc     si
+    dec     cx
+    cmp     al, 0x0d
+    je      EndofString
+    cmp     al, 0x0a
+    je      EndofString
+    DebugChar al
+    jmp     .KeepReading
 
+EndofString:
+
+    StdOutCRLF
+    StdOutStr [ParmPosition]
     StdOutCRLF
 
 ; temporary development displayed output.
