@@ -232,6 +232,7 @@ ReadMoreData:
     ret
 
 ReadString:
+    xor     ah, ah
 .KeepReading:
     cmp     cx, 0
     jne     .NotEmpty
@@ -244,21 +245,54 @@ ReadString:
     inc     di
     inc     si
     dec     cx
+    cmp     ah, 0x25
+    je      .PercentValue
+    cmp     al, 0x25    ; '%'
+    jne     .NotPercent
+    mov     ah, 0x25
+    jmp     .KeepReading
+.NotPercent:
     cmp     al, 0x0d
     je      EndofString
     cmp     al, 0x0a
     je      EndofString
-    DebugChar al
+    call    .PutChar
+    jmp     .KeepReading
+.PercentValue:
+    xor     ah, ah
+    cmp     al, 0x25
+    je      .NotPercent
+    cmp     ax, 0x0031 ; ascii '1'
+    jl      .NotValue
+    cmp     ax, 0x0039 ; ascii '9'
+    jg      .NotValue
+    ; insert parameter al
+    jmp     .KeepReading
+.NotValue:
+    push    ax
+    mov     al, 0x25
+    call    .PutChar
+    pop     ax
+    call    .PutChar
     jmp     .KeepReading
 
+.PutChar:
+    push    di
+    mov     di, [OutPosition]
+    cmp     di, ExecLineEnd
+    je      .OverFlow
+    mov     [di], al
+    inc     di
+    mov     [OutPosition], di
+.OverFlow:
+    ; Just quit adding output on overflow.
+    pop     di
+    ret
+
 EndofString:
-
-    StdOutCRLF
-    StdOutStr [ParmPosition]
-    StdOutCRLF
-
 ; temporary development displayed output.
-;    StdOutStr ExecLine
+    StdOutStr ExecLine
+    StdOutCRLF
 
     Terminate 0
 
@@ -297,7 +331,8 @@ ParamBlock:
     .CmdLnPtr:  dw ExecLine,0
     .FCBS:      dw 0,0
 ExecLine:       times 127 db 0x0d
-    db 0
+ExecLineEnd:
+    db 0x0d,0
 
 ReadBuffer:
     times 16 db 0
