@@ -20,6 +20,8 @@
 
     FrameBounds
 
+MainParsing:
+
     CommandLineParser       ; insert code for command line parsing
 
     mov         al, [NoNewLine]
@@ -116,7 +118,8 @@ SwitchG:
 
 %include "TRANSLAT.INC"
 
-    Translator
+SwitchT:
+    Translator MainParsing
 
     HelpSwitchHandler
 

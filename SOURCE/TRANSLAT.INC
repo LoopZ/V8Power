@@ -16,65 +16,30 @@
 
 ; NASM for DOS
 
-%imacro Translator 0-1 SwitchT
-%1:
-    ret
-
-SetFileNamePtr:
-    cld
-.Looping:
-    lodsb
+%imacro Translator 1
+Translator:
+    mov     [FileNamePtr], di
+    xor     al, al
+.SearchStartTag:
+    mov     [si], al
+    inc     si
     cmp     al, 0x0d
     je      BadParams
     cmp     al, 0x20
-    je      .DoneYet
-    mov     ax, [FileNamePtr]
-    cmp     ax, 0
-    jne     .Looping
-    dec     si
-    mov     [FileNamePtr], si
-    ; inc si not needed, it won't get here twice
-    jmp     .Looping
-.DoneYet:
-    mov     ax, [FileNamePtr]
-    cmp     ax, 0
-    je      .Looping
-    dec     si
-    xor     al, al
-    mov     [si], al
-
-    inc     si
-    mov     ax, TransBuf
-    mov     di, ax
-
-; Check if contains a '\', if so don't search current dir and pathspec.
-HasDirSlash:
-    push    si
-.CheckNext:
-    lodsb
-    cmp     al, 0x00
-    je      .NotFound
-    cmp     al, 0x20
-    je      .NotFound
-    cmp     al, 0x0d
-    je      .NotFound
-    cmp     al, 0x5c
-    je      .Found
-    jmp     .CheckNext
-.Found:
-    jmp     .Finished
-.NotFound:
-.Finished:
-    pop     si
-
+    je     .SearchStartTag
     mov     [StrPosition], si
-SearhEndOfStr:
+.SearhEndOfTag:
     mov     al, [si]
     inc     si
     cmp     al, 0x0d
-    je      BadParams
+    je      .EndOfTag
     cmp     al, 0x20
-    jne     SearhEndOfStr
+    jne     .SearhEndOfTag
+.EndOfTag:
+    mov     di, TransBuf
+    mov     [OutPosition], di
+    mov     [ParmPosition], si
+    mov     si, [StrPosition]
 
 ; open translation file
     mov     dx, [FileNamePtr]
@@ -84,9 +49,6 @@ SearhEndOfStr:
     mov     [FileHandle], ax
 
     ; save output position
-    mov     [OutPosition], di
-    mov     [ParmPosition], si
-    mov     si, [StrPosition]
 
 ; starting searching for string
     ; started new line
@@ -269,12 +231,12 @@ ReadString:
 
 
 ; temporary development displayed output.
-    StdOutStr TransBuf
-    StdOutCRLF
+;    StdOutStr TransBuf
+;    StdOutCRLF
 
 ; Execute Self with new Commands.
-
-    ret
+    mov     si, TransBuf
+    jmp %1
 
 MatchNotFound:
     ; Nothing at present
@@ -308,13 +270,14 @@ FileNamePtr:
 FileHandle:
     dw 0
 
-TransBuf:       times 127 db 0x0d
+TransBuf:       times 256 db 0x0d
 TransBufEnd:
     db 0x0d,0
 
 ReadBuffer:
-    times 16 db 0
+    times 256 db 0
 ReadBufferEnd:
     db 0
 
 %endmacro
+

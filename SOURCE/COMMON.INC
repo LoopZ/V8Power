@@ -84,6 +84,8 @@ SECTION _DATA
 		WindMaxY	DB 0
 %endif
 
+CommandLineSI:
+    dw 0
 CommandLineErrorMsg:
     DB          "Parameter Error",0
 
@@ -728,7 +730,7 @@ GotoXYProc:
     mov         dl, al
     call        bx
     xor         dh, dh
-    xor         bx,bx
+    xor         bx, bx
     pop         si
     mov         di, si
     jmp         %%Loop
