@@ -447,12 +447,3 @@ vchkbox
 Checkbox input.
 
 TBA
-
--------------------------------------------------------------------------------
-
-vlocal
-
-Localization utility.
-
-TBA
-

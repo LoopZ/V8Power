@@ -141,13 +141,6 @@ NASM.EXE -ISOURCE\ SOURCE\VCHKBOX.ASM -fbin -O9 -o BIN\VCHKBOX.COM
 if ERRORLEVEL 1 goto Error
 if not "%1" == "" goto Done
 
-:vlocal
-set VSTAGE=vlocal
-bin\vecho /g "Engaging " /f 13 "turn signal" /f gray ...
-NASM.EXE -ISOURCE\ SOURCE\VLOCAL.ASM -fbin -O9 -o BIN\VLOCAL.COM
-if ERRORLEVEL 1 goto Error
-if not "%1" == "" goto Done
-
 :vfdutil
 set VSTAGE=vfdutil
 bin\vecho /g "Releasing " /f 14 clutch /f gray ...

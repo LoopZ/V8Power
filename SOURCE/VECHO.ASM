@@ -114,6 +114,10 @@ SwitchG:
     mov     [WindMax], ax
     ret
 
+%include "TRANSLAT.INC"
+
+    Translator
+
     HelpSwitchHandler
 
 CommandLineSwitches:
@@ -125,6 +129,7 @@ CommandLineSwitches:
     SwitchData  'I', 0, SwitchI
     SwitchData  'E', 0, SwitchE
     SwitchData  'X', 1, SwitchX
+    SwitchData  'T', 1, SwitchT
     LocalSwitchData
     HelpSwitchData
     SwitchData  0,  0, 0
@@ -136,3 +141,5 @@ Repeat:
     dw 1
 NoNewLine:
     db 0
+
+

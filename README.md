@@ -397,7 +397,3 @@ Checkboxes input.
 
 TBA
 * * *
-#### vlocal ######
-Localization translation utility,
-
-TBA

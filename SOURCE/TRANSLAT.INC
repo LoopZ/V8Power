@@ -16,19 +16,10 @@
 
 ; NASM for DOS
 
-%idefine NoVideoOutput
+%imacro Translator 0-1 SwitchT
+%1:
+    ret
 
-%include "COMMON.INC"
-
-; set up command line pointer in ParamBlock for later.
-LoadCmdLnPtr:
-    push    ds
-    pop     ax
-    mov     [ParamBlock + 4], ax
-
-
-; Setup pointer to translation file in original command line and append a
-; nul character to it's end.
 SetFileNamePtr:
     cld
 .Looping:
@@ -53,7 +44,7 @@ SetFileNamePtr:
     mov     [si], al
 
     inc     si
-    mov     ax, ExecLine
+    mov     ax, TransBuf
     mov     di, ax
 
 ; Check if contains a '\', if so don't search current dir and pathspec.
@@ -84,79 +75,6 @@ SearhEndOfStr:
     je      BadParams
     cmp     al, 0x20
     jne     SearhEndOfStr
-
-; Add expanded filename of command to execute after translation.
-AddExpandedFilename:
-    mov     bx, di
-    mov     al, [si+1]
-    cmp     al, 0x3a
-    je      .HasDriveLetter
-    mov     ah, 0x19
-    int     0x21
-    add     al, 0x41
-    stosb
-    mov     al, 0x3a
-    stosb
-    jmp     .DriveAdded
-.HasDriveLetter:
-    lodsb
-    cmp     al, 0x60
-    jle     .NotLower1
-    cmp     al, 0x7a
-    jg      .NotLower1
-    sub     al, 0x20
-.NotLower1:
-    stosb
-    lodsb
-    cmp     al, 0x60
-    jle     .NotLower2
-    cmp     al, 0x7a
-    jg      .NotLower2
-    sub     al, 0x20
-.NotLower2:
-    stosb
-.DriveAdded:
-    mov     al, [si]
-    cmp     al, 0x5c
-    je      .CopyData
-.NoPath:
-    mov     al, 0x5c
-    stosb
-    mov     dl, [bx]
-    sub     dl, 0x40
-    push    si
-    mov     si, di
-    mov     ah, 0x47
-    int     0x21
-    cld
-    pop     si
-.FindEnd:
-    mov     al, [di]
-    cmp     al, 0x00
-    je      .FoundEnd
-    inc     di
-    jmp     .FindEnd
-.FoundEnd:
-    mov     al, 0x5c
-    stosb
-.CopyData:
-.CopyLoop:
-    lodsb
-    cmp     al, 0x00
-    je      .Done
-    cmp     al, 0x0d
-    je      .Done
-    cmp     al, 0x20
-    je      .Done
-    cmp     al, 0x61
-    jl      .NotLower
-    cmp     al, 0x7a
-    jg      .NotLower
-    sub     al, 0x20
-.NotLower:
-    stosb
-    jmp    .CopyLoop
-.Done:
 
 ; open translation file
     mov     dx, [FileNamePtr]
@@ -246,7 +164,7 @@ ReadString:
     call    ReadMoreData
     jc      ReadError
     cmp     cx, 0
-    je      EndofString
+    je      .EndOfString
 .NotEmpty:
     mov     al, [di]
     inc     di
@@ -260,9 +178,9 @@ ReadString:
     jmp     .KeepReading
 .NotPercent:
     cmp     al, 0x0d
-    je      EndofString
+    je      .EndOfString
     cmp     al, 0x0a
-    je      EndofString
+    je      .EndOfString
     call    .PutChar
     jmp     .KeepReading
 .PercentValue:
@@ -334,7 +252,7 @@ ReadString:
 .PutChar:
     push    di
     mov     di, [OutPosition]
-    cmp     di, ExecLineEnd
+    cmp     di, TransBufEnd
     je      .OverFlow
     mov     [di], al
     inc     di
@@ -343,13 +261,20 @@ ReadString:
     ; Just quit adding output on overflow.
     pop     di
     ret
+.EndOfString:
+    mov     al, 0x0d
+    call    .PutChar
+    xor     al, al
+    call    .PutChar
 
-EndofString:
+
 ; temporary development displayed output.
-    StdOutStr ExecLine
+    StdOutStr TransBuf
     StdOutCRLF
 
-    Terminate 0
+; Execute Self with new Commands.
+
+    ret
 
 MatchNotFound:
     ; Nothing at present
@@ -383,15 +308,13 @@ FileNamePtr:
 FileHandle:
     dw 0
 
-ParamBlock:
-    .EnvSeg:    dw 0
-    .CmdLnPtr:  dw ExecLine,0
-    .FCBS:      dw 0,0
-ExecLine:       times 127 db 0x0d
-ExecLineEnd:
+TransBuf:       times 127 db 0x0d
+TransBufEnd:
     db 0x0d,0
 
 ReadBuffer:
     times 16 db 0
 ReadBufferEnd:
     db 0
+
+%endmacro
