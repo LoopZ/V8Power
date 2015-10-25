@@ -76,6 +76,15 @@ HasDirSlash:
 .Finished:
     pop     si
 
+    mov     [StrPosition], si
+SearhEndOfStr:
+    mov     al, [si]
+    inc     si
+    cmp     al, 0x0d
+    je      BadParams
+    cmp     al, 0x20
+    jne     SearhEndOfStr
+
 ; Add expanded filename of command to execute after translation.
 AddExpandedFilename:
     mov     bx, di
@@ -148,8 +157,8 @@ AddExpandedFilename:
     stosb
     jmp    .CopyLoop
 .Done:
-    cmp     al, 0x0d
-    je      BadParams
+;    cmp     al, 0x0d
+;    je      BadParams
     mov     al, 0x20
     stosb
 
@@ -163,6 +172,7 @@ AddExpandedFilename:
     ; save output position
     mov     [OutPosition], di
     mov     [ParmPosition], si
+    mov     si, [StrPosition]
 
 ; starting searching for string
     ; started new line
@@ -200,14 +210,14 @@ SearchForString:
 .TestEqual:
     cmp     al, 0x3d  ; '='
     jne     .MissMatch
-    mov     [ParmPosition], si
+    mov     [StrPosition], si
     jmp     ReadString
 .MissMatch:
     xor     ah, ah
     jmp     .KeepSearching
 .NewLine:
     mov     ah, 0x01
-    mov     si, [ParmPosition]
+    mov     si, [StrPosition]
     jmp     .KeepSearching
 
 ReadMoreData:
@@ -316,6 +326,8 @@ CloseFile:
 .NotOpen:
     ret
 
+StrPosition:
+    dw 0
 OutPosition:
     dw 0
 ParmPosition:
