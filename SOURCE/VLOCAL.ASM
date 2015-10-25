@@ -157,10 +157,6 @@ AddExpandedFilename:
     stosb
     jmp    .CopyLoop
 .Done:
-;    cmp     al, 0x0d
-;    je      BadParams
-    mov     al, 0x20
-    stosb
 
 ; open translation file
     mov     dx, [FileNamePtr]
@@ -242,7 +238,8 @@ ReadMoreData:
     ret
 
 ReadString:
-    xor     ah, ah
+    mov     ax, 0x0020
+    call    .PutChar
 .KeepReading:
     cmp     cx, 0
     jne     .NotEmpty
@@ -277,7 +274,55 @@ ReadString:
     cmp     ax, 0x0039 ; ascii '9'
     jg      .NotValue
     ; insert parameter al
-    jmp     .KeepReading
+    mov     bh, al
+    sub     al, 0x30
+    mov     si, [ParmPosition]
+
+.SearchParam:
+    mov     ah, [si]
+    cmp     ah, 0x20
+    jne     .FindParam
+    inc     si
+    jmp     .SearchParam
+.FindParam:
+    mov     ah, [si]
+    cmp     ah, 0x0d
+    je      .NoParam
+    cmp     ah, 0x22
+    je      .Qouted
+    cmp     ah, 0x27
+    je      .Qouted
+    cmp     ah, 0x60
+    je      .Qouted
+    mov     bl, 0x20
+.CheckParam:
+    dec     al
+    cmp     al, 0
+    je      .FoundParam
+.FindParamEnd:
+    mov     ah, [si]
+    inc     si
+    cmp     ah, 0x0d
+    je      .NoParam
+    cmp     ah, bl
+    je      .SearchParam
+    jmp     .FindParamEnd
+.Qouted:
+    mov     bl, ah
+    inc     si
+    jmp     .CheckParam
+.FoundParam:
+.AddParam:
+    mov     al, [si]
+    inc     si
+    cmp     al, 0x0d
+    je      .KeepReading
+    cmp     al, bl
+    je      .KeepReading
+    call    .PutChar
+    jmp     .AddParam
+.NoParam:
+    mov     al, bh
 .NotValue:
     push    ax
     mov     al, 0x25
