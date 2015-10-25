@@ -151,7 +151,7 @@ Output text to display.
 <tr><td><b>/X <i>code</i></b></td><td>Erase rest of line using ASCII
 <b><i>code</i></b>, but don't move the cursor.</td></tr>
 <tr><td><b>/E</b></td><td>Same as using <b><i>/X 0x20</i></b></td></tr>
-<tr><td><b>/T</b> <i>file ID</i></td><td>Look up <b><i>ID</i></b> in <b><i>file</i></b>
+<tr><td><b>/T <i>file ID</i></b></td><td>Look up <b><i>ID</i></b> in <b><i>file</i></b>
  and process it like command line options.<br>
     			Any additional options that follow this switch are used to<br>
     			populate <b><i>%1</i></b>-<b><i>%9</i></b> variables in the text string.
