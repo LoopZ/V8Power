@@ -165,6 +165,9 @@ Output text to display.
     /L          Write text locally with regards to framing. (DEFAULT)
     /X code     Erase rest of line using ascii code, but don't move the cursor.
     /E          Same as using "/X 0x20".
+    /T file ID  Look up ID in file and process it like command line options.
+    			Any additional options that follow this switch are used to
+    			populate %1-%9 variables in the text string.
 
     tba         (Still under development, more to be announced)
 
