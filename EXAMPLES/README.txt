@@ -88,3 +88,16 @@ Will not work under DOSBox.
 Example 10 (EX10.BAT)
 
 Choice Polling example.
+
+-------------------------------------------------------------------------------
+
+Example 11 (EX11.BAT)
+
+Video and vesa mode demo.
+
+-------------------------------------------------------------------------------
+
+Example 12 (EX10.BAT)
+
+Portable string lookups and language translations with vecho. Should work
+in nearly all versions of DOS as long as V8Power Tools are present.
