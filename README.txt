@@ -389,6 +389,7 @@ Simple String processing utility. Outputs results to STDOUT.
     /R times    Repeat the next write times number of times. (1-65535)
     /L line     Return only this line from standard input. (0-65535)
                 (Note: vline /L TOTAL will return the total number of lines.)
+	/S s1 s2	Search and replace all occurrences of s1 with s2.
 
    tba         (Still under development, more to be announced)
 

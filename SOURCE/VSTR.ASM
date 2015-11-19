@@ -82,6 +82,64 @@ TotalLines:
     StdOutIntWord
     ret
 
+SwitchS:
+    mov         al, 0x01
+    mov         [NextReplace], al
+    mov         [SearchFor], di
+    xor         al, al
+    mov         [si], al
+    ret
+
+SwitchReplace:
+    xor         al, al
+    mov         [NextReplace], al
+    mov         [ReplaceWith], di
+    mov         [si], al
+    mov         si, [SearchFor]
+    xor         cx, cx
+.Looping:
+    push        cx
+    StdIn
+    pop         cx
+    pushf
+    mov         dl, al
+    mov         al, [si]
+    cmp         al, dl
+    jne         .Missmatch
+    inc         cx
+    inc         si
+    mov         al, [si]
+    cmp         al, 0x00
+    je          .ReplaceIt
+    popf
+    jmp         .Looping
+.Missmatch:
+    push        dx
+    cmp         cx, 0
+    je          .NoBuffered
+    mov         si, [SearchFor]
+.BufferedOut:
+    lodsb
+    mov         dl, al
+    StdOutChar
+    loop        .BufferedOut
+.NoBuffered:
+    pop         dx
+    popf
+    jnc         .Done
+    StdOutChar
+.Continued:
+    xor         cx, cx
+    mov         si, [SearchFor]
+    jmp         .Looping
+.ReplaceIt:
+    StdOutStr   [ReplaceWith]
+    popf
+    jnc         .Done
+    jmp         .Continued
+.Done:
+    ret
+
 SwitchL:
     LookupParam OptionsLines
     cmp         ax, 0xffff
@@ -122,6 +180,9 @@ SwitchL:
 HelpSwitchHandler
 
 NoSwitch:
+    mov         al, [NextReplace]
+    cmp         al, 0x01
+    je          SwitchReplace
     LookupParam OptionsTable
     cmp         ax, 0xffff
     je          .NotOption
@@ -141,6 +202,7 @@ CommandLineSwitches:
     SwitchData  'C', 1, SwitchC
     SwitchData  'R', 1, SwitchR
     SwitchData  'L', 1, SwitchL
+    SwitchData  'S', 1, SwitchS
     HelpSwitchData
     SwitchData  0,  0, 0
 
@@ -151,6 +213,12 @@ OptionsLines:
     TableData "TOTAL", TotalLines
     TableEnd
 
+NextReplace:
+    db 0
+SearchFor:
+    dw 0
+ReplaceWith:
+    dw 0
 Repeat:
     dw 1
 NoNewLine:
