@@ -16,8 +16,9 @@
 
 ; NASM for DOS
 
+; Options ComandLine Parser
 %imacro Translator 1
-Translator:
+; Translator:
     mov     [FileNamePtr], di
     xor     al, al
 .SearchStartTag:
@@ -270,7 +271,8 @@ FileNamePtr:
 FileHandle:
     dw 0
 
-TransBuf:       times 256 db 0x0d
+TransBuf:
+    times 256 db 0x0d
 TransBufEnd:
     db 0x0d,0
 

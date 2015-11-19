@@ -23,6 +23,8 @@ ProgramMain:
     ; mov           [CurrentXY], dx
     SetMaxSize
 
+MainParsing:
+
     CommandLineParser       ; insert code for command line parsing
 
     mov         al, [BoxText]
@@ -312,6 +314,11 @@ SwitchC:
     mov         [CurrentY], bl
     ret
 
+%include "TRANSLAT.INC"
+
+SwitchT:
+    Translator MainParsing
+
 ColorSwitchHandlers
 XYSwitchHandlers
 SizeSwitchHandlers
@@ -356,4 +363,5 @@ CommandLineSwitches:
     XYSwitchData
     SizeSwitchData
     HelpSwitchData
+    SwitchData  'T', 1, SwitchT
     SwitchData  0,  0, 0

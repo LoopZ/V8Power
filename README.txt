@@ -213,6 +213,9 @@ Draw a box windowing thingy and move cursor to its inside top left position.
     /W width    Total width of the box.
     /H height   Total height of the box.
     /C          Centers the box horizontally and vertically.
+    /T file ID  Look up ID in file and process it like command line options.
+    			Any additional options that follow this switch are used to
+    			populate %1-%9 variables in the text string.
     style       Box styles are Single, Double, SingleSides, DoubleSides
                 and Hidden.
     shadow      Add a 3D style shadow.
