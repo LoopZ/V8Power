@@ -14,7 +14,7 @@
 ;   with this program; if not, write to the Free Software Foundation, Inc.,
 ;   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-; NASM for DOS 
+; NASM for DOS
 
 ; common table macros
 
@@ -39,10 +39,13 @@ ColorTable:
     TableData "MAGENTA",5
     TableData "BROWN",6
     TableData "GRAY",7
+    TableData "GREY",7
 ;    TableData "LIGHTGRAY",7
 ;   TableData "LIGHT GRAY",7
     TableData "DARKGRAY",8
-    TableData "DARK GRAY",8
+;    TableData "DARK GRAY",8
+    TableData "DARKGREY",8
+;    TableData "DARK GREY",8
     TableData "LIGHTBLUE",9
 ;   TableData "LIGHT BLUE",9
     TableData "LIGHTGREEN",10
