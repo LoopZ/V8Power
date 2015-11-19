@@ -88,12 +88,6 @@ SwitchL:
     je          .NotOption
     jmp         ax
 
-SwitchF:
-    ret
-
-SwitchS:
-    ret
-
 .NotOption:
     NumberParam
     mov         bx, ax
@@ -147,8 +141,6 @@ CommandLineSwitches:
     SwitchData  'C', 1, SwitchC
     SwitchData  'R', 1, SwitchR
     SwitchData  'L', 1, SwitchL
-    SwitchData  'F', 1, SwitchF
-    SwitchData  'S', 1, SwitchS
     HelpSwitchData
     SwitchData  0,  0, 0
 
