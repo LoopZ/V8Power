@@ -121,7 +121,7 @@ SwitchG:
 SwitchT:
     Translator MainParsing
 
-SwitchY:
+SwitchP:
     WriteStr    CRLFString
     ret
 
@@ -137,7 +137,7 @@ CommandLineSwitches:
     SwitchData  'E', 0, SwitchE
     SwitchData  'X', 1, SwitchX
     SwitchData  'T', 1, SwitchT
-    SwitchData  'Y', 0, SwitchY
+    SwitchData  'P', 0, SwitchP
     LocalSwitchData
     HelpSwitchData
     SwitchData  0,  0, 0

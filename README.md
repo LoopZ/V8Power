@@ -142,7 +142,7 @@ Output text to display.
 <tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to
 <b><i>color</i></b> (or <b><i>value</i></b>).</td></tr>
 <tr><td><b>/N</td><td>Do not write a CRLF when done.</td></tr>
-<tr><td><b>/Y</td><td>Perform a CRLF now.</td></tr>
+<tr><td><b>/P</td><td>Perform a CRLF now.</td></tr>
 <tr><td><b>/C <i>code</i></b></td><td>Write an ASCII character
 <b><i>code</i></b>.</td></tr>
 <tr><td><b>/R <i>times</i></b></td><td>Repeat the next write <b><i>times</i></b> number of times. (1-65535)</td></tr>
