@@ -79,7 +79,6 @@ ExpandFileName:
     cld
     pop     cx
     pop     si
-    xor     al, al
 .FindEnd:
     mov     al, [di]
     cmp     al, 0x00
@@ -87,12 +86,22 @@ ExpandFileName:
     inc     di
     jmp     .FindEnd
 .FoundEnd:
+    mov     al, [di-1]
+    cmp     al, 0x5c
+    je      .EndSlash
     mov     al, 0x5c
     stosb
+.EndSlash:
     cmp     cx, 0
     je      .Done
 .CopyData:
     lodsb
+    mov     ah, [si]
+    cmp     al, ah
+    jne     .UseChar
+    cmp     al, 0x5c
+    je      .SkipChar
+.UseChar:
     cmp     al, 0x61
     jl      .NotLower
     cmp     al, 0x7a
@@ -100,6 +109,7 @@ ExpandFileName:
     sub     al, 0x20
 .NotLower:
     stosb
+.SkipChar:
     loop    .CopyData
 .Done:
     pop     di
