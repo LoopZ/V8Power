@@ -158,7 +158,7 @@ Output text to display.
     /B color    Set the background text attribute to color (or a value).
     /F color    Set the forground text attribute to color (or a value).
     /N          Do not write a CRLF when done.
-    /Y			Perform a CRLF now.
+    /P			Perform a CRLF now.
     /C code     Write an ASCII character code.
     /R times    Repeat the next write times number of times. (1-65535)
     /I          Write text that may waiting from the STDIN device.
