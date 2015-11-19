@@ -1317,6 +1317,7 @@ WriteStrProc:
     cld
 .WriteStrLoop:
     lodsb
+    xor         ah, ah
     cmp         al, 0x00
     je          .WriteStrDone
     cmp         al, 0x0d
@@ -1335,7 +1336,7 @@ WriteStrProc:
 ;   je          .Bell
 ;   cmp         al, 0x7F
 ;   je          .Delete
-    cmp         al, 0x20
+    cmp         ax, 0x20
     jl          .NoChar
     WriteChar
     jmp         .WriteStrLoop
