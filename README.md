@@ -203,6 +203,7 @@ Draw a box windowing thingy and move cursor to its inside top left position.
 <tr><td><i>style</i></td><td>Box <i>styles</i> are <b><i>Single</i></b>, <b><i>Double</i></b>,
 <b><i>SingleSides</i></b>, <b><i>DoubleSides</i></b> and <b><i>Hidden</i></b>.</td></tr>
 <tr><td><i><b>shadow</b></i></td><td>Add a 3D style <b><i>shadow</i></b>.</td></tr>
+<tr><td><i><b>textbox</b></i></td><td>Draw a <b><i>textbox</i></b> style frame with a little padding and margins.</td></tr>
 </table>
 * * *
 #### vpcspkr *[hz:][ms]* ######

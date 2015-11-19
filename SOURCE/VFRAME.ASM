@@ -14,7 +14,7 @@
 ;   with this program; if not, write to the Free Software Foundation, Inc.,
 ;   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-; NASM for DOS 
+; NASM for DOS
 
 %include "COMMON.INC"
 
@@ -22,9 +22,55 @@ ProgramMain:
     ; WhereXY
     ; mov           [CurrentXY], dx
     SetMaxSize
-    
+
     CommandLineParser       ; insert code for command line parsing
-        
+
+    mov         al, [BoxText]
+    cmp         al, 0x00
+    jne         DrawTextBox
+    call        DrawBox
+    jmp         Done
+
+DrawTextBox:
+    mov         ax, [BoxStyle]
+    push        ax
+    mov         ax, BoxHidden
+    mov         [BoxStyle], ax
+    call        DrawBox
+    pop         ax
+    mov         [BoxStyle], ax
+    xor         al, al
+    mov         [BoxShadow], al
+    mov         al, [CurrentX]
+    inc         al
+    mov         [CurrentX], al
+    mov         al, [CurrentW]
+    cmp         al, 0x02
+    jng         Done
+    sub         al, 2
+    mov         [CurrentW], al
+    call        DrawBox
+    xor         al, al
+    mov         [BoxShadow], al
+    mov         ax, BoxHidden
+    mov         [BoxStyle], ax
+    mov         ax, [CurrentXY]
+    add         ax, 0x0101
+    mov         [CurrentXY], ax
+    mov         ax, [CurrentSize]
+    cmp         ah, 0x02
+    jng         Done
+    cmp         al, 0x02
+    jng         Done
+    sub         ah, 2
+    sub         al, 2
+    mov         [CurrentSize], ax
+    call        DrawBox
+
+Done:
+    Terminate 0
+
+DrawBox:
     mov         cx, [CurrentXY]
     mov         [WindMin], cx
     mov         dx, [CurrentSize]
@@ -40,10 +86,10 @@ ProgramMain:
     push        dx
     add         dx, cx
     mov         [WindMax], dx
-    
+
     mov         al, [TextAttr]
     mov         [BoxAttr], al
-    mov         di, [BoxStyle]  
+    mov         di, [BoxStyle]
     cmp         di, BoxHidden
     jne         .NotHiddenBox
     mov         al, [TextAttr]
@@ -55,11 +101,11 @@ ProgramMain:
     mov         [BoxAttr], al
     mov         di, BoxSingle
     mov         [BoxStyle], di
-.NotHiddenBox:  
+.NotHiddenBox:
     mov         dx, 0x0000
     GotoXY      dx
     pop         dx
-    
+
     call        WriteRow
     mov         al, [BoxShadow]
     inc         al
@@ -93,19 +139,18 @@ ShadowRow:
     cmp         al, 2
     jl          .NoShadowRow
     mov         bx, [WindMin]
-    mov         dx, [WindMax]   
+    mov         dx, [WindMax]
     mov         cl, dl
     sub         cl, bl
     xor         ch, ch
     sub         dh, bh
     mov         dl, 0x01
     call        ShadowChars
-    
+
 .NoShadowRow:
     mov         dx, 0x0101
     GotoXY      dx
-            
-    Terminate 0
+    ret
 
 WriteRow:
     push        dx
@@ -157,7 +202,7 @@ WriteRow:
 .NoShadow:
     pop         dx
     ret
-    
+
 ShadowChars:
     mov         ax, [ScreenMax]
     mov         bx, [WindMin]
@@ -187,10 +232,10 @@ ShadowChars:
     pop         bx
     pop         ax
     inc         dl
-    loop        .ShadowLoop 
+    loop        .ShadowLoop
 .NoCanDo:
     ret
-    
+
 
 NoSwitch:
     LookupParam BoxStyleTable
@@ -208,20 +253,26 @@ NoSwitch:
     je          .NormalBox
     cmp         ax, BoxSingleSides
     je          .NormalBox
+    cmp         ax, BoxText
+    je          .BoxTextMode
 .NormalBox:
-    mov         [BoxStyle], ax      
+    mov         [BoxStyle], ax
+    ret
+.BoxTextMode:
+    mov         al, 1
+    mov         [BoxText], al
     ret
 .SetShadow:
     mov         al, 1
     mov         [BoxShadow], al
     ret
-    
+
 .NotBox:
 
 .Error:
     WriteStr    CommandLineErrorMsg
     Terminate   100
-    
+
 SwitchC:
     mov         ax, [WindMax]
     xor         dx, dx
@@ -240,7 +291,7 @@ SwitchC:
 ;   xor         ax, ax
 ;.OkX:
     sub         bx, ax
-    mov         [CurrentX], bl  
+    mov         [CurrentX], bl
     mov         ax, [WindMax]
     xor         dx, dx
     xor         al, al
@@ -276,13 +327,15 @@ BoxStyle:
     dw  BoxDouble
 BoxShown:
     db  0
-BoxAttr: 
+BoxAttr:
     db  0
-ShadowAttr: 
+ShadowAttr:
     db  0x08
 BoxShadow:
-    db  0   
-    
+    db  0
+BoxText:
+    db  0
+
 BoxStyleTable:
     TableData "SHADOW",         BoxShadow
     TableData "HIDE",           BoxHidden
@@ -291,16 +344,16 @@ BoxStyleTable:
     TableData "DOUBLE",         BoxDouble
     TableData "SINGLESIDES",    BoxSingleSides
     TableData "DOUBLESIDES",    BoxDoubleSides
+    TableData "TEXTBOX",        BoxText
     TableEnd
-        
+
     HelpSwitchHandler
 
 CommandLineSwitches:
-    SwitchData  0,  0, NoSwitch  
+    SwitchData  0,  0, NoSwitch
     SwitchData 'C',  0, SwitchC
     ColorSwitchData
     XYSwitchData
     SizeSwitchData
     HelpSwitchData
     SwitchData  0,  0, 0
-        

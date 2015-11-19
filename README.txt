@@ -87,8 +87,8 @@ Here is color table used for all **/A**, **/F** and **/B** switches:
     4           0x04        Red
     5           0x05        Magenta
     6           0x06        Brown
-    7           0x07        Gray
-    8           0x08        DarkGray
+    7           0x07        Gray / Grey
+    8           0x08        DarkGray / DarkGrey
     9           0x09        LightBlue
     10          0x0a        LightGreen
     11          0x0b        LightCyan
@@ -216,6 +216,7 @@ Draw a box windowing thingy and move cursor to its inside top left position.
     style       Box styles are Single, Double, SingleSides, DoubleSides
                 and Hidden.
     shadow      Add a 3D style shadow.
+    textbox		Draw a textbox style frame with a little padding and margins.
 
 -------------------------------------------------------------------------------
 
