@@ -353,6 +353,8 @@ Simple String processing utility. Outputs results to STDOUT.
 <tr><td><b>/C <i>code</i></b></td><td>Write an ASCII character
 <b><i>code</i></b>.</td></tr>
 <tr><td><b>/R <i>times</i></b></td><td>Repeat the next write <b><i>times</i></b> number of times. (1-65535)</td></tr>
+<tr><td><b>/U</td><td>Convert input to upper case.</td></tr>
+<tr><td><b>/D</td><td>Convert input to lower case.</td></tr>
 <tr><td><b>/L <i>line</i></b></td><td>Return only this <b><i>line</i></b> from standard input. (0-65535)<br>
 <i>(Note: vline /L <b>TOTAL</b> will return the total number of lines.)</i></td></tr>
 <tr><td><b>/S <i>s1 s2</i></b></td><td>Search and replace all occurrences of <b><i>s1</b></i> with <b><i>s2</b></i>.</td></tr>

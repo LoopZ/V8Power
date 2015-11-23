@@ -22,6 +22,21 @@
 
     CommandLineParser       ; insert code for command line parsing
 
+%imacro GetStdIn 0
+    StdIn
+    jnc     %%Done
+    pushf
+    call InputFilter
+    popf
+%%Done:
+%endmacro
+
+PassThrough:
+    GetStdIn
+    jnc     NoInput
+    StdOutChar al
+    jmp     PassThrough
+NoInput:
     mov al, [NoNewLine]
     cmp al, 1
     je  Done
@@ -53,35 +68,6 @@ SwitchR:
     mov         [Repeat], ax
     ret
 
-TotalLines:
-    xor         bx, bx
-    xor         dx, dx
-.Looping:
-    push        dx
-    push        bx
-    StdIn
-    pop         bx
-    pop         dx
-    jnc         .EndOfStdIn
-    cmp         al, 0x0a
-    je          .Looping
-    cmp         al, 0x0d
-    je          .NewLine
-    inc         dx
-    jmp         .Looping
-.NewLine:
-    xor         dx, dx
-    inc         bx
-    jmp         .Looping
-.EndOfStdIn:
-    cmp         dx, 0
-    je          .Done
-    inc         bx
-.Done:
-    mov         ax, bx
-    StdOutIntWord
-    ret
-
 SwitchS:
     mov         al, 0x01
     mov         [NextReplace], al
@@ -95,11 +81,12 @@ SwitchReplace:
     mov         [NextReplace], al
     mov         [ReplaceWith], di
     mov         [si], al
+    mov         [ReplaceWith], di
     mov         si, [SearchFor]
     xor         cx, cx
 .Looping:
     push        cx
-    StdIn
+    GetStdIn
     pop         cx
     pushf
     mov         dl, al
@@ -153,7 +140,7 @@ SwitchL:
     je          .ThisLine
 .Looping:
     push        bx
-    StdIn
+    GetStdIn
     pop         bx
     jnc         .Done
     cmp         al, 0x0d
@@ -163,7 +150,7 @@ SwitchL:
     je          .ThisLine
     jmp         .Looping
 .ThisLine:
-    StdIn
+    GetStdIn
     jnc          .Done
     cmp         al, 0x0a
     je          .ThisLine
@@ -173,8 +160,74 @@ SwitchL:
     StdOutChar
     jmp         .ThisLine
 .Done:
-    StdIn
+    GetStdIn
     jc          .Done
+    ret
+
+TotalLines:
+    xor         bx, bx
+    xor         dx, dx
+.Looping:
+    push        dx
+    push        bx
+    GetStdIn
+    pop         bx
+    pop         dx
+    jnc         .EndOfStdIn
+    cmp         al, 0x0a
+    je          .Looping
+    cmp         al, 0x0d
+    je          .NewLine
+    inc         dx
+    jmp         .Looping
+.NewLine:
+    xor         dx, dx
+    inc         bx
+    jmp         .Looping
+.EndOfStdIn:
+    cmp         dx, 0
+    je          .Done
+    inc         bx
+.Done:
+    mov         ax, bx
+    StdOutIntWord
+    ret
+
+SwitchU:
+    mov         al, [Filter]
+    or          al, 00000001b
+    mov         [Filter], al
+    ret
+
+SwitchD:
+    mov         al, [Filter]
+    or          al, 00000010b
+    mov         [Filter], al
+    ret
+
+InputFilter:
+    mov     dh, [Filter]
+    cmp     dh, 0
+    je      .Done
+    xor     ah, ah
+    test    dh, 00000001b
+    jz      .NotUppercase
+    cmp     ax, 0x61
+    jl      .NotUppercase
+    cmp     ax, 0x7a
+    jg      .NotUppercase
+    sub     ax, 0x20
+.NotUppercase:
+    test    dh, 00000010b
+    jz      .NotLowercase
+    cmp     ax, 0x41
+    jl      .NotLowercase
+    cmp     ax, 0x5a
+    jg      .NotLowercase
+    add     ax, 0x20
+.NotLowercase:
+
+.Done:
     ret
 
 HelpSwitchHandler
@@ -203,6 +256,8 @@ CommandLineSwitches:
     SwitchData  'R', 1, SwitchR
     SwitchData  'L', 1, SwitchL
     SwitchData  'S', 1, SwitchS
+    SwitchData  'U', 0, SwitchU
+    SwitchData  'D', 0, SwitchD
     HelpSwitchData
     SwitchData  0,  0, 0
 
@@ -222,4 +277,6 @@ ReplaceWith:
 Repeat:
     dw 1
 NoNewLine:
+    db 0
+Filter:
     db 0
