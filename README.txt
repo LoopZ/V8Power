@@ -385,14 +385,15 @@ vstr [options]
 Simple String processing utility. Outputs results to STDOUT.
 
     /N          Do not write a CRLF when done.
+    /U			Input Filter: Convert to upper case.
+    /D			Input Filter: Convert to lower case.
+    /B			Input Filter: Ignore blank lines.
     /C code     Write an ASCII character code.
     /R times    Repeat the next write times number of times. (1-65535)
-    /U			Convert input to upper case.
-    /D			Convert input to lower case.
     /L line     Return only this line from standard input. (0-65535)
                 (Note: vline /L TOTAL will return the total number of lines.)
 	/S s1 s2	Search and replace all occurrences of s1 with s2.
-
+    /F s1 s2 	Set delimiter to s1 and only return field position or range s2.
 
    tba         (Still under development, more to be announced)
 

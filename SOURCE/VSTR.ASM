@@ -20,16 +20,23 @@
 
 %include "COMMON.INC"
 
-    CommandLineParser       ; insert code for command line parsing
-
 %imacro GetStdIn 0
+%%Sticky:
     StdIn
     jnc     %%Done
-    pushf
-    call InputFilter
-    popf
+    call    InputFilter
+    jnc     %%Sticky
 %%Done:
 %endmacro
+
+%imacro NextSpecial 1
+    push    ax
+    mov     ax, %1
+    mov     [MultiOptionSwitch], ax
+    pop     ax
+%endmacro
+
+    CommandLineParser       ; insert code for command line parsing
 
 PassThrough:
     GetStdIn
@@ -69,8 +76,7 @@ SwitchR:
     ret
 
 SwitchS:
-    mov         al, 0x01
-    mov         [NextReplace], al
+    NextSpecial SwitchReplace
     mov         [SearchFor], di
     xor         al, al
     mov         [si], al
@@ -78,7 +84,6 @@ SwitchS:
 
 SwitchReplace:
     xor         al, al
-    mov         [NextReplace], al
     mov         [ReplaceWith], di
     mov         [si], al
     mov         [ReplaceWith], di
@@ -126,6 +131,149 @@ SwitchReplace:
     jmp         .Continued
 .Done:
     ret
+
+SwitchF:
+    NextSpecial SwitchFields
+    mov         [SearchFor], di
+    xor         al, al
+    mov         [si], al
+    ret
+
+SwitchFields:
+    push        cx
+    push        di
+    mov         bx, di
+.FindDash:
+    cmp         cx, 0
+    je          .FindEnd
+    mov         al, [bx]
+    cmp         al, '-'
+    je          .FindEnd
+    inc         bx
+    loop        .FindDash
+    jmp         .NoDash
+.FindEnd:
+    cmp         cx, 0x0001
+    je          .NoHighNumber
+    dec         cx
+    push        di
+    mov         di, bx
+    inc         di
+    push        bx
+    NumberParam
+    pop         bx
+    pop         di
+    mov         [Fields + 2], ax
+.NoHighNumber:
+    cmp         bx, di
+    je          .NoLowNumber
+    sub         bx, di
+    mov         cx, bx
+    NumberParam
+    mov         [Fields], ax
+.NoLowNumber:
+    pop         di
+    pop         cx
+    jmp         .Process
+.NoDash:
+    pop         di
+    pop         cx
+    NumberParam
+    mov         [Fields], ax
+    mov         [Fields + 2], ax
+.Process:
+    mov         si, [SearchFor]
+    xor         cx, cx
+    mov         ax, 0x0001
+    mov         [FieldPos], ax
+.Looping:
+    push        cx
+    GetStdIn
+    pop         cx
+    pushf
+    mov         dl, al
+    mov         al, [si]
+    cmp         al, dl
+    jne         .Missmatch
+    inc         cx
+    inc         si
+    mov         al, [si]
+    cmp         al, 0x00
+    je          .FieldIDMatch
+    popf
+    jmp         .Looping
+.Missmatch:
+    push        dx
+    cmp         cx, 0
+    je          .NoBuffered
+    mov         si, [SearchFor]
+.BufferedOut:
+    lodsb
+    mov         dl, al
+    call        .MaybeCharOut
+    loop        .BufferedOut
+.NoBuffered:
+    pop         dx
+    popf
+    jnc         .Done
+    call        .MaybeCharOut
+.Continued:
+    xor         cx, cx
+    mov         si, [SearchFor]
+    jmp         .Looping
+.MaybeCharOut:
+    cmp         dl, 0x0d
+    je          .CRLFReset
+    cmp         dl, 0x0a
+    je          .CRLFReset
+    mov         bx, [FieldPos]
+    mov         ax, [Fields]
+    cmp         bx, ax
+    jb          .NotThisField
+    mov         ax, [Fields+2]
+    cmp         bx, ax
+    ja          .NotThisField
+    jmp         .SendCharOut
+.CRLFReset:
+    mov         bx, 0x0001
+    mov         [FieldPos], bx
+.SendCharOut:
+	mov		ah, 0x02
+	int		0x21
+.NotThisField:
+    ret
+.FieldIDMatch:
+    mov         bx, [FieldPos]
+    inc         bx
+    mov         [FieldPos], bx
+
+    push        dx
+    push        ax
+    mov         ax, [Fields]
+    mov         dx, [Fields+2]
+    cmp         dx, ax
+    je          .NoShowDelim
+    cmp         bx, ax
+    jna         .NoShowDelim
+    cmp         bx, dx
+    ja         .NoShowDelim
+    jmp         .ShowDelim
+.NoShowDelim:
+    pop         ax
+    pop         dx
+
+    popf
+    jnc         .Done
+    jmp         .Continued
+.ShowDelim:
+    pop         ax
+    pop         dx
+    dec         cx
+    jmp         .Missmatch
+
+.Done:
+    ret
+
 
 SwitchL:
     LookupParam OptionsLines
@@ -205,6 +353,12 @@ SwitchD:
     mov         [Filter], al
     ret
 
+SwitchB:
+    mov         al, [Filter]
+    or          al, 00000100b
+    mov         [Filter], al
+    ret
+
 InputFilter:
     mov     dh, [Filter]
     cmp     dh, 0
@@ -226,19 +380,54 @@ InputFilter:
     jg      .NotLowercase
     add     ax, 0x20
 .NotLowercase:
-
+    test    dh, 00000100b
+    jz      .NotBlankLines
+    cmp     al, 0x0d
+    je      .BlankCR
+    cmp     al, 0x0a
+    je      .BlankLF
+    push    ax
+    mov     ah, al
+    mov     [BlankCRLF], ax
+    pop     ax
+    jmp     .NotBlankLines
+.BlankCR:
+    mov     ah, [BlankCRLF]
+    cmp     ah, 0
+    je      .Ignored
+    xor     ah, ah
+    mov     [BlankCRLF], ah
+    jmp     .NotBlankLines
+.BlankLF:
+    mov     ah, [BlankCRLF + 1]
+    cmp     ah, 0
+    je      .Ignored
+    xor     ah, ah
+    mov     [BlankCRLF + 1], ah
+    jmp     .NotBlankLines
+.NotBlankLines:
 .Done:
+    stc
+    ret
+.Ignored:
+    clc
     ret
 
 HelpSwitchHandler
 
 NoSwitch:
-    mov         al, [NextReplace]
-    cmp         al, 0x01
-    je          SwitchReplace
+    mov         ax, [MultiOptionSwitch]
+    cmp         ax, 0x0000
+    jne         .Special
     LookupParam OptionsTable
     cmp         ax, 0xffff
     je          .NotOption
+    jmp         ax
+.Special:
+    push        ax
+    xor         ax, ax
+    mov         [MultiOptionSwitch], ax
+    pop         ax
     jmp         ax
 
 .NotOption:
@@ -258,6 +447,8 @@ CommandLineSwitches:
     SwitchData  'S', 1, SwitchS
     SwitchData  'U', 0, SwitchU
     SwitchData  'D', 0, SwitchD
+    SwitchData  'B', 0, SwitchB
+    SwitchData  'F', 1, SwitchF
     HelpSwitchData
     SwitchData  0,  0, 0
 
@@ -268,8 +459,8 @@ OptionsLines:
     TableData "TOTAL", TotalLines
     TableEnd
 
-NextReplace:
-    db 0
+MultiOptionSwitch:
+    dw 0
 SearchFor:
     dw 0
 ReplaceWith:
@@ -280,3 +471,9 @@ NoNewLine:
     db 0
 Filter:
     db 0
+Fields:
+    dw 0, 0xffff
+FieldPos:
+    dw 0
+BlankCRLF:
+    dw 0

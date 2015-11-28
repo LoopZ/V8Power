@@ -350,15 +350,16 @@ Simple String processing utility. Outputs results to STDOUT.
 <table>
 <tr><td width="125pt"></td><td>Preforms a Carriage Return and Line Feed to STDOUT.</td></tr>
 <tr><td><b>/N</td><td>Do not write a CRLF when done.</td></tr>
+<tr><td><b>/U</td><td>Input Filter: Convert to upper case.</td></tr>
+<tr><td><b>/D</td><td>Input Filter: Convert to lower case.</td></tr>
+<tr><td><b>/B</td><td>Input Filter: Ignore blank lines.</td></tr>
 <tr><td><b>/C <i>code</i></b></td><td>Write an ASCII character
 <b><i>code</i></b>.</td></tr>
 <tr><td><b>/R <i>times</i></b></td><td>Repeat the next write <b><i>times</i></b> number of times. (1-65535)</td></tr>
-<tr><td><b>/U</td><td>Convert input to upper case.</td></tr>
-<tr><td><b>/D</td><td>Convert input to lower case.</td></tr>
 <tr><td><b>/L <i>line</i></b></td><td>Return only this <b><i>line</i></b> from standard input. (0-65535)<br>
 <i>(Note: vline /L <b>TOTAL</b> will return the total number of lines.)</i></td></tr>
 <tr><td><b>/S <i>s1 s2</i></b></td><td>Search and replace all occurrences of <b><i>s1</b></i> with <b><i>s2</b></i>.</td></tr>
-	/S s1 s2	Search and replace all occurrences of s1 with s2.
+<tr><td><b>/F <i>s1 s2</i></b></td><td>Set delimiter to <b><i>s1</b></i> and only return field position or range <b><i>s2</b></i>. </td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
 * * *
