@@ -153,7 +153,7 @@ InvalidOption:
     WriteStr    CommandLineErrorMsg
     Terminate   100
 
-    HelpSwitchHandler 'At present all help information is only in the V8Power Tools Readme text file.'
+    HelpSwitchHandler
 
 CommandLineSwitches:
     SwitchData  0,  0, NoSwitch

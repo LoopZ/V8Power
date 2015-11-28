@@ -145,7 +145,7 @@ CurrentSize:
     SwitchData '?', 0, SwitchHelp
 %endmacro
 
-%imacro HelpSwitchHandler 0-1 'See vinfo /? for help.'
+%imacro HelpSwitchHandler 0-1 'See V8Power Tools docs.'
 SwitchHelp:
 %ifdef NoVideoOutput
     StdOutStr   %%Message
