@@ -158,7 +158,7 @@ Output text to display.
     /B color    Set the background text attribute to color (or a value).
     /F color    Set the forground text attribute to color (or a value).
     /N          Do not write a CRLF when done.
-    /P			Perform a CRLF now.
+    /P          Perform a CRLF now.
     /C code     Write an ASCII character code.
     /R times    Repeat the next write times number of times. (1-65535)
     /I          Write text that may waiting from the STDIN device.
@@ -167,8 +167,8 @@ Output text to display.
     /X code     Erase rest of line using ascii code, but don't move the cursor.
     /E          Same as using "/X 0x20".
     /T file ID  Look up ID in file and process it like command line options.
-    			Any additional options that follow this switch are used to
-    			populate %1-%9 variables in the text string.
+                Any additional options that follow this switch are used to
+                populate %1-%9 variables in the text string.
 
     tba         (Still under development, more to be announced)
 
@@ -214,12 +214,12 @@ Draw a box windowing thingy and move cursor to its inside top left position.
     /H height   Total height of the box.
     /C          Centers the box horizontally and vertically.
     /T file ID  Look up ID in file and process it like command line options.
-    			Any additional options that follow this switch are used to
-    			populate %1-%9 variables in the text string.
+                Any additional options that follow this switch are used to
+                populate %1-%9 variables in the text string.
     style       Box styles are Single, Double, SingleSides, DoubleSides
                 and Hidden.
     shadow      Add a 3D style shadow.
-    textbox		Draw a textbox style frame with a little padding and margins.
+    textbox     Draw a textbox style frame with a little padding and margins.
 
 -------------------------------------------------------------------------------
 
@@ -385,15 +385,15 @@ vstr [options]
 Simple String processing utility. Outputs results to STDOUT.
 
     /N          Do not write a CRLF when done.
-    /U			Input Filter: Convert to upper case.
-    /D			Input Filter: Convert to lower case.
-    /B			Input Filter: Ignore blank lines.
+    /U          Input Filter: Convert to upper case.
+    /D          Input Filter: Convert to lower case.
+    /B          Input Filter: Ignore blank lines.
     /C code     Write an ASCII character code.
     /R times    Repeat the next write times number of times. (1-65535)
     /L line     Return only this line from standard input. (0-65535)
                 (Note: vline /L TOTAL will return the total number of lines.)
-	/S s1 s2	Search and replace all occurrences of s1 with s2.
-    /F s1 s2 	Set delimiter to s1 and only return field position or range s2.
+    /S s1 s2    Search and replace all occurrences of s1 with s2.
+    /F s1 s2    Set delimiter to s1 and only return field position or range s2.
 
    tba         (Still under development, more to be announced)
 
