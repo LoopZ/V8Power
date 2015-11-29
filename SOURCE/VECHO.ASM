@@ -43,7 +43,19 @@ NoSwitch:
 .SwitchLoop:
     push    cx
     push    di
-    WriteStr    di
+    mov     al, [Squeeze]
+    cmp     al, 1
+    jne     .NoSpace
+    mov     al, [SqueezeFlag]
+    cmp     al, 1
+    jne      .NoSpace
+    push      di
+    WriteChar 0x20
+    pop       di
+.NoSpace:
+    WriteStr  di
+    mov     al, 1
+    mov     [SqueezeFlag], al
     pop     di
     pop     cx
     loop    .SwitchLoop
@@ -55,6 +67,22 @@ SwitchN:
     mov         al, 1
     mov         [NoNewLine], al
     ret
+
+SwitchS:
+    mov         al, [di]
+    mov         ah, 0
+    cmp         al, '-'
+    je          .SetSqueeze
+    mov         ah, 1
+    cmp         al, '+'
+    jne         .Error
+.SetSqueeze:
+    mov         [Squeeze], ah
+    ret
+.Error:
+    WriteStr    CommandLineErrorMsg
+	Terminate   100
+
 
 SwitchC:
     NumberParam
@@ -138,6 +166,7 @@ CommandLineSwitches:
     SwitchData  'X', 1, SwitchX
     SwitchData  'T', 1, SwitchT
     SwitchData  'P', 0, SwitchP
+    SwitchData  'S', 1, SwitchS
     LocalSwitchData
     HelpSwitchData
     SwitchData  0,  0, 0
@@ -149,5 +178,8 @@ Repeat:
     dw 1
 NoNewLine:
     db 0
-
+Squeeze:
+    db 1
+SqueezeFlag:
+    db 0
 

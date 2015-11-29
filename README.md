@@ -143,6 +143,8 @@ Output text to display.
 <b><i>color</i></b> (or <b><i>value</i></b>).</td></tr>
 <tr><td><b>/N</td><td>Do not write a CRLF when done.</td></tr>
 <tr><td><b>/P</td><td>Perform a CRLF now.</td></tr>
+<tr><td><b>/S +</td><td>Insert a space character between parameters. <b>(default)</b></td></tr>
+<tr><td><b>/S -</td><td>Do not add space character between multiple parameters.</td></tr>
 <tr><td><b>/C <i>code</i></b></td><td>Write an ASCII character
 <b><i>code</i></b>.</td></tr>
 <tr><td><b>/R <i>times</i></b></td><td>Repeat the next write <b><i>times</i></b> number of times. (1-65535)</td></tr>

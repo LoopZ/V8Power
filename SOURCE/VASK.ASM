@@ -13,37 +13,41 @@
 ;	You should have received a copy of the GNU General Public License along
 ;	with this program; if not, write to the Free Software Foundation, Inc.,
 ;	51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
-    
-; NASM for DOS 
+
+; NASM for DOS
 
 %include "COMMON.INC"
 
-;	PlaceHolder 
+    FrameBounds
 
     CommandLineParser       ; insert code for command line parsing
 
     Terminate 0
-    
+
 NoSwitch:
     LookupParam OptionsTable
     cmp         ax, 0xffff
     je	        .NotOption
-	jmp			ax	    
+	jmp			ax
 
 .NotOption:
 	NumberParam
 	; do something with ax
-	
+
 .InvalidOption:
 	WriteStr	CommandLineErrorMsg
 	Terminate	100
 
+    LocalSwitchHandlers
+    ColorSwitchHandlers
 	HelpSwitchHandler
-    
+
 CommandLineSwitches:
-	SwitchData  0,  0, NoSwitch  
+	SwitchData  0,  0, NoSwitch
+    ColorSwitchData
  	HelpSwitchData
+    LocalSwitchData
     SwitchData  0,  0, 0
-    
+
 OptionsTable:
 	TableEnd
