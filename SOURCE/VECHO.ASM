@@ -151,6 +151,8 @@ SwitchT:
 
 SwitchP:
     WriteStr    CRLFString
+    mov         al, 0
+    mov         [SqueezeFlag], al
     ret
 
     HelpSwitchHandler
