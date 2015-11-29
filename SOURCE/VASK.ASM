@@ -20,6 +20,8 @@
 
     FrameBounds
 
+MainParsing:
+
     CommandLineParser       ; insert code for command line parsing
 
     Terminate 0
@@ -37,6 +39,11 @@ NoSwitch:
 .InvalidOption:
 	WriteStr	CommandLineErrorMsg
 	Terminate	100
+
+%include "TRANSLAT.INC"
+
+SwitchT:
+    Translator MainParsing
 
     LocalSwitchHandlers
     ColorSwitchHandlers
