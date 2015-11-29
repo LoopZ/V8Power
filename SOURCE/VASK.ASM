@@ -24,6 +24,25 @@ MainParsing:
 
     CommandLineParser       ; insert code for command line parsing
 
+    mov     cx, [WindMax]
+    mov     bx, [WindMin]
+    add     bh, dh
+    add     bl, dl
+    mov     ch, bh
+    mov     [WindMax], cx
+    mov     [WindMin], bx
+
+    mov     al, [Width]
+    cmp     al, 0
+    jg      WidthKnown
+
+    mov     al, cl
+    sub     al, bl
+    inc     al
+
+WidthKnown:
+    xor     ah, ah
+    WriteInt ax
     Terminate 0
 
 NoSwitch:

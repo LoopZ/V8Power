@@ -159,15 +159,15 @@ Output text to display.
     /F color    Set the forground text attribute to color (or a value).
     /N          Do not write a CRLF when done.
     /P          Perform a CRLF now.
-    /S +        Insert a space character between parameters. (default)
+    /S +        Insert a space character between parameters. (DEFAULT)
     /S -        Do not add space character between multiple parameters.
     /C code     Write an ASCII character code.
     /R times    Repeat the next write times number of times. (1-65535)
     /I          Write text that may waiting from the STDIN device.
-    /G          Write text ignoring all framing.
+    /G          Write text globally and ignore all framing.
     /L          Write text locally with regards to framing. (DEFAULT)
     /X code     Erase rest of line using ascii code, but don't move the cursor.
-    /E          Same as using "/X 0x20".
+    /E          Same as using "/X 0x20" or "/X32".
     /T file ID  Look up ID in file and process it like command line options.
                 Any additional options that follow this switch are used to
                 populate %1-%9 variables in the text string.
