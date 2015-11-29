@@ -397,7 +397,7 @@ Simple String processing utility. Outputs results to STDOUT.
     /S s1 s2    Search and replace all occurrences of s1 with s2.
     /F s1 s2    Set delimiter to s1 and only return field position or range s2.
 
-   tba         (Still under development, more to be announced)
+    tba         (Still under development, more to be announced)
 
 -------------------------------------------------------------------------------
 
@@ -437,15 +437,28 @@ File and directory utility.
                 STDOUT. The drive and path must exist.
                 Example: "vfdutil /u C:\TEMP\TEST????.$$$"
 
-TBA
+    tba         (Still under development, more to be announced)
 
 -------------------------------------------------------------------------------
 
 vask
 
-Text input prompt.
+Prompt for text input.
 
-TBA
+	[none]		Use detected settings for input.
+	[text]		Preset edited text.
+    /A n        Set text attribute to n.
+    /B color    Set the background text attribute to color (or a value).
+    /F color    Set the forground text attribute to color (or a value).
+    /G          Input text globally and ignore all framing.
+    /L          Input text locally with regards to framing. (DEFAULT)
+    /W width    Override default width of the bar.
+                (default is from cursor to end of line)
+    /T file ID  Look up ID in file and process it like command line options.
+                Any additional options that follow this switch are used to
+                populate %1-%9 variables in the text string.
+
+    tba         (Still under development, more to be announced)
 
 -------------------------------------------------------------------------------
 
