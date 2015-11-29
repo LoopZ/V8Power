@@ -5,7 +5,7 @@ if not "%1" == "" goto %1
 if "%1" == "" call mkClean.bat
 if not exist BIN mkdir BIN
 
-echo V8 Power!
+echo V8Power Tools for DOS!
 
 :vcls
 set VSTAGE=vcls
