@@ -202,6 +202,14 @@ GotoXYProc:
     call        WriteCharProc
 %endmacro
 
+%imacro WriteCRLF 0
+    jmp         %%Over
+%%CRLFString:
+    db  CRLF,0
+%%Over:
+    WriteStr    %%CRLFString
+%endmacro
+
 ; Write a ASCIIZ String and display control codes as characters
 %imacro WriteRawStr 1
     mov         si, %1
@@ -294,6 +302,62 @@ GotoXYProc:
 		push        bx
 		push        cx
 		WriteChar   0x0A
+		pop         cx
+		pop         bx
+		pop         ax
+		loop        %%IsJustRight
+		jmp         %%WriteIntDone
+	%%WayTooBig:
+		inc         cx
+		xor         dx, dx
+		div         bx
+		push        dx
+		jmp         %%WriteIntLoop
+	%%WriteIntDone:
+		ret
+	%%Done:
+	%endif
+%endmacro
+
+; Write Word in AX
+%imacro WriteIntSys 1
+    mov         ax, %1
+	call		WriteIntNAProc
+	%ifndef WriteIntNAProc_Declared
+		%idefine 	WriteIntNAProc_Declared
+		jmp			%%Done
+	WriteIntNAProc:
+		mov         bx, 0x000A
+		mov         cx, 0x0001
+	%%WriteIntLoop:
+		cmp         ax, bx
+		jge         %%WayTooBig
+		push        ax
+	%%IsJustRight:
+		pop         ax
+		add         ax, 0x0030
+		push        ax
+		push        bx
+		push        cx
+
+    	push		ax
+        mov         ah, 0x0A
+        mov         bh, [VideoPage]
+        mov         bl, [TextAttr]
+        mov         cx, 0x0001
+        int         0x10
+        WhereXY
+        inc         dl
+        mov         bl, [WindMin]
+        mov         cl, [WindMax]
+        sub         cl, bl
+        cmp         cl, dl
+        jae         %%CanMove
+        dec         dl
+%%CanMove:
+        GotoXY      dx
+        pop			ax
+
 		pop         cx
 		pop         bx
 		pop         ax
