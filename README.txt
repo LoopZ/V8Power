@@ -159,8 +159,8 @@ Output text to display.
     /F color    Set the forground text attribute to color (or a value).
     /N          Do not write a CRLF when done.
     /P          Perform a CRLF now.
-    /S +		Insert a space character between parameters. (default)
-    /S -		Do not add space character between multiple parameters.
+    /S +        Insert a space character between parameters. (default)
+    /S -        Do not add space character between multiple parameters.
     /C code     Write an ASCII character code.
     /R times    Repeat the next write times number of times. (1-65535)
     /I          Write text that may waiting from the STDIN device.
