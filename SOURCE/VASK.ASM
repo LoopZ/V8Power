@@ -35,10 +35,28 @@ NoSwitch:
 .NotOption:
 	NumberParam
 	; do something with ax
+	ret
 
-.InvalidOption:
-	WriteStr	CommandLineErrorMsg
-	Terminate	100
+SwitchW:
+    NumberParam
+    cmp     ax, 5
+    jl      SwitchError
+    cmp     ax, 0x00ff
+    jg      SwitchError
+    push    ax
+    WhereXY
+    pop     ax
+    mov     cl, [WindMaxX]
+    mov     ch, [WindMinX]
+    sub     cl, ch
+    sub     cl, dl
+    inc     cl
+    xor     ah, ah
+    xor     ch, ch
+    cmp     ax, cx
+    jg      SwitchError
+    mov     [Width], al
+    ret
 
 %include "TRANSLAT.INC"
 
@@ -54,7 +72,11 @@ CommandLineSwitches:
     ColorSwitchData
  	HelpSwitchData
     LocalSwitchData
+    SwitchData 'W', 1, SwitchW
     SwitchData  0,  0, 0
 
 OptionsTable:
 	TableEnd
+
+Width:
+    db 0

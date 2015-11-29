@@ -644,7 +644,7 @@ GotoXYProc:
     inc         dh
     lodsb
     cmp         al, 0x0d
-    je          %%Error
+    je          SwitchError
     cmp         al, ah
     jne         %%QuoteLoop
     jmp         %%Loop
@@ -706,7 +706,7 @@ GotoXYProc:
     mov         di, si
     lodsb
     cmp         al, SwitchChar
-    jl          %%Error
+    jl          SwitchError
     cmp         al, 0x61
     jl          %%CaseOK
     cmp         al, 0x7a
@@ -718,7 +718,7 @@ GotoXYProc:
     add         bx, 4
     mov         cx, [bx]
     cmp         cl, 0
-    je          %%Error
+    je          SwitchError
     cmp         cl, al
     jne         %%Lookup
     mov         dx, [bx + 2]
@@ -739,12 +739,12 @@ GotoXYProc:
     mov         dl, al
     mov         di, si
     jmp         %%Loop
-%%Error:
+SwitchError:
     WriteStr    CommandLineErrorMsg
     Terminate   100
 %%Done:
     cmp         bx, 0
-    jne         %%Error
+    jne         SwitchError
 %endmacro
 
 %imacro NumberParamProc 0
@@ -801,13 +801,10 @@ GotoXYProc:
 	%%DoAsHex:
 		xor         ax, ax
 		cmp         cx, 0
-		je          %%BadHex
+		je          SwitchError
 		; cmp         cx, 4
 		; jle         %%MakeHex
 		jmp         %%MakeHex
-	%%BadHex:
-		WriteStr    CommandLineErrorMsg
-		Terminate   100
 	%%MakeHex:
 		push        cx
 		mov         cl, 4
@@ -816,23 +813,23 @@ GotoXYProc:
 		mov         bl, [di]
 		inc         di
 		cmp         bl, 0x30
-		jl          %%BadHex
+		jl          SwitchError
 		cmp         bl, 0x39
 		jg          %%NotNumber
 		sub         bl, 0x30
 		jmp         %%Adjusted
 	%%NotNumber:
 		cmp         bl, 0x41
-		jl          %%BadHex
+		jl          SwitchError
 		cmp         bl, 0x46 ; 5a is Z
 		jg          %%NotUpper
 		sub         bl, 0x37
 		jmp         %%Adjusted
 	%%NotUpper:
 		cmp         bl, 0x61
-		jl          %%BadHex
+		jl          SwitchError
 		cmp         bl, 0x66 ; 7a is z
-		jg          %%BadHex
+		jg          SwitchError
 		sub         bl, 0x57
 	%%Adjusted:
 		xor         bh, bh

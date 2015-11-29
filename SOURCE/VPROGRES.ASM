@@ -14,18 +14,16 @@
 ;   with this program; if not, write to the Free Software Foundation, Inc.,
 ;   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-; NASM for DOS 
+; NASM for DOS
 
 %include "COMMON.INC"
 
     FrameBounds
-    
+
     CommandLineParser       ; insert code for command line parsing
-    jmp Over
-    WriteInt ax
-Over:
+
     WhereXY
-    
+
     mov     cx, [WindMax]
     mov     bx, [WindMin]
     add     bh, dh
@@ -41,8 +39,8 @@ Over:
     mov     al, cl
     sub     al, bl
     inc     al
-    
-WidthKnown: 
+
+WidthKnown:
     mov     ah, [Position]
     cmp     ah, 0
     je      .NoNumberPad
@@ -65,7 +63,7 @@ WidthKnown:
     cmp     al, 1
     jne     .NotLeftNumber
     call    WriteNumber
-    call    WritePadding    
+    call    WritePadding
     mov     dx, 0x0005
     GotoXY  dx
 .NotLeftNumber:
@@ -79,7 +77,7 @@ WidthKnown:
     div     cx
     mov     [Partial], dl
     mov     cl, [Width]
-    xor     ch, ch  
+    xor     ch, ch
     cmp     ax, cx
     jl      .WriteBar
     mov     ax, cx
@@ -117,8 +115,8 @@ WidthKnown:
     mov         al, 0xb1
     mov         bh, [VideoPage]
     mov         bl, [TextAttr]
-    int         0x10    
-.NoPartial:    
+    int         0x10
+.NoPartial:
     mov         al, [Used]
     xor         dx, dx
     mov         dl, al
@@ -137,14 +135,14 @@ WidthKnown:
     mov         bh, [VideoPage]
     mov         bl, [TextAttr]
     and         bl, 0x77
-    int         0x10    
+    int         0x10
     mov         al, [Position]
     cmp         al, 3
     jne         .NotRight
     xor         dx, dx
     mov         dl, [Width]
     push        dx
-    GotoXY      dx    
+    GotoXY      dx
     call        WritePadding
     pop         dx
     add         dx, cx
@@ -161,17 +159,17 @@ WidthKnown:
     shr         al, 1
     dec         al
     GotoXY      ax
-    xor         ah, ah  
+    xor         ah, ah
     mov         al, [Percent]
     WriteIntNoAttr ax
     mov         al, '%'
     WriteChar   0x0a
-    
+
 Done:
     xor         dx, dx
     GotoXY      dx
-    Terminate 0
-    
+    Terminate   0
+
 WritePadding:
     mov     cx, 0x0001
     xor     ah, ah
@@ -191,7 +189,7 @@ WritePadding:
     int         0x10
     pop         cx
     ret
-    
+
 WriteNumber:
     xor         ah, ah
     mov         al, [Percent]
@@ -208,7 +206,7 @@ WriteNumber:
     GotoNextXY
 .Done:
     ret
-    
+
 
 NoSwitch:
     LookupParam OptionTable
@@ -216,17 +214,18 @@ NoSwitch:
     je      .NotOption
     mov     [Position], al
     ret
+
 .NotOption:
     NumberParam
     mov     [Percent], al
     ret
-    
+
 SwitchW:
     NumberParam
     cmp     ax, 5
-    jl      .Error
+    jl      SwitchError
     cmp     ax, 0x00ff
-    jg      .Error
+    jg      SwitchError
     push    ax
     WhereXY
     pop     ax
@@ -238,19 +237,15 @@ SwitchW:
     xor     ah, ah
     xor     ch, ch
     cmp     ax, cx
-    jg      .Error
+    jg      SwitchError
     mov     [Width], al
     ret
-.Error:
-    WriteStr    CommandLineErrorMsg
-    Terminate   100
 
     ColorSwitchHandlers
-    
     HelpSwitchHandler
 
 CommandLineSwitches:
-    SwitchData  0,  0, NoSwitch  
+    SwitchData  0,  0, NoSwitch
     ColorSwitchData
     SwitchData 'W', 1, SwitchW
     HelpSwitchData
@@ -264,7 +259,7 @@ OptionTable:
     TableEnd
 
 Width:
-    db 0    
+    db 0
 Position:
     db 2
 Percent:
