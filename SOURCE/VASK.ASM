@@ -101,14 +101,17 @@ InputLoop:
 .TextDisplay:
     ; Draw the editing text
     lodsb
+;    cmp         al, 0
+;    jz          .TextEnd
     cmp         al, 0
-    jz          .TextEnd
-    mov         ah, [si]
-    cmp         ah, 0
     je          .NoCap
     cmp         cl, 1
     je          .EndCap
 .NoCap:
+    cmp         al, 0
+    jne         .NoSpace
+    mov         al, 0x20
+.NoSpace:
     call        .CharDisplay
     loop        .TextDisplay
     ; End of width, but not end of Text
