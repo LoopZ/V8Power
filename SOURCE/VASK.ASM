@@ -67,9 +67,17 @@ PrepWindow:
 .WidthDone:
     mov         cx, [TimeOut]
     cmp         cx, 0x0000
-    je          KeyEnd
+    je          .ValidWidth
     call        ShowTimeOut
-    jmp         KeyEnd
+.ValidWidth:
+    mov         al, [Width]
+    mov         ah, [Max]
+    inc         ah
+    cmp         al, ah
+    jbe         KeyEnd
+    dec         al
+    mov         [Width], al
+    jmp         .ValidWidth
 
 InputLoop:
     ; Draw the timeout number if used. Timeout, adjusts width if needed.
@@ -101,8 +109,6 @@ InputLoop:
 .TextDisplay:
     ; Draw the editing text
     lodsb
-;    cmp         al, 0
-;    jz          .TextEnd
     cmp         al, 0
     je          .NoCap
     cmp         cl, 1
