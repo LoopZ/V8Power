@@ -396,6 +396,7 @@ KeyCtrlC:
     jmp         InputLoop
 
 DataReset:
+    call    MoveHome
     mov     di, TextBuffer
     mov     si, 0x0081
 .Clone:
@@ -403,6 +404,7 @@ DataReset:
     stosb
     cmp     si, 0x0100
     jne     .Clone
+    call    MoveEnd
     ret
 
 ScrollLeft:
@@ -420,7 +422,7 @@ ScrollRight:
     mov     cl, [Max]
     sub     cl, bl
     cmp     al, cl
-    jae     .Ignore
+    ja      .Ignore
     xor     bh, bh
     add     bl, al
     dec     bl
@@ -454,7 +456,7 @@ MoveRight:
     mov     cl, [Max]
     sub     cl, bl
     cmp     al, cl
-    jae     .OnlyMove
+    ja      .OnlyMove
     xor     bh, bh
     add     bl, al
     dec     bl
