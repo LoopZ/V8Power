@@ -246,13 +246,52 @@ KeyTable:
     dw      0x0000
 
 KeyNormal:
-    jmp     InputLoop
+    push    cx
+    WhereXY
+    pop     ax
+    mov     bx, TextBuffer
+    mov     cl, [Max]
+    add     bl, cl
+    dec     bl
+    mov     cl, [bx]
+    cmp     cl, 0
+    jne     InputLoop
+    mov     bx, TextBuffer
+    mov     cl, [Start]
+    add     bl, cl
+    add     bl, dl
+    mov     ah, [Insert]
+    cmp     ah, 0
+    je      .Overtype
+.Overtype:
+    mov     [bx], al
+    jmp     KeyRight
 
 KeyBackSpace:
-    jmp     InputLoop
+    WhereXY
+    mov     cl, [Start]
+    add     dl, cl
+    cmp     dl, 0
+    je      InputLoop
+    call    MoveLeft
+    jmp     KeyDelete
 
 KeyDelete:
-    jmp     InputLoop
+    WhereXY
+    mov     bx, TextBuffer
+    mov     cl, [Start]
+    add     bl, cl
+    add     bl, dl
+    cld
+    mov     di, bx
+    mov     si, bx
+    lodsb
+.Removing:
+    cmp     si, TextEnd
+    je      InputLoop
+    lodsb
+    stosb
+    jmp     .Removing
 
 KeyLeft:
     call    MoveLeft
@@ -674,6 +713,7 @@ TextEnd:       db 0
 
 ExitFlag:      dw 0x0000
 EndCaps:       dw 0x1011
+Insert:        db 1
 PswdChar:      db '*'
 TimeOut:       dw 0
 ControlC:      db 0
