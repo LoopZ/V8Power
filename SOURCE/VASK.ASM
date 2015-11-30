@@ -121,7 +121,6 @@ InputLoop:
     call        .CharDisplay
     loop        .TextDisplay
     ; End of width, but not end of Text
-
     jmp         .WidthEnd
 .EndCap:
     mov         al, [EndCaps + 1]
@@ -246,11 +245,37 @@ KeyRight:
     jmp     InputLoop
 
 KeyUp:
+    WhereXY
+    mov     bl, [Width]
+    dec     bl
+    cmp     bl, dl
+    jbe     .DontShift
+    mov     al, [Start]
+    push    ax
     call    ScrollLeft
+    pop     ax
+    mov     ah, [Start]
+    cmp     al, ah
+    je      .DontShift
+    jmp     InputLoop
+.DontShift:
+    call    MoveLeft
     jmp     InputLoop
 
 KeyDown:
+    WhereXY
+    cmp     dl, 0
+    je      .DontShift
+    mov     al, [Start]
+    push    ax
     call    ScrollRight
+    pop     ax
+    mov     ah, [Start]
+    cmp     al, ah
+    je      .DontShift
+    jmp     InputLoop
+.DontShift:
+    call    MoveRight
     jmp     InputLoop
 
 KeyHome:
@@ -271,9 +296,29 @@ KeyEscape:
     jmp     KeyEnd
 
 KeyPgUp:
+    mov     cl, [Width]
+    cmp     cl, 2
+    jna     InputLoop
+    xor     ch, ch
+    sub     cx, 2
+.Moving:
+    push    cx
+    call    MoveLeft
+    pop     cx
+    loop    .Moving
     jmp     InputLoop
 
 KeyPgDown:
+    mov     cl, [Width]
+    cmp     cl, 2
+    jna     InputLoop
+    xor     ch, ch
+    sub     cx, 2
+.Moving:
+    push    cx
+    call    MoveRight
+    pop     cx
+    loop    .Moving
     jmp     InputLoop
 
 KeyReturn:
@@ -295,9 +340,10 @@ DataReset:
 ScrollLeft:
     mov     al, [Start]
     cmp     al, 0
-    je      InputLoop
+    je      .Ignore
     dec     al
     mov     [Start], al
+.Ignore:
     ret
 
 ScrollRight:
@@ -306,15 +352,16 @@ ScrollRight:
     mov     cl, [Max]
     sub     cl, bl
     cmp     al, cl
-    jae     InputLoop
+    jae     .Ignore
     xor     bh, bh
     add     bl, al
     dec     bl
     mov     ah, [TextBuffer + bx]
     cmp     ah, 0
-    je      InputLoop
+    je      .Ignore
     inc     al
     mov     [Start], al
+.Ignore:
     ret
 
 MoveLeft:
@@ -356,6 +403,13 @@ MoveRight:
     mov     bl, [Width]
     cmp     dl, bl
     jnb     .DontMove
+    xor     bh, bh
+    mov     bl, [Start]
+    add     bl, dl
+    dec     bl
+    mov     al, [bx + TextBuffer]
+    cmp     al, 0
+    je      .DontMove
     GotoXY  dx
 .DontMove:
     ret
