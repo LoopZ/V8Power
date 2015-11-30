@@ -118,6 +118,13 @@ InputLoop:
     jne         .NoSpace
     mov         al, 0x20
 .NoSpace:
+    mov         ah, [PswdMode]
+    cmp         ah, 0
+    je          .NoPassword
+    cmp         al, 0x20
+    je          .NoPassword
+    mov         al, [PswdChar]
+.NoPassword:
     call        .CharDisplay
     loop        .TextDisplay
     ; End of width, but not end of Text
@@ -137,7 +144,12 @@ InputLoop:
     GotoXY      dx
     call        EditCursor
     pop         cx
-    jmp         KeyBoardLoop
+    mov         ax, [ExitFlag]
+    cmp         ah, 0
+    je          KeyBoardLoop
+
+    Terminate   al
+
 .CharDisplay:
     push        ax
     GotoXY      dx
@@ -236,6 +248,12 @@ KeyTable:
 KeyNormal:
     jmp     InputLoop
 
+KeyBackSpace:
+    jmp     InputLoop
+
+KeyDelete:
+    jmp     InputLoop
+
 KeyLeft:
     call    MoveLeft
     jmp     InputLoop
@@ -286,11 +304,6 @@ KeyEnd:
     call    MoveEnd
     jmp     InputLoop
 
-KeyBackSpace:
-    jmp     InputLoop
-KeyDelete:
-    jmp     InputLoop
-
 KeyEscape:
     call    DataReset
     jmp     KeyEnd
@@ -322,10 +335,18 @@ KeyPgDown:
     jmp     InputLoop
 
 KeyReturn:
-    Terminate 0
+    mov         ax, 0x0100
+    mov         [ExitFlag], ax
+    jmp         InputLoop
 
 KeyCtrlC:
-    Terminate   200
+    mov         al, [ControlC]
+    cmp         al, 0
+    je          InputLoop
+    call        DataReset
+    mov         ax, 0x01c8
+    mov         [ExitFlag], ax
+    jmp         InputLoop
 
 DataReset:
     mov     di, TextBuffer
@@ -435,7 +456,10 @@ MoveEnd:
     ret
 
 TimedOut:
-    Terminate 1
+    call        DataReset
+    mov         ax, 0x0101
+    mov         [ExitFlag], ax
+    jmp         InputLoop
 
 HideCursor:
     push        dx
@@ -611,6 +635,16 @@ SwitchM:
     mov     [Max], ax
     ret
 
+SwitchC:
+    mov     al, 1
+    mov     [ControlC], al
+    ret
+
+SwitchP:
+    mov     al, 1
+    mov     [PswdMode], al
+    ret
+
 %include "TRANSLAT.INC"
 
 SwitchT:
@@ -628,6 +662,8 @@ CommandLineSwitches:
     SwitchData 'W', 1, SwitchW
     SwitchData 'D', 1, SwitchD
     SwitchData 'M', 1, SwitchM
+    SwitchData 'C', 0, SwitchC
+    SwitchData 'P', 0, SwitchP
     SwitchData  0,  0, 0
 
 OptionsTable:
@@ -636,9 +672,12 @@ OptionsTable:
 TextBuffer:    times 0x0100 - 0x0081 db 0
 TextEnd:       db 0
 
+ExitFlag:      dw 0x0000
 EndCaps:       dw 0x1011
+PswdChar:      db '*'
 TimeOut:       dw 0
-ControlC:      db 1
+ControlC:      db 0
+PswdMode:      db 0
 EditMode:      dw 0
 Start:         db 0
 Width:         db 0

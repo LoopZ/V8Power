@@ -452,11 +452,15 @@ Prompt for text input.
     /F color    Set the forground text attribute to color (or a value).
     /G          Input text globally and ignore all framing.
     /L          Input text locally with regards to framing. (DEFAULT)
+    /C          When specified and Control-C is pressed, will exit with
+                errorlevel of 200 and return the default value.
     /W width    Override default width of the bar.
                 (default is from cursor to end of line)
     /T file ID  Look up ID in file and process it like command line options.
                 Any additional options that follow this switch are used to
                 populate %1-%9 variables in the text string.
+    /D seconds  Delay in seconds to wait before the prompt times-out and
+    			returns the initial default value. (returns errorlevel 1)
 
     tba         (Still under development, more to be announced)
 
