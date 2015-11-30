@@ -58,12 +58,14 @@ PrepWindow:
 
     mov     al, [Width]
     cmp     al, 0
-    ja      InputLoop
+    ja      .WidthDone
 
     mov     al, cl
     sub     al, bl
     inc     al
     mov     [Width], al
+.WidthDone:
+    jmp     KeyEnd
 
 InputLoop:
     ; Draw the timeout number if used. Timeout, adjusts width if needed.
@@ -220,13 +222,21 @@ KeyTable:
     dw      0x0000
 
 KeyNormal:
+    jmp     InputLoop
 KeyLeft:
+    jmp     InputLoop
 KeyRight:
+    jmp     InputLoop
 KeyUp:
+    jmp     InputLoop
 KeyDown:
+    jmp     InputLoop
 KeyHome:
+    jmp     InputLoop
 KeyEnd:
+    jmp     InputLoop
 KeyBackSpace:
+    jmp     InputLoop
 KeyDelete:
     jmp     InputLoop
 
