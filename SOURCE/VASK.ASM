@@ -43,19 +43,70 @@ MainParsing:
     mov     [Width], al
 
 InputLoop:
-
+    ; Draw the timeout number if used. Timeout, adjusts width if needed.
+    mov         cx, [TimeOut]
+    push        cx
+    cmp         cx, 0x0000
+    je          .NoTimeOut
+    call        ShowTimeOut
+ .NoTimeOut:
+    ; Put cursor back and prepare to draw edit text.
     call        HideCursor
     WhereXY
     push        dx
     mov         dl, 0
-    GotoXY      dx
-    WriteRawStr TextBuffer
+    mov         ch, dl
+    mov         bh, dl
+    mov         cl, [Width]
+    cld
+    mov         si, TextBuffer
+    mov         bl, [Start]
+    add         si, bx
+    mov         al, [Max]
+
+.TextDisplay:
+    ; Draw the editing text
+    lodsb
+    cmp         al, 0
+    jz          .TextEnd
+    call        .CharDisplay
+    loop        .TextDisplay
+    ; End of width, but not end of Text
+
+    jmp         .WidthEnd
+.TextEnd:
+    ; Fill remander with spaces
+    mov         al, 0x20
+    call        .CharDisplay
+    loop        .TextEnd
+.WidthEnd:
+    ; Put cursor back to it's previous size and shape
     pop         dx
     GotoXY      dx
     call        EditCursor
+    pop         cx
+    jmp         KeyBoardLoop
+.CharDisplay:
+    push        ax
+    GotoXY      dx
+    pop         ax
+    push        ax
+    push        bx
+    push        cx
+    push        dx
+    mov         ah, 0x09
+    mov         bh, [VideoPage]
+    mov         bl, [TextAttr]
+    mov         cx, 0x0001
+    int         0x10
+    pop         dx
+    inc         dl
+    pop         cx
+    pop         bx
+    pop         ax
+    ret
 
 KeyBoardLoop:
-    mov         cx, [TimeOut]
     push        es
     mov         bx, 0x0040
     mov         es, bx
@@ -85,21 +136,98 @@ KeyBoardLoop:
     mov         ax, 0x0000
     int         0x16
 
-    push		ax
-    mov			ah, [ControlC]
-    cmp			ax, 0x0103
-    pop			ax
-    je			ControlCQuit
-
+    mov         cx, ax
+    cld
+    mov         si, KeyTable
+.Lookup:
+    lodsw
+    cmp         ax, 0
+;    je          KeyDisplay
+    je          KeyNormal
+    mov         dx, ax
+    lodsw
+    cmp         dx, cx
+    jne         .Lookup
+    call        ax
     jmp         InputLoop
 
+;KeyDisplay:
+;    push        cx
+;    mov         ax, 0x0600
+;    mov         bh, [TextAttr]
+;    mov         cx, [WindMin]
+;    mov         dx, [WindMax]
+;    int         0x10
+;    xor         dx, dx
+;    GotoXY      dx
+;    pop         ax
+;    StdOutHexWord
+;    Terminate   0
+
+KeyTable:
+    dw      0x2e03, KeyCtrlC
+    dw      0x1c0d, KeyReturn
+    dw      0x1c0a, KeyReturn   ; Ctrl+Return
+    dw      0x4b00, KeyLeft
+    dw      0x4d00, KeyRight
+    dw      0x4800, KeyUp
+    dw      0x5000, KeyDown
+    dw      0x4700, KeyHome
+    dw      0x4f00, KeyEnd
+    dw      0x4900, KeyPgUp
+    dw      0x5100, KeyPgDown
+    dw      0x0e08, KeyBackSpace
+    dw      0x5300, KeyDelete
+    dw      0x011b, KeyEscape
+    dw      0x0000
+
+KeyNormal:
+KeyLeft:
+KeyRight:
+KeyUp:
+KeyDown:
+KeyHome:
+KeyEnd:
+KeyBackSpace:
+KeyDelete:
+KeyEscape:
+    jmp     InputLoop
+
+KeyPgUp:
+ScrollLeft:
+    mov     al, [Start]
+    cmp     al, 0
+    je      InputLoop
+    dec     al
+    mov     [Start], al
+    jmp     InputLoop
+
+KeyPgDown:
+ScrollRight:
+    mov     al, [Start]
+    mov     bl, [Width]
+    mov     cl, [Max]
+    sub     cl, bl
+    cmp     al, cl
+    jae     InputLoop
+    xor     bh, bh
+    add     bl, al
+    dec     bl
+    mov     ah, [TextBuffer + bx]
+    cmp     ah, 0
+    je      InputLoop
+    inc     al
+    mov     [Start], al
+    jmp     InputLoop
+
+KeyReturn:
     Terminate 0
+
+KeyCtrlC:
+    Terminate   200
 
 TimedOut:
     Terminate 1
-
-ControlCQuit:
-    Terminate   200
 
 HideCursor:
     push        dx
@@ -154,8 +282,8 @@ ShowTimeOut:
     mov         cx, 200
     div         cx
 
-    mov         dx, [WindMax]
-    mov         bx, [WindMin]
+    mov         dl, [WindMax]
+    mov         bl, [WindMin]
     xor         dh, dh
     sub         dl, bl
     dec         dl
@@ -169,12 +297,16 @@ ShowTimeOut:
     jb         .SetPosition
     dec         dl
  .SetPosition:
+    mov         bh, [Width]
+    cmp         bh, dl
+    jb          .WidthOk
+    mov         [Width], dl
+.WidthOk:
     push        ax
     push        dx
     WhereXY
     pop         cx
     pop         ax
-
     push        dx
     push        ax
     GotoXY      cx
@@ -188,7 +320,6 @@ ShowTimeOut:
     pop         bx
     pop         cx
     ret
-
 
 NoSwitch:
     LookupParam OptionsTable
@@ -262,6 +393,15 @@ SwitchD:
     mov         [TimeOut], ax
     ret
 
+SwitchM:
+    NumberParam
+    mov     cx, TextEnd - TextBuffer
+    cmp     ax, cx
+    ja      SwitchError
+    cmp     ax, 0
+    je      SwitchError
+    mov     [Max], ax
+    ret
 
 %include "TRANSLAT.INC"
 
@@ -279,23 +419,19 @@ CommandLineSwitches:
     LocalSwitchData
     SwitchData 'W', 1, SwitchW
     SwitchData 'D', 1, SwitchD
+    SwitchData 'M', 1, SwitchM
     SwitchData  0,  0, 0
 
 OptionsTable:
 	TableEnd
 
-TextBuffer:
-    times 127 db 0
-TextEnd:
-    db 0
+TextBuffer:    times 127 db 0
+TextEnd:       db 0
 
-TimeOut:
-    dw 0
-ControlC:
-	db 1
-EditMode:
-    dw 0
-Width:
-    db 0
-Max:
-    db TextEnd - TextBuffer
+EndChars:      dw 0x1011
+TimeOut:       dw 0
+ControlC:      db 1
+EditMode:      dw 0
+Start:         db 0
+Width:         db 0
+Max:           db TextEnd - TextBuffer
