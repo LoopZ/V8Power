@@ -401,13 +401,33 @@ File and directory utility.
 The drive and path must exist.<br> Example: "vfdutil /u C:\TEMP\TEST????.$$$"</td></tr>
 </table>
 * * *
+#### vask ######
+Prompt for text input.
+<table>
+<tr><td width="125pt"></td><td>Use detected settings for input.</td></tr>
+<tr><td><b><i>text</i></b></td><td>Preset edited <b><i>text</i></b>.</td></tr>
+<tr><td><b>/A <i>n</i></b></td><td>Set text attribute to <b><i>n</i></b>.</td></tr>
+<tr><td><b>/B <i>color</i></b></td><td>Set the background text attribute to
+<b><i>color</i></b> (or <b><i>value</i></b>).</td></tr>
+<tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to
+<b><i>color</i></b> (or <b><i>value</i></b>).</td></tr>
+<tr><td><b>/G</td><td>Input text ignoring all framing.</td></tr>
+<tr><td><b>/L</td><td>Input text locally with regards to framing. <b>(DEFAULT)</b></td></tr>
+<tr><td><b>/C</td><td>When specified and Control-C is pressed, will exit with
+                errorlevel of 200 and return the default value.</td></tr>
+<tr><td><b>/T <i>file ID</i></b></td><td>Look up <b><i>ID</i></b> in <b><i>file</i></b>
+ and process it like command line options.<br>
+    			Any additional options that follow this switch are used to<br>
+    			populate <b><i>%1</i></b>-<b><i>%9</i></b> variables in the text string.
+</td></tr>
+<tr><td><b>/D <i>seconds</i></b></td><td>Delay in <b><i>seconds</i></b> to wait before the
+prompt times-out and returns the initial default value. (returns errorlevel 1)</td></tr>
+
+<tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
+</table>
+* * *
 #### vview ######
 Text file and license agreement viewer.
-
-TBA
-* * *
-#### vask ######
-Text input prompt.
 
 TBA
 * * *

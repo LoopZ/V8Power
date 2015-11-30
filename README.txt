@@ -445,8 +445,8 @@ vask
 
 Prompt for text input.
 
-	[none]		Use detected settings for input.
-	[text]		Preset edited text.
+    [none]      Use detected settings for input.
+    [text]      Preset edited text.
     /A n        Set text attribute to n.
     /B color    Set the background text attribute to color (or a value).
     /F color    Set the forground text attribute to color (or a value).
@@ -460,7 +460,7 @@ Prompt for text input.
                 Any additional options that follow this switch are used to
                 populate %1-%9 variables in the text string.
     /D seconds  Delay in seconds to wait before the prompt times-out and
-    			returns the initial default value. (returns errorlevel 1)
+                returns the initial default value. (returns errorlevel 1)
 
     tba         (Still under development, more to be announced)
 

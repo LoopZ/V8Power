@@ -147,7 +147,25 @@ InputLoop:
     mov         ax, [ExitFlag]
     cmp         ah, 0
     je          KeyBoardLoop
-
+    push        ax
+    xor         dx, dx
+    GotoXY      dx
+    mov         si, TextBuffer
+    cld
+.TextOut:
+    lodsb
+    cmp         al, 0
+    je          .TextDone
+	mov		    dl, al
+	mov		    ah, 0x02
+	int		    0x21
+	jmp         .TextOut
+.TextDone:
+	mov		    dl, 0x0d
+	int		    0x21
+	mov		    dl, 0x0a
+	int		    0x21
+    pop         ax
     Terminate   al
 
 .CharDisplay:
