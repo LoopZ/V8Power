@@ -24,6 +24,29 @@ MainParsing:
 
     CommandLineParser       ; insert code for command line parsing
 
+PrepData:
+    cld
+    ; Null extra buffer past Max input
+    mov     di, TextBuffer
+    mov     bl, [Max]
+    xor     bh, bh
+    add     di, bx
+    xor     al, al
+.Clean:
+    cmp     di, TextEnd
+    je      .CleanDone
+    stosb
+    jmp     .Clean
+.CleanDone:
+    mov     si, TextBuffer
+    mov     di, 0x0081
+.Clone:
+    lodsb
+    stosb
+    cmp     di, 0x0100
+    jne     .Clone
+
+PrepWindow:
     WhereXY
     mov     cx, [WindMax]
     mov     bx, [WindMin]
@@ -44,6 +67,7 @@ MainParsing:
 
 InputLoop:
     ; Draw the timeout number if used. Timeout, adjusts width if needed.
+    call        HideCursor
     mov         cx, [TimeOut]
     push        cx
     cmp         cx, 0x0000
@@ -51,7 +75,6 @@ InputLoop:
     call        ShowTimeOut
  .NoTimeOut:
     ; Put cursor back and prepare to draw edit text.
-    call        HideCursor
     WhereXY
     push        dx
     mov         dl, 0
@@ -62,17 +85,32 @@ InputLoop:
     mov         si, TextBuffer
     mov         bl, [Start]
     add         si, bx
-    mov         al, [Max]
-
+    ; If offset replace first char with end cap.
+    cmp         bl, 0
+    je          .TextDisplay
+    lodsb
+    dec         cl
+    mov         al, [EndCaps]
+    call        .CharDisplay
 .TextDisplay:
     ; Draw the editing text
     lodsb
     cmp         al, 0
     jz          .TextEnd
+    mov         ah, [si]
+    cmp         ah, 0
+    je          .NoCap
+    cmp         cl, 1
+    je          .EndCap
+.NoCap:
     call        .CharDisplay
     loop        .TextDisplay
     ; End of width, but not end of Text
 
+    jmp         .WidthEnd
+.EndCap:
+    mov         al, [EndCaps + 1]
+    call        .CharDisplay
     jmp         .WidthEnd
 .TextEnd:
     ; Fill remander with spaces
@@ -190,7 +228,16 @@ KeyHome:
 KeyEnd:
 KeyBackSpace:
 KeyDelete:
+    jmp     InputLoop
+
 KeyEscape:
+    mov     di, TextBuffer
+    mov     si, 0x0081
+.Clone:
+    lodsb
+    stosb
+    cmp     si, 0x0100
+    jne     .Clone
     jmp     InputLoop
 
 KeyPgUp:
@@ -425,10 +472,10 @@ CommandLineSwitches:
 OptionsTable:
 	TableEnd
 
-TextBuffer:    times 127 db 0
+TextBuffer:    times 0x0100 - 0x0081 db 0
 TextEnd:       db 0
 
-EndChars:      dw 0x1011
+EndCaps:       dw 0x1011
 TimeOut:       dw 0
 ControlC:      db 1
 EditMode:      dw 0
