@@ -254,15 +254,23 @@ KeyNormal:
     add     bl, cl
     dec     bl
     mov     cl, [bx]
+    mov     di, bx
     cmp     cl, 0
     jne     InputLoop
     mov     bx, TextBuffer
     mov     cl, [Start]
     add     bl, cl
     add     bl, dl
-    mov     ah, [Insert]
+    mov     ah, [EditMode]
     cmp     ah, 0
-    je      .Overtype
+    jne     .Overtype
+.Insert:
+    cmp     bx, di
+    jnb     .Overtype
+    dec     di
+    mov     ah, [di]
+    mov     [di+1], ah
+    jmp     .Insert
 .Overtype:
     mov     [bx], al
     jmp     KeyRight
@@ -713,12 +721,11 @@ TextEnd:       db 0
 
 ExitFlag:      dw 0x0000
 EndCaps:       dw 0x1011
-Insert:        db 1
 PswdChar:      db '*'
 TimeOut:       dw 0
 ControlC:      db 0
 PswdMode:      db 0
-EditMode:      dw 0
+EditMode:      dw 0 ; 0 insert mode, 1&2 overtype cursor size.
 Start:         db 0
 Width:         db 0
 Max:           db TextEnd - TextBuffer
