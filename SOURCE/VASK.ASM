@@ -223,24 +223,53 @@ KeyTable:
 
 KeyNormal:
     jmp     InputLoop
+
 KeyLeft:
+    call    MoveLeft
     jmp     InputLoop
+
 KeyRight:
+    call    MoveRight
     jmp     InputLoop
+
 KeyUp:
+    call    ScrollLeft
     jmp     InputLoop
+
 KeyDown:
+    call    ScrollRight
     jmp     InputLoop
+
 KeyHome:
+    call    MoveHome
     jmp     InputLoop
+
 KeyEnd:
+    call    MoveEnd
     jmp     InputLoop
+
 KeyBackSpace:
     jmp     InputLoop
 KeyDelete:
     jmp     InputLoop
 
 KeyEscape:
+    call    DataReset
+    jmp     KeyEnd
+
+KeyPgUp:
+    jmp     InputLoop
+
+KeyPgDown:
+    jmp     InputLoop
+
+KeyReturn:
+    Terminate 0
+
+KeyCtrlC:
+    Terminate   200
+
+DataReset:
     mov     di, TextBuffer
     mov     si, 0x0081
 .Clone:
@@ -248,18 +277,16 @@ KeyEscape:
     stosb
     cmp     si, 0x0100
     jne     .Clone
-    jmp     InputLoop
+    ret
 
-KeyPgUp:
 ScrollLeft:
     mov     al, [Start]
     cmp     al, 0
     je      InputLoop
     dec     al
     mov     [Start], al
-    jmp     InputLoop
+    ret
 
-KeyPgDown:
 ScrollRight:
     mov     al, [Start]
     mov     bl, [Width]
@@ -275,13 +302,51 @@ ScrollRight:
     je      InputLoop
     inc     al
     mov     [Start], al
-    jmp     InputLoop
+    ret
 
-KeyReturn:
-    Terminate 0
+MoveLeft:
+    WhereXY
+    cmp     dl, 1
+    ja      .Moving
+    mov     bl, [Start]
+    cmp     bl, 0
+    jne     ScrollLeft
+.Moving:
+    cmp     dl, 0
+    je      .DontMove
+    dec     dl
+    GotoXY  dx
+.DontMove:
+    ret
 
-KeyCtrlC:
-    Terminate   200
+MoveRight:
+    WhereXY
+    inc     dl
+    mov     bl, [Width]
+    cmp     dl, bl
+    jnb     ScrollRight
+    GotoXY  dx
+    ret
+
+MoveHome:
+    mov     cl, [Max]
+    xor     ch, ch
+.Moving:
+    push    cx
+    call    MoveLeft
+    pop     cx
+    loop    .Moving
+    ret
+
+MoveEnd:
+    mov     cl, [Max]
+    xor     ch, ch
+.Moving:
+    push    cx
+    call    MoveRight
+    pop     cx
+    loop    .Moving
+    ret
 
 TimedOut:
     Terminate 1
