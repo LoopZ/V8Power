@@ -65,7 +65,11 @@ PrepWindow:
     inc     al
     mov     [Width], al
 .WidthDone:
-    jmp     KeyEnd
+    mov         cx, [TimeOut]
+    cmp         cx, 0x0000
+    je          KeyEnd
+    call        ShowTimeOut
+    jmp         KeyEnd
 
 InputLoop:
     ; Draw the timeout number if used. Timeout, adjusts width if needed.
@@ -321,11 +325,30 @@ MoveLeft:
 
 MoveRight:
     WhereXY
+    mov     al, [Start]
+    mov     bl, [Width]
+    mov     cl, [Max]
+    sub     cl, bl
+    cmp     al, cl
+    jae     .OnlyMove
+    xor     bh, bh
+    add     bl, al
+    dec     bl
+    mov     ah, [TextBuffer + bx]
+    cmp     ah, 0
+    je      .OnlyMove
+    mov     bl, [Width]
+    dec     bl
+    dec     bl
+    cmp     dl, bl
+    jnb     ScrollRight
+.OnlyMove:
     inc     dl
     mov     bl, [Width]
     cmp     dl, bl
-    jnb     ScrollRight
+    jnb     .DontMove
     GotoXY  dx
+.DontMove:
     ret
 
 MoveHome:
