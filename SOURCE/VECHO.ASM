@@ -50,7 +50,8 @@ NoSwitch:
     cmp     al, 1
     jne      .NoSpace
     push      di
-    WriteChar 0x20
+    mov      al, 0x20
+    WriteChar 0x09
     pop       di
 .NoSpace:
     WriteStr  di
