@@ -731,6 +731,7 @@ CommandLineSwitches:
     SwitchData 'M', 1, SwitchM
     SwitchData 'C', 0, SwitchC
     SwitchData 'P', 0, SwitchP
+    SwitchData 'T', 1, SwitchT
     SwitchData  0,  0, 0
 
 OptionsTable:
