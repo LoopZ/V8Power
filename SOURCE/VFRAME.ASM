@@ -19,14 +19,16 @@
 %include "COMMON.INC"
 
 ProgramMain:
-    ; WhereXY
-    ; mov           [CurrentXY], dx
     SetMaxSize
 
 MainParsing:
 
     CommandLineParser       ; insert code for command line parsing
 
+    mov         al, [BoxOpt]
+    jne         NotOptionBox
+    call        MakeBoxOption
+NotOptionBox:
     mov         al, [BoxText]
     cmp         al, 0x00
     jne         DrawTextBox
@@ -238,7 +240,6 @@ ShadowChars:
 .NoCanDo:
     ret
 
-
 NoSwitch:
     LookupParam BoxStyleTable
     cmp         ax, BoxShadow
@@ -257,6 +258,8 @@ NoSwitch:
     je          .NormalBox
     cmp         ax, BoxText
     je          .BoxTextMode
+    cmp         ax, BoxOption
+    je          BoxOption
 .NormalBox:
     mov         [BoxStyle], ax
     ret
@@ -323,6 +326,50 @@ ColorSwitchHandlers
 XYSwitchHandlers
 SizeSwitchHandlers
 
+BoxOption:
+    mov         al, 1
+    mov         [BoxOpt], al
+    ret
+
+MakeBoxOption:
+    mov             ax, BoxHidden
+    mov             [BoxStyle], ax
+    mov				ah,0x03
+    mov				bh, [VideoPage]
+    int 			0x10
+    ; Save it for later
+    push			dx
+    mov             ax, [CurrentSize]
+    add             ah, 2
+    add             dh, ah
+    jo              .Done
+    cmp				dh, [ScreenMaxY]
+    jae				.Done
+
+.ScanDownLoop:
+    mov				ah, 0x02
+    int				0x10
+    mov				ah, 0x08
+    int				0x10
+    cmp				al, 0xb3
+    jb				.NotFrame
+    cmp				al, 0xda
+    ja				.NotFrame
+    jmp             .Done
+.NotFrame:
+    cmp				dh, [ScreenMaxY]
+    jae				.Done
+    mov             cx, [CurrentXY]
+    inc             ch
+    mov             [CurrentXY], cx
+    inc             dh
+    jmp				.ScanDownLoop
+.Done:
+    pop				dx
+    mov				ah, 0x02
+    int				0x10
+    ret
+
 BoxSingle:          db 0xda,0xc4,0xbf,0xb3,0x20,0xb3,0xc0,0xc4,0xd9
 BoxSingleSides:     db 0xd5,0xcd,0xb8,0xb3,0x20,0xb3,0xd4,0xcd,0xbe
 BoxDoubleSides:     db 0xd6,0xc4,0xb7,0xba,0x20,0xba,0xd3,0xc4,0xbd
@@ -342,6 +389,8 @@ BoxShadow:
     db  0
 BoxText:
     db  0
+BoxOpt:
+    db 0
 
 BoxStyleTable:
     TableData "SHADOW",         BoxShadow
@@ -352,6 +401,7 @@ BoxStyleTable:
     TableData "SINGLESIDES",    BoxSingleSides
     TableData "DOUBLESIDES",    BoxDoubleSides
     TableData "TEXTBOX",        BoxText
+    TableData "OPTIONBOX",      BoxOption
     TableEnd
 
     HelpSwitchHandler
