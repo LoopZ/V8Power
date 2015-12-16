@@ -222,6 +222,7 @@ Draw a box windowing thingy and move cursor to its inside top left position.
                 and Hidden.
     shadow      Add a 3D style shadow.
     textbox     Draw a textbox style frame with a little padding and margins.
+    optionbox	Draw a hidden style optionbox for choices inside a frame.
 
 -------------------------------------------------------------------------------
 
