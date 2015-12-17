@@ -163,6 +163,7 @@ SwitchT:
 
 CommandLineSwitches:
     SwitchData  0,  0, NoSwitch
+    SwitchData  'D',  1, SwitchT
     SwitchData  'T',  1, SwitchT
     ColorSwitchData
     HelpSwitchData
