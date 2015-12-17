@@ -581,6 +581,12 @@ ShowTimeOut:
     mov         cx, 200
     div         cx
 
+    mov         dx, [TimeOutMax]
+    cmp         ax, dx
+    jb          .Smaller
+    mov         ax, dx
+.Smaller:
+
     mov         dl, [WindMax]
     mov         bl, [WindMin]
     xor         dh, dh
@@ -676,6 +682,7 @@ SwitchW:
 
 SwitchD:
     NumberParam
+    mov         [TimeOutMax], ax
     cmp         ax, 0
     je          .SwitchOff
     cmp         ax, 3600
@@ -744,6 +751,7 @@ ExitFlag:      dw 0x0000
 EndCaps:       dw 0x1011
 PswdChar:      db '*'
 TimeOut:       dw 0
+TimeOutMax:    dw 0
 ControlC:      db 0
 PswdMode:      db 0
 EditMode:      dw 0 ; 0 insert mode, 1&2 overtype cursor size.
