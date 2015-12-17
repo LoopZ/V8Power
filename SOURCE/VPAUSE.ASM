@@ -170,6 +170,7 @@ CommandLineSwitches:
 
 OptionsTable:
     TableData 'CTRL-C', OptCtrlC
+    TableData 'CTRL+C', OptCtrlC
     TableEnd
 
 TimeOut:

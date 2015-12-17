@@ -677,6 +677,7 @@ StyleTable:
     TableData 'YES', OptYesNo
     TableData 'YESNO', OptYesNo
     TableData 'CTRL-C', OptCtrlC
+    TableData 'CTRL+C', OptCtrlC
     TableEnd
 
 Querying:
