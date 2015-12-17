@@ -26,6 +26,7 @@ MainParsing:
     CommandLineParser       ; insert code for command line parsing
 
     mov         al, [BoxOpt]
+    cmp         al, 1
     jne         NotOptionBox
     call        MakeBoxOption
 NotOptionBox:
