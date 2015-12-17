@@ -328,25 +328,18 @@ XYSwitchHandlers
 SizeSwitchHandlers
 
 BoxOption:
+    mov         ax, BoxHidden
+    mov         [BoxStyle], ax
     mov         al, 1
     mov         [BoxOpt], al
     ret
 
 MakeBoxOption:
-    mov             ax, BoxHidden
-    mov             [BoxStyle], ax
     mov				ah,0x03
     mov				bh, [VideoPage]
     int 			0x10
     ; Save it for later
     push			dx
-    mov             ax, [CurrentSize]
-    add             ah, 2
-    add             dh, ah
-    jo              .Done
-    cmp				dh, [ScreenMaxY]
-    jae				.Done
-
 .ScanDownLoop:
     mov				ah, 0x02
     int				0x10
@@ -360,12 +353,14 @@ MakeBoxOption:
 .NotFrame:
     cmp				dh, [ScreenMaxY]
     jae				.Done
-    mov             cx, [CurrentXY]
-    inc             ch
-    mov             [CurrentXY], cx
     inc             dh
     jmp				.ScanDownLoop
 .Done:
+    mov             ch, [CurrentH]
+    sub             dh, ch
+    inc             dh
+    mov             [CurrentY], dh
+
     pop				dx
     mov				ah, 0x02
     int				0x10
