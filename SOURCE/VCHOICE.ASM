@@ -92,6 +92,11 @@ ShowTimeOut:
     mov         cx, 200
     div         cx
 
+    mov         dx, [TimeOutMax]
+    cmp         ax, dx
+    jb          .Smaller
+    mov         ax, dx
+.Smaller:
     mov         dl, [TextAttr]
     push        dx
     mov         dl, [FirstAttr]
@@ -544,6 +549,7 @@ StdOutChoice:
 
 SwitchT:
     NumberParam
+    mov         [TimeOutMax], ax
     cmp         ax, 0
     je          .SwitchOff
     cmp         ax, 3600
@@ -656,6 +662,7 @@ NoSwitch:
 
 CommandLineSwitches:
     SwitchData  0,  0, NoSwitch
+    SwitchData  'S',  1, SwitchD
     SwitchData  'D',  1, SwitchD
     SwitchData  'T',  1, SwitchT
     SwitchData  'Q',  0, SwitchQ
@@ -680,39 +687,22 @@ StyleTable:
     TableData 'CTRL+C', OptCtrlC
     TableEnd
 
-Querying:
-    db 0
-Polling:
-    db 0
-ControlC:
-	db 0
-TimeOut:
-    dw 0
-SelectChars:
-    db 1
-Max:
-    db 0
-DefaultChoice:
-    db 0
-Selected:
-    db 1
-LastSelected:
-    db 0
-HotChoice:
-    db 0
-LastHot:
-    db 0
-SelectedAttr:
-    db 0
-FirstAttr:
-    db 0
-HotAttr:
-    db 0
-NotAttr:
-    db 0
-Position:
-    dw  0
-OptionBox:
-    dw 0,0
-Searching:
-    db 0
+Querying:       db 0
+Polling:        db 0
+ControlC:       db 0
+TimeOut:        dw 0
+TimeOutMax:     dw 0
+SelectChars:    db 1
+Max:		    db 0
+DefaultChoice:  db 0
+Selected: 		db 1
+LastSelected:	db 0
+HotChoice:		db 0
+LastHot:		db 0
+SelectedAttr:	db 0
+FirstAttr:		db 0
+HotAttr:		db 0
+NotAttr:		db 0
+Position:		dw 0
+OptionBox:		dw 0,0
+Searching:		db 0
