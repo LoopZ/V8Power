@@ -291,8 +291,8 @@ errorlevel of 200.</td></tr>
 Simple wait for keypress or  time-out.
 <table>
 <tr><td width="125pt"></td><td>Wait forever for keypress.</td></tr>
-<tr><td><b>/T <i>seconds</i></b></td><td>Delay in <b><i>seconds</i></b> to wait before the
-pause times-out. (returns errorlevel 1)</td></tr>
+<tr><td><b>/D <i>seconds</i></b></td><td>Delay in <b><i>seconds</i></b> to wait before the
+pause times-out. (returns errorlevel 1) (/T has been depreciated)</td></tr>
 <tr><td><b><i>CTRL-C</i></b></td><td>When specified and <b><i>CTRL-C</i></b>is pressed, will exit with
 errorlevel of 200.</td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
