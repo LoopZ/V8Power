@@ -269,6 +269,8 @@ Draw a progress bar at current location without moving cursor.
     off         Do not display percentage number.
     align       Percentage number on left, center (Default) or right side of
                 the progress bar.
+    OF max		Calculate percentage of max. Example 5 of 7.
+
 
 -------------------------------------------------------------------------------
 
@@ -474,10 +476,3 @@ Text file and license agreement viewer.
 
 TBA
 
--------------------------------------------------------------------------------
-
-vchkbox
-
-Checkbox input.
-
-TBA

@@ -207,17 +207,46 @@ WriteNumber:
 .Done:
     ret
 
+SwitchOF:
+    mov     al, 1
+    mov     [NextOF], al
+    ret
 
 NoSwitch:
     LookupParam OptionTable
     cmp     ax, 0xffff
     je      .NotOption
+    cmp     ax, SwitchOF
+    je      SwitchOF
     mov     [Position], al
     ret
 
 .NotOption:
     NumberParam
-    mov     [Percent], al
+    mov     bl, [NextOF]
+    xor     bh, bh
+    mov     [NextOF], bh
+    cmp     bl, 1
+    je      .Calculate
+    mov     [Percent], ax
+    ret
+
+.Calculate:
+
+    push    ax
+    xor     dx, dx
+    mov     cx, 100
+    mov     ax, [Percent]
+    mul     cx
+    pop     cx
+    cmp     cx, 0
+    je      .Zero
+    div     cx
+    jmp     .SetPercent
+.Zero:
+    xor     ax, ax
+.SetPercent:
+    mov     [Percent], ax
     ret
 
 SwitchW:
@@ -252,6 +281,7 @@ CommandLineSwitches:
     SwitchData  0,  0, 0
 
 OptionTable:
+    TableData   "OF", SwitchOF
     TableData   "OFF", 0
     TableData   "LEFT", 1
     TableData   "CENTER", 2
@@ -263,8 +293,10 @@ Width:
 Position:
     db 2
 Percent:
-    db 0
+    dw 0
 Partial:
     db 0
 Used:
+    db 0
+NextOF:
     db 0

@@ -251,6 +251,7 @@ of the bar (default is from cursor to end of line).</td></tr>
 <tr><td><b><i>off</i></b></td><td>Do not display percentage number.</td></tr>
 <tr><td><i>align</i></td><td>Percentage number on <b><i>left</i></b>,
 <b><i>center</i></b> (Default) or <b><i>right</i></b> side of the progress bar.</td></tr>
+<tr><td><b>OF <i>max</i></b></td><td>Calculate percentage of <b><i>max</i></b>. Example 5 of 7.</td></tr>
 </table>
 * * *
 #### vchoice *[options]* ######
@@ -430,11 +431,6 @@ prompt times-out and returns the initial default value. (returns errorlevel 1)</
 * * *
 #### vview ######
 Text file and license agreement viewer.
-
-TBA
-* * *
-#### vchkbox ######
-Checkboxes input.
 
 TBA
 * * *
