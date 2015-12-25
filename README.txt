@@ -145,10 +145,10 @@ Simple delay in milliseconds.
 
     [none]      Default is 1000ms (1 second) delay.
     ms          Delay for ms milliseconds. (0-65535, 0x0000-0xffff)
-	/D			Detect method used for timing. (Not compatible with VirtualBox)
-	/S			Use safe general purpose timer. (Default)
-	/I			Use high precision interrupt timer. (Not compatible with
-				VirtualBox)
+    /D          Detect method used for timing. (Not compatible with VirtualBox)
+    /S          Use safe general purpose timer. (Default)
+    /I          Use high precision interrupt timer. (Not compatible with
+                VirtualBox)
 
 -------------------------------------------------------------------------------
 
@@ -226,7 +226,7 @@ Draw a box windowing thingy and move cursor to its inside top left position.
                 and Hidden.
     shadow      Add a 3D style shadow.
     textbox     Draw a textbox style frame with a little padding and margins.
-    optionbox	Draw a hidden style optionbox for choices inside a frame.
+    optionbox   Draw a hidden style optionbox for choices inside a frame.
 
 -------------------------------------------------------------------------------
 
@@ -238,10 +238,10 @@ Generate a tone using the built in speaker.
     hz:ms       Use the PC Speaker to generate a hz frequency tone. Then, delay
                 for ms milliseconds. (Note: 0 frequency turns off speaker.
                 If no frequency is provided then 0 is assumed)
-	/D			Detect method used for timing. (Not compatible with VirtualBox)
-	/S			Use safe general purpose timer. (Default)
-	/I			Use high precision interrupt timer. (Not compatible with
-				VirtualBox)
+    /D          Detect method used for timing. (Not compatible with VirtualBox)
+    /S          Use safe general purpose timer. (Default)
+    /I          Use high precision interrupt timer. (Not compatible with
+                VirtualBox)
 
     tba         (Still under development, more to be announced)
 
@@ -277,7 +277,7 @@ Draw a progress bar at current location without moving cursor.
     off         Do not display percentage number.
     align       Percentage number on left, center (Default) or right side of
                 the progress bar.
-    OF max		Calculate percentage of max. Example 5 of 7.
+    OF max      Calculate percentage of max. Example 5 of 7.
 
 
 -------------------------------------------------------------------------------
@@ -325,7 +325,7 @@ vpause [options]
 Simple wait for keypress or time-out.
 
     [none]      Wait forever for keypress.
-    (/T)		Depreciated. Now, /D.
+    (/T)        Depreciated. Now, /D.
     /D seconds  Delay in seconds to wait before the pause times-out. (returns
                 errorlevel 1)
     CTRL-C      When specified and Control-C is pressed, will exit with
