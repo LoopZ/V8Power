@@ -14,7 +14,7 @@
 ;   with this program; if not, write to the Free Software Foundation, Inc.,
 ;   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-; NASM for DOS 
+; NASM for DOS
 
 %idefine NoVideoOutput
 
@@ -49,15 +49,31 @@ SoundAndDelay:
     NumberParam
     pop     cx
     call    Sound
-    Delay   ax
-    ret
-    
+    jmp     DoDelay
+
 DelayOnly:
     NumberParam
     call    SoundOff
-    Delay   ax
+DoDelay:
+	mov  		dx, ax
+	cmp			dx, 0x0000
+	je			.NoDelay
+	mov         al, [DelayMode]
+	cmp         al, 0
+	je          .Delay8086
+	cmp         al, 2
+	je          .Delay286
+	Is286
+	cmp			ax, 0x0001
+	je			.Delay286
+.Delay8086:
+	DelayTicks	dx
+	jmp			.NoDelay
+.Delay286:
+	DelayTimer	dx
+.NoDelay:
     ret
-    
+
 Sound:
     push    ax
     cmp     cx, 0x0012
@@ -76,7 +92,7 @@ Sound:
     out     dx, al
     mov     dx, 0x0061
     in      al, dx
-    mov     al, 0x03 
+    mov     al, 0x03
     out     dx, al
     pop     ax
 ret
@@ -99,9 +115,30 @@ SoundOff:
     pop     ax
 ret
 
+SwitchD:
+    mov         al, 1
+    mov         [DelayMode], al
+    ret
+
+SwitchS:
+    mov         al, 0
+    mov         [DelayMode], al
+    ret
+
+SwitchI:
+    mov         al, 2
+    mov         [DelayMode], al
+    ret
+
     HelpSwitchHandler
 
 CommandLineSwitches:
-    SwitchData  0,  0, NoSwitch  
+    SwitchData  0,  0, NoSwitch
+    SwitchData  'D',  0, SwitchD
+    SwitchData  'S',  0, SwitchS
+    SwitchData  'I',  0, SwitchI
     HelpSwitchData
     SwitchData  0,  0, 0
+
+DelayMode:
+    DB 0

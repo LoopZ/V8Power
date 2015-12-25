@@ -129,6 +129,9 @@ Simple delay in milliseconds.
 <table>
 <tr><td width="125pt"></td><td>Default is 1000ms (1 second) delay.</td></tr>
 <tr><td><b><i>ms</i></b></td><td>Delay for <b><i>ms</i></b> milliseconds. (0-65535, 0x0000-0xffff) </td></tr>
+<tr><td><i>/D</i></td><td>Detect method used for timing. <i>(Not compatible with VirtualBox)</i></td></tr>
+<tr><td><i>/S</i></td><td>Use safe general purpose timer. <i>(Default)</i></td></tr>
+<tr><td><i>/I</i></td><td>Use high precision interrupt timer. <i>(Not compatible with VirtualBox)</i></td></tr>
 </table>
 * * *
 #### vecho *[options]* *[text]* ######
@@ -221,6 +224,9 @@ Generate a tone using the built in speaker.
 <tr><td><i>hz:ms</i></td><td>Use the PC Speaker to generate a <b><i>hz</i></b> frequency tone.
 Then, delay for <b><i>ms</i></b> milliseconds. (Note: 0 frequency turns off speaker. If no frequency is provided
 then 0 is assumed)</td></tr>
+<tr><td><i>/D</i></td><td>Detect method used for timing. <i>(Not compatible with VirtualBox)</i></td></tr>
+<tr><td><i>/S</i></td><td>Use safe general purpose timer. <i>(Default)</i></td></tr>
+<tr><td><i>/I</i></td><td>Use high precision interrupt timer. <i>(Not compatible with VirtualBox)</i></td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
 * * *

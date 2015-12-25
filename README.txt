@@ -145,6 +145,10 @@ Simple delay in milliseconds.
 
     [none]      Default is 1000ms (1 second) delay.
     ms          Delay for ms milliseconds. (0-65535, 0x0000-0xffff)
+	/D			Detect method used for timing. (Not compatible with VirtualBox)
+	/S			Use safe general purpose timer. (Default)
+	/I			Use high precision interrupt timer. (Not compatible with
+				VirtualBox)
 
 -------------------------------------------------------------------------------
 
@@ -234,6 +238,10 @@ Generate a tone using the built in speaker.
     hz:ms       Use the PC Speaker to generate a hz frequency tone. Then, delay
                 for ms milliseconds. (Note: 0 frequency turns off speaker.
                 If no frequency is provided then 0 is assumed)
+	/D			Detect method used for timing. (Not compatible with VirtualBox)
+	/S			Use safe general purpose timer. (Default)
+	/I			Use high precision interrupt timer. (Not compatible with
+				VirtualBox)
 
     tba         (Still under development, more to be announced)
 
