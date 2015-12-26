@@ -215,7 +215,7 @@ Draw a box windowing thingy and move cursor to its inside top left position.
 <tr><td><i><b>textbox</b></i></td><td>Draw a <b><i>textbox</i></b> style frame with a little padding and margins.</td></tr>
 <tr><td><i><b>optionbox</b></i></td><td>Draw a hidden style <b><i>optionbox</i></b> for choices inside a frame.</table>
 </td></tr>
-
+</table>
 * * *
 #### vpcspkr *[hz:][ms]* ######
 Generate a tone using the built in speaker.
