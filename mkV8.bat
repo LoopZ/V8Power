@@ -1,6 +1,7 @@
 @echo off
 
 if not "%1" == "" goto %1
+if not "%1" == "" goto VeryEnd
 
 if "%1" == "" call mkClean.bat
 if not exist BIN mkdir BIN
@@ -134,12 +135,12 @@ NASM.EXE -ISOURCE\ SOURCE\VASK.ASM -fbin -O9 -o BIN\VASK.COM
 if ERRORLEVEL 1 goto Error
 if not "%1" == "" goto Done
 
-:vchkbox
-set VSTAGE=vchkbox
-bin\vecho /g/s- "Eyeing up " /f 0x0a "traffic" /f gray ...
-NASM.EXE -ISOURCE\ SOURCE\VCHKBOX.ASM -fbin -O9 -o BIN\VCHKBOX.COM
-if ERRORLEVEL 1 goto Error
-if not "%1" == "" goto Done
+rem :vchkbox
+rem set VSTAGE=vchkbox
+rem bin\vecho /g/s- "Eyeing up " /f 0x0a "traffic" /f gray ...
+rem NASM.EXE -ISOURCE\ SOURCE\VCHKBOX.ASM -fbin -O9 -o BIN\VCHKBOX.COM
+rem if ERRORLEVEL 1 goto Error
+rem if not "%1" == "" goto Done
 
 :vfdutil
 set VSTAGE=vfdutil
@@ -167,16 +168,15 @@ echo Error creating utility %VSTAGE%.com.
 goto VeryEnd
 
 :Done
-
 if not "%1" == "" echo.
 if not "%1" == "" dir BIN\%1.COM
-if not "%1" == "" goto VeryEnd
+rem if not "%1" == "" goto VeryEnd
 
 :vdocs
 if not exist BIN goto VeryEnd
-copy LICENSE BIN
-if exist README.TXT copy README.TXT BIN\V8POWER.TXT
-if not exist README.TXT copy README.md BIN\V8POWER.md
+copy LICENSE BIN >NUL
+if exist README.TXT copy README.TXT BIN\V8POWER.TXT >NUL
+if not exist README.TXT copy README.md BIN\V8POWER.md >NUL
 
 :VeryEnd
 set VSTAGE=
