@@ -439,4 +439,3 @@ prompt times-out and returns the initial default value. (returns errorlevel 1)</
 Text file and license agreement viewer.
 
 TBA
-* * *
