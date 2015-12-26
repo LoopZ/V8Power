@@ -213,8 +213,7 @@ Draw a box windowing thingy and move cursor to its inside top left position.
 <b><i>SingleSides</i></b>, <b><i>DoubleSides</i></b> and <b><i>Hidden</i></b>.</td></tr>
 <tr><td><i><b>shadow</b></i></td><td>Add a 3D style <b><i>shadow</i></b>.</td></tr>
 <tr><td><i><b>textbox</b></i></td><td>Draw a <b><i>textbox</i></b> style frame with a little padding and margins.</td></tr>
-<tr><td><i><b>optionbox</b></i></td><td>Draw a hidden style <b><i>optionbox</i></b> for choices inside a frame.</table>
-</td></tr>
+<tr><td><i><b>optionbox</b></i></td><td>Draw a hidden style <b><i>optionbox</i></b> for choices inside a frame.</td></tr>
 </table>
 * * *
 #### vpcspkr *[hz:][ms]* ######
@@ -351,6 +350,11 @@ on numbers from 0-65535. Good for looping, determining screen offsets and etc.
 <tr><td><b><i>*</i></b>,<b><i>MUL</i></b></td><td>Multiply sum by next number.</td></tr>
 <tr><td><b><i>/</i></b>,<b><i>DIV</i></b></td><td>Divide sum by next number.</td></tr>
 <tr><td><b><i>\</i></b>,<b><i>MOD</i></b></td><td>Divide sum by next number and set sum to the remainder.</td></tr>
+<tr><td><b><i>AND</i></b></td><td>Logical AND.</td></tr>
+<tr><td><b><i>OR</i></b></td><td>Logical OR.</td></tr>
+<tr><td><b><i>XOR</i></b></td><td>Logical XOR.</td></tr>
+<tr><td><b><i>SHR</i></b></td><td>Bit shift right.</td></tr>
+<tr><td><b><i>SHL</i></b></td><td>Bit shift left.</td></tr>
 <tr><td><b><i>/H</i></b></td><td>Set output to hexadecimal.</td></tr>
 <tr><td><b><i>/D</i></b></td><td>Set output to decimal.</td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>

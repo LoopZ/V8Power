@@ -14,37 +14,87 @@
 ;   with this program; if not, write to the Free Software Foundation, Inc.,
 ;   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-; NASM for DOS 
+; NASM for DOS
 
 %include "COMMON.INC"
 
+; Note, File I/O for viewing just uses the Translate Buffer File I/O area.
+; So, only one file can be viewed.
+
+    FrameBounds
+
+MainParsing:
+
     CommandLineParser       ; insert code for command line parsing
 
-    ; PlaceHolder 
+; Check that Filename was set
+    mov    di, [FileName + 2]
+    cmp    di, 0
+    je     ParamError
+
+; Disable Smooth scrolling if not FullScreen
+    mov         bx, [WindMin]
+    cmp         bx, 0
+    jne         .CannotSmooth
+    mov         bx, [WindMax]
+    mov         dx, [ScreenMax]
+    cmp         bx, dx
+    je          .CanSmooth
+.CannotSmooth:
+    xor         al, al
+    mov         [SmoothScroll], al
+.CanSmooth:
+    mov         al, [SmoothScroll]
+    add         al, 65
+    DebugChar   al
+
+; Zero terminate filename
+    xor     al, al
+    mov     [di], al
+    mov     si, [FileName]
 
     Terminate 0
-    
+
 NoSwitch:
-    LookupParam OptionsTable
-    cmp         ax, 0xffff
-    je          .NotOption
-    jmp         ax      
+    mov     [FileName], di
+    mov     [FileName + 2], si
+    ret
 
-.NotOption:
-    NumberParam
-    ; do something with ax
-    
-.InvalidOption:
-    WriteStr    CommandLineErrorMsg
-    Terminate   100
+%include "TRANSLAT.INC"
 
+SwitchT:
+    Translator MainParsing
+    LocalSwitchHandlers
+    ColorSwitchHandlers
     HelpSwitchHandler
 
-    
+SwitchS:
+    xor         ah, ah
+    mov         al, [di]
+    cmp         al, '-'
+    je          .SetSmooth
+    mov         ah, 1
+    cmp         al, '+'
+    jne         ParamError
+.SetSmooth:
+    mov         [SmoothScroll], ah
+    ret
+
+ParamError:
+    WriteStr    CommandLineErrorMsg
+	Terminate   100
+
 CommandLineSwitches:
-    SwitchData  0,  0, NoSwitch  
+    SwitchData  0,  0, NoSwitch
+    ColorSwitchData
+    LocalSwitchData
     HelpSwitchData
+    SwitchData 'T', 1, SwitchT
+    SwitchData 'S', 1, SwitchS
     SwitchData  0,  0, 0
-    
-OptionsTable:
-    TableEnd
+
+FileLines:      times 60 dd 0
+FileLinesEnd:
+
+FileName:       dw 0, 0
+SmoothScroll:   db 0

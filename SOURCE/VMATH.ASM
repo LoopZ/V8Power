@@ -14,7 +14,7 @@
 ;   with this program; if not, write to the Free Software Foundation, Inc.,
 ;   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-; NASM for DOS 
+; NASM for DOS
 
 %idefine NoVideoOutput
 
@@ -23,7 +23,7 @@
     %idefine SwitchChar '^'
 
     CommandLineParser       ; insert code for command line parsing
-    
+
     mov     al, [OutStyle]
     cmp     al, 1
     je      OutHex
@@ -31,32 +31,32 @@
     jmp     Done
 OutHex:
     mov     ax, [OutResult]
-    StdOutHexWord 
+    StdOutHexWord
 Done:
     StdOutCRLF
     Terminate 0
-        
+
 ClearLastOpt:
     mov     ax, OptNone
     mov     [LastOpt], ax
     ret
-    
+
 OptNone:
     mov     [OutResult], ax
     jmp     ClearLastOpt
-    
+
 OptPlus:
     mov     cx, [OutResult]
     add     cx, ax
     mov     [OutResult], cx
     jmp     ClearLastOpt
-    
+
 OptMinus:
     mov     cx, [OutResult]
     sub     cx, ax
     mov     [OutResult], cx
     jmp     ClearLastOpt
-    
+
 OptMultiply:
     xor     dx, dx
     mov     cx, [OutResult]
@@ -79,14 +79,51 @@ OptMod:
     div     cx
     mov     [OutResult], dx
     jmp     ClearLastOpt
-    
+
+OptShr:
+    xor     dx, dx
+    mov     cx, [OutResult]
+    xchg    ax, cx
+    shr     ax, cl
+    mov     [OutResult], ax
+    jmp     ClearLastOpt
+
+OptShl:
+    xor     dx, dx
+    mov     cx, [OutResult]
+    xchg    ax, cx
+    shl     ax, cl
+    mov     [OutResult], ax
+    jmp     ClearLastOpt
+
+OptAnd:
+    xor     dx, dx
+    mov     cx, [OutResult]
+    and     ax, cx
+    mov     [OutResult], ax
+    jmp     ClearLastOpt
+
+OptOr:
+    xor     dx, dx
+    mov     cx, [OutResult]
+    or      ax, cx
+    mov     [OutResult], ax
+    jmp     ClearLastOpt
+
+OptXor:
+    xor     dx, dx
+    mov     cx, [OutResult]
+    xor     ax, cx
+    mov     [OutResult], ax
+    jmp     ClearLastOpt
+
 RealSwitches:
 
 SwitchH:
     mov     al, 1
     mov     [OutStyle], al
     ret
-    
+
 SwitchD:
     mov     al, 0
     mov     [OutStyle], al
@@ -101,32 +138,32 @@ NoSwitch:
     jmp         ax
 .NotSwitch:
     mov         [LastOpt], ax
-    ret    
-    
+    ret
+
 .NotOption:
     NumberParam
     jmp         [LastOpt]
-    
+
 .InvalidOption:
     WriteStr    CommandLineErrorMsg
     Terminate   100
-    
+
 LastOpt:
     dw OptNone
-    
+
 OutResult:
     dw 0
-    
+
 OutStyle:
     db 0
-    
+
     HelpSwitchHandler
 
 CommandLineSwitches:
     SwitchData  0,  0, NoSwitch
     HelpSwitchData
     SwitchData  0,  0, 0
-    
+
 OptionsTable:
     TableData '/H', SwitchH
     TableData '/D', SwitchD
@@ -141,5 +178,9 @@ OptionsTable:
     TableData 'DIV', OptDivide
     TableData '\', OptMod
     TableData 'MOD', OptMod
+    TableData 'SHR', OptShr
+    TableData 'SHL', OptShl
+    TableData 'AND', OptAnd
+    TableData 'OR', OptOr
+    TableData 'XOR', OptXor
     TableEnd
-    

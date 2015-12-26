@@ -388,6 +388,11 @@ on numbers from 0-65535. Good for looping, determining screen offsets and etc.
     *, MUL      Multiply sum by next number.
     /, DIV      Divide sum by next number.
     \, MOD      Divide sum by next number and set sum to the remainder.
+    AND			Logical AND.
+    OR			Logical OR.
+    XOR			Logical XOR.
+    SHR			Bit shift right.
+    SHL			Bit shift left.
 
     /H          Set output to hexadecimal.
     /D          Set output to decimal.
