@@ -43,12 +43,7 @@
     mov     si, [StrPosition]
 
 ; open translation file
-    mov     dx, [FileNamePtr]
-    mov     ax, 0x3d00
-    int     0x21
-    jc      ReadError   ; file missing or something
-    mov     [FileHandle], ax
-
+    FileOpen FileNamePtr, FileHandle
     ; save output position
 
 ; starting searching for string
@@ -236,6 +231,7 @@ ReadString:
 ;    StdOutCRLF
 
 ; Execute Self with new Commands.
+    call    CloseFile
     mov     si, TransBuf
     jmp %1
 
@@ -246,17 +242,13 @@ ReadError:
 BadParams:
     StdOutStr CommandLineErrorMsg
     StdOutCRLF
+
 ErrorExit:
     call    CloseFile
     Terminate 100
 
 CloseFile:
-    mov     bx, [FileHandle]
-    cmp     bx, 0
-    je      .NotOpen
-    mov     ah, 0x3e
-    int     0x21
-.NotOpen:
+    FileClose FileHandle
     ret
 
 StrPosition:

@@ -27,6 +27,12 @@ MainParsing:
 
     CommandLineParser       ; insert code for command line parsing
 
+; Check window is not larger than 60 lines
+    mov     al, [WindMax+1]
+    sub     al, [WindMin+1]
+    cmp     al, 60
+    ja      ParamError
+
 ; Check that Filename was set
     mov    di, [FileName + 2]
     cmp    di, 0
@@ -44,16 +50,23 @@ MainParsing:
     xor         al, al
     mov         [SmoothScroll], al
 .CanSmooth:
-    mov         al, [SmoothScroll]
-    add         al, 65
-    DebugChar   al
-
 ; Zero terminate filename
     xor     al, al
     mov     [di], al
     mov     si, [FileName]
 
+    FileOpen  FileName, FileHandle
+    call      PageCalc
+    call      PageShow
+    FileClose FileHandle
     Terminate 0
+
+PageCalc:
+    ret
+
+PageShow:
+    ret
+
 
 NoSwitch:
     mov     [FileName], di
@@ -93,8 +106,10 @@ CommandLineSwitches:
     SwitchData 'S', 1, SwitchS
     SwitchData  0,  0, 0
 
-FileLines:      times 60 dd 0
-FileLinesEnd:
+SmoothScroll:   db 0
 
 FileName:       dw 0, 0
-SmoothScroll:   db 0
+ShiftOffset:    dw 0
+PageStart:      dd 0
+LineStart:      times 60 dw 0
+PageEnd:        dd 0

@@ -50,6 +50,25 @@ jmp BasicInitialize
 	popf
 %endmacro
 
+%imacro FileOpen 2
+    mov     dx, [%1]
+    mov     ax, 0x3d00
+    int     0x21
+    jc      SwitchError   ; file missing or something
+    mov     [%2], ax
+%endmacro
+
+%imacro FileClose 1
+    mov     bx, [%1]
+    cmp     bx, 0
+    je      %%NotOpen
+    mov     ah, 0x3e
+    int     0x21
+    xor     bx, bx
+    mov     [%1], bx
+%%NotOpen:
+%endmacro
+
 VersionID:
 	dd 0
 
