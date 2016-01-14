@@ -1,7 +1,7 @@
 @echo off
 
 set ASM=NASM.EXE
-if exist %DOSDIR%\LINKS\NASM.BAT set ASM=call NASM 
+if exist %DOSDIR%\LINKS\NASM.BAT set ASM=call NASM
 
 if not "%1" == "" goto %1
 if not "%1" == "" goto VeryEnd
@@ -152,6 +152,7 @@ bin\vecho /g/s- "Releasing " /f 14 clutch /f gray ...
 if ERRORLEVEL 1 goto Error
 if not "%1" == "" goto Done
 
+goto Skippy
 :vview
 set VSTAGE=vview
 bin\vecho /g/s- "Mashing " /f 12 accelerator /f gray ...
@@ -159,6 +160,7 @@ bin\vecho /g/s- "Mashing " /f 12 accelerator /f gray ...
 if ERRORLEVEL 1 goto Error
 if not "%1" == "" goto Done
 
+:Skippy
 set VSTAGE=
 bin\vecho /g/s-
 bin\vecho /g/s- /n /fLightCyan Vroom /fWhite "! "
