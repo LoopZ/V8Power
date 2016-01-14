@@ -1,4 +1,4 @@
-; Copyright (C) 2015 Jerome Shidel
+; Copyright (C) 2016 Jerome Shidel
 ;
 ;   This program is free software; you can redistribute it and/or modify
 ;   it under the terms of the GNU General Public License as published by

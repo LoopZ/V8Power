@@ -1,4 +1,4 @@
-; Copyright (C) 2015 Jerome Shidel
+; Copyright (C) 2016 Jerome Shidel
 ;
 ;   This program is free software; you can redistribute it and/or modify
 ;   it under the terms of the GNU General Public License as published by
@@ -55,7 +55,7 @@ KeyBoardLoop:
 
     push		ax
     mov			ah, [ControlC]
-    cmp			al, 0x0103
+    cmp			ax, 0x0103
     pop			ax
     je			ControlCQuit
     mov         al, [Postal]

@@ -1,4 +1,4 @@
-; Copyright (C) 2015 Jerome Shidel
+; Copyright (C) 2016 Jerome Shidel
 ;
 ;   This program is free software; you can redistribute it and/or modify
 ;   it under the terms of the GNU General Public License as published by
@@ -105,9 +105,9 @@ OptionsTable:
 OptNameMsg:
     DB 'V8Power Tools for DOS',0    
 OptVerMsg:
-    DB 'Version 0/0/2015 (Pre-release)',0
+    DB 'Version 0/0/2016 (Pre-release)',0
 OptCopyMsg:
-    DB 'Copyright (C) 2015 Jerome Shidel',0
+    DB 'Copyright (C) 2016 Jerome Shidel',0
 OptEmailMsg:
     DB 'mailto:V8Power@LoopZ.org',0
 OptURLMsg:

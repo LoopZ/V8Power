@@ -1,6 +1,6 @@
 *******************************************************************************
 V8Power Tools for DOS examples
-Copyright 2015 Jerome Shidel
+Copyright 2016 Jerome Shidel
 Released under GPL v2.0 License.
 *******************************************************************************
 
