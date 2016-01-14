@@ -55,18 +55,33 @@ KeyBoardLoop:
 
     push		ax
     mov			ah, [ControlC]
-    cmp			ax, 0x0103
+    cmp			al, 0x0103
     pop			ax
     je			ControlCQuit
-
+    mov         al, [Postal]
+    cmp         al, 1
+    je          GonePostal
     mov         dx, [Position]
     GotoXY      dx
     Terminate 0
 
 TimedOut:
+    mov         al, [Postal]
+    cmp         al, 1
+    je          GonePostal
     mov         dx, [Position]
     GotoXY      dx
     Terminate 1
+
+; Jump to Power On Self Test
+GonePostal:
+    mov         bx, cs
+    push        bx
+    mov         bx, 0xffff
+    push        bx
+    xor         bx, bx
+    push        bx
+    retf
 
 ControlCQuit:
     mov			al, 200
@@ -139,6 +154,11 @@ OptCtrlC:
     mov         [ControlC], al
     ret
 
+OptPostal:
+    mov         al, 1
+    mov         [Postal], al
+    ret
+
 SwitchT:
     NumberParam
     cmp         ax, 0
@@ -172,6 +192,7 @@ CommandLineSwitches:
 OptionsTable:
     TableData 'CTRL-C', OptCtrlC
     TableData 'CTRL+C', OptCtrlC
+    TableData 'POSTAL', OptPostal
     TableEnd
 
 TimeOut:
@@ -180,3 +201,5 @@ Position:
     dw 0
 ControlC:
 	db 0
+Postal:
+    db 0
