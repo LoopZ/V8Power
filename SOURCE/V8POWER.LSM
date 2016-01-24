@@ -1,0 +1,14 @@
+Begin3
+Title:          V8Power Tools
+Version:        $VERSION$
+Entered-date:   $DATE$
+Description:    V8Power Tools batch file enhancement utilities for DOS.
+Keywords:       dos 16 bit batch vask vchoice vecho vpause vframe vmath vline vprogres
+Author:         Jerome Shidel <jerome _AT_ shidel.net>
+Maintained-by:  Jerome Shidel <jerome _AT_ shidel.net>
+Primary-site:   https://github.com/LoopZ/V8Power
+Alternate-site: http://www.ibiblio.org/pub/micro/pc-stuff/freedos/files/utils/v8power/
+Original-site:  http://up.lod.bz/V8Power/
+Platforms:      DOS
+Copying-policy: GNU General Public License, version 2
+End
