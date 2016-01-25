@@ -11,6 +11,8 @@ VERSION=$(date +'%y.%m.%d')
 
 [[ -d "${HOME}/Downloads/${PROJECT}" ]] && rm -rf "${HOME}/Downloads/${PROJECT}"
 
+# Standard binaries release
+
 mkdir -p "${HOME}/Downloads/${PROJECT}"
 cp -r BIN/* "${HOME}/Downloads/${PROJECT}/"
 mkdir -p "${HOME}/Downloads/${PROJECT}/DEMOS"
@@ -36,6 +38,15 @@ fi;
 cd "${CURDIR}"
 
 rm -rf "${HOME}/Downloads/${PROJECT}"
+
+# Package Release
+mkdir -p "${HOME}/Downloads/${PROJECT}"
+mkdir -p "${HOME}/Downloads/${PROJECT}/APPINFO"
+mkdir -p "${HOME}/Downloads/${PROJECT}/V8POWER"
+mkdir -p "${HOME}/Downloads/${PROJECT}/DOCS"
+mkdir -p "${HOME}/Downloads/${PROJECT}/SOURCE/V8POWER"
+
+# rm -rf "${HOME}/Downloads/${PROJECT}"
 
 echo
 echo "${HOME}/Downloads/${ARCHIVE}"
