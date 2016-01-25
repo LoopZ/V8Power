@@ -2,53 +2,67 @@
 
 PRERELEASE='.pre'
 
+DESTINATION='Downloads'
 RELEASE=0
 FORMAT='zip'
 PROJECT=$(echo ${PWD##*/})
-# VERSION=$(date +'%Y-%m-%d')
+TODAY=$(date +'%Y-%m-%d')
 VERSION=$(date +'%y.%m.%d')
 
 
-[[ -d "${HOME}/Downloads/${PROJECT}" ]] && rm -rf "${HOME}/Downloads/${PROJECT}"
+[[ -d "${HOME}/${DESTINATION}/${PROJECT}" ]] && rm -rf "${HOME}/${DESTINATION}/${PROJECT}"
 
 # Standard binaries release
 
-mkdir -p "${HOME}/Downloads/${PROJECT}"
-cp -r BIN/* "${HOME}/Downloads/${PROJECT}/"
-mkdir -p "${HOME}/Downloads/${PROJECT}/DEMOS"
-cp -r DEMOS/* "${HOME}/Downloads/${PROJECT}/DEMOS/"
-mkdir -p "${HOME}/Downloads/${PROJECT}/EXAMPLES"
-cp -r EXAMPLES/* "${HOME}/Downloads/${PROJECT}/EXAMPLES/"
+mkdir -p "${HOME}/${DESTINATION}/${PROJECT}"
+cp -r BIN/* "${HOME}/${DESTINATION}/${PROJECT}/"
+mkdir -p "${HOME}/${DESTINATION}/${PROJECT}/DEMOS"
+cp -r DEMOS/* "${HOME}/${DESTINATION}/${PROJECT}/DEMOS/"
+mkdir -p "${HOME}/${DESTINATION}/${PROJECT}/EXAMPLES"
+cp -r EXAMPLES/* "${HOME}/${DESTINATION}/${PROJECT}/EXAMPLES/"
 
 ARCHIVE="${PROJECT}-${VERSION}-${RELEASE}${PRERELEASE}.${FORMAT}"
-while [[ -f "${HOME}/Downloads/${ARCHIVE}" ]] ; do
+while [[ -f "${HOME}/${DESTINATION}/${ARCHIVE}" ]] ; do
 	(( RELEASE++ ))
 	ARCHIVE="${PROJECT}-${VERSION}-${RELEASE}${PRERELEASE}.${FORMAT}"
 done
 
 if [[ -f 'README.txt' ]] ; then
-	cp 'README.txt' "${HOME}/Downloads/${PROJECT}-README.txt"
+	cp 'README.txt' "${HOME}/${DESTINATION}/${PROJECT}-README.txt"
 fi;
 
 CURDIR="$PWD"
-cd "${HOME}/Downloads"
+cd "${HOME}/${DESTINATION}"
 if [[ "$FORMAT" == "zip" ]] ; then
 	zip -9 -r "${ARCHIVE}" "${PROJECT}/"*
 fi;
 cd "${CURDIR}"
 
-rm -rf "${HOME}/Downloads/${PROJECT}"
+rm -rf "${HOME}/${DESTINATION}/${PROJECT}"
 
 # Package Release
-mkdir -p "${HOME}/Downloads/${PROJECT}"
-mkdir -p "${HOME}/Downloads/${PROJECT}/APPINFO"
-mkdir -p "${HOME}/Downloads/${PROJECT}/V8POWER"
-mkdir -p "${HOME}/Downloads/${PROJECT}/DOCS"
-mkdir -p "${HOME}/Downloads/${PROJECT}/SOURCE/V8POWER"
+mkdir -p "${HOME}/${DESTINATION}/${PROJECT}"
+mkdir -p "${HOME}/${DESTINATION}/${PROJECT}/APPINFO"
+[[ ${RELEASE} == 0 ]] && RNAME=${VERSION} || RNAME=${VERSION}-${RELEASE}
+cat SOURCE/APPINFO.LSM | sed 's/\$VERSION\$/'${RNAME}/g | sed 's/\$DATE\$/'${TODAY}/g > "${HOME}/${DESTINATION}/${PROJECT}/APPINFO/${PROJECT}.LSM"
 
-# rm -rf "${HOME}/Downloads/${PROJECT}"
+mkdir -p "${HOME}/${DESTINATION}/${PROJECT}/${PROJECT}"
+cp -r BIN/* "${HOME}/${DESTINATION}/${PROJECT}/${PROJECT}"
+mkdir -p "${HOME}/${DESTINATION}/${PROJECT}/DOC/${PROJECT}"
+cp -r *.txt   "${HOME}/${DESTINATION}/${PROJECT}/DOC/${PROJECT}"
+cp -r LICENSE "${HOME}/${DESTINATION}/${PROJECT}/DOC/${PROJECT}"
+mkdir -p "${HOME}/${DESTINATION}/${PROJECT}/SOURCE/${PROJECT}"
+cp -r * "${HOME}/${DESTINATION}/${PROJECT}/SOURCE/${PROJECT}"
+rm -rf "${HOME}/${DESTINATION}/${PROJECT}/SOURCE/${PROJECT}/BIN"
 
-echo
-echo "${HOME}/Downloads/${ARCHIVE}"
-echo
+mkdir -p "${HOME}/${DESTINATION}/${PROJECT}/SOURCE/${PROJECT}/SOURCE"
+cp -r SOURCE/* "${HOME}/${DESTINATION}/${PROJECT}/SOURCE/${PROJECT}/SOURCE"
 
+# rm -rf "${HOME}/${DESTINATION}/${PROJECT}"
+cd "${HOME}/${DESTINATION}"
+[[ -f "${PROJECT}.zip" ]] && rm "${PROJECT}.zip"
+zip -9 -r "${PROJECT}.zip" "${PROJECT}/"*
+cd "${CURDIR}"
+
+echo "${HOME}/${DESTINATION}/${ARCHIVE}"
+echo "${HOME}/${DESTINATION}/${PROJECT}.zip"
