@@ -58,11 +58,12 @@ rm -rf "${HOME}/${DESTINATION}/${PROJECT}/SOURCE/${PROJECT}/BIN"
 mkdir -p "${HOME}/${DESTINATION}/${PROJECT}/SOURCE/${PROJECT}/SOURCE"
 cp -r SOURCE/* "${HOME}/${DESTINATION}/${PROJECT}/SOURCE/${PROJECT}/SOURCE"
 
-# rm -rf "${HOME}/${DESTINATION}/${PROJECT}"
 cd "${HOME}/${DESTINATION}"
 [[ -f "${PROJECT}.zip" ]] && rm "${PROJECT}.zip"
 zip -9 -r "${PROJECT}.zip" "${PROJECT}/"*
 cd "${CURDIR}"
+
+rm -rf "${HOME}/${DESTINATION}/${PROJECT}"
 
 echo "${HOME}/${DESTINATION}/${ARCHIVE}"
 echo "${HOME}/${DESTINATION}/${PROJECT}.zip"
