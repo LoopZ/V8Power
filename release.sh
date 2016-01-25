@@ -60,7 +60,8 @@ cp -r SOURCE/* "${HOME}/${DESTINATION}/${PROJECT}/SOURCE/${PROJECT}/SOURCE"
 
 cd "${HOME}/${DESTINATION}"
 [[ -f "${PROJECT}.zip" ]] && rm "${PROJECT}.zip"
-zip -9 -r "${PROJECT}.zip" "${PROJECT}/"*
+cd "${PROJECT}"
+zip -9 -r "../${PROJECT}.zip" *
 cd "${CURDIR}"
 
 rm -rf "${HOME}/${DESTINATION}/${PROJECT}"
