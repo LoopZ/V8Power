@@ -46,8 +46,8 @@ mkdir -p "${HOME}/${DESTINATION}/${PROJECT}/APPINFO"
 [[ ${RELEASE} == 0 ]] && RNAME=${VERSION} || RNAME=${VERSION}-${RELEASE}
 cat SOURCE/APPINFO.LSM | sed 's/\$VERSION\$/'${RNAME}/g | sed 's/\$DATE\$/'${TODAY}/g > "${HOME}/${DESTINATION}/${PROJECT}/APPINFO/${PROJECT}.LSM"
 
-mkdir -p "${HOME}/${DESTINATION}/${PROJECT}/${PROJECT}"
-cp -r BIN/* "${HOME}/${DESTINATION}/${PROJECT}/${PROJECT}"
+mkdir -p "${HOME}/${DESTINATION}/${PROJECT}/BIN"
+cp -r BIN/* "${HOME}/${DESTINATION}/${PROJECT}/BIN"
 mkdir -p "${HOME}/${DESTINATION}/${PROJECT}/DOC/${PROJECT}"
 cp -r *.txt   "${HOME}/${DESTINATION}/${PROJECT}/DOC/${PROJECT}"
 cp -r LICENSE "${HOME}/${DESTINATION}/${PROJECT}/DOC/${PROJECT}"
@@ -61,7 +61,7 @@ cp -r SOURCE/* "${HOME}/${DESTINATION}/${PROJECT}/SOURCE/${PROJECT}/SOURCE"
 cd "${HOME}/${DESTINATION}"
 [[ -f "${PROJECT}.zip" ]] && rm "${PROJECT}.zip"
 cd "${PROJECT}"
-zip -9 -r "../${PROJECT}.zip" *
+zip -9 -r -k "../${PROJECT}.zip" *
 cd "${CURDIR}"
 
 rm -rf "${HOME}/${DESTINATION}/${PROJECT}"
