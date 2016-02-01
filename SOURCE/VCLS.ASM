@@ -162,7 +162,7 @@ OptionEol:
     mov         [EolOnly], al
     ret
 
-    HelpSwitchHandler
+    HelpSwitchHandler 'vcls'
 
 CommandLineSwitches:
     SwitchData  0,  0, NoSwitch

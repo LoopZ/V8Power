@@ -16,6 +16,12 @@
 
 ; NASM for DOS
 
+; %idefine NoHelpText
+
+%ifndef NoHelpText
+    %idefine HelpText
+%endif
+
 use16
 
 cpu 8086
@@ -112,6 +118,7 @@ CommandLineErrorMsg:
 SECTION _TEXT
 
 %idefine CRLF 0x0d,0x0a
+%idefine TAB  0x09
 %idefine SwitchChar '/'
 
 

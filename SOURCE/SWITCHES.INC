@@ -145,15 +145,29 @@ CurrentSize:
     SwitchData '?', 0, SwitchHelp
 %endmacro
 
-%imacro HelpSwitchHandler 0-1 'See V8Power Tools docs.'
-SwitchHelp:
+%imacro NoHelpMessage 0
 %ifdef NoVideoOutput
     StdOutStr   %%Message
 %else
     WriteStr 	%%Message
 %endif
-	ret
+    Terminate 0
     %%Message:
-        DB %1
-        DB CRLF,0
+	DB 'See V8Power Tools docs.'
+    DB CRLF,0
+%endmacro
+
+%imacro HelpSwitchHandler 0-1 ''
+%ifidni %1, ''
+	%undef HelpText
+	%idefine NoHelpText
+%endif
+
+SwitchHelp:
+; %ifdef HelpText
+;    StdOutStr   %%Message
+;    Terminate 0
+; %else
+    NoHelpMessage
+; %endif
 %endmacro
