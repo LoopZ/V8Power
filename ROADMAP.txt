@@ -10,20 +10,19 @@ Putting the power of an 8-cylinder engine under the hood of DOS batch files.
 
 Probable roadmap for the future of V8Power Tools:
 
-    vchkbox - Checkboxes.
     vline - line drawing utility, single, double, smart, dumb, vertical...
     vinfo - more system information provided by utility.
-    vview - Text file viewer, user license agreement and whatnots..
-    vask - Single line text input and editor.
     vstr - Like trim, squeeze...
     vecho - Word wrapping and more control-code ascii support.
     vpcspkr - More music style support like maybe, C#, C. and such.
     vver - verify all utils are present and proper version.
+    vchkbox - Postponed, Checkboxes.
+    vview - Postponed, Text file viewer, user license agreement and whatnots..
 
     vchoice, vpause, vask, vview, vchkbox - Mouse, Hot Key and button support.
 
-    More range checking, prevent possible freeze when really
-    bad settings are given.
+    More range checking, prevent possible freeze/lockup when developer uses
+    really bad settings.
 
     Optimizations and byte squeezing.
 
