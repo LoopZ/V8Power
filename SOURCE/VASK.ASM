@@ -268,17 +268,20 @@ KeyNormal:
     WhereXY
     pop     ax
     mov     bx, TextBuffer
+    xor     ch, ch
     mov     cl, [Max]
-    add     bl, cl
-    dec     bl
+    add     bx, cx
+    dec     bx
     mov     cl, [bx]
     mov     di, bx
     cmp     cl, 0
     jne     InputLoop
     mov     bx, TextBuffer
+    xor     ch, ch
     mov     cl, [Start]
-    add     bl, cl
-    add     bl, dl
+    add     bx, cx
+    xor     dh,dh
+    add     bx, dx
     mov     ah, [EditMode]
     cmp     ah, 0
     jne     .Overtype
@@ -295,8 +298,10 @@ KeyNormal:
 
 KeyBackSpace:
     WhereXY
+    xor     cx,cx
+    xor     dh, dh
     mov     cl, [Start]
-    add     dl, cl
+    add     dx, cx
     cmp     dl, 0
     je      InputLoop
     call    MoveLeft
@@ -305,15 +310,17 @@ KeyBackSpace:
 KeyDelete:
     WhereXY
     mov     bx, TextBuffer
+    xor     dh,dh
+    xor     ch,ch
     mov     cl, [Start]
-    add     bl, cl
-    add     bl, dl
+    add     bx, cx
+    add     bx, dx
     cld
     mov     di, bx
     mov     si, bx
     lodsb
 .Removing:
-    cmp     si, TextEnd
+    cmp     si, TextEnd + 1
     je      InputLoop
     lodsb
     stosb
