@@ -130,11 +130,19 @@ SwitchC:
     mov     [ChangeFlag], al
     ret
 
+SwitchX:
+    mov     al, 1
+    mov     [ExitFlag], al
+    ret
+
 SwitchD:
     call    ExpandFileName
     xor     al, al
     mov     [Buffer+2], al
     mov     al, [Buffer]
+    mov     ah, [ExitFlag]
+    cmp     ah, 1
+    je      DoExitCode
     mov     ah, [ChangeFlag]
     cmp     ah, 1
     jne     DoPrint
@@ -160,6 +168,9 @@ SwitchP:
     xor     al, al
     mov     [di], al
     mov     al, [Buffer]
+    mov     ah, [ExitFlag]
+    cmp     ah, 1
+    je      DoExitCode
     mov     ah, [ChangeFlag]
     cmp     ah, 1
     jne     DoPrint
@@ -171,6 +182,20 @@ SwitchP:
     mov     ah, 0x3b
     int     0x21
     ret
+
+DoExitCode:
+    mov         al, [Buffer]
+    xor         ah, ah
+    cmp         al, 0x41
+    jb          .InvalidDrive
+    cmp         al, 0x5a
+    ja          .InvalidDrive
+    sub         ax, 0x0040
+    jmp         ProgramTerminate
+.InvalidDrive:
+    mov         al, ah
+    jmp         ProgramTerminate
+
 
 SwitchF:
     call    ExpandFileName
@@ -306,6 +331,7 @@ CommandLineSwitches:
     SwitchData 'C', 0, SwitchC
     SwitchData 'F', 1, SwitchF
     SwitchData 'D', 1, SwitchD
+    SwitchData 'X', 0, SwitchX
     SwitchData 'P', 1, SwitchP
     SwitchData 'N', 1, SwitchN
     SwitchData 'E', 1, SwitchE
@@ -326,6 +352,8 @@ DTA:
     times 128 db 0
 DTAEnd:
 ChangeFlag:
+    db 0
+ExitFlag:
     db 0
 SavedInt24:
     dw 0, 0
