@@ -482,11 +482,3 @@ Prompt for text input.
 
     tba         (Still under development, more to be announced)
 
--------------------------------------------------------------------------------
-
-vview
-
-Text file and license agreement viewer.
-
-TBA
-
