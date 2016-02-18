@@ -413,6 +413,7 @@ Simple String processing utility. Outputs results to STDOUT.
                 (Note: vline /L TOTAL will return the total number of lines.)
     /S s1 s2    Search and replace all occurrences of s1 with s2.
     /F s1 s2    Set delimiter to s1 and only return field position or range s2.
+    /T s2     	Return tab field position or range s2.
 
     tba         (Still under development, more to be announced)
 
