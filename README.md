@@ -376,6 +376,7 @@ Simple String processing utility. Outputs results to STDOUT.
 <tr><td><b>/S <i>s1 s2</i></b></td><td>Search and replace all occurrences of <b><i>s1</b></i> with <b><i>s2</b></i>.</td></tr>
 <tr><td><b>/F <i>s1 s2</i></b></td><td>Set delimiter to <b><i>s1</b></i> and only return field position or range <b><i>s2</b></i>. </td></tr>
 <tr><td><b>/T <i>s2</i></b></td><td>Return tab field position or range <b><i>s2</b></i>. </td></tr>
+<tr><td><b>/P <i>s1</i></b></td><td>Print text <b><i>s1</b></i>. </td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
 * * *

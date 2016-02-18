@@ -278,6 +278,16 @@ SwitchFields:
 .Done:
     ret
 
+SwitchP:
+    cmp         di, si
+    je          .Done
+    mov         al, [di]
+    inc         di
+    StdOutChar  al
+    jmp         SwitchP
+.Done:
+    ret
+
 
 SwitchL:
     LookupParam OptionsLines
@@ -454,6 +464,7 @@ CommandLineSwitches:
     SwitchData  'B', 0, SwitchB
     SwitchData  'F', 1, SwitchF
     SwitchData  'T', 1, SwitchT
+    SwitchData  'P', 1, SwitchP
     HelpSwitchData
     SwitchData  0,  0, 0
 
