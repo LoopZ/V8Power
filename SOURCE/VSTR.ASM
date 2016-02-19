@@ -17,6 +17,7 @@
 ; NASM for DOS
 
 %idefine NoVideoOutput
+; %idefine StdOutAllChars
 
 %include "COMMON.INC"
 

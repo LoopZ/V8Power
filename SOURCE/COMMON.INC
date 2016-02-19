@@ -541,9 +541,30 @@ GotoXYProc:
 %endmacro
 
 %imacro StdOutChar 0-1 dl
-	mov		dl, %1
-	mov		ah, 0x02
-	int		0x21
+;    %ifdef StdOutAllChars
+;        push    ax
+;        push    bx
+;        push    cx
+;        push    dx
+;        mov     ah, 0x40
+;        mov     bx, 1
+;        mov     cx, 1
+;        mov     [%%TextChar], dl
+;        mov     dx, %%TextChar
+;        int     0x21
+;        pop     dx
+;        pop     cx
+;        pop     bx
+;        pop     ax
+;        jmp     %%Done
+;    %%TextChar:
+;        db      0
+;    %%Done:
+;    %else
+        mov		dl, %1
+        mov		ah, 0x02
+        int		0x21
+;	%endif
 %endmacro
 
 %imacro StdIn 0
