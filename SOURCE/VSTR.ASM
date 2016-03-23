@@ -39,6 +39,8 @@
 
     CommandLineParser       ; insert code for command line parsing
 
+    UseAdvancedStdIn
+
 PassThrough:
     GetStdIn
     jnc     NoInput

@@ -24,6 +24,8 @@ MainParsing:
 
     CommandLineParser       ; insert code for command line parsing
 
+    UseAdvancedStdIn
+
     mov         al, [NoNewLine]
     cmp         al, 0
     jne         Done

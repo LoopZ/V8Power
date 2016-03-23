@@ -567,7 +567,9 @@ GotoXYProc:
 ;	%endif
 %endmacro
 
-%imacro StdIn 0
+%imacro UseBasicStdIn 0
+    jmp     %%Over
+BasicStdIn:
 	mov		ah, 0x0b
 	int		0x21
 	cmp		al, 0
@@ -579,6 +581,49 @@ GotoXYProc:
 %%NoInput:
 	clc
 %%Done:
+    ret
+%%Over:
+%endmacro
+
+%imacro UseAdvancedStdIn 0
+    jmp     %%Over
+AdvancedStdIn:
+    push    bx
+    push    cx
+    push    dx
+    push    ds
+    mov     ah, 0x0b
+    int     0x21
+    cmp     al, 0x00
+    je      %%NoInput
+    mov     ah, 0x3f
+    mov     bx, 0x0000
+    mov     cx, 0x0001
+    push    cs
+    pop     ds
+    mov     dx, %%Buffer
+    int     0x21
+    jc      %%NoInput
+    cmp     ax, 0x0001   ; Bytes read
+    jne     %%NoInput
+    mov     al, [%%Buffer]
+    stc
+    jmp     %%Done
+%%Buffer:
+    db      0
+%%NoInput:
+    clc
+%%Done:
+    pop     ds
+    pop     dx
+    pop     cx
+    pop     bx
+    ret
+%%Over:
+%endmacro
+
+%imacro StdIn 0
+    call AdvancedStdIn
 %endmacro
 
 ; Very last CR/LF is ignored.
