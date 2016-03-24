@@ -397,8 +397,8 @@ Modes:
 
 Fonts:
 	Font8	Select 8x8 ROM font. (also F8)
-	Font14	Select 8x8 EGA ROM font. (also F14)
-	Font16	Select 8x8 VGA ROM font. (also F16)
+	Font14	Select 8x14 EGA ROM font. (also F14)
+	Font16	Select 8x16 VGA ROM font. (also F16)
 </pre>
 </td></tr>
 </table>
