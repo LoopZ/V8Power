@@ -364,6 +364,10 @@ General system information utility.
                      2 - Removable Media (like Floppy)
                      1 - (Reserved)
                      0 - No Special Conditions
+    /M			Return Machine Type (This may break on future platforms)
+    			Returns these exit codes:
+    				0 - Unknown, Normal or Native Hardware.
+    			  101 - DOSBox.
 
     tba         (Still under development, more to be announced)
 

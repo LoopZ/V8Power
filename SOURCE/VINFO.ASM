@@ -34,6 +34,7 @@ Done:
     Terminate   al
 
 %include "DSKTLS.INC"
+%include "MACHINES.INC"
 
 %ifdef ASCII_Table
 ShowAscii:
@@ -138,6 +139,20 @@ SwitchD:
 .Done:
     ret
 
+SwitchM:
+    mov         [OptionProcessed], cx
+    MachineStatus
+    cmp         al, 0
+    je          .Skip
+    mov         [ExitCode], al
+.Skip:
+    mov         ah, [QueryMode]
+    cmp         ah, 1
+    jne         .Done
+    MachineStatusMessage  al
+.Done:
+    ret
+
 NoSwitch:
     LookupParam OptionsTable
     cmp         ax, 0xffff
@@ -159,6 +174,7 @@ CommandLineSwitches:
     SwitchData  0,  0, NoSwitch
     SwitchData 'D', 1, SwitchD
     SwitchData 'V', 0, SwitchV
+    SwitchData 'M', 0, SwitchM
     HelpSwitchData
     SwitchData  0,  0, 0
 

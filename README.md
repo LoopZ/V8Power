@@ -331,6 +331,13 @@ Returns these error codes:<br>
 0 - No Special Conditions<br>
 </pre>
 </td></tr>
+<tr><td><b>/M</b></td><td>Return Machine Type (This may break on future platforms).<br>
+Returns these exit codes:<br>
+<br>
+<pre>
+0 - Unknown, Normal or Native Hardware.<br>
+101 - DOSBox.<br>
+</pre>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
 * * *
