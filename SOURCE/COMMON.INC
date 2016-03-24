@@ -540,31 +540,50 @@ GotoXYProc:
 	int		0x21
 %endmacro
 
+%imacro AdvancedStdOut 0
+	%ifndef AdancedStdOut_Declared
+		%idefine AdancedStdOut_Declared
+            jmp    %%Over
+    AdvancedStdOutFunc:
+            push    ax
+            push    bx
+            push    cx
+            push    ds
+            mov     [%%TextChar], dl
+            mov     ah, 0x40
+            mov     bx, 1
+            mov     cx, bx
+            push    cs
+            pop     ds
+            mov     dx, %%TextChar
+            int     0x21
+            pop     ds
+            pop     cx
+            pop     bx
+            pop     ax
+            ret
+        %%TextChar:
+            db      0
+        %%Over:
+    %endif
+        call AdvancedStdOutFunc
+%endmacro
+
 %imacro StdOutChar 0-1 dl
-;    %ifdef StdOutAllChars
-;        push    ax
-;        push    bx
-;        push    cx
-;        push    dx
-;        mov     ah, 0x40
-;        mov     bx, 1
-;        mov     cx, 1
-;        mov     [%%TextChar], dl
-;        mov     dx, %%TextChar
-;        int     0x21
-;        pop     dx
-;        pop     cx
-;        pop     bx
-;        pop     ax
-;        jmp     %%Done
-;    %%TextChar:
-;        db      0
-;    %%Done:
-;    %else
-        mov		dl, %1
+    %ifdef StdOutAllChars
+        push    dx
+        %ifnidni 1, dl
+            mov     dl, %1
+        %endif
+        AdvancedStdOut
+        pop     dx
+    %else
+        %ifnidni 1, dl
+            mov		dl, %1
+        %endif
         mov		ah, 0x02
         int		0x21
-;	%endif
+	%endif
 %endmacro
 
 %imacro UseBasicStdIn 0

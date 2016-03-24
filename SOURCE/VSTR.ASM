@@ -17,7 +17,7 @@
 ; NASM for DOS
 
 %idefine NoVideoOutput
-; %idefine StdOutAllChars
+%idefine StdOutAllChars
 
 %include "COMMON.INC"
 
@@ -245,8 +245,7 @@ SwitchFields:
     mov         bx, 0x0001
     mov         [FieldPos], bx
 .SendCharOut:
-	mov		ah, 0x02
-	int		0x21
+	StdOutChar
 .NotThisField:
     ret
 .FieldIDMatch:
