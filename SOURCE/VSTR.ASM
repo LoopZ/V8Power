@@ -375,10 +375,26 @@ SwitchB:
     mov         [Filter], al
     ret
 
+SwitchI:
+    mov         al, [Filter]
+    or          al, 00001000b
+    mov         [Filter], al
+    ret
+
 InputFilter:
     mov     dh, [Filter]
     cmp     dh, 0
     je      .Done
+    test    dh, 00001000b
+    jz      .IndentOK
+    mov     ah, [LeadSpaces]
+    cmp     ah, 0x00
+    jne     .IndentOK
+    cmp     al, 0x20
+    je      .Ignored
+    cmp     al, 0x09
+    je      .Ignored
+.IndentOK:
     xor     ah, ah
     test    dh, 00000001b
     jz      .NotUppercase
@@ -423,9 +439,25 @@ InputFilter:
     jmp     .NotBlankLines
 .NotBlankLines:
 .Done:
+    cmp     al, 0x0d
+    je      .ResetLead
+    cmp     al, 0x0a
+    je      .ResetLead
+    cmp     al, 0x20
+    je     .NoResetLead
+    cmp     al, 0x09
+    je     .NoResetLead
+    mov     [LeadSpaces], al
+    jmp     .NoResetLead
+.ResetLead:
+    xor     dh, dh
+    mov     [LeadSpaces], dh
+.NoResetLead:
     stc
     ret
 .Ignored:
+    xor     dh, dh
+    mov     [LeadSpaces], dh
     clc
     ret
 
@@ -462,6 +494,7 @@ CommandLineSwitches:
     SwitchData  'L', 1, SwitchL
     SwitchData  'S', 1, SwitchS
     SwitchData  'U', 0, SwitchU
+    SwitchData  'I', 0, SwitchI
     SwitchData  'D', 0, SwitchD
     SwitchData  'B', 0, SwitchB
     SwitchData  'F', 1, SwitchF
@@ -498,3 +531,5 @@ FieldPos:
     dw 0
 BlankCRLF:
     dw 0
+LeadSpaces:
+    db 0

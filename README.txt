@@ -411,6 +411,7 @@ Simple String processing utility. Outputs results to STDOUT.
     /U          Input Filter: Convert to upper case.
     /D          Input Filter: Convert to lower case.
     /B          Input Filter: Ignore blank lines.
+    /I			Input Filter: Ignore indentation.
     /C code     Write an ASCII character code.
     /R times    Repeat the next write times number of times. (1-65535)
     /L line     Return only this line from standard input. (0-65535)

@@ -375,6 +375,7 @@ Simple String processing utility. Outputs results to STDOUT.
 <tr><td><b>/U</td><td>Input Filter: Convert to upper case.</td></tr>
 <tr><td><b>/D</td><td>Input Filter: Convert to lower case.</td></tr>
 <tr><td><b>/B</td><td>Input Filter: Ignore blank lines.</td></tr>
+<tr><td><b>/I</td><td>Input Filter: Ignore indentation.</td></tr>
 <tr><td><b>/C <i>code</i></b></td><td>Write an ASCII character
 <b><i>code</i></b>.</td></tr>
 <tr><td><b>/R <i>times</i></b></td><td>Repeat the next write <b><i>times</i></b> number of times. (1-65535)</td></tr>
