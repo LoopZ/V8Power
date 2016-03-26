@@ -350,7 +350,7 @@ Sets current errorlevel. Mostly for testing batch file logic.
 * * *
 #### vmath *[options]* ######
 Super simple math utility. It is NOT as a calculator and is limited to working
-on numbers from 0-65535. Good for looping, determining screen offsets and etc.
+on numbers from 0-32767. Good for looping, determining screen offsets and etc.
 <table>
 <tr><td width="125pt"><b><i>+</i></b>,<b><i>ADD</i></b></td><td>Add next number to sum.</td></tr>
 <tr><td><b><i>-</i></b>,<b><i>SUB</i></b></td><td>Subtract next number from sum.</td></tr>
