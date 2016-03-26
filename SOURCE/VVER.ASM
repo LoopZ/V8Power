@@ -14,7 +14,7 @@
 ;   with this program; if not, write to the Free Software Foundation, Inc.,
 ;   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-; NASM for DOS 
+; NASM for DOS
 
 %idefine NoVideoOutput          ; A lie, but only using STDOUT
 
@@ -38,7 +38,7 @@ OptAll:
     StdOutCRLF
     call    OptLic
     ret
-    
+
 OptName:
     StdOutStr OptNameMsg
     StdOutCRLF
@@ -72,16 +72,16 @@ NoSwitch:
     mov     [Shown], bl
     jmp     ax
     ret
-    
+
 Oops:
     StdOutStr CommandLineErrorMsg
     StdOutCRLF
     Terminate 100
-    
+
     HelpSwitchHandler
 
 CommandLineSwitches:
-    SwitchData  0,  0, NoSwitch  
+    SwitchData  0,  0, NoSwitch
     HelpSwitchData
     SwitchData  0,  0, 0
 
@@ -101,11 +101,11 @@ OptionsTable:
     TableData "URL", OptURL
     TableData "EMAIL", OptEMail
     TableEnd
-    
+
 OptNameMsg:
-    DB 'V8Power Tools for DOS',0    
+    DB 'V8Power Tools for DOS',0
 OptVerMsg:
-    DB 'Version 0/0/2016 (Pre-release)',0
+    DB 'Version 3/26/2016',0
 OptCopyMsg:
     DB 'Copyright (C) 2016 Jerome Shidel',0
 OptEmailMsg:
