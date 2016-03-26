@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PRERELEASE='.pre'
+# PRERELEASE='.pre'
 
 DESTINATION='Downloads'
 RELEASE=0
