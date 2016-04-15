@@ -366,8 +366,16 @@ General system information utility.
                      0 - No Special Conditions
     /M			Return Machine Type (This may break on future platforms)
     			Returns these exit codes:
-    				0 - Unknown, Normal or Native Hardware.
+    				0 - Unknown, Normal or Native 8086 Hardware.
+    				1 - 80186
+    				2 - 80286
+    				3 - 80386
+    				4 - 80486
+    				5 - 80586
+    				6 - 80686 or better
     			  101 - DOSBox.
+    			  102 - QEMU.
+    			  200 - General, other emulator detected.
 
     tba         (Still under development, more to be announced)
 

@@ -335,8 +335,16 @@ Returns these error codes:<br>
 Returns these exit codes:<br>
 <br>
 <pre>
-0 - Unknown, Normal or Native Hardware.<br>
+0 - Unknown, Normal or Native 8086 Hardware.<br>
+1 - 80186<br>
+2 - 80286<br>
+3 - 80386<br>
+4 - 80486<br>
+5 - 80586<br>
+6 - 80686 or better<br>
 101 - DOSBox.<br>
+102 - QEMU.<br>
+200 - General, other emulator detected.<br>
 </pre>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
