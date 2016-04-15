@@ -105,7 +105,7 @@ OptionsTable:
 OptNameMsg:
     DB 'V8Power Tools for DOS',0
 OptVerMsg:
-    DB 'Version 3/26/2016',0
+    DB 'Version 4/15/2016',0
 OptCopyMsg:
     DB 'Copyright (C) 2016 Jerome Shidel',0
 OptEmailMsg:

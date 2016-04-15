@@ -141,7 +141,7 @@ SwitchD:
 
 SwitchM:
     mov         [OptionProcessed], cx
-    MachineStatus
+    DetectMachine
     cmp         al, 0
     je          .Skip
     mov         [ExitCode], al

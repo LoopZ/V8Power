@@ -30,6 +30,9 @@ org 0x100
 
 jmp BasicInitialize
 
+VersionID:
+	dd 0
+
 %imacro pushall 0
 	pushf
 	push	ax
@@ -74,9 +77,6 @@ jmp BasicInitialize
     mov     [%1], bx
 %%NotOpen:
 %endmacro
-
-VersionID:
-	dd 0
 
 %idefine VideoOutput
 %idefine TextOutput

@@ -17,79 +17,63 @@
 
 ; NASM for DOS
 
-%imacro CheckDOSBOX 0
-    pushf
-    push        es
-    push        di
-    push        si
-    push        cx
-    push        bx
+%imacro DetectMachine 0
 
-    mov         bx, 0xfe03
+cpu 8086
+use16
+
+    cld
+    mov         al, 0x90
+    mov         cx, 0x0008
+    mov         di, $
+    rep         stosb
+    jmp         VirtualMachine
+    nop
+    nop
+
+    mov         si, DOSBOXString
+    mov         bx, 0xfe00
     mov         es, bx
-    mov         si, 0x0000
-    mov         cx, 0x0010
-    mov         di, %%DOSBOX
-    xor         bx, bx
-    clc
-    mov         ah, 0x02
-%%Checking:
-    mov         al, [es:si]
-    mov         ah, [cs:di]
-    xor         al, ah
-    or          bl, al
-    inc         si
-    inc         di
-    loop        %%Checking
-    cmp         bl, 0x00
-    jne         %%NotDOSBOX
-    mov         ax, 0x0001
-    jmp         %%Done
-%%NotDOSBOX:
-    xor         ax, ax
-    jmp         %%Done
+    mov         cx, 0x0100
+    call        SearchString
+    jnc         NotDOSBox
+    mov         ax, 101
+    jmp         %%DetectDone
 
-%%DOSBOX:
-    db          'The DOSBox Team.'
-%%Done:
-    pop         bx
-    pop         cx
-    pop         si
-    pop         di
-    pop         es
-    popf
-%endmacro
+NotDOSBox:
+    mov         si, QEMUString
+    mov         bx, 0xf000
+    mov         es, bx
+    mov         cx, 0xf000
+    call        SearchString
+    jnc         DetectCPU
+    mov         ax, 102
+    jmp         %%DetectDone
 
-%imacro MachineStatus 0
-
-    CheckDOSBOX
-    cmp         al, 0
-    je          %%NotDOSBOX
-    mov         al, 101
-    jmp         %%Done
-
-%%NotDOSBOX:
+DetectCPU:
     ; Test Pre-186, CL is AND with 0x0f prior to/during shr
     mov         cl, 0x20
     mov         ax, 0x0001
     shr         ax, cl
     cmp         ax, 0x0000
-    jne         %%186OrBetter
+    jne         .186OrBetter
     xor         al, al
-    jmp         %%Done
-%%186OrBetter:
+    jmp         .Done
+.186OrBetter:
     ; At least a 80186
     ; Pre-286 updates the Stack Pointer before push
     mov         ax, sp
     push        sp
     pop         bx
     cmp         ax, bx
-    je          %%286OrBetter
+    je          .286OrBetter
     mov         ax, 1
-    jmp         %%Done
-%%286OrBetter:
+    jmp         .Done
+.286OrBetter:
     ; At least a 286
     ; Check push/pop of upper flag bits for 386 or better
+cpu 286
+
     pushf
     mov         ax, 0x7000
     push        ax
@@ -99,17 +83,17 @@
     popf
     and         ah, 0x70
     cmp         ah, 0x70
-    je          %%386OrBetter
+    je          .386OrBetter
     mov         al, 2
-    jmp         %%Done
-%%386OrBetter:
+    jmp         .Done
+.386OrBetter:
     ; At least a 386
     ; Test setting AC Flag
 cpu 386
 
     mov         bx, sp
     and         sp, 0xfffc
-
+    push        ebx
 
     pushfd
     pushfd
@@ -120,52 +104,111 @@ cpu 386
     pushfd
     pop         eax
     popfd
-    mov         sp, bx
+
     test        eax, 0x40000
 
-    jnz         %%486OrBetter
+    jnz         .486OrBetter
 
     mov         al, 3
-    jmp         %%Done32
-%%486OrBetter:
+    jmp         .Done32
+.486OrBetter:
 
 cpu 486
     ; At least a 486
     ; Test setting ID Flag Bit
 
-    mov         ecx, 1
-    shl         ecx, 21
     pushfd
     pushfd
-    pop         eax
-    mov         ebx, eax
-    xor         eax, ecx
-    push        eax
+    mov         ecx, 0x00200000
+    mov         ebx, [esp]
+    xor         [esp], ecx
     popfd
     pushfd
     pop         eax
+    xor         eax, [esp]
     popfd
     and         eax, ecx
     and         ebx, ecx
     cmp         eax, ebx
-    jne         %%UseCPUid
-    mov         al, 4
-    jmp         %%Done32
+    jne         .UseCPUid
+    mov         al, 1
+    jmp         .Done32
 
-%%UseCPUid:
+.UseCPUid:
 
 cpu 586
+
+;    mov         eax, 0
+;    cpuid
+;    mov         [CPUname], ebx
+;    mov         [CPUname + 4], edx
+;    mov         [CPUname + 8], ecx
+
     mov         eax, 1
     cpuid
     shr         ax, 0x08
     and         ax, 0x0f
 
-%%Done32:
+.Done32:
+
+cpu 386
+
+    pop         ebx
+    mov         sp, bx
 
 cpu 8086
-use16
 
-%%Done:
+.Done:
+
+;    push        ax
+;    mov         bx, CPUname
+;    call        PrintStr
+;    mov         dl, 32
+;    int         0x21
+;    pop         ax
+    jmp         %%DetectDone
+
+VirtualMachine:
+    mov         ax, 200
+    jmp         %%DetectDone
+
+SearchString:
+    cld
+    xor         bx, bx
+    xor         di, di
+.Looping:
+    mov         dl, [cs:si+bx]
+    cmp         dl, 0
+    je          .Found
+    mov         dh, [es:di+bx]
+    cmp         dh, 0x61
+    jb          .NotLower
+    cmp         dh, 0x7a
+    ja          .NotLower
+    sub         dh, 0x20
+.NotLower:
+    cmp         dl, dh
+    jne         .NotMatch
+    inc         bx
+    jmp         .Looping
+.NotMatch:
+    xor         bx, bx
+    inc         di
+    loop         .Looping
+    clc
+    ret
+.Found:
+    stc
+    ret
+
+DOSBOXString:
+    db 'THE DOSBOX TEAM', 0
+QEMUString:
+    db 'QEMU',0
+
+
+%%DetectDone:
+
 %endmacro
 
 %imacro MachineStatusMessage 1
@@ -193,14 +236,16 @@ use16
 %%MsgCRLF:
     db CRLF,0
 %%Messages:
-    db 1, '80186',0
-    db 2, '80286',0
-    db 3, '80386',0
-    db 4, '80486',0
-    db 5, '80586',0
-    db 6, '80686',0
-    db 101,'DOSBox',0
-    db 0,'8086',0
+    db   1, '80186',0
+    db   2, '80286',0
+    db   3, '80386',0
+    db   4, '80486',0
+    db   5, '80586',0
+    db   6, '80686',0
+    db 101, 'DOSBox',0
+    db 102, 'QEMU', 0
+    db 200, 'Emulation',0
+    db   0, '8086',0
 %%Done:
 
 %endmacro
