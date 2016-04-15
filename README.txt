@@ -364,18 +364,18 @@ General system information utility.
                      2 - Removable Media (like Floppy)
                      1 - (Reserved)
                      0 - No Special Conditions
-    /M			Return Machine Type (This may break on future platforms)
-    			Returns these exit codes:
-    				0 - Unknown, Normal or Native 8086 Hardware.
-    				1 - 80186
-    				2 - 80286
-    				3 - 80386
-    				4 - 80486
-    				5 - 80586
-    				6 - 80686 or better
-    			  101 - DOSBox.
-    			  102 - QEMU.
-    			  200 - General, other emulator detected.
+    /M          Return Machine Type (This may break on future platforms)
+                Returns these exit codes:
+                    0 - Unknown, Normal or Native 8086 Hardware.
+                    1 - 80186
+                    2 - 80286
+                    3 - 80386
+                    4 - 80486
+                    5 - 80586
+                    6 - 80686 or better
+                  101 - DOSBox.
+                  102 - QEMU.
+                  200 - General, other emulator detected.
 
     tba         (Still under development, more to be announced)
 
@@ -400,11 +400,11 @@ on numbers from 0-32767. Good for looping, determining screen offsets and etc.
     *, MUL      Multiply sum by next number.
     /, DIV      Divide sum by next number.
     \, MOD      Divide sum by next number and set sum to the remainder.
-    AND			Logical AND.
-    OR			Logical OR.
-    XOR			Logical XOR.
-    SHR			Bit shift right.
-    SHL			Bit shift left.
+    AND         Logical AND.
+    OR          Logical OR.
+    XOR         Logical XOR.
+    SHR         Bit shift right.
+    SHL         Bit shift left.
 
     /H          Set output to hexadecimal.
     /D          Set output to decimal.
@@ -419,15 +419,15 @@ Simple String processing utility. Outputs results to STDOUT.
     /U          Input Filter: Convert to upper case.
     /D          Input Filter: Convert to lower case.
     /B          Input Filter: Ignore blank lines.
-    /I			Input Filter: Ignore indentation.
+    /I          Input Filter: Ignore indentation.
     /C code     Write an ASCII character code.
     /R times    Repeat the next write times number of times. (1-65535)
     /L line     Return only this line from standard input. (0-65535)
                 (Note: vline /L TOTAL will return the total number of lines.)
     /S s1 s2    Search and replace all occurrences of s1 with s2.
     /F s1 s2    Set delimiter to s1 and only return field position or range s2.
-    /T s2     	Return tab field position or range s2.
-    /P s1		Print text s1.
+    /T s2       Return tab field position or range s2.
+    /P s1       Print text s1.
 
     tba         (Still under development, more to be announced)
 
@@ -462,7 +462,7 @@ File and directory utility.
     /D file     Calculate and output drive letter of file to STDOUT.
     /P file     Calculate and output path of file to STDOUT.
     /C          Use before /D or /P to change drive or path without text output.
-    /X			Use before /D or /P to return errorlevel 1-26 of drive letter.
+    /X          Use before /D or /P to return errorlevel 1-26 of drive letter.
     /F file     Calculate and output complete filename to STDOUT.
     /N file     Calculate and output file's basename to STDOUT.
     /E file     Calculate and output file's extension to STDOUT.
