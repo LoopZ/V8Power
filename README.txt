@@ -270,7 +270,6 @@ Draw a progress bar at current location without moving cursor.
     /A n        Set text attribute to n.
     /B color    Set the background text attribute to color (or a value).
     /F color    Set the forground text attribute to color (or a value).
-    /X column   Screen column to start the box.
     /W width    Override default width of the bar.
                 (default is from cursor to end of line)
     value       Sets the value in a percent of progress.
