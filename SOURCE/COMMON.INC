@@ -33,6 +33,10 @@ jmp BasicInitialize
 VersionID:
 	dd 0
 
+%imacro IdleCPU 0
+    hlt
+%endmacro
+
 %imacro pushall 0
 	pushf
 	push	ax
@@ -735,6 +739,7 @@ AdvancedStdIn:
 %%Loop:
 	mov			dx, [es:di]
 %%Wait:
+    IdleCPU
 	mov			ax, [es:di]
 	cmp			dx, ax
 	je			%%Wait
@@ -762,6 +767,7 @@ AdvancedStdIn:
 	mov  		[%%DelayData], al
 	int  		0x15
 %%Loop:
+    IdleCPU
 	mov  		al, [%%DelayData]
 	test 		al, 0x80
 	jz   		%%Loop

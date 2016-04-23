@@ -116,7 +116,6 @@ ExpandFileName:
     pop     si
     ret
 
-
 DoPrint:
     StdOutStr Buffer
 DoPrint2:
@@ -246,14 +245,16 @@ SwitchE:
 SwitchU:
     GetIntVec   0x24, SavedInt24
     push    ds
+    cli
     mov     dx, MyInt24
     mov     ax, 0x2524
     int     0x21
+    sti
     pop     ds
     call    ExpandFileName
     mov     al, [Unique]
     cmp     al, 0x00
-    jne     InvalidOption
+    jne     .SwitchFailed
     xor     cx, cx
 .Searching:
     push    cx              ; warning if leave func before .CWasPopped you must
@@ -312,6 +313,10 @@ SwitchU:
     StdOutCRLF
     SetIntVec 0x24, SavedInt24
     Terminate 101
+
+.SwitchFailed:
+    SetIntVec 0x24, SavedInt24
+    jmp       InvalidOption
 
 NoSwitch:
     LookupParam OptionsTable

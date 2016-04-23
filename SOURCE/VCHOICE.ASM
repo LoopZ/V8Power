@@ -171,6 +171,7 @@ KeyBoardLoop:
     mov         bx, 0x006c
     mov         dx, [es:bx]
 .WaitLoop:
+	IdleCPU
     mov         ax, [TimeOut]
     cmp         ax, 0
     je          .NoTimeOut

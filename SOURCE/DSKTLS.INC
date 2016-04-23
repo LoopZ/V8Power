@@ -75,9 +75,11 @@
 %imacro IsFormatted 1
         GetIntVec   0x24, SavedInt24
         push    ds
+        cli
         mov     dx, MyInt24
         mov     ax, 0x2524
         int     0x21
+        sti
         pop     ds
 
         xor     al, al
@@ -106,7 +108,7 @@
 
     %%Done:
         push        ax
-        SetIntVec 0x24, SavedInt24
+        SetIntVec   0x24, SavedInt24
         pop         ax
 
 %endmacro

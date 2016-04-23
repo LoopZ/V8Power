@@ -59,9 +59,12 @@ rm -rf "${HOME}/${DESTINATION}/${PROJECT}/SOURCE/${PROJECT}/BIN"
 mkdir -p "${HOME}/${DESTINATION}/${PROJECT}/SOURCE/${PROJECT}/SOURCE"
 cp -r SOURCE/* "${HOME}/${DESTINATION}/${PROJECT}/SOURCE/${PROJECT}/SOURCE"
 
+cp -r V8HELP.BAT "${HOME}/${DESTINATION}/${PROJECT}/BIN"
+
 cd "${HOME}/${DESTINATION}"
 [[ -f "${PROJECT}.zip" ]] && rm "${PROJECT}.zip"
 cd "${PROJECT}"
+rm "BIN/V8POWER.TXT" >/dev/null
 zip -9 -r -k "../${PROJECT}.zip" *
 cd "${CURDIR}"
 

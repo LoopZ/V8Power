@@ -36,7 +36,7 @@ Compiling V8Power Tools
 
         Precompiled versions are available at http://up.lod.bz/V8Power.
 
--------------------------------------------------------------------------------
+===============================================================================
 
 V8Power Tools Tested Compatibility
 
@@ -52,7 +52,7 @@ Limited compatiblilty of advanced features (no "set /p" batch support):
     Windows 98 Shell and Command Line
     Windows XP SP3 Shell (except vcursor)
 
--------------------------------------------------------------------------------
+===============================================================================
 
 V8Power Tools Usage
 
@@ -74,7 +74,7 @@ Here is some basic information reguarding all utilities and how they operate.
     Unless overriden, most utilities use the text attribute at the current
     cursor location.
 
--------------------------------------------------------------------------------
+===============================================================================
 
 Here is color table used for all **/A**, **/F** and **/B** switches:
 
@@ -97,7 +97,8 @@ Here is color table used for all **/A**, **/F** and **/B** switches:
     14          0x0e        Yellow
     15          0x0f        White
 
-===============================================================================
+-------------------------------------------------------------------------------
+
 vcls [options]
 
 Clear screen, area or row (line).
@@ -121,6 +122,7 @@ Clear screen, area or row (line).
     /H height   Total height of area to clear.
 
 -------------------------------------------------------------------------------
+
 vcursor [options]
 
 Change or query the cursor size and shape.
@@ -495,4 +497,6 @@ Prompt for text input.
                 returns the initial default value. (returns errorlevel 1)
 
     tba         (Still under development, more to be announced)
+
+-------------------------------------------------------------------------------
 
