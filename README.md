@@ -83,7 +83,13 @@ Here is color table used for all **/A**, **/F** and **/B** switches:
 <tr><td>14</td><td>0x0e</td><td>Yellow</td></tr>
 <tr><td>15</td><td>0x0f</td><td>White</td></tr>
 </table>
-
+* * *
+#### v8help *[options]* ######
+Displays help text from V8Power Tools README.TXT document.
+<table>
+<tr><td width="125pt"></td><td>Lists all V8Power Tools commands.</td></tr>
+<tr><td><b><i>commmand</i></b></td><td>Displays help for that V8Power Tool.</td></tr>
+</table>
 * * *
 #### vcls *[options]* ######
 Clear screen, area or row (line).
@@ -388,7 +394,8 @@ Simple String processing utility. Outputs results to STDOUT.
 <b><i>code</i></b>.</td></tr>
 <tr><td><b>/R <i>times</i></b></td><td>Repeat the next write <b><i>times</i></b> number of times. (1-65535)</td></tr>
 <tr><td><b>/L <i>line</i></b></td><td>Return only this <b><i>line</i></b> from standard input. (0-65535)<br>
-<i>(Note: vline /L <b>TOTAL</b> will return the total number of lines.)</i></td></tr>
+<i>(Note: vline /L <b>TOTAL</b> will return the total number of lines.)</i>
+Also, adding :n will output n number of lines.</td></tr>
 <tr><td><b>/S <i>s1 s2</i></b></td><td>Search and replace all occurrences of <b><i>s1</b></i> with <b><i>s2</b></i>.</td></tr>
 <tr><td><b>/F <i>s1 s2</i></b></td><td>Set delimiter to <b><i>s1</b></i> and only return field position or range <b><i>s2</b></i>. </td></tr>
 <tr><td><b>/T <i>s2</i></b></td><td>Return tab field position or range <b><i>s2</b></i>. </td></tr>

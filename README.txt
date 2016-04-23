@@ -99,6 +99,15 @@ Here is color table used for all **/A**, **/F** and **/B** switches:
 
 -------------------------------------------------------------------------------
 
+v8help [options]
+
+Displays help text from V8Power Tools README.TXT document.
+
+	[none]		Lists all V8Power Tools commands.
+	command		Displays help for that V8Power Tool.
+
+-------------------------------------------------------------------------------
+
 vcls [options]
 
 Clear screen, area or row (line).
@@ -336,7 +345,7 @@ Simple wait for keypress or time-out.
 
 -------------------------------------------------------------------------------
 
-vline
+vline [options]
 
 Draws a line.
 
@@ -425,6 +434,7 @@ Simple String processing utility. Outputs results to STDOUT.
     /R times    Repeat the next write times number of times. (1-65535)
     /L line     Return only this line from standard input. (0-65535)
                 (Note: vline /L TOTAL will return the total number of lines.)
+                Also, adding :n will output n number of lines.
     /S s1 s2    Search and replace all occurrences of s1 with s2.
     /F s1 s2    Set delimiter to s1 and only return field position or range s2.
     /T s2       Return tab field position or range s2.
@@ -455,7 +465,7 @@ Set and query current video text modes.
 
 -------------------------------------------------------------------------------
 
-vfdutil
+vfdutil [options]
 
 File and directory utility.
 
@@ -475,7 +485,7 @@ File and directory utility.
 
 -------------------------------------------------------------------------------
 
-vask
+vask [options]
 
 Prompt for text input.
 

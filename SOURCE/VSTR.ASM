@@ -290,7 +290,6 @@ SwitchP:
 .Done:
     ret
 
-
 SwitchL:
     LookupParam OptionsLines
     cmp         ax, 0xffff
@@ -298,7 +297,44 @@ SwitchL:
     jmp         ax
 
 .NotOption:
+    mov         bx, di
+.CheckMulti:
+    cmp         bx, si
+    je          .SingleLine
+    mov         al, [bx]
+    cmp         al, ':'
+    je          .MultiLine
+    inc         bx
+    jmp         .CheckMulti
+.MultiLine:
+    cmp         bx, di
+    je          InvalidOption
+    mov         ax, bx
+    inc         ax
+    cmp         ax, si
+    je          InvalidOption
+    push        si
+    mov         si, bx
+    dec         si
+    mov         cx, bx
+    sub         cx, di
+    push        bx
     NumberParam
+    pop         bx
+    pop         si
+    push        ax
+    mov         di, bx
+    inc         di
+    mov         cx, si
+    sub         cx, di
+    NumberParam
+    mov         cx, ax
+    pop         ax
+    jmp         .ProcessLines
+.SingleLine:
+    NumberParam
+    mov         cx, 1
+.ProcessLines:
     mov         bx, ax
     cmp         bx, 0
     je          .ThisLine
@@ -319,10 +355,20 @@ SwitchL:
     cmp         al, 0x0a
     je          .ThisLine
     cmp         al, 0x0d
-    je          .Done
+    je          .CheckDone
     mov         dl, al
     StdOutChar
     jmp         .ThisLine
+.CheckDone:
+    cmp         cx, 1
+    jna          .Done
+    mov         dl, 0x0d
+    StdOutChar
+    mov         dl, 0x0a
+    StdOutChar
+    dec         cx
+    jmp         .ThisLine
+
 .Done:
     GetStdIn
     jc          .Done
@@ -358,28 +404,26 @@ TotalLines:
     ret
 
 SwitchU:
-    mov         al, [Filter]
-    or          al, 00000001b
-    mov         [Filter], al
-    ret
+    mov          al, 00000001b
+    jmp         SwitchDoOr
 
 SwitchD:
-    mov         al, [Filter]
-    or          al, 00000010b
-    mov         [Filter], al
-    ret
+    mov         al, 00000010b
+    jmp         SwitchDoOr
 
 SwitchB:
-    mov         al, [Filter]
-    or          al, 00000100b
-    mov         [Filter], al
-    ret
+    mov          al, 00000100b
+    jmp         SwitchDoOr
 
 SwitchI:
-    mov         al, [Filter]
-    or          al, 00001000b
-    mov         [Filter], al
+    mov          al, 00001000b
+
+SwitchDoOr:
+    mov         ah, [Filter]
+    or          ah, al
+    mov         [Filter], ah
     ret
+
 
 InputFilter:
     mov     dh, [Filter]
@@ -482,7 +526,7 @@ NoSwitch:
     NumberParam
     ; do something with ax
 
-.InvalidOption:
+InvalidOption:
     WriteStr    CommandLineErrorMsg
     Terminate   100
 
