@@ -22,15 +22,6 @@
 cpu 8086
 use16
 
-    cld
-    mov         al, 0x90
-    mov         cx, 0x0008
-    mov         di, $
-    rep         stosb
-    jmp         VirtualMachine
-    nop
-    nop
-
     mov         si, DOSBOXString
     mov         bx, 0xfe00
     mov         es, bx
@@ -46,9 +37,42 @@ NotDOSBox:
     mov         es, bx
     mov         cx, 0xf000
     call        SearchString
-    jnc         DetectCPU
+    jnc         NotQEMUBox
     mov         ax, 102
     jmp         %%DetectDone
+
+NotQEMUBox:
+    mov         si, VBOXString
+    mov         bx, 0xffe0
+    mov         es, bx
+    mov         cx, 0x0200
+    call        SearchString
+    jnc         NotVBOX
+    mov         ax, 103
+    jmp         %%DetectDone
+
+NotVBOX:
+    mov         si, VMString
+    mov         bx, 0xf330
+    mov         es, bx
+    mov         cx, 0x0200
+    call        SearchString
+    jnc         NotVMware
+    mov         ax, 104
+    jmp         %%DetectDone
+
+NotVMware:
+
+OtherEmulation:
+    cld
+    mov         al, 0x90
+    mov         cx, 0x0008
+    mov         di, $
+    rep         stosb
+    jmp         VirtualMachine
+    nop
+    nop
+
 
 DetectCPU:
     ; Test Pre-186, CL is AND with 0x0f prior to/during shr
@@ -205,6 +229,10 @@ DOSBOXString:
     db 'THE DOSBOX TEAM', 0
 QEMUString:
     db 'QEMU',0
+VBOXString:
+    db 'ORACLE VM VIRTUALBOX',0
+VMString:
+    db 'VMWARE VIRTUAL PLATFORM',0
 
 
 %%DetectDone:
@@ -244,6 +272,8 @@ QEMUString:
     db   6, '80686',0
     db 101, 'DOSBox',0
     db 102, 'QEMU', 0
+    db 103, 'VirtualBox', 0
+    db 104, 'VMware',0
     db 200, 'Emulation',0
     db   0, '8086',0
 %%Done:
