@@ -385,6 +385,8 @@ General system information utility.
                     6 - 80686 or better
                   101 - DOSBox.
                   102 - QEMU.
+                  103 - VirtualBox.
+                  104 - VMware.
                   200 - General, other emulator detected.
 
     tba         (Still under development, more to be announced)

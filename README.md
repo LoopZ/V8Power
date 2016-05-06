@@ -350,6 +350,8 @@ Returns these exit codes:<br>
 6 - 80686 or better<br>
 101 - DOSBox.<br>
 102 - QEMU.<br>
+103 - VirtualBox<br>
+104 - VMware<br>
 200 - General, other emulator detected.<br>
 </pre>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
