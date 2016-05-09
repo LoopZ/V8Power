@@ -2,7 +2,7 @@ Begin3
 Title:          V8Power Tools
 Version:        $VERSION$
 Entered-date:   $DATE$
-Description:    V8Power Tools batch file enhancement utilities for DOS.
+Description:    a set of batch file enhancement utilities for DOS that can provide text UI and other processing functions
 Keywords:       dos 16 bit batch vask vchoice vecho vpause vframe vmath vline vprogres
 Author:         Jerome Shidel <jerome _AT_ shidel.net>
 Maintained-by:  Jerome Shidel <jerome _AT_ shidel.net>

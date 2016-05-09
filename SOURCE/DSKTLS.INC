@@ -239,7 +239,8 @@ ErrorCode:
     cmp     al, bl
     jg      %%BadDriveLetter
 %%NotFloppy:
-    ; CD-ROM Fails Valid Test, Only works with MSCDEX driver.
+
+    ; ŸCD-ROM Fails Valid Test, Only works with MSCDEX driver.
     IsCDROM     [Drive]
     cmp         al, 0x01
     je          %%IsCDROM
