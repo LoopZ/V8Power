@@ -240,7 +240,7 @@ ErrorCode:
     jg      %%BadDriveLetter
 %%NotFloppy:
 
-    ; ŸCD-ROM Fails Valid Test, Only works with MSCDEX driver.
+    ; CD-ROM Fails Valid Test, Only works with MSCDEX driver.
     IsCDROM     [Drive]
     cmp         al, 0x01
     je          %%IsCDROM
