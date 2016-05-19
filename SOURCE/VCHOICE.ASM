@@ -351,6 +351,13 @@ NoSTDOUT:
     add         al, 100
 
 .NotPolling:
+	mov			bl, [PostalCode]
+	cmp			bl, 0
+	je			.NoPostal
+	cmp			bl, al
+	jne			.NoPostal
+	GoPostal
+.NoPostal:
     Terminate   al
 
 ControlCQuit:
@@ -650,11 +657,26 @@ OptCtrlC:
     mov         [ControlC], al
     ret
 
+OptPostal:
+    mov         al, 1
+    mov         [Postal], al
+    ret
+
 NoSwitch:
     LookupParam StyleTable
     cmp         ax, 0xffff
-    je          .Error
+    je          .CheckPostal
     jmp         ax
+.CheckPostal:
+	mov			bl, [Postal]
+	cmp			bl, 0
+	je			.Error
+    NumberParam
+	mov			[PostalCode], al
+	xor			al, al
+	mov			[Postal], al
+	ret
+
 .Error:
     WriteStr    CommandLineErrorMsg
     Terminate   100
@@ -686,6 +708,7 @@ StyleTable:
     TableData 'YESNO', OptYesNo
     TableData 'CTRL-C', OptCtrlC
     TableData 'CTRL+C', OptCtrlC
+    TableData 'POSTAL', OptPostal
     TableEnd
 
 Querying:       db 0
@@ -707,3 +730,5 @@ NotAttr:		db 0
 Position:		dw 0
 OptionBox:		dw 0,0
 Searching:		db 0
+Postal:			db 0
+PostalCode:		db 0

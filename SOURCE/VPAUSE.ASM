@@ -61,7 +61,7 @@ KeyBoardLoop:
     je			ControlCQuit
     mov         al, [Postal]
     cmp         al, 1
-    je          GonePostal
+    je          DoPostal
     mov         dx, [Position]
     GotoXY      dx
     Terminate 0
@@ -69,20 +69,13 @@ KeyBoardLoop:
 TimedOut:
     mov         al, [Postal]
     cmp         al, 1
-    je          GonePostal
+    je          DoPostal
     mov         dx, [Position]
     GotoXY      dx
     Terminate 1
 
-; Jump to Power On Self Test
-GonePostal:
-    mov         bx, cs
-    push        bx
-    mov         bx, 0xffff
-    push        bx
-    xor         bx, bx
-    push        bx
-    retf
+DoPostal:
+    GoPostal
 
 ControlCQuit:
     mov			al, 200

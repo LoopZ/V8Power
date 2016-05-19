@@ -176,6 +176,22 @@ GotoXYProc:
     jmp         ProgramTerminate
 %endmacro
 
+%imacro GoPostal 0
+    mov         ax, 0x0600
+    mov         bh, 0x07
+    xor         cx, cx
+    mov         dx, [ScreenMax]
+    int         0x10
+   ; Jump to Power On Self Test
+    mov         bx, cs
+    push        bx
+    mov         bx, 0xffff
+    push        bx
+    xor         bx, bx
+    push        bx
+    retf
+%endmacro
+
 %imacro WhereXY 0
     call        WhereXYProc
 %endmacro
