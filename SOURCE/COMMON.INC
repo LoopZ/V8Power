@@ -182,6 +182,53 @@ GotoXYProc:
     xor         cx, cx
     mov         dx, [ScreenMax]
     int         0x10
+    mov         bh, 0x4f
+    mov         dh, cl
+    int         0x10
+    mov         ax, 0x0500
+    int         0x10
+    mov         ax, 0x1301
+    mov         bl, bh
+    xor         bh, bh
+    xor         dx, dx
+    mov         bp, %%Message
+    mov         cx, %%MessageEnd - %%Message - 1
+    push        cs
+    pop         es
+    int         0x10
+    add         dx, cx
+    add         bp, %%MessageEnd - %%Message - 1
+    mov         cx, 10
+	mov			di, 0x006C
+	or          bl, 0x08
+%%Repeat:
+	push        cx
+
+	push        ax
+	push        dx
+	push        es
+
+	mov  		dx, 0x0040
+	mov			es, dx
+    mov         cx, 18
+%%Loop:
+	mov         ax, [es:di]
+%%Waiting:
+	mov			dx, [es:di]
+	cmp         ax, dx
+	je          %%Waiting
+	dec         cx
+	loopnz      %%Loop
+	pop         es
+	pop         dx
+	pop         ax
+	mov         cx, 1
+	int         0x10
+    inc         dl
+	pop         cx
+	loopnz      %%Repeat
+
+   ; Terminate   0
    ; Jump to Power On Self Test
     mov         bx, cs
     push        bx
@@ -190,6 +237,9 @@ GotoXYProc:
     xor         bx, bx
     push        bx
     retf
+%%Message:
+    db ' Your system will now reboot.'
+%%MessageEnd:
 %endmacro
 
 %imacro WhereXY 0
