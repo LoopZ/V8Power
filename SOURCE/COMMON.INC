@@ -198,7 +198,7 @@ GotoXYProc:
     int         0x10
     add         dx, cx
     add         bp, %%MessageEnd - %%Message - 1
-    mov         cx, 10
+    mov         cx, 5
 	mov			di, 0x006C
 	or          bl, 0x08
 %%Repeat:
