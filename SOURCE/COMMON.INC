@@ -179,34 +179,26 @@ GotoXYProc:
 %imacro GoPostal 0
     mov         ax, 0x0600
     mov         bh, 0x07
+    mov         [TextAttr], bh
     xor         cx, cx
+    mov         [WindMin], cx
     mov         dx, [ScreenMax]
+    mov         [WindMax], dx
     int         0x10
     mov         bh, 0x4f
+    mov         [TextAttr], bh
     mov         dh, cl
     int         0x10
     mov         ax, 0x0500
     int         0x10
-    mov         ax, 0x1301
-    mov         bl, bh
-    xor         bh, bh
-    xor         dx, dx
-    mov         bp, %%Message
-    mov         cx, %%MessageEnd - %%Message - 1
-    push        cs
-    pop         es
-    int         0x10
-    add         dx, cx
-    add         bp, %%MessageEnd - %%Message - 1
+
+    GotoXY      0x0001
+    WriteStr %%Message
+
     mov         cx, 5
 	mov			di, 0x006C
-	or          bl, 0x08
 %%Repeat:
 	push        cx
-
-	push        ax
-	push        dx
-	push        es
 
 	mov  		dx, 0x0040
 	mov			es, dx
@@ -219,11 +211,7 @@ GotoXYProc:
 	je          %%Waiting
 	dec         cx
 	loopnz      %%Loop
-	pop         es
-	pop         dx
-	pop         ax
-	mov         cx, 1
-	int         0x10
+	WriteStr    %%MessageEnd - 2
     inc         dl
 	pop         cx
 	loopnz      %%Repeat
@@ -238,7 +226,7 @@ GotoXYProc:
     push        bx
     retf
 %%Message:
-    db ' Your system will now reboot.'
+    db 'Your system will now reboot.',0
 %%MessageEnd:
 %endmacro
 
