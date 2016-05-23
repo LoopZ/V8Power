@@ -184,7 +184,15 @@ GotoXYProc:
     mov         [WindMin], cx
     mov         dx, [ScreenMax]
     mov         [WindMax], dx
+    push        ax
+    push        bx
+    push        cx
+    push        dx
     int         0x10
+    pop         dx
+    pop         cx
+    pop         bx
+    pop         ax
     mov         bh, 0x4f
     mov         [TextAttr], bh
     mov         dh, cl
