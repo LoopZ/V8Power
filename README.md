@@ -38,33 +38,33 @@ created <b>BIN</b> directory.<br>
 
 ## V8Power Tools Tested Compatibility
 
-> FreeDOS 1.1+<br>
+* FreeDOS 1.1+<br>
 
 Limited compatiblilty of advanced features <i>(no "set /p" batch support)</i>:
 
-> MS-DOS 6.2 and 6.22<br>
-> PC-DOS 7.0, 7.01 and 2000<br>
-> DR-DOS 7.03<br>
-> DosBOX (i/o redirection or querying using stdout will NOT work)<br>
-> Windows 3.11 Shell<br>
-> Windows 98 Shell and Command Line<br>
-> Windows XP SP3 Shell (except vcursor)<br>
+* MS-DOS 6.2 and 6.22<br>
+* PC-DOS 7.0, 7.01 and 2000<br>
+* DR-DOS 7.03<br>
+* DosBOX (i/o redirection or querying using stdout will NOT work)<br>
+* Windows 3.11 Shell<br>
+* Windows 98 Shell and Command Line<br>
+>* Windows XP SP3 Shell (except vcursor)<br>
 
 * * *
 
 ## V8Power Tools Usage
 
-> Here is some basic information reguarding all utilities and how they operate.<br>
-> * Options, values and hexidecimal numbers are not case specific **/f white** is the same as **/F wHIte**.<br>
-> * Hexidecimal numbers may be prefixed with **0x** to prevent them from being treated as base ten.
+Here is some basic information reguarding all utilities and how they operate.<br>
+ * Options, values and hexidecimal numbers are not case specific **/f white** is the same as **/F wHIte**.<br>
+ * Hexidecimal numbers may be prefixed with **0x** to prevent them from being treated as base ten.
 <i>(Example: <b>10</b> and <b>0x10</b>)</i><br>
-> * Spaces are mostly optional. **/B7/f0** is the same as **/B 7 /F 0**. But, not **/ B7 / F0**.<br>
-> * To use a **/** or spaces in a value, put it in qoutes. Like **"Jack and/or Jill"**.<br>
-> * Use multiple qoutes to use quotes. Like **"Jack's house"** or **'Say "What?"'**.<br>
-> * Unless overriden, most utilities use the text attribute at the current cursor location.<br>
+ * Spaces are mostly optional. **/B7/f0** is the same as **/B 7 /F 0**. But, not **/ B7 / F0**.<br>
+ * To use a **/** or spaces in a value, put it in qoutes. Like **"Jack and/or Jill"**.<br>
+ * Use multiple qoutes to use quotes. Like **"Jack's house"** or **'Say "What?"'**.<br>
+ * Unless overriden, most utilities use the text attribute at the current cursor location.<br>
 <br>
 
-> Here is color table used for all **/A**, **/F** and **/B** switches:
+ Here is color table used for all **/A**, **/F** and **/B** switches:
 
 <table>
 <tr><th>Decimal</th><th>Hex</th><th>Label (Not case specific)</th></tr>
