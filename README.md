@@ -64,7 +64,7 @@ Here is some basic information reguarding all utilities and how they operate.<br
  * Unless overriden, most utilities use the text attribute at the current cursor location.<br>
 <br>
 
- Here is color table used for all **/A**, **/F** and **/B** switches:
+Here is color table used for all **/A**, **/F** and **/B** switches:
 
 <table>
 <tr><th>Decimal</th><th>Hex</th><th>Label (Not case specific)</th></tr>
