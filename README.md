@@ -469,3 +469,31 @@ prompt times-out and returns the initial default value. (returns errorlevel 1)</
 
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
+* * *
+#### vinsert *[options]* ######
+Insert a blank row (line) at the current location.
+<table>
+<tr><td width="125pt"></td><td>Insert a blank line.</td></tr>
+<tr><td><b><i>n</i></b></td><td>Insert <b><i>n</i></b>blank lines.</td></tr>
+<tr><td><b>/A <i>n</i></b></td><td>Set text attribute to <b><i>n</i></b>.</td></tr>
+<tr><td><b>/B <i>color</i></b></td><td>Set the background text attribute to
+<b><i>color</i></b> (or a <b><i>value</i></b>).</td></tr>
+<tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to
+<b><i>color</i></b> (or a <b><i>value</i></b>).</td></tr>
+<tr><td><b>/G</b></td><td>Global Insert.</td></tr>
+<tr><td><b>/L</b></td><td>Local Insert. <b>(Default)</b></td></tr>
+</table>
+* * *
+#### vdelete *[options]* ######
+Delete row (line) at the current location.
+<table>
+<tr><td width="125pt"></td><td>Delete line.</td></tr>
+<tr><td><b><i>n</i></b></td><td>Delete <b><i>n</i></b> lines.</td></tr>
+<tr><td><b>/A <i>n</i></b></td><td>Set text attribute to <b><i>n</i></b>.</td></tr>
+<tr><td><b>/B <i>color</i></b></td><td>Set the background text attribute to
+<b><i>color</i></b> (or a <b><i>value</i></b>).</td></tr>
+<tr><td><b>/F <i>color</i></b></td><td>Set the forground text attribute to
+<b><i>color</i></b> (or a <b><i>value</i></b>).</td></tr>
+<tr><td><b>/G</b></td><td>Global Delete.</td></tr>
+<tr><td><b>/L</b></td><td>Local Delete. <b>(Default)</b></td></tr>
+</table>

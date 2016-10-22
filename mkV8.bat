@@ -145,6 +145,20 @@ rem %ASM% -ISOURCE\ SOURCE\VCHKBOX.ASM -fbin -O9 -o BIN\VCHKBOX.COM
 rem if ERRORLEVEL 1 goto Error
 rem if not "%1" == "" goto Done
 
+:vinsert
+set VSTAGE=vinsert
+bin\vecho /g/s- "Reving " /f 13 engine /f gray ...
+%ASM% -ISOURCE\ SOURCE\VINSERT.ASM -fbin -O9 -o BIN\VINSERT.COM
+if ERRORLEVEL 1 goto Error
+if not "%1" == "" goto Done
+
+:vdelete
+set VSTAGE=vdelete
+bin\vecho /g/s- "Engaging " /f 12 signal /f gray ...
+%ASM% -ISOURCE\ SOURCE\VDELETE.ASM -fbin -O9 -o BIN\VDELETE.COM
+if ERRORLEVEL 1 goto Error
+if not "%1" == "" goto Done
+
 :vfdutil
 set VSTAGE=vfdutil
 bin\vecho /g/s- "Releasing " /f 14 clutch /f gray ...

@@ -47,7 +47,7 @@
     cmp         al, 0x20
     jne         .WriteClear
 
-   mov         ax, 0x0600
+    mov         ax, 0x0600
     mov         bh, [TextAttr]
     int         0x10
     jmp         .Done

@@ -512,3 +512,31 @@ Prompt for text input.
 
 -------------------------------------------------------------------------------
 
+vinsert [options]
+
+Insert a blank row (line) at the current location.
+
+    [none]      Insert a blank line.
+    n           Insert n blank lines.
+    /A n        Set text attribute to n.
+    /B color    Set the background text attribute to color (or a value).
+    /F color    Set the forground text attribute to color (or a value).
+    /G          Global Insert.
+    /L          Local Insert. (Default)
+
+-------------------------------------------------------------------------------
+
+vdelete [options]
+
+Delete row (line) at the current location.
+
+    [none]      Delete line.
+    n           Delete n lines.
+    /A n        Set text attribute to n.
+    /B color    Set the background text attribute to color (or a value).
+    /F color    Set the forground text attribute to color (or a value).
+    /G          Global Delete.
+    /L          Local Delete. (Default)
+
+-------------------------------------------------------------------------------
+
