@@ -85,8 +85,8 @@ Here is color table used for all **/A**, **/F** and **/B** switches:
 <tr><td>14</td><td>0x0e</td><td>Yellow</td></tr>
 <tr><td>15</td><td>0x0f</td><td>White</td></tr>
 </table>
-
 * * *
+
 #### v8help *[options]* ######
 Displays help text from V8Power Tools README.TXT document.
 <table>
@@ -94,6 +94,7 @@ Displays help text from V8Power Tools README.TXT document.
 <tr><td><b><i>commmand</i></b></td><td>Displays help for that V8Power Tool.</td></tr>
 </table>
 * * *
+
 #### vcls *[options]* ######
 Clear screen, area or row (line).
 <table>
@@ -118,6 +119,7 @@ Clear screen, area or row (line).
 <tr><td><b>/H <i>height</i></b></td><td>Total <b><i>height</i></b> of area to clear.</td></tr>
 </table>
 * * *
+
 #### vcursor *[options]* ######
 Change or query the cursor size and shape.
 <table>
@@ -132,6 +134,7 @@ Change or query the cursor size and shape.
 way to store the current cursor shape. See the examples, on how to work
 around this issue. Also, this utility will not have any effect in a
 Windows terminal.</i>
+
 * * *
 #### vdelay *[ms]* ######
 Simple delay in milliseconds.
@@ -143,6 +146,7 @@ Simple delay in milliseconds.
 <tr><td><i>/I</i></td><td>Use high precision interrupt timer. <i>(Not compatible with VirtualBox)</i></td></tr>
 </table>
 * * *
+
 #### vecho *[options]* *[text]* ######
 Output text to display.
 <table>
@@ -175,6 +179,7 @@ Output text to display.
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
 * * *
+
 #### vgotoxy *[options]* ######
 Move or query cursor position.
 <table>
@@ -200,6 +205,7 @@ position and change rows if needed.</td></tr>
 position.</td></tr>
 </table>
 * * *
+
 #### vframe *[options]* ######
 Draw a box windowing thingy and move cursor to its inside top left position.
 <table>
@@ -225,6 +231,7 @@ Draw a box windowing thingy and move cursor to its inside top left position.
 <tr><td><i><b>optionbox</b></i></td><td>Draw a hidden style <b><i>optionbox</i></b> for choices inside a frame.</td></tr>
 </table>
 * * *
+
 #### vpcspkr *[hz:][ms]* ######
 Generate a tone using the built in speaker.
 <table>
@@ -238,6 +245,7 @@ then 0 is assumed)</td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
 * * *
+
 #### vver *[options]* ######
 V8Power information program.
 <table>
@@ -250,6 +258,7 @@ V8Power information program.
 <tr><td><b><i>url</i></b></td><td>Outputs the website <b><i>url</i></b> information to <b>STDOUT</b>.</td></tr>
 </table>
 * * *
+
 #### vprogres *[options]* ######
 Draw a progress bar at current location without moving cursor.
 <table>
@@ -268,6 +277,7 @@ of the bar (default is from cursor to end of line).</td></tr>
 <tr><td><b>OF <i>max</i></b></td><td>Calculate percentage of <b><i>max</i></b>. Example 5 of 7.</td></tr>
 </table>
 * * *
+
 #### vchoice *[options]* ######
 Choose an option.<br>
 It returns an errorlevel of choice selected based on its entry number. Not
@@ -302,6 +312,7 @@ errorlevel of 200.</td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
 * * *
+
 #### vpause *[options]* ######
 Simple wait for keypress or  time-out.
 <table>
@@ -313,6 +324,7 @@ errorlevel of 200.</td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
 * * *
+
 #### vline *[options]* ######
 Draws a line.
 <table><tr><td width="125pt"></td><td>Draws as local single dumb line on the current row.Wait forever for keypress.</td></tr>
@@ -323,6 +335,7 @@ Draws a line.
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
 * * *
+
 #### vinfo *[options]* ######
 General system information utility.
 <table><tr><td width="125pt"></td><td>Does nothing.</td></tr>
@@ -360,6 +373,7 @@ Returns these exit codes:<br>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
 * * *
+
 #### verrlvl *[options]* ######
 Sets current errorlevel. Mostly for testing batch file logic.
 <table>
@@ -367,6 +381,7 @@ Sets current errorlevel. Mostly for testing batch file logic.
 <tr><td><b><i>n</i></b></td><td>Sets errorlevel to<b><i>n</i></b>(0-255)</td></tr>
 </table>
 * * *
+
 #### vmath *[options]* ######
 Super simple math utility. It is NOT as a calculator and is limited to working
 on numbers from 0-32767. Good for looping, determining screen offsets and etc.
@@ -386,6 +401,7 @@ on numbers from 0-32767. Good for looping, determining screen offsets and etc.
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
 * * *
+
 #### vstr *[options]* ######
 Simple String processing utility. Outputs results to STDOUT.
 <table>
@@ -408,6 +424,7 @@ Also, adding :n will output n number of lines.</td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
 * * *
+
 #### vmode *[options]* ######
 Set and query current video text modes.
 <table>
@@ -431,6 +448,7 @@ Fonts:
 </td></tr>
 </table>
 * * *
+
 #### vfdutil *[options]* ######
 File and directory utility.
 <table><tr><td width="125pt"></td><td>Does nothing.</td></tr>
@@ -445,6 +463,7 @@ File and directory utility.
 The drive and path must exist.<br> Example: "vfdutil /u C:\TEMP\TEST????.$$$"</td></tr>
 </table>
 * * *
+
 #### vask ######
 Prompt for text input.
 <table>
@@ -470,6 +489,7 @@ prompt times-out and returns the initial default value. (returns errorlevel 1)</
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
 * * *
+
 #### vinsert *[options]* ######
 Insert a blank row (line) at the current location.
 <table>
@@ -484,6 +504,7 @@ Insert a blank row (line) at the current location.
 <tr><td><b>/L</b></td><td>Local Insert. <b>(Default)</b></td></tr>
 </table>
 * * *
+
 #### vdelete *[options]* ######
 Delete row (line) at the current location.
 <table>
