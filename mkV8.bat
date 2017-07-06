@@ -98,8 +98,32 @@ if not "%1" == "" goto Done
 
 :vline
 set VSTAGE=vline
-bin\vecho /g/s- "Reading " /f 14 map /f gray ...
+bin\vecho /g/s- "Opening " /f 14 map /f gray ...
 %ASM% -ISOURCE\ SOURCE\VLINE.ASM -fbin -O9 -o BIN\VLINE.COM
+if ERRORLEVEL 1 goto Error
+if not "%1" == "" goto Done
+
+:vlocate
+set VSTAGE=vlocate
+bin\vecho /g/s- /n "Finding "
+bin\vecho /g/s- /f 11 destination /f gray ...
+%ASM% -ISOURCE\ SOURCE\VLOCATE.ASM -fbin -O9 -o BIN\VLOCATE.COM
+if ERRORLEVEL 1 goto Error
+if not "%1" == "" goto Done
+
+:veach
+set VSTAGE=veach
+bin\vecho /g/s- /n "Planing "
+bin\vecho /g/s- /f 10 waypoints /f gray ...
+%ASM% -ISOURCE\ SOURCE\VEACH.ASM -fbin -O9 -o BIN\VEACH.COM
+if ERRORLEVEL 1 goto Error
+if not "%1" == "" goto Done
+
+:vview
+set VSTAGE=vview
+bin\vecho /g/s- /n "Studying "
+bin\vecho /g/s- /f 12 route /f gray ...
+%ASM% -ISOURCE\ SOURCE\VVIEW.ASM -fbin -O9 -o BIN\VVIEW.COM
 if ERRORLEVEL 1 goto Error
 if not "%1" == "" goto Done
 

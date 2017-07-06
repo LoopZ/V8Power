@@ -1,4 +1,4 @@
-; Copyright (C) 2016 Jerome Shidel
+; Copyright (C) 2017 Jerome Shidel
 ;
 ;   This program is free software; you can redistribute it and/or modify
 ;   it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
 ;   with this program; if not, write to the Free Software Foundation, Inc.,
 ;   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-; NASM 2.12.02 for DOS
+; NASM 2.14rc0 for DOS
 
 ; %idefine NoHelpText
 

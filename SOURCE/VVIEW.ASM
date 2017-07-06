@@ -25,6 +25,9 @@
 
 MainParsing:
 
+    Placeholder
+    Terminate 0
+
     CommandLineParser       ; insert code for command line parsing
 
 ; Check window is not larger than 60 lines

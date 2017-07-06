@@ -105,9 +105,9 @@ OptionsTable:
 OptNameMsg:
     DB 'V8Power Tools for DOS',0
 OptVerMsg:
-    DB 'Version 10/22/2016',0
+    DB 'Version 07/06/2017',0
 OptCopyMsg:
-    DB 'Copyright (C) 2016 Jerome Shidel',0
+    DB 'Copyright (C) 2017 Jerome Shidel',0
 OptEmailMsg:
     DB 'mailto:V8Power@LoopZ.org',0
 OptURLMsg:
