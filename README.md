@@ -461,6 +461,8 @@ File and directory utility.
 <tr><td><b><i>/E file</i></b></td><td>Calculate and output file's extension to STDOUT.</td></tr>
 <tr><td><b><i>/U template</i></b></td><td>Calculate and output unique file/dir name based on template to STDOUT.
 The drive and path must exist.<br> Example: "vfdutil /u C:\TEMP\TEST????.$$$"</td></tr>
+<tr><td><b><i>/S filespec</i></b></td><td>Search the PATH for a given filespec and output all matching files to STDOUT. The current directory is not searched. If any filespec is not found, exits with an errorlevel 1.</td></tr>
+<tr><td><b><i>/T filespec</i></b></td><td>Just like /S except only errorlevel 0 or 1 is returned.</td></tr>
 </table>
 * * *
 

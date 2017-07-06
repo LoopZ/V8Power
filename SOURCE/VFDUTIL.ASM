@@ -342,7 +342,8 @@ PathIsSet:
 .NoMessage:
     Terminate 1
 
-; Display PATH Varaiable
+%ifdef PathPrint
+; Display PATH Variable
 SwitchW:
     call    PathIsSet
     pushf
@@ -373,10 +374,109 @@ SwitchW:
     pop     ds
     popf
     ret
+%endif
 
-SwitchT:
 SwitchS:
+    xor     al, al
+    mov     [TestFlag], al
+    jmp     Searching
+SwitchT:
+    mov     al, 1
+    mov     [TestFlag], al
+Searching:
+    xor     al, al
+    mov     [FoundFlag], al
+    call    PathIsSet
+    push    ds
+    mov     ax, si
+    mov     dx, [PSP_ENV]
+    push    si
+    mov     si, [PathData]
+    push    dx
+    pop     ds
+    mov     dx, ax
+    cld
+.CopyEnvPath:
+    mov     bx, Buffer
+.CopyRepeat:
+    lodsb
+    cmp     al, ';'
+    je      .AddItem
+    cmp     al, 0x00
+    je      .AddItem
+    mov     [cs:bx], al
+    inc     bx
+    jmp     .CopyRepeat
+.AddItem:
+    mov     cl, [cs:bx - 1]
+    mov     ah, '\'
+    cmp     cl, ah
+    je      .NoSlash
+    mov     [cs:bx], ah
+    inc     bx
+.NoSlash:
+    push    bx
+    push    di
+.AddLoop:
+    cmp     di, dx
+    je      .AddDone
+    mov     ah, [cs:di]
+    cmp     ah, 0x61
+    jb      .NotLower
+    cmp     ah, 0x7a
+    ja      .NotLower
+    sub     ah, 0x20
+.NotLower:
+    mov     [cs:bx], ah
+    inc     di
+    inc     bx
+    jmp     .AddLoop
+.AddDone:
+    pop     di
+    xor     ah, ah
+    mov     [cs:bx], ah
+    pop     bx
+    push    ds
+    push    cs
+    pop     ds
+    pushall
+    mov     ah, 1Ah          ;Set DTA
+    mov     dx, DTA
+    int     0x21
+    mov     cx, 0xffff
+    mov     dx, Buffer
+    mov     ah, 0x4E         ;Find First File
+    int     0x21
+    jc      .NoMatch
+    xor     ah, ah
+    mov     [bx], ah
+    inc     ah
+    mov     [FoundFlag], ah
+    mov     ah, [TestFlag]
+    cmp     ah, 0
+    jne     .NoMatch
+.Display:
+    push    dx
+    StdOutStr Buffer
+    StdOutStr DTA + 0x1e
+    StdOutCRLF
+    pop     dx
+    mov     ah, 0x4f         ;Find next
+    int     0x21
+    jnc      .Display
+.NoMatch:
+    popall
+    pop     ds
+    cmp     al, 0x00
+    jne      .CopyEnvPath
+    pop     si
+    pop     ds
+    mov     ah, [FoundFlag]
+    cmp     ah, 0
+    je      .NotFound
     ret
+.NotFound:
+    Terminate 1
 
 NoSwitch:
     LookupParam OptionsTable
@@ -403,7 +503,9 @@ CommandLineSwitches:
     SwitchData 'U', 1, SwitchU
     SwitchData 'S', 1, SwitchS
     SwitchData 'T', 1, SwitchT
+%ifdef PathPrint
     SwitchData 'W', 0, SwitchW
+%endif
     SwitchData  0,  0, 0
 
 OptionsTable:
@@ -420,6 +522,10 @@ DTA:
     times 128 db 0
 DTAEnd:
 ChangeFlag:
+    db 0
+FoundFlag:
+    db 0
+TestFlag:
     db 0
 ExitFlag:
     db 0

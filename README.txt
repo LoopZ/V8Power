@@ -482,6 +482,10 @@ File and directory utility.
     /U template Calculate and output unique file/dir name based on template to
                 STDOUT. The drive and path must exist.
                 Example: "vfdutil /u C:\TEMP\TEST????.$$$"
+    /S filespec Search the PATH for a given filespec and output all matching
+    			files to STDOUT. The current directory is not searched. If any
+    			filespec is not found, exits with an errorlevel 1.
+    /T filespec Just like /S except only errorlevel 0 or 1 is returned.
 
     tba         (Still under development, more to be announced)
 
