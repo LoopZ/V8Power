@@ -20,6 +20,15 @@
 
 %include "COMMON.INC"
 
+    push        si
+    push        ds
+    SearchEnv   PathStr
+    pop         ds
+    jnc         NoPathFound
+    mov         [PathData], si
+NoPathFound:
+    pop         si
+
     CommandLineParser       ; insert code for command line parsing
 
     Terminate 0
@@ -318,6 +327,57 @@ SwitchU:
     SetIntVec 0x24, SavedInt24
     jmp       InvalidOption
 
+PathIsSet:
+    push    ax
+    mov     ax, [PathData]
+    cmp     ax, 0
+    pop     ax
+    je      .NoPathVar
+    ret
+.NoPathVar:
+;    mov     al, [Quite]
+;    cmp     al, 1
+;    je      .NoMessage
+    StdOutStr MsgNoPath
+.NoMessage:
+    Terminate 1
+
+; Display PATH Varaiable
+SwitchW:
+    call    PathIsSet
+    pushf
+    push    ds
+    push    si
+    push    dx
+    mov     dx, [PSP_ENV]
+    push    dx
+    mov     si, [PathData]
+    pop     ds
+    cld
+.Printing:
+    lodsb
+    cmp     al, ';'
+    je      .Return
+    cmp     al, 0x00
+    je      .Return
+    StdOutChar al
+    jmp     .Printing
+.Return:
+    push    ax
+    StdOutCRLF
+    pop     ax
+    cmp     al, 0x00
+    jne      .Printing
+    pop     dx
+    pop     si
+    pop     ds
+    popf
+    ret
+
+SwitchT:
+SwitchS:
+    ret
+
 NoSwitch:
     LookupParam OptionsTable
     cmp         ax, 0xffff
@@ -341,6 +401,9 @@ CommandLineSwitches:
     SwitchData 'N', 1, SwitchN
     SwitchData 'E', 1, SwitchE
     SwitchData 'U', 1, SwitchU
+    SwitchData 'S', 1, SwitchS
+    SwitchData 'T', 1, SwitchT
+    SwitchData 'W', 0, SwitchW
     SwitchData  0,  0, 0
 
 OptionsTable:
@@ -362,3 +425,9 @@ ExitFlag:
     db 0
 SavedInt24:
     dw 0, 0
+PathData:
+    dw 0
+PathStr:
+    db "PATH",0
+MsgNoPath:
+    db "Environment PATH not set",CRLF,0

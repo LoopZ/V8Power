@@ -22,6 +22,37 @@
     %idefine HelpText
 %endif
 
+; DOS Program Prefix Segment Offset Definitions
+; byte, CP/M exit INT 20h
+%idefine PSP_INT20      0x00
+
+; word, Segment of the first byte beyond the program
+%idefine PSP_MEMTOP     0x02
+
+; 5 bytes, Far call to DOS Function Dispatcher
+%idefine PSP_DOSCALL    0x05
+
+; dword, Terminate address for parent program
+%idefine PSP_TERMINATE  0x0A
+
+; dword, Control-Break address for parent program
+%idefine PSP_BREAK      0x0E
+
+; dword, Critical error address for parent program
+%idefine PSP_ERROR      0x12
+
+; word, Parent program PSP Segment
+%idefine PSP_PARENT     0x16
+
+; word, Environment Segment
+%idefine PSP_ENV        0x2c
+
+; byte, Number of bytes in command line
+%idefine PSP_CMDLEN     0x80
+
+; command line, ends in 0x0d
+%idefine PSP_CMDLN      0x81
+
 use16
 
 cpu 8086
@@ -32,6 +63,7 @@ jmp BasicInitialize
 
 VersionID:
 	dd 0
+
 
 %imacro IdleCPU 0
     hlt
@@ -93,6 +125,52 @@ VersionID:
 	%undef VideoOutput
 	%undef TextOutput
 %endif
+
+; %1 is Offset of Search String, returns DS:sI points to data and carry flag set
+; if not found, cleared carry flag
+%imacro SearchEnv 1
+    push    ax
+    push    bx
+    mov     bx, %1
+    mov     ax, [PSP_ENV]
+    push    ax
+    pop     ds
+    xor     si, si
+    cli
+%%Search:
+    lodsb
+    cmp     al, 0x00
+    je      %%Failed
+    push    bx
+    pop     di
+%%Repeat:
+    mov     ah, [cs:di]
+    inc     di
+    cmp     ah, al
+    jne     %%Maybe
+    lodsb
+    cmp     al, 0x00
+    je      %%Search
+    jmp     %%Repeat
+%%Maybe:
+    cmp     al, '='
+    jne     %%Skip
+    cmp     ah, 0
+    je      %%Found
+%%Skip:
+    lodsb
+    cmp     al, 0x00
+    jne     %%Skip
+    jmp     %%Search
+%%Found:
+    stc
+    jmp     %%Done
+%%Failed:
+    clc
+%%Done:
+    pop     bx
+    pop     ax
+%endmacro
 
 ; Common Data Section
 SECTION _DATA
@@ -1614,6 +1692,7 @@ WriteStrProc:
     ret
 %endif
 
+
 ; Terminate with exit code and return to DOS
 ProgramTerminate:
 	%ifdef VideoOutput
@@ -1668,15 +1747,15 @@ BasicInitialize:
     mov         [WindMax], bx
 %endif
 
-	%ifdef VideoOutput
-		; Hide cursor while we run
-		mov         ah, 0x01
-		mov         cx, 0x2000
-		int         0x10
-	%endif
+%ifdef VideoOutput
+    ; Hide cursor while we run
+    mov         ah, 0x01
+    mov         cx, 0x2000
+    int         0x10
+%endif
+
 
     pop         es
-
     mov         si, 0x0081
 
     ; CX is Cursor Shape

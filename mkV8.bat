@@ -103,14 +103,6 @@ bin\vecho /g/s- "Opening " /f 14 map /f gray ...
 if ERRORLEVEL 1 goto Error
 if not "%1" == "" goto Done
 
-:vlocate
-set VSTAGE=vlocate
-bin\vecho /g/s- /n "Finding "
-bin\vecho /g/s- /f 11 destination /f gray ...
-%ASM% -ISOURCE\ SOURCE\VLOCATE.ASM -fbin -O9 -o BIN\VLOCATE.COM
-if ERRORLEVEL 1 goto Error
-if not "%1" == "" goto Done
-
 :veach
 set VSTAGE=veach
 bin\vecho /g/s- /n "Planing "

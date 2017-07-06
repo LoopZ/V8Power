@@ -29,41 +29,41 @@ MainParsing:
     mov         al, [NoNewLine]
     cmp         al, 0
     jne         Done
-    mov     cx, [Repeat]
+    mov         cx, [Repeat]
 ReturnLoop:
-    push    cx
+    push        cx
     WriteStr    CRLFString
-    pop     cx
-    loop    ReturnLoop
+    pop         cx
+    loop        ReturnLoop
 Done:
-    Terminate 0
+    Terminate   0
 
 NoSwitch:
     xor         al, al
     mov         [si], al
-    mov     cx, [Repeat]
+    mov         cx, [Repeat]
 .SwitchLoop:
-    push    cx
-    push    di
-    mov     al, [Squeeze]
-    cmp     al, 1
-    jne     .NoSpace
-    mov     al, [SqueezeFlag]
-    cmp     al, 1
-    jne      .NoSpace
-    push      di
-    mov      al, 0x20
-    WriteChar 0x09
-    pop       di
+    push        cx
+    push        di
+    mov         al, [Squeeze]
+    cmp         al, 1
+    jne         .NoSpace
+    mov         al, [SqueezeFlag]
+    cmp         al, 1
+    jne         .NoSpace
+    push         di
+    mov         al, 0x20
+    WriteChar   0x09
+    pop         di
 .NoSpace:
-    WriteStr  di
-    mov     al, 1
-    mov     [SqueezeFlag], al
-    pop     di
-    pop     cx
-    loop    .SwitchLoop
-    inc     cx
-    mov     [Repeat], cx
+    WriteStr    di
+    mov         al, 1
+    mov         [SqueezeFlag], al
+    pop         di
+    pop         cx
+    loop        .SwitchLoop
+    inc         cx
+    mov         [Repeat], cx
     ret
 
 SwitchN:
@@ -89,14 +89,14 @@ SwitchS:
 
 SwitchC:
     NumberParam
-    mov     cx, [Repeat]
+    mov         cx, [Repeat]
 .SwitchLoop:
-    push    cx
+    push        cx
     WriteChar
-    pop     cx
-    loop    .SwitchLoop
-    inc     cx
-    mov     [Repeat], cx
+    pop         cx
+    loop        .SwitchLoop
+    inc         cx
+    mov         [Repeat], cx
     ret
 
 SwitchI:
@@ -141,10 +141,10 @@ SwitchL:
     ret
 
 SwitchG:
-    xor     ax, ax
-    mov     [WindMin], ax
-    mov     ax, [ScreenMax]
-    mov     [WindMax], ax
+    xor         ax, ax
+    mov         [WindMin], ax
+    mov         ax, [ScreenMax]
+    mov         [WindMax], ax
     ret
 
 %include "TRANSLAT.INC"
