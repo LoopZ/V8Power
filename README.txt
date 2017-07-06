@@ -103,8 +103,8 @@ v8help [options]
 
 Displays help text from V8Power Tools README.TXT document.
 
-	[none]		Lists all V8Power Tools commands.
-	command		Displays help for that V8Power Tool.
+    [none]      Lists all V8Power Tools commands.
+    command     Displays help for that V8Power Tool.
 
 -------------------------------------------------------------------------------
 
@@ -483,8 +483,8 @@ File and directory utility.
                 STDOUT. The drive and path must exist.
                 Example: "vfdutil /u C:\TEMP\TEST????.$$$"
     /S filespec Search the PATH for a given filespec and output all matching
-    			files to STDOUT. The current directory is not searched. If any
-    			filespec is not found, exits with an errorlevel 1.
+                files to STDOUT. The current directory is not searched. If any
+                filespec is not found, exits with an errorlevel 1.
     /T filespec Just like /S except only errorlevel 0 or 1 is returned.
 
     tba         (Still under development, more to be announced)
