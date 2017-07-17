@@ -64,36 +64,76 @@ jmp BasicInitialize
 VersionID:
 	dd 0
 
-
 %imacro IdleCPU 0
     hlt
 %endmacro
 
+%imacro retz 0
+        jnz     %%Skip
+        ret
+    %%Skip:
+%endmacro
+
+%imacro retc 0
+        jnc     %%Skip
+        ret
+    %%Skip:
+%endmacro
+
 %imacro pushall 0
 	pushf
-	push	ax
-	push 	bx
-	push	cx
-	push	dx
-	push	si
-	push	di
-	push	bp
-	push	es
-	push	ds
+	push	    ax
+	push 	    bx
+	push	    cx
+	push	    dx
+	push	    si
+	push	    di
+	push	    bp
+	push	    es
+	push	    ds
+	push        bp
 %endmacro
 
 %imacro popall 0
-	pop 	ds
-	pop		es
-	pop		bp
-	pop		di
-	pop		si
-	pop		dx
-	pop		cx
-	pop		bx
-	pop		ax
+    pop         bp
+	pop 	    ds
+	pop		    es
+	pop		    bp
+	pop		    di
+	pop		    si
+	pop		    dx
+	pop		    cx
+	pop		    bx
+	pop		    ax
 	popf
 %endmacro
+
+%imacro multipush 0-*
+    %ifidni %0, 0
+        pushall
+    %elifidni %1, all
+        pushall
+    %else
+        %rep  %0
+            push    %1
+        %rotate 1
+        %endrep
+    %endif
+%endmacro
+
+%imacro multipop 1-*
+    %ifidni %0, 0
+        popall
+    %elifidni %1, all
+        popall
+    %else
+        %rep %0
+        %rotate -1
+            pop     %1
+        %endrep
+    %endif
+%endmacro
+
 
 %imacro FileOpen 2
     mov     dx, [%1]
@@ -253,6 +293,107 @@ GotoXYProc:
     mov         al, %1
     jmp         ProgramTerminate
 %endmacro
+
+struc tPARAMBLOCK
+
+        .ENVSEG         resw 1
+        .CMDLINE        resd 1
+        .FCB1           resd 1
+        .FCB2           resd 1
+        .STACKPTR       resd 1
+        .CODEPTR        resd 1
+
+endstruc
+
+%idefine PARAMBLOCK(x) tPARAMBLOCK. %+ x
+
+%imacro ShellExec 2
+
+        jmp     %%Over
+
+    %ifndef Declared_ShellExec
+        %define Declared_ShellExec
+
+    ShellExec_Params:
+        db              0
+        times 128 db    0
+
+    ShellExec_ParamsEnd:
+
+    ShellExec_ParamBlock:
+        dw      0
+        dd      0, 0, 0, 0, 0
+
+    ShellExec_StackPointer:
+        dd      0
+
+    Function_ShellExec:
+        pushall
+        cld
+        xor         cx, cx
+        mov         di, ShellExec_Params
+        push        di
+        inc         di
+    .Copying:
+        es lodsb
+        cs stosb
+        inc         cx
+        cmp         al, 0
+        jne         .Copying
+        mov         ah, 0x0d
+        mov         [cs:di], ah
+        inc         di
+    .Fill:
+        stosb
+        cmp         di, ShellExec_StackPointer
+        jb          .Fill
+        pop         di
+        mov         [cs:di], cl
+
+
+        mov         di, ShellExec_StackPointer
+        mov         [cs:di], ss
+        mov         [cs:di + 2], sp
+        mov         ax, ShellExec_Params
+        mov         [cs:ShellExec_ParamBlock + tPARAMBLOCK.CMDLINE], ax
+        mov         [cs:ShellExec_ParamBlock + tPARAMBLOCK.STACKPTR], ss
+        mov         [cs:ShellExec_ParamBlock + tPARAMBLOCK.STACKPTR + 2], sp
+        mov         ax, %%Return
+        mov         [cs:ShellExec_ParamBlock + tPARAMBLOCK.CODEPTR], ax
+        mov         ax, cs
+        mov         [cs:ShellExec_ParamBlock + tPARAMBLOCK.CODEPTR + 2], ax
+        mov         [cs:ShellExec_ParamBlock + tPARAMBLOCK.CMDLINE + 2], es
+
+        ; mov         ds, ax
+        ; mov         es, ax
+        ; mov         dx, %%Program
+
+        mov         bx, ShellExec_ParamBlock
+        mov         ax, 0x4b00
+        int         0x21
+    %%Return:
+        mov         di, ShellExec_StackPointer
+        mov         ss, [cs:di]
+        mov         sp, [cs:di + 2]
+        jc          %%ErrorCode
+        xor         ax, ax
+    %%ErrorCode:
+        mov         [cs:ShellExec_ParamBlock], ax
+        popall
+        mov         ax, [cs:ShellExec_ParamBlock]
+        ret
+
+    %endif
+
+    %%Over:
+        multipush   bx, dx
+        mov         dx, %1
+        mov         si, %2
+        call        Function_ShellExec
+        multipop    bx, dx
+
+%endmacro
+
 
 %imacro GoPostal 0
     mov         ax, 0x0600

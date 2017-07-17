@@ -20,13 +20,41 @@
 
 %include "COMMON.INC"
 
-    Placeholder
-    Terminate 0
+%idefine STACK_SIZE 0x0400
+
+    mov         sp, StackBottom + STACK_SIZE
+
+    multipush   bx, cx, es, ds, si, di
+    push        cs
+    pop         es
+    mov         ax, sp
+    add         ax, 2
+    mov         cl, 4
+    shr         ax, cl
+    inc         ax
+    mov         bx, ax
+    mov         ax, 0x4a00
+    int         0x21
+    jnc         FootprintReduced
+    multipop    bx, cx, es, ds, si, di
+    StdOutStr   Memory_Error_Message
+    Terminate   8
+FootprintReduced:
+    multipop    bx, cx, es, ds, si, di
 
     CommandLineParser       ; insert code for command line parsing
 
     mov     al, [ExitCode]
     Terminate al
+
+SwitchM:
+    ShellExec   .Program, .Options
+
+    ret
+    .Program:
+        db "C:\FDOS\BIN\MEM.EXE",0
+    .Options:
+        db "/c/p",0
 
 NoSwitch:
     ret
@@ -35,8 +63,14 @@ NoSwitch:
 
 CommandLineSwitches:
     SwitchData  0,  0, NoSwitch
+    SwitchData  'M', 0, SwitchM
     HelpSwitchData
     SwitchData  0,  0, 0
 
+Memory_Error_Message:
+    db  "memory error",CRLF,0
+
 ExitCode:
     db 0
+
+StackBottom:
