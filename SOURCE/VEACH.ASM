@@ -25,13 +25,17 @@
 
     mov         sp, StackBottom + STACK_SIZE
     mov         ax, sp
-    add         ax, 2
+    add         ax, 0x0002
     mov         [DataStart], ax
     mov         [DataPointer], ax
 
 MainParsing:
 
     CommandLineParser       ; insert code for command line parsing
+
+    mov         al, [Execute_Flag]
+    cmp         al, 0x00
+    je          Done
 
     multipush   bx, cx, es, ds, si, di
     push        cs
@@ -55,6 +59,9 @@ MainParsing:
 .Reduced:
     multipop    bx, cx, es, ds, si, di
 
+    ShellExec   Program, Options
+
+Done:
     mov     al, [ExitCode]
     Terminate al
 
@@ -145,6 +152,14 @@ SwitchS:
     jne         SwitchError
     ret
 
+SwitchC:
+    mov         al, [Execute_Flag]
+    cmp         al, 0x0
+    jne         SwitchError
+    inc         al
+    mov         [Continue_Flag], al
+    ret
+
 SwitchX:
     mov         al, [Execute_Flag]
     cmp         al, 0x0
@@ -152,14 +167,6 @@ SwitchX:
     inc         al
     mov         [Execute_Flag], al
     ret
-
-ShellExec   .Program, .Options
-
-ret
-.Program:
-    db "C:\FDOS\BIN\MEM.EXE",0
-.Options:
-    db "/c/p",0
 
 NoSwitch:
     mov         al, [Execute_Flag]
@@ -180,14 +187,20 @@ NoSwitch:
 
 CommandLineSwitches:
     SwitchData  0,  0, NoSwitch
-    SwitchData  'I', 0, SwitchI
-    SwitchData  'F', 1, SwitchF
-    SwitchData  'S', 1, SwitchS
-    SwitchData  'L', 0, SwitchL
-    SwitchData  'X', 0, SwitchX
+    SwitchData  'I', 0, SwitchI ; StdIO
+    SwitchData  'F', 1, SwitchF ; From File
+    SwitchData  'S', 1, SwitchS ; Directory Search
+    SwitchData  'L', 0, SwitchL ; Display List
+    SwitchData  'X', 0, SwitchX ; Execute
+    SwitchData  'C', 0, SwitchC ; Continue despite any errors
 
     HelpSwitchData
     SwitchData  0,  0, 0
+
+Program:
+    db "C:\FDOS\BIN\MEM.EXE",0
+Options:
+    db "/c/p",0
 
 Memory_Error_Message:
     db  "Memory Error",CRLF,0
@@ -201,6 +214,8 @@ File_Not_Found_Message:
 ExitCode:
     db 0
 
+Continue_Flag:
+    db 0
 Execute_Flag:
     db 0
 
