@@ -21,33 +21,124 @@
 %include "COMMON.INC"
 
 %idefine STACK_SIZE 0x0200
+%idefine MAX_DATA 0x1000
 
     mov         sp, StackBottom + STACK_SIZE
-
-    multipush   bx, cx, es, ds, si, di
-    push        cs
-    pop         es
     mov         ax, sp
     add         ax, 2
-    mov         cl, 4
-    shr         ax, cl
-    inc         ax
-    mov         bx, ax
-    mov         ax, 0x4a00
-    int         0x21
-    jnc         FootprintReduced
-    multipop    bx, cx, es, ds, si, di
-    StdOutStr   Memory_Error_Message
-    Terminate   8
-FootprintReduced:
-    multipop    bx, cx, es, ds, si, di
+    mov         [DataStart], ax
+    mov         [DataPointer], ax
+
+MainParsing:
 
     CommandLineParser       ; insert code for command line parsing
 
     mov     al, [ExitCode]
     Terminate al
 
-SwitchM:
+    UseAdvancedStdIn
+
+Out_of_Memory:
+    StdOutStr   Out_of_Memory_Message
+    Terminate   8
+
+
+SwitchI:
+    push        bx
+    mov         bx, [DataPointer]
+.CheckInput:
+	StdIn
+	jnc			.Done
+.Ready:
+	cmp			al, 0x0d
+	je			.CRLF_Found
+	cmp			al, 0x0a
+	jne			.CHAR_Found
+.CRLF_Found:
+    mov         ah, [.CRLF_Data]
+    cmp         ah, 0
+    jne         .CheckInput
+    inc         ah
+    mov         [.CRLF_Data], ah
+    xor         al, al
+    jmp         .IsNotNull
+.CHAR_Found:
+    cmp         al, 0
+    je         .CheckInput
+    xor         ah, ah
+    mov         [.CRLF_Data], ah
+.IsNotNull:
+    mov         [bx], al
+
+    inc         bx
+    mov         ax, MAX_DATA
+    cmp         bx, ax
+    jae         Out_of_Memory
+	jmp         .CheckInput
+
+.CRLF_Data:
+    db          0
+
+.Done:
+    xor         al, al
+    mov         [.CRLF_Data], al
+    mov         [DataPointer], bx
+    pop         bx
+    ret
+
+
+SwitchL:
+    push        bx
+    push        cx
+    mov         cx, [DataPointer]
+    mov         bx, [DataStart]
+.Loop:
+    cmp         bx, cx
+    jae         .Done
+    mov         dl, [bx]
+    inc         bx
+    cmp         dl, 0
+    jne         .Normal
+    StdOutCRLF
+    jmp         .Loop
+.Normal:
+    StdOutChar  dl
+    jmp         .Loop
+.Done:
+    pop         cx
+    pop         bx
+    ret
+
+SwitchF:
+    ret
+SwitchS:
+    ret
+
+SwitchX:
+    multipush   bx, cx, es, ds, si, di
+    push        cs
+    pop         es
+    ; mov         ax, StackBottom + STACK_SIZE
+    ; add         ax, [DataPointer]
+    ; add         ax, 2
+    mov         ax, [DataPointer]
+    inc         ax
+
+    mov         cl, 4
+    shr         ax, cl
+    inc         ax
+    mov         bx, ax
+    mov         ax, 0x4a00
+    int         0x21
+    jnc         .Reduced
+    multipop    bx, cx, es, ds, si, di
+    StdOutStr   Memory_Error_Message
+    Terminate   8
+.Reduced:
+    multipop    bx, cx, es, ds, si, di
+    ret
+
+ SwitchM:
     ShellExec   .Program, .Options
 
     ret
@@ -57,20 +148,39 @@ SwitchM:
         db "/c/p",0
 
 NoSwitch:
-    ret
+    jmp SwitchError
 
     HelpSwitchHandler
 
+%include "TRANSLAT.INC"
+
+;SwitchT:
+;    Translator MainParsing
+
 CommandLineSwitches:
     SwitchData  0,  0, NoSwitch
+    SwitchData  'I', 0, SwitchI
+    SwitchData  'F', 1, SwitchF
+    SwitchData  'S', 1, SwitchS
+    SwitchData  'L', 0, SwitchL
     SwitchData  'M', 0, SwitchM
+    SwitchData  'X', 0, SwitchX
+
     HelpSwitchData
     SwitchData  0,  0, 0
 
 Memory_Error_Message:
-    db  "memory error",CRLF,0
+    db  "Memory Error",CRLF,0
+
+Out_of_Memory_Message:
+    db  "Out of memory",CRLF,0
 
 ExitCode:
     db 0
+
+DataStart:
+    dw 0
+DataPointer:
+    dw 0
 
 StackBottom:
