@@ -42,9 +42,9 @@ MainParsing:
     pop         es
     ; mov         ax, StackBottom + STACK_SIZE
     ; add         ax, [DataPointer]
-    ; add         ax, 2
+
     mov         ax, [DataPointer]
-    inc         ax
+    add         ax, 0x0010
 
     mov         cl, 4
     shr         ax, cl
