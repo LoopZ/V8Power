@@ -20,7 +20,7 @@
 
 %include "COMMON.INC"
 
-%idefine STACK_SIZE 0x0400
+%idefine STACK_SIZE 0x0200
 
     mov         sp, StackBottom + STACK_SIZE
 
