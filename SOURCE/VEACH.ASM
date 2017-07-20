@@ -33,6 +33,28 @@ MainParsing:
 
     CommandLineParser       ; insert code for command line parsing
 
+    multipush   bx, cx, es, ds, si, di
+    push        cs
+    pop         es
+    ; mov         ax, StackBottom + STACK_SIZE
+    ; add         ax, [DataPointer]
+    ; add         ax, 2
+    mov         ax, [DataPointer]
+    inc         ax
+
+    mov         cl, 4
+    shr         ax, cl
+    inc         ax
+    mov         bx, ax
+    mov         ax, 0x4a00
+    int         0x21
+    jnc         .Reduced
+    multipop    bx, cx, es, ds, si, di
+    StdOutStr   Memory_Error_Message
+    Terminate   8
+.Reduced:
+    multipop    bx, cx, es, ds, si, di
+
     mov     al, [ExitCode]
     Terminate al
 
@@ -44,6 +66,9 @@ Out_of_Memory:
 
 
 SwitchI:
+    mov         al, [Execute_Flag]
+    cmp         al, 0x0
+    jne         SwitchError
     push        bx
     mov         bx, [DataPointer]
 .CheckInput:
@@ -110,45 +135,41 @@ SwitchL:
     ret
 
 SwitchF:
+    mov         al, [Execute_Flag]
+    cmp         al, 0x0
+    jne         SwitchError
     ret
 SwitchS:
+    mov         al, [Execute_Flag]
+    cmp         al, 0x0
+    jne         SwitchError
     ret
 
 SwitchX:
-    multipush   bx, cx, es, ds, si, di
-    push        cs
-    pop         es
-    ; mov         ax, StackBottom + STACK_SIZE
-    ; add         ax, [DataPointer]
-    ; add         ax, 2
-    mov         ax, [DataPointer]
-    inc         ax
-
-    mov         cl, 4
-    shr         ax, cl
-    inc         ax
-    mov         bx, ax
-    mov         ax, 0x4a00
-    int         0x21
-    jnc         .Reduced
-    multipop    bx, cx, es, ds, si, di
-    StdOutStr   Memory_Error_Message
-    Terminate   8
-.Reduced:
-    multipop    bx, cx, es, ds, si, di
+    mov         al, [Execute_Flag]
+    cmp         al, 0x0
+    jne         SwitchError
+    inc         al
+    mov         [Execute_Flag], al
     ret
 
- SwitchM:
-    ShellExec   .Program, .Options
+ShellExec   .Program, .Options
 
-    ret
-    .Program:
-        db "C:\FDOS\BIN\MEM.EXE",0
-    .Options:
-        db "/c/p",0
+ret
+.Program:
+    db "C:\FDOS\BIN\MEM.EXE",0
+.Options:
+    db "/c/p",0
 
 NoSwitch:
-    jmp SwitchError
+    mov         al, [Execute_Flag]
+    cmp         al, 0x01
+    jne         SwitchError
+    inc         al
+    mov         [Execute_Flag], al
+    mov         [CommandLine], di
+    mov         [CommandLength], cx
+    ret
 
     HelpSwitchHandler
 
@@ -163,7 +184,6 @@ CommandLineSwitches:
     SwitchData  'F', 1, SwitchF
     SwitchData  'S', 1, SwitchS
     SwitchData  'L', 0, SwitchL
-    SwitchData  'M', 0, SwitchM
     SwitchData  'X', 0, SwitchX
 
     HelpSwitchData
@@ -175,12 +195,23 @@ Memory_Error_Message:
 Out_of_Memory_Message:
     db  "Out of memory",CRLF,0
 
+File_Not_Found_Message:
+    db "File not found",CRLF,0
+
 ExitCode:
+    db 0
+
+Execute_Flag:
     db 0
 
 DataStart:
     dw 0
 DataPointer:
     dw 0
+CommandLength:
+    dw 0
+CommandLine:
+    dw 0
+
 
 StackBottom:
