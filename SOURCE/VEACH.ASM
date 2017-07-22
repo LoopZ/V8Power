@@ -42,9 +42,9 @@ MainParsing:
     pop         es
     ; mov         ax, StackBottom + STACK_SIZE
     ; add         ax, [DataPointer]
-
+    ; add         ax, 2
     mov         ax, [DataPointer]
-    add         ax, 0x0010
+;    inc         ax
 
     mov         cl, 4
     shr         ax, cl
@@ -76,9 +76,13 @@ SwitchI:
     mov         al, [Execute_Flag]
     cmp         al, 0x0
     jne         SwitchError
-    push        bx
     mov         bx, [DataPointer]
+    xor         dx, dx
+
+ReadInput:
 .CheckInput:
+    cmp         dx, 0x0000
+    jne         .ReadFile
 	StdIn
 	jnc			.Done
 .Ready:
@@ -108,14 +112,47 @@ SwitchI:
     jae         Out_of_Memory
 	jmp         .CheckInput
 
+.Buffer:
+    dw  0
+
+.ReadFile:
+    push        bx
+    push        dx
+    mov         ah, 0x3f
+    mov         bx, dx
+    mov         cx, 0x0001
+    mov         dx, .Buffer
+    int         0x21
+    pop         dx
+    pop         bx
+    jnc         .NoError
+    mov         bx, dx
+    mov         ah, 0x3e
+    int         0x21
+    push        dx
+    jmp         FileError
+.NoError:
+    cmp         ax, 0
+    je          .Done
+    mov         al, [.Buffer]
+    jmp         .Ready
+
 .CRLF_Data:
     db          0
 
 .Done:
-    xor         al, al
-    mov         [.CRLF_Data], al
+    mov         al, [.CRLF_Data]
+    xor         ah, ah
+    mov         [.CRLF_Data], ah
+    cmp         al, 0x00
+    jne         .SavePointer
+    mov         [bx], ah
+    inc         bx
+    mov         ax, MAX_DATA
+    cmp         bx, ax
+    jae         Out_of_Memory
+.SavePointer:
     mov         [DataPointer], bx
-    pop         bx
     ret
 
 
@@ -142,10 +179,38 @@ SwitchL:
     ret
 
 SwitchF:
+    mov         bx, [DataPointer]
     mov         al, [Execute_Flag]
     cmp         al, 0x0
     jne         SwitchError
+    xor         dl, dl
+    mov         dh, [si]
+    mov         [si], dl
+    push        dx
+    mov         dx, di
+    mov         ax, 0x3d00
+    int         0x21
+    jc          FileError
+    mov         dx, ax
+    call        ReadInput
+    mov         bx, dx
+    mov         ah, 0x3e
+    int         0x21
+    pop         dx
+    mov         [si], dl
     ret
+
+FileError:
+    pop         dx
+    mov         ah, [Continue_Flag]
+    cmp         ah, 0x00
+    je          .DieNow
+    ret
+.DieNow:
+    StdOutStr   File_Read_Error_Message
+    mov         [ExitCode], al
+    Terminate   al
+
 SwitchS:
     mov         al, [Execute_Flag]
     cmp         al, 0x0
@@ -210,6 +275,9 @@ Out_of_Memory_Message:
 
 File_Not_Found_Message:
     db "File not found",CRLF,0
+
+File_Read_Error_Message:
+    db "File read error",CRLF,0
 
 ExitCode:
     db 0
