@@ -21,7 +21,7 @@
 %include "COMMON.INC"
 
 %idefine STACK_SIZE 0x0200
-%idefine MAX_DATA 0x1000
+%idefine MAX_DATA 0x4000
 
     mov         sp, StackBottom + STACK_SIZE
     mov         ax, sp
@@ -37,13 +37,15 @@ MainParsing:
     cmp         al, 0x00
     je          Done
 
+    call        Index
+
     multipush   bx, cx, es, ds, si, di
     push        cs
     pop         es
     ; mov         ax, StackBottom + STACK_SIZE
     ; add         ax, [DataPointer]
     ; add         ax, 2
-    mov         ax, [DataPointer]
+    mov         ax, [DataTop]
 ;    inc         ax
 
     mov         cl, 4
@@ -71,6 +73,70 @@ Out_of_Memory:
     StdOutStr   Out_of_Memory_Message
     Terminate   8
 
+Index:
+    xor         ah, ah
+    mov         si, [DataStart]
+    mov         di, [DataPointer]
+    mov         bx, di
+    dec         bx
+.Repeat:
+    cmp         si, bx
+    jae         .Done
+    mov         al, [si]
+;    cmp         al, 0x00
+;    je          .Done
+    mov         [di], si
+    add         ax, 2
+    add         si, ax
+    add         di, 2
+    cmp         di, MAX_DATA
+    jae         Out_of_Memory
+    jmp         .Repeat
+.Done:
+    mov         [DataTop], di
+    mov         al, [Sorted_Flag]
+    cmp         al, 0x00
+    jne         SortedIndex
+    ret
+
+; Super simple bubble sort
+SortedIndex:
+    mov         dx, 0
+    mov         si, [DataPointer]
+    mov         bx, [DataTop]
+    dec         bx
+.Repeat:
+    add         si, 2
+    cmp         si, bx
+    jae         .Done
+    push        si
+    mov         di, [si]
+    mov         si, [si - 2]
+.Check:
+    inc         si
+    inc         di
+    mov         al, [si]
+    mov         ah, [di]
+    cmp         al, ah
+    jb          .LessThan
+    ja          .GreaterThan
+    cmp         al, 0
+    jne         .Check
+.Match:
+.LessThan:
+    pop         si
+    jmp         .Repeat
+.GreaterThan:
+    pop         si
+    mov         ax, [si - 2]
+    mov         cx, [si]
+    mov         [si - 2], cx
+    mov         [si], ax
+    mov         dx, 1
+.Done:
+    cmp         dx, 0
+    jne         SortedIndex
+    ret
 
 SwitchI:
     mov         al, [Execute_Flag]
@@ -158,45 +224,49 @@ ReadInput:
     db          0
 
 .Done:
+    mov         dx, [DataPointer]
+    mov         ax, bx
+    dec         ax
+    cmp         ax, dx
+    jna         .BackupPointer
     mov         [di], cl
     mov         al, [.CRLF_Data]
     xor         ah, ah
     mov         [.CRLF_Data], ah
     cmp         al, 0x00
-    jne         .SavePointer
+    jne         .BackupPointer
     mov         [bx], ah
     inc         bx
     mov         ax, MAX_DATA
     cmp         bx, ax
     jae         Out_of_Memory
+    jmp         .SavePointer
+.BackupPointer:
+    cmp         bx, dx
+    jna         .SavePointer
+    dec         bx
 .SavePointer:
     mov         [DataPointer], bx
     ret
 
 SwitchL:
-    push        bx
-    push        cx
-    mov         cx, [DataPointer]
-    mov         bx, [DataStart]
-;    mov         dh, [bx]
-    inc         bx
+    call        Index
+    cld
+    mov         si, [DataPointer]
+    mov         cx, [DataTop]
 .Loop:
-    cmp         bx, cx
+    cmp         si, cx
     jae         .Done
-    mov         dl, [bx]
-    inc         bx
-    cmp         dl, 0
-    jne         .Normal
+    lodsw
+    push        si
+    push        cx
+    inc         ax
+    StdOutStr   ax
     StdOutCRLF
-;    mov         dh, [bx]
-    inc         bx
-    jmp         .Loop
-.Normal:
-    StdOutChar  dl
+    pop         cx
+    pop         si
     jmp         .Loop
 .Done:
-    pop         cx
-    pop         bx
     ret
 
 SwitchF:
@@ -401,10 +471,13 @@ Execute_Flag:
 AllFiles_Flag:
     db 0
 Sorted_Flag:
+    db 0
 
 DataStart:
     dw 0
 DataPointer:
+    dw 0
+DataTop:
     dw 0
 CommandLength:
     dw 0
