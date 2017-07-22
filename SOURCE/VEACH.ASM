@@ -80,6 +80,10 @@ SwitchI:
     xor         dx, dx
 
 ReadInput:
+    mov         di, bx
+    xor         cx, cx
+    mov         [di], cl
+    inc         bx
 .CheckInput:
     cmp         dx, 0x0000
     jne         .ReadFile
@@ -97,16 +101,25 @@ ReadInput:
     inc         ah
     mov         [.CRLF_Data], ah
     xor         al, al
-    jmp         .IsNotNull
+    mov         [bx], al
+    inc         bx
+    mov         [di], cl
+    xor         cx, cx
+    mov         di, bx
+    inc         bx
+    jmp         .Test
 .CHAR_Found:
     cmp         al, 0
     je         .CheckInput
     xor         ah, ah
     mov         [.CRLF_Data], ah
 .IsNotNull:
+    cmp         cl, 128
+    jae         .Test
     mov         [bx], al
-
     inc         bx
+    inc         cx
+.Test:
     mov         ax, MAX_DATA
     cmp         bx, ax
     jae         Out_of_Memory
@@ -118,11 +131,15 @@ ReadInput:
 .ReadFile:
     push        bx
     push        dx
+    push        cx
+    push        di
     mov         ah, 0x3f
     mov         bx, dx
     mov         cx, 0x0001
     mov         dx, .Buffer
     int         0x21
+    pop         di
+    pop         cx
     pop         dx
     pop         bx
     jnc         .NoError
@@ -141,6 +158,7 @@ ReadInput:
     db          0
 
 .Done:
+    mov         [di], cl
     mov         al, [.CRLF_Data]
     xor         ah, ah
     mov         [.CRLF_Data], ah
@@ -155,12 +173,13 @@ ReadInput:
     mov         [DataPointer], bx
     ret
 
-
 SwitchL:
     push        bx
     push        cx
     mov         cx, [DataPointer]
     mov         bx, [DataStart]
+;    mov         dh, [bx]
+    inc         bx
 .Loop:
     cmp         bx, cx
     jae         .Done
@@ -169,6 +188,8 @@ SwitchL:
     cmp         dl, 0
     jne         .Normal
     StdOutCRLF
+;    mov         dh, [bx]
+    inc         bx
     jmp         .Loop
 .Normal:
     StdOutChar  dl
@@ -248,11 +269,14 @@ SwitchD:
     mov         al, [DTA + 0x15]
     test        al, 00011110b
     jnz         .SkipItem
-
+    mov         di, bx
+    inc         bx
+    xor         ah, ah
 .Repeat:
     lodsb
     cmp         al, 0x00
     je          .EndOfName
+    inc         ah
     mov         [bx], al
     inc         bx
     cmp         bx, dx
@@ -261,6 +285,7 @@ SwitchD:
     xor         al, al
 .EndOfName:
     mov         [bx], al
+    mov         [di], ah
     inc         bx
     cmp         bx, dx
     jae         Out_of_Memory
@@ -285,6 +310,14 @@ SwitchC:
     jne         SwitchError
     inc         al
     mov         [Continue_Flag], al
+    ret
+
+SwitchS:
+    mov         al, [Execute_Flag]
+    cmp         al, 0x0
+    jne         SwitchError
+    inc         al
+    mov         [Sorted_Flag], al
     ret
 
 SwitchX:
@@ -336,6 +369,7 @@ CommandLineSwitches:
     SwitchData  'L', 0, SwitchL ; Display List
     SwitchData  'X', 0, SwitchX ; Execute
     SwitchData  'C', 0, SwitchC ; Continue despite any errors
+    SwitchData  'S', 0, SwitchS ; Sort List
 
     HelpSwitchData
     SwitchData  0,  0, 0
@@ -366,6 +400,7 @@ Execute_Flag:
     db 0
 AllFiles_Flag:
     db 0
+Sorted_Flag:
 
 DataStart:
     dw 0
