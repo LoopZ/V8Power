@@ -211,10 +211,72 @@ FileError:
     mov         [ExitCode], al
     Terminate   al
 
-SwitchS:
+SwitchD:
+    mov         bx, [DataPointer]
     mov         al, [Execute_Flag]
     cmp         al, 0x0
     jne         SwitchError
+    mov         al, [si]
+    push        ax
+    xor         al, al
+    mov         [si], al
+
+    push        bx
+    mov         ah, 0x1a            ;Set DTA
+    mov         dx, DTA
+    int         0x21
+    mov         cx, 0xffff          ;File Attribute
+    mov         dx, di
+    mov         ah, 0x4e            ;Find First File
+    int         0x21
+    pop         bx
+    jc          .NoMatch
+
+.AddItem:
+    cld
+    mov         si, DTA + 0x1e
+    mov         cx, 0x0c
+    mov         dx, MAX_DATA
+    mov         ax, [si]
+    cmp         ax, 0x2e2e
+    je          .SkipItem
+    cmp         ax, 0x002e
+    je          .SkipItem
+    mov         al, [AllFiles_Flag]
+    cmp         al, 0x01
+    je          .Repeat
+    mov         al, [DTA + 0x15]
+    test        al, 00011110b
+    jnz         .SkipItem
+
+.Repeat:
+    lodsb
+    cmp         al, 0x00
+    je          .EndOfName
+    mov         [bx], al
+    inc         bx
+    cmp         bx, dx
+    jae         Out_of_Memory
+    loop        .Repeat
+    xor         al, al
+.EndOfName:
+    mov         [bx], al
+    inc         bx
+    cmp         bx, dx
+    jae         Out_of_Memory
+
+.SkipItem:
+
+    push        bx
+    mov         ah, 0x4f            ;Find next
+    int         0x21
+    pop         bx
+    jnc         .AddItem
+
+.NoMatch:
+    pop         ax
+    mov         [si], al
+    mov         [DataPointer], bx
     ret
 
 SwitchC:
@@ -231,6 +293,21 @@ SwitchX:
     jne         SwitchError
     inc         al
     mov         [Execute_Flag], al
+    ret
+
+SwitchA:
+    mov         al, [Execute_Flag]
+    cmp         al, 0x0
+    jne         SwitchError
+    xor         al, al
+    mov         ah, [di]
+    cmp         ah, '-'
+    je          .SetFlag
+    cmp         ah, '+'
+    jne         SwitchError
+    mov         al, 0x01
+.SetFlag:
+    mov         [AllFiles_Flag], al
     ret
 
 NoSwitch:
@@ -254,7 +331,8 @@ CommandLineSwitches:
     SwitchData  0,  0, NoSwitch
     SwitchData  'I', 0, SwitchI ; StdIO
     SwitchData  'F', 1, SwitchF ; From File
-    SwitchData  'S', 1, SwitchS ; Directory Search
+    SwitchData  'A', 1, SwitchA ; All Files and Directories on/off
+    SwitchData  'D', 1, SwitchD ; Directory Search
     SwitchData  'L', 0, SwitchL ; Display List
     SwitchData  'X', 0, SwitchX ; Execute
     SwitchData  'C', 0, SwitchC ; Continue despite any errors
@@ -286,6 +364,8 @@ Continue_Flag:
     db 0
 Execute_Flag:
     db 0
+AllFiles_Flag:
+    db 0
 
 DataStart:
     dw 0
@@ -295,6 +375,10 @@ CommandLength:
     dw 0
 CommandLine:
     dw 0
+
+DTA:
+    times 128 db 0
+DTAEnd:
 
 
 StackBottom:
