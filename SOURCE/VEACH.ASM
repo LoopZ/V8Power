@@ -425,11 +425,6 @@ NoSwitch:
 
     HelpSwitchHandler
 
-%include "TRANSLAT.INC"
-
-;SwitchT:
-;    Translator MainParsing
-
 CommandLineSwitches:
     SwitchData  0,  0, NoSwitch
     SwitchData  'I', 0, SwitchI ; StdIO
@@ -440,14 +435,8 @@ CommandLineSwitches:
     SwitchData  'X', 0, SwitchX ; Execute
     SwitchData  'C', 0, SwitchC ; Continue despite any errors
     SwitchData  'S', 0, SwitchS ; Sort List
-
     HelpSwitchData
     SwitchData  0,  0, 0
-
-Program:
-    db "C:\FDOS\BIN\MEM.EXE",0
-Options:
-    db "/c/p",0
 
 Memory_Error_Message:
     db  "Memory Error",CRLF,0
@@ -460,6 +449,18 @@ File_Not_Found_Message:
 
 File_Read_Error_Message:
     db "File read error",CRLF,0
+
+Search:
+    db '.COM',0
+    db '.EXE',0
+    db '.BAT',0
+
+Search_Comspec:
+    db  'COMSPEC',0
+Search_Path:
+    db  'PATH',0
+Search_Shell:
+    db 'COMMAND.COM',0
 
 ExitCode:
     db 0
@@ -487,6 +488,5 @@ CommandLine:
 DTA:
     times 128 db 0
 DTAEnd:
-
 
 StackBottom:
