@@ -166,50 +166,60 @@ VersionID:
 	%undef TextOutput
 %endif
 
-; %1 is Offset of Search String, returns DS:sI points to data and carry flag set
-; if not found, cleared carry flag
+; %1 is Offset of Search String, returns DS:SI points to data
+; if not found then carry flag is set
 %imacro SearchEnv 1
-    push    ax
+    %ifndef SearchEnvProc_Declared
+        %idefine SearchEnvProc_Declared
+        jmp  %%Over
+    SearchEnvProc:
+        push    ax
+        push    di
+        mov     ax, [PSP_ENV]
+        push    ax
+        pop     ds
+        xor     si, si
+        cli
+    .Search:
+        lodsb
+        cmp     al, 0x00
+        je      .Failed
+        mov     di, bx
+    .Repeat:
+        mov     ah, [cs:di]
+        inc     di
+        cmp     ah, al
+        jne     .Maybe
+        lodsb
+        cmp     al, 0x00
+        je      .Search
+        jmp     .Repeat
+    .Maybe:
+        cmp     al, '='
+        jne     .Skip
+        cmp     ah, 0
+        je      .Found
+    .Skip:
+        lodsb
+        cmp     al, 0x00
+        jne     .Skip
+        jmp     .Search
+    .Found:
+        clc
+        jmp     .Done
+    .Failed:
+        stc
+    .Done:
+        pop     di
+        pop     ax
+        ret
+    %%Over:
+    %endif
+
     push    bx
     mov     bx, %1
-    mov     ax, [PSP_ENV]
-    push    ax
-    pop     ds
-    xor     si, si
-    cli
-%%Search:
-    lodsb
-    cmp     al, 0x00
-    je      %%Failed
-    push    bx
-    pop     di
-%%Repeat:
-    mov     ah, [cs:di]
-    inc     di
-    cmp     ah, al
-    jne     %%Maybe
-    lodsb
-    cmp     al, 0x00
-    je      %%Search
-    jmp     %%Repeat
-%%Maybe:
-    cmp     al, '='
-    jne     %%Skip
-    cmp     ah, 0
-    je      %%Found
-%%Skip:
-    lodsb
-    cmp     al, 0x00
-    jne     %%Skip
-    jmp     %%Search
-%%Found:
-    stc
-    jmp     %%Done
-%%Failed:
-    clc
-%%Done:
+    call    SearchEnvProc
     pop     bx
-    pop     ax
 %endmacro
 
 ; Common Data Section

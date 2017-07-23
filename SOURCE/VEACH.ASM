@@ -39,6 +39,53 @@ MainParsing:
 
     call        Index
 
+%imacro FindShell 1
+    jmp         %%Over
+%%COMSPEC:
+    db 'COMSPEC',0
+%%COMMAND:
+    db 'COMMAND.COM',0
+%%Over:
+    push        ds
+    mov         di, %1
+    SearchEnv   %%COMSPEC
+    jc          %%NotFound
+    cld
+    mov         cx, 127
+%%CopyEnv:
+    lodsb
+    cmp         al, 0x00
+    je          %%EnvCopied
+    cs stosb
+    cmp         al, 0x20
+    je          %%EnvCopied
+    loop        %%CopyEnv
+%%EnvCopied:
+    xor         al, al
+    cs stosb
+    jmp         %%Done
+%%NotFound:
+    xor         al, al
+    cs stosb
+%%Done:
+    pop         ds
+
+%endmacro
+
+    FindShell   Shell
+    StdOutStr   Shell
+    StdOutCRLF
+    jmp         Done
+
+    mov         cx, [CommandLength]
+    cld
+    mov         si, [CommandLine]
+Repeater:
+    lodsb
+    StdOutChar  al
+    loop        Repeater
+    jmp         Done
+
     multipush   bx, cx, es, ds, si, di
     push        cs
     pop         es
@@ -61,7 +108,7 @@ MainParsing:
 .Reduced:
     multipop    bx, cx, es, ds, si, di
 
-    ShellExec   Program, Options
+    ; ShellExec   Program, Options
 
 Done:
     mov     al, [ExitCode]
@@ -455,13 +502,6 @@ Search:
     db '.EXE',0
     db '.BAT',0
 
-Search_Comspec:
-    db  'COMSPEC',0
-Search_Path:
-    db  'PATH',0
-Search_Shell:
-    db 'COMMAND.COM',0
-
 ExitCode:
     db 0
 
@@ -485,6 +525,7 @@ CommandLength:
 CommandLine:
     dw 0
 
+Shell:
 DTA:
     times 128 db 0
 DTAEnd:
