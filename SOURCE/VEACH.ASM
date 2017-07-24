@@ -20,26 +20,70 @@
 
 %include "COMMON.INC"
 
-%idefine STACK_SIZE 0x0200
-%idefine MAX_DATA 0x4000
+%idefine SIZEOF_STACK   0x0200
+%idefine SIZEOF_MEMORY  0x4000
+%idefine SIZEOF_BUFFER  2
 
-    mov         sp, StackBottom + STACK_SIZE
+struc tDATABLOCK
+
+    .EXITCODE   resb 1
+    .CONTINUE   resb 1
+    .EXECUTE    resb 1
+    .ALLFILES   resb 1
+    .SORTED     resb 1
+
+    .WATCHCRLF  resb 1
+
+    .MEMSTART   resw 1
+    .MEMPTR     resw 1
+    .MEMTOP     resw 1
+
+    .CMDLEN     resw 1
+    .CMDLN      resw 1
+
+    .BUFFER     resb SIZEOF_BUFFER
+
+    .DTA        resb 128
+    .COMSPEC    resb 128
+
+    .STACK      resb SIZEOF_STACK
+
+    .HEAP       resb 0
+
+endstruc
+
+%idefine DATABLOCK(x) DATA_START + tDATABLOCK. %+ x
+
+    push        cx
+    push        di
+    xor         al, al
+    mov         cx, DATABLOCK(STACK) - DATA_START
+    mov         di, DATA_START
+    cld
+ClearDataArea:
+    stosb
+    loop        ClearDataArea
+    pop         di
+    pop         cx
+
+
+    mov         sp, DATABLOCK(STACK) + SIZEOF_STACK
     mov         ax, sp
     add         ax, 0x0002
-    mov         [DataStart], ax
-    mov         [DataPointer], ax
+    mov         [DATABLOCK(MEMSTART)], ax
+    mov         [DATABLOCK(MEMPTR)], ax
 
 MainParsing:
 
     CommandLineParser       ; insert code for command line parsing
 
-    mov         al, [Execute_Flag]
+    mov         al, [DATABLOCK(EXECUTE)]
     cmp         al, 0x00
     je          Done
 
     call        Index
 
-%imacro FindShell 1
+%imacro FindComspec 1
     jmp         %%Over
 %%COMSPEC:
     db 'COMSPEC',0
@@ -72,14 +116,14 @@ MainParsing:
 
 %endmacro
 
-    FindShell   Shell
-    StdOutStr   Shell
+    FindComspec DATABLOCK(COMSPEC)
+    StdOutStr   DATABLOCK(COMSPEC)
     StdOutCRLF
     jmp         Done
 
-    mov         cx, [CommandLength]
+    mov         cx, [DATABLOCK(CMDLEN)]
     cld
-    mov         si, [CommandLine]
+    mov         si, [DATABLOCK(CMDLN)]
 Repeater:
     lodsb
     StdOutChar  al
@@ -89,10 +133,10 @@ Repeater:
     multipush   bx, cx, es, ds, si, di
     push        cs
     pop         es
-    ; mov         ax, StackBottom + STACK_SIZE
-    ; add         ax, [DataPointer]
+    ; mov         ax, StackBottom + SIZEOF_STACK
+    ; add         ax, [DATABLOCK(MEMPTR)]
     ; add         ax, 2
-    mov         ax, [DataTop]
+    mov         ax, [DATABLOCK(MEMTOP)]
 ;    inc         ax
 
     mov         cl, 4
@@ -111,7 +155,7 @@ Repeater:
     ; ShellExec   Program, Options
 
 Done:
-    mov     al, [ExitCode]
+    mov     al, [DATABLOCK(EXITCODE)]
     Terminate al
 
     UseAdvancedStdIn
@@ -122,8 +166,8 @@ Out_of_Memory:
 
 Index:
     xor         ah, ah
-    mov         si, [DataStart]
-    mov         di, [DataPointer]
+    mov         si, [DATABLOCK(MEMSTART)]
+    mov         di, [DATABLOCK(MEMPTR)]
     mov         bx, di
     dec         bx
 .Repeat:
@@ -136,12 +180,12 @@ Index:
     add         ax, 2
     add         si, ax
     add         di, 2
-    cmp         di, MAX_DATA
+    cmp         di, SIZEOF_MEMORY
     jae         Out_of_Memory
     jmp         .Repeat
 .Done:
-    mov         [DataTop], di
-    mov         al, [Sorted_Flag]
+    mov         [DATABLOCK(MEMTOP)], di
+    mov         al, [DATABLOCK(SORTED)]
     cmp         al, 0x00
     jne         SortedIndex
     ret
@@ -149,8 +193,8 @@ Index:
 ; Super simple bubble sort
 SortedIndex:
     mov         dx, 0
-    mov         si, [DataPointer]
-    mov         bx, [DataTop]
+    mov         si, [DATABLOCK(MEMPTR)]
+    mov         bx, [DATABLOCK(MEMTOP)]
     dec         bx
 .Repeat:
     add         si, 2
@@ -186,10 +230,10 @@ SortedIndex:
     ret
 
 SwitchI:
-    mov         al, [Execute_Flag]
+    mov         al, [DATABLOCK(EXECUTE)]
     cmp         al, 0x0
     jne         SwitchError
-    mov         bx, [DataPointer]
+    mov         bx, [DATABLOCK(MEMPTR)]
     xor         dx, dx
 
 ReadInput:
@@ -208,11 +252,11 @@ ReadInput:
 	cmp			al, 0x0a
 	jne			.CHAR_Found
 .CRLF_Found:
-    mov         ah, [.CRLF_Data]
+    mov         ah, [DATABLOCK(WATCHCRLF)]
     cmp         ah, 0
     jne         .CheckInput
     inc         ah
-    mov         [.CRLF_Data], ah
+    mov         [DATABLOCK(WATCHCRLF)], ah
     xor         al, al
     mov         [bx], al
     inc         bx
@@ -225,7 +269,7 @@ ReadInput:
     cmp         al, 0
     je         .CheckInput
     xor         ah, ah
-    mov         [.CRLF_Data], ah
+    mov         [DATABLOCK(WATCHCRLF)], ah
 .IsNotNull:
     cmp         cl, 128
     jae         .Test
@@ -233,13 +277,10 @@ ReadInput:
     inc         bx
     inc         cx
 .Test:
-    mov         ax, MAX_DATA
+    mov         ax, SIZEOF_MEMORY
     cmp         bx, ax
     jae         Out_of_Memory
 	jmp         .CheckInput
-
-.Buffer:
-    dw  0
 
 .ReadFile:
     push        bx
@@ -248,8 +289,8 @@ ReadInput:
     push        di
     mov         ah, 0x3f
     mov         bx, dx
-    mov         cx, 0x0001
-    mov         dx, .Buffer
+    mov         cx, 0x0001  ; SIZEOF_BUFFER to accelerate
+    mov         dx, DATABLOCK(BUFFER)
     int         0x21
     pop         di
     pop         cx
@@ -264,27 +305,24 @@ ReadInput:
 .NoError:
     cmp         ax, 0
     je          .Done
-    mov         al, [.Buffer]
+    mov         al, [DATABLOCK(BUFFER)]
     jmp         .Ready
 
-.CRLF_Data:
-    db          0
-
 .Done:
-    mov         dx, [DataPointer]
+    mov         dx, [DATABLOCK(MEMPTR)]
     mov         ax, bx
     dec         ax
     cmp         ax, dx
     jna         .BackupPointer
     mov         [di], cl
-    mov         al, [.CRLF_Data]
+    mov         al, [DATABLOCK(WATCHCRLF)]
     xor         ah, ah
-    mov         [.CRLF_Data], ah
+    mov         [DATABLOCK(WATCHCRLF)], ah
     cmp         al, 0x00
     jne         .BackupPointer
     mov         [bx], ah
     inc         bx
-    mov         ax, MAX_DATA
+    mov         ax, SIZEOF_MEMORY
     cmp         bx, ax
     jae         Out_of_Memory
     jmp         .SavePointer
@@ -293,14 +331,14 @@ ReadInput:
     jna         .SavePointer
     dec         bx
 .SavePointer:
-    mov         [DataPointer], bx
+    mov         [DATABLOCK(MEMPTR)], bx
     ret
 
 SwitchL:
     call        Index
     cld
-    mov         si, [DataPointer]
-    mov         cx, [DataTop]
+    mov         si, [DATABLOCK(MEMPTR)]
+    mov         cx, [DATABLOCK(MEMTOP)]
 .Loop:
     cmp         si, cx
     jae         .Done
@@ -317,8 +355,8 @@ SwitchL:
     ret
 
 SwitchF:
-    mov         bx, [DataPointer]
-    mov         al, [Execute_Flag]
+    mov         bx, [DATABLOCK(MEMPTR)]
+    mov         al, [DATABLOCK(EXECUTE)]
     cmp         al, 0x0
     jne         SwitchError
     xor         dl, dl
@@ -340,18 +378,18 @@ SwitchF:
 
 FileError:
     pop         dx
-    mov         ah, [Continue_Flag]
+    mov         ah, [DATABLOCK(CONTINUE)]
     cmp         ah, 0x00
     je          .DieNow
     ret
 .DieNow:
     StdOutStr   File_Read_Error_Message
-    mov         [ExitCode], al
+    mov         [DATABLOCK(EXITCODE)], al
     Terminate   al
 
 SwitchD:
-    mov         bx, [DataPointer]
-    mov         al, [Execute_Flag]
+    mov         bx, [DATABLOCK(MEMPTR)]
+    mov         al, [DATABLOCK(EXECUTE)]
     cmp         al, 0x0
     jne         SwitchError
     mov         al, [si]
@@ -361,7 +399,7 @@ SwitchD:
 
     push        bx
     mov         ah, 0x1a            ;Set DTA
-    mov         dx, DTA
+    mov         dx, DATABLOCK(DTA)
     int         0x21
     mov         cx, 0xffff          ;File Attribute
     mov         dx, di
@@ -372,18 +410,18 @@ SwitchD:
 
 .AddItem:
     cld
-    mov         si, DTA + 0x1e
+    mov         si, DATABLOCK(DTA) + 0x1e
     mov         cx, 0x0c
-    mov         dx, MAX_DATA
+    mov         dx, SIZEOF_MEMORY
     mov         ax, [si]
     cmp         ax, 0x2e2e
     je          .SkipItem
     cmp         ax, 0x002e
     je          .SkipItem
-    mov         al, [AllFiles_Flag]
+    mov         al, [DATABLOCK(ALLFILES)]
     cmp         al, 0x01
     je          .Repeat
-    mov         al, [DTA + 0x15]
+    mov         al, [DATABLOCK(DTA) + 0x15]
     test        al, 00011110b
     jnz         .SkipItem
     mov         di, bx
@@ -418,35 +456,35 @@ SwitchD:
 .NoMatch:
     pop         ax
     mov         [si], al
-    mov         [DataPointer], bx
+    mov         [DATABLOCK(MEMPTR)], bx
     ret
 
 SwitchC:
-    mov         al, [Execute_Flag]
+    mov         al, [DATABLOCK(EXECUTE)]
     cmp         al, 0x0
     jne         SwitchError
     inc         al
-    mov         [Continue_Flag], al
+    mov         [DATABLOCK(CONTINUE)], al
     ret
 
 SwitchS:
-    mov         al, [Execute_Flag]
+    mov         al, [DATABLOCK(EXECUTE)]
     cmp         al, 0x0
     jne         SwitchError
     inc         al
-    mov         [Sorted_Flag], al
+    mov         [DATABLOCK(SORTED)], al
     ret
 
 SwitchX:
-    mov         al, [Execute_Flag]
+    mov         al, [DATABLOCK(EXECUTE)]
     cmp         al, 0x0
     jne         SwitchError
     inc         al
-    mov         [Execute_Flag], al
+    mov         [DATABLOCK(EXECUTE)], al
     ret
 
 SwitchA:
-    mov         al, [Execute_Flag]
+    mov         al, [DATABLOCK(EXECUTE)]
     cmp         al, 0x0
     jne         SwitchError
     xor         al, al
@@ -457,17 +495,17 @@ SwitchA:
     jne         SwitchError
     mov         al, 0x01
 .SetFlag:
-    mov         [AllFiles_Flag], al
+    mov         [DATABLOCK(ALLFILES)], al
     ret
 
 NoSwitch:
-    mov         al, [Execute_Flag]
+    mov         al, [DATABLOCK(EXECUTE)]
     cmp         al, 0x01
     jne         SwitchError
     inc         al
-    mov         [Execute_Flag], al
-    mov         [CommandLine], di
-    mov         [CommandLength], cx
+    mov         [DATABLOCK(EXECUTE)], al
+    mov         [DATABLOCK(CMDLN)], di
+    mov         [DATABLOCK(CMDLEN)], cx
     ret
 
     HelpSwitchHandler
@@ -502,32 +540,5 @@ Search:
     db '.EXE',0
     db '.BAT',0
 
-ExitCode:
-    db 0
+DATA_START:
 
-Continue_Flag:
-    db 0
-Execute_Flag:
-    db 0
-AllFiles_Flag:
-    db 0
-Sorted_Flag:
-    db 0
-
-DataStart:
-    dw 0
-DataPointer:
-    dw 0
-DataTop:
-    dw 0
-CommandLength:
-    dw 0
-CommandLine:
-    dw 0
-
-Shell:
-DTA:
-    times 128 db 0
-DTAEnd:
-
-StackBottom:
