@@ -83,6 +83,27 @@ MainParsing:
 
     call        Index
 
+%imacro FindExec 2
+    %ifndef FindExecProc_Declared
+        %idefine FindExecProc_Declared
+
+            jmp     %%Over
+        FindExecProc:
+            ret
+
+        %%Over:
+    %endif
+
+    push        di
+    push        si
+    mov         si, %1
+    mov         di, %2
+    call        FindExecProc
+    pop         si
+    pop         di
+
+%endmacro
+
 %imacro FindComspec 1
     jmp         %%Over
 %%COMSPEC:
@@ -111,6 +132,9 @@ MainParsing:
 %%NotFound:
     xor         al, al
     cs stosb
+    push        cs
+    pop         ds
+    FindExec    %%COMMAND, %1
 %%Done:
     pop         ds
 
