@@ -45,6 +45,13 @@ struc tDATABLOCK
 
     .DTA        resb 128
     .COMSPEC    resb 128
+    .SEARCHNAME resb 128
+    .SEARCHPATH resb 128
+
+    ; Remove when W switch is removed
+    .TEMPNAME   resb 128
+
+    .ZERO       resb 0
 
     .STACK      resb SIZEOF_STACK
 
@@ -83,12 +90,170 @@ MainParsing:
 
     call        Index
 
+
+; %1 FILE, %2 DIR, AX = 0 As is, 1-3 + extension, 0xffff not found.
+%imacro FindExecInDir 2
+    %ifndef FindExecInDirProc_Declared
+        %idefine FindExecInDirProc_Declared
+
+            jmp     %%Over
+        FindFirstMatchFileProc:
+            push        ax
+            push        cx
+            push        dx
+            mov         dx, DATABLOCK(DTA)
+            mov         ah, 0x1a
+            int         0x21
+            mov         ah, 0x4e
+            mov         cx, 00100111b
+            mov         dx, DATABLOCK(SEARCHNAME)
+            int         0x21
+            pop         dx
+            pop         cx
+            pop         ax
+            ret
+        FindExecExt:
+            db '.COM',0
+            db '.EXE',0
+            db '.BAT',0
+        FindExecInDirProc:
+            push        dx
+            push        di
+            mov         di, DATABLOCK(SEARCHNAME)
+            mov         dx, di
+            cld
+        .RepeatA:
+            lodsb
+            stosb
+            cmp         al, 0
+            jne         .RepeatA
+            dec         di
+            xor         ah, ah
+            mov         si, bx
+        .RepeatB:
+            lodsb
+            stosb
+            cmp         al, '.'
+            jne         .NotDot
+            mov         ah, al
+        .NotDot:
+            cmp         al, 0
+            jne         .RepeatB
+            push        ax
+            mov         si, DATABLOCK(SEARCHNAME)
+            mov         di, si
+        .CaseLoop:
+            lodsb
+            cmp         al, 0x61
+            jb          .CaseOK
+            cmp         al, 0x7a
+            ja          .CaseOK
+            sub         al, 0x20
+        .CaseOK:
+            stosb
+            cmp         al, 0
+            jne         .CaseLoop
+            pop         ax
+            cmp         ah, 0x00
+            jne         .ExactOnly
+        .TryAll:
+            xor         ax, ax
+            mov         bx, di
+            dec         bx
+            mov         si, FindExecExt
+            call        .WithExtension
+            jnc         .Done
+            call        .WithExtension
+            jnc         .Done
+            call        .WithExtension
+            jnc         .Done
+            mov         ax, 0xffff
+            jmp         .Done
+            jmp         .ExactOnly
+        .WithExtension:
+            mov         di, bx
+            inc         ax
+            push        ax
+        .CopyExt:
+            lodsb
+            stosb
+            cmp         al, 0
+            jne         .CopyExt
+            pop         ax
+            call        FindFirstMatchFileProc
+            ret
+        .ExactOnly:
+            mov         ax, 0xffff
+            call        FindFirstMatchFileProc
+            jc          .Done
+            xor         ax, ax
+        .Done:
+            pop         di
+            pop         dx
+            ret
+        %%Over:
+    %endif
+    push        si
+    push        bx
+    mov         bx, %1
+    mov         si, %2
+    call        FindExecInDirProc
+    pop         bx
+    pop         si
+%endmacro
+
+; %1 FILE, %2 Output
 %imacro FindExec 2
     %ifndef FindExecProc_Declared
         %idefine FindExecProc_Declared
 
             jmp     %%Over
         FindExecProc:
+            xor     ah, ah
+            mov     [di], ah
+            push    si
+            mov     ah, 0x19
+            int     0x21    ; Get Current Disk
+            add     al, 0x41
+            mov     si, DATABLOCK(SEARCHPATH)
+            mov     [si], al
+            mov     ax, 0x5c3a
+            mov     [si + 1], ax
+            add     si, 3
+            mov     ah, 0x47
+            mov     dl, 0x00
+            int     0x21    ; Get Current Working Directory
+            jc      %%Error
+            cld
+            lodsb
+            cmp     al, 0
+            je      %%NoAddSlash
+        %%AddSlash:
+            lodsb
+            cmp     al, 0
+            jne     %%AddSlash
+            mov     ax, 0x005c
+            mov     [si - 1], ax
+        %%NoAddSlash:
+            pop     si
+            FindExecInDir si, DATABLOCK(SEARCHPATH)
+            cmp     ax, 0xffff
+            jne     %%Found
+
+            ; Search PathSpec
+
+            jmp     %%Done
+        %%Found:
+            mov     si, DATABLOCK(SEARCHNAME)
+        %%CopyName:
+            lodsb
+            stosb
+            cmp     al, 0
+            jne     %%CopyName
+            jmp     %%Done
+        %%Error:
+            pop     si
+        %%Done:
             ret
 
         %%Over:
@@ -104,6 +269,7 @@ MainParsing:
 
 %endmacro
 
+; %1 Output
 %imacro FindComspec 1
     jmp         %%Over
 %%COMSPEC:
@@ -532,6 +698,15 @@ NoSwitch:
     mov         [DATABLOCK(CMDLEN)], cx
     ret
 
+SwitchW:
+    xor         ah, ah
+    mov         [si], ah
+    FindExec    di, DATABLOCK(TEMPNAME)
+    StdOutStr   DATABLOCK(TEMPNAME)
+    StdOutCRLF
+    Terminate   0
+    ret
+
     HelpSwitchHandler
 
 CommandLineSwitches:
@@ -544,6 +719,7 @@ CommandLineSwitches:
     SwitchData  'X', 0, SwitchX ; Execute
     SwitchData  'C', 0, SwitchC ; Continue despite any errors
     SwitchData  'S', 0, SwitchS ; Sort List
+    SwitchData  'W', 1, SwitchW ; Temp Switch for testing FindExec
     HelpSwitchData
     SwitchData  0,  0, 0
 
@@ -558,11 +734,6 @@ File_Not_Found_Message:
 
 File_Read_Error_Message:
     db "File read error",CRLF,0
-
-Search:
-    db '.COM',0
-    db '.EXE',0
-    db '.BAT',0
 
 DATA_START:
 
