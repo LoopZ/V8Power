@@ -114,15 +114,7 @@ MainParsing:
             pop         cx
             pop         ax
             ret
-        FindExecExt:
-            db '.COM',0
-            db '.EXE',0
-            db '.BAT',0
-        FindExecInDirProc:
-            push        dx
-            push        di
-            mov         di, DATABLOCK(SEARCHNAME)
-            mov         dx, di
+        CopyAB:
             cld
         .RepeatA:
             lodsb
@@ -156,6 +148,18 @@ MainParsing:
             cmp         al, 0
             jne         .CaseLoop
             pop         ax
+            ret
+
+        FindExecExt:
+            db '.COM',0
+            db '.EXE',0
+            db '.BAT',0
+        FindExecInDirProc:
+            push        dx
+            push        di
+            mov         di, DATABLOCK(SEARCHNAME)
+            mov         dx, di
+            call        CopyAB
             cmp         ah, 0x00
             jne         .ExactOnly
         .TryAll:
@@ -215,6 +219,7 @@ MainParsing:
         FindExecProc:
             xor     ah, ah
             mov     [di], ah
+            push    di
             push    si
             mov     ah, 0x19
             int     0x21    ; Get Current Disk
@@ -242,7 +247,7 @@ MainParsing:
             pop     si
             FindExecInDir si, DATABLOCK(SEARCHPATH)
             cmp     ax, 0xffff
-            jne     %%Found
+            jne     %%FoundInPath
 
             mov     bx, si
 
@@ -256,6 +261,7 @@ MainParsing:
 
             ; Clone path name
         %%CheckPath:
+            push    di
             mov     di, DATABLOCK(SEARCHPATH)
         %%CopyPath:
             mov     al, [es:si]
@@ -290,17 +296,22 @@ MainParsing:
             pop       cx
             cmp       ax, 0xffff
             je        %%NullItem
-            push      ax
-            StdOutStr DATABLOCK(SEARCHPATH)
-            StdOutCRLF
-            pop       ax
-            StdOutHexWord
-            StdOutCRLF
+            mov       ch, al
+            pop       si
+            pop       es
+
+            pop       di
+
+            jmp       %%Found
+
+
         %%NullItem:
+            pop       di
             cmp       cl, 0x0
             jne       %%CheckPath
 
             pop     es
+            pop     di
             jmp     %%Done
 
 
@@ -309,6 +320,8 @@ MainParsing:
             pop     es
             ; Display Path Not Set Message?
             jmp     %%Done
+        %%FoundInPath:
+            pop     di
         %%Found:
             mov     si, DATABLOCK(SEARCHNAME)
         %%CopyName:
@@ -319,6 +332,7 @@ MainParsing:
             jmp     %%Done
         %%Error:
             pop     si
+            pop     di
         %%Done:
             ret
 
@@ -771,7 +785,6 @@ SwitchW:
     FindExec    di, DATABLOCK(TEMPNAME)
     StdOutStr   DATABLOCK(TEMPNAME)
     StdOutCRLF
-    Terminate   0
     ret
 
     HelpSwitchHandler
