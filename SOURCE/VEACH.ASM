@@ -101,6 +101,8 @@ MainParsing:
             push        ax
             push        cx
             push        dx
+            ; StdOutStr   DATABLOCK(SEARCHNAME)
+            ; StdOutCRLF
             mov         dx, DATABLOCK(DTA)
             mov         ah, 0x1a
             int         0x21
@@ -208,6 +210,8 @@ MainParsing:
         %idefine FindExecProc_Declared
 
             jmp     %%Over
+        %%PathEnvVarName:
+            db      'PATH',0
         FindExecProc:
             xor     ah, ah
             mov     [di], ah
@@ -240,8 +244,70 @@ MainParsing:
             cmp     ax, 0xffff
             jne     %%Found
 
-            ; Search PathSpec
+            mov     bx, si
 
+            push    es
+            push    ds
+            SearchEnv  %%PathEnvVarName
+            jc      %%PathNotSet
+            push    ds
+            pop     es
+            pop     ds
+
+            ; Clone path name
+        %%CheckPath:
+            mov     di, DATABLOCK(SEARCHPATH)
+        %%CopyPath:
+            mov     al, [es:si]
+            inc     si
+            cmp     al, ';'
+            je      %%EndPathItem
+            cmp     al, 0x00
+            je      %%EndPathItem
+            mov     [ds:di], al
+            inc     di
+            jmp     %%CopyPath
+        %%EndPathItem:
+            mov     cl, al
+            xor     al, al
+            mov     [ds:di], al
+            cmp     di, DATABLOCK(SEARCHPATH)
+            je      %%NullItem
+            mov     ax, [ds:di -1]
+            cmp     ax, 0x005c
+            je      %%HasSlash
+            mov     ax, 0x005c
+            mov     [ds:di], ax
+        %%HasSlash:
+            push      cx
+            push      si
+            push      es
+            push      ds
+            pop       es
+            FindExecInDir bx, DATABLOCK(SEARCHPATH)
+            pop       es
+            pop       si
+            pop       cx
+            cmp       ax, 0xffff
+            je        %%NullItem
+            push      ax
+            StdOutStr DATABLOCK(SEARCHPATH)
+            StdOutCRLF
+            pop       ax
+            StdOutHexWord
+            StdOutCRLF
+        %%NullItem:
+            cmp       cl, 0x0
+            jne       %%CheckPath
+
+            pop     es
+            jmp     %%Done
+
+
+        %%PathNotSet:
+            pop     ds
+            pop     es
+            ; Display Path Not Set Message?
             jmp     %%Done
         %%Found:
             mov     si, DATABLOCK(SEARCHNAME)
@@ -301,6 +367,7 @@ MainParsing:
     push        cs
     pop         ds
     FindExec    %%COMMAND, %1
+    ; Not found display COMMAND.COM not found?
 %%Done:
     pop         ds
 
