@@ -217,6 +217,9 @@ MainParsing:
         %%PathEnvVarName:
             db      'PATH',0
         FindExecProc:
+
+            ; Add Relative Path Checking Only
+
             xor     ah, ah
             mov     [di], ah
             push    di
