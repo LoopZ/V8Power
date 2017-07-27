@@ -267,6 +267,9 @@ MainParsing:
             FindExecInDir si, DATABLOCK(SEARCHPATH)
             cmp         ax, 0xffff
             jne         %%FoundInPath
+            mov         ah, [DATABLOCK(RELATIVE)]
+            cmp         ah, 0x00
+            jne         %%RelativeNotFound
             mov         bx, si
             push        es
             push        ds
@@ -329,6 +332,9 @@ MainParsing:
             pop         es
             pop         di
             ; Display Path Not Set Message?
+            jmp         %%Done
+        %%RelativeNotFound:
+            pop         di
             jmp         %%Done
         %%FoundInPath:
             pop         di
