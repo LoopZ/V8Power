@@ -34,7 +34,7 @@ struc tDATABLOCK
     .ALLFILES   resb 1  ; include dir,sys and hidden files
     .SORTED     resb 1  ; sort list
 
-    .RELATIVE   resb 1  ; relative path search only
+    .RELATIVE   resw 1  ; relative path search only Colon/Slash
     .WATCHCRLF  resb 1  ; cr/lf input tracking
 
     .MEMSTART   resw 1  ; start of heap
@@ -222,21 +222,26 @@ MainParsing:
             ; Test if Filename includes relative path
             cld
             push        si
+            xor         bx, bx
             xor         ah, ah
         %%RelativeTestLoop:
             lodsb
-            cmp         al, ':'
-            je          %%IsRelative
-            cmp         al, '\'
-            je          %%IsRelative
-            cmp         al, 0x00
-            je          %%NotRelative
-            jmp         %%RelativeTestLoop
-        %%IsRelative:
             inc         ah
-        %%NotRelative:
+            cmp         al, ':'
+            jne         %%NotColon
+            cmp         bh, 0x00
+            jne         %%NotColon
+            mov         bh, ah
+        %%NotColon:
+            cmp         al, '\'
+            jne         %%NotSlash
+            mov         bl, ah
+        %%NotSlash:
+            cmp         al, 0x00
+            jne         %%RelativeTestLoop
             pop         si
-            mov         [DATABLOCK(RELATIVE)], ah
+
+            mov         [DATABLOCK(RELATIVE)], bx
             ; Check Current Working Directory
             ; Convert to CWD/Relative Path
             xor         ah, ah
@@ -266,7 +271,14 @@ MainParsing:
             mov         [si - 1], ax
         %%NoAddSlash:
             pop         si
+            push        si
+            mov         ax, [DATABLOCK(RELATIVE)]
+            cmp         ax, 0x0000
+            je          %%SearchCWD
+            ; Remake SEARCHPATH and HOLDNAME
+        %%SearchCWD:
             FindExecInDir si, DATABLOCK(SEARCHPATH)
+            pop         si
             cmp         ax, 0xffff
             jne         %%FoundInPath
             mov         ah, [DATABLOCK(RELATIVE)]
