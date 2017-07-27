@@ -213,132 +213,129 @@ MainParsing:
     %ifndef FindExecProc_Declared
         %idefine FindExecProc_Declared
 
-            jmp     %%Over
+            jmp         %%Over
         %%PathEnvVarName:
-            db      'PATH',0
+            db          'PATH',0
         FindExecProc:
+
+            cld
+            push        si
+            pop         si
 
             ; Add Relative Path Checking Only
 
-            xor     ah, ah
-            mov     [di], ah
-            push    di
-            push    si
-            mov     ah, 0x19
-            int     0x21    ; Get Current Disk
-            add     al, 0x41
-            mov     si, DATABLOCK(SEARCHPATH)
-            mov     [si], al
-            mov     ax, 0x5c3a
-            mov     [si + 1], ax
-            add     si, 3
-            mov     ah, 0x47
-            mov     dl, 0x00
-            int     0x21    ; Get Current Working Directory
-            jc      %%Error
+            xor         ah, ah
+            mov         [di], ah
+            push        di
+            push        si
+            mov         ah, 0x19
+            int         0x21    ; Get Current Disk
+            add         al, 0x41
+            mov         si, DATABLOCK(SEARCHPATH)
+            mov         [si], al
+            mov         ax, 0x5c3a
+            mov         [si + 1], ax
+            add         si, 3
+            mov         ah, 0x47
+            mov         dl, 0x00
+            int         0x21    ; Get Current Working Directory
+            jc          %%Error
             cld
             lodsb
-            cmp     al, 0
-            je      %%NoAddSlash
+            cmp         al, 0
+            je          %%NoAddSlash
         %%AddSlash:
             lodsb
-            cmp     al, 0
-            jne     %%AddSlash
-            mov     ax, 0x005c
-            mov     [si - 1], ax
+            cmp         al, 0
+            jne         %%AddSlash
+            mov         ax, 0x005c
+            mov         [si - 1], ax
         %%NoAddSlash:
-            pop     si
+            pop         si
             FindExecInDir si, DATABLOCK(SEARCHPATH)
-            cmp     ax, 0xffff
-            jne     %%FoundInPath
+            cmp         ax, 0xffff
+            jne         %%FoundInPath
 
-            mov     bx, si
+            mov         bx, si
 
-            push    es
-            push    ds
-            SearchEnv  %%PathEnvVarName
-            jc      %%PathNotSet
-            push    ds
-            pop     es
-            pop     ds
+            push        es
+            push        ds
+            SearchEnv   %%PathEnvVarName
+            jc          %%PathNotSet
+            push        ds
+            pop         es
+            pop         ds
 
             ; Clone path name
         %%CheckPath:
-            push    di
-            mov     di, DATABLOCK(SEARCHPATH)
+            push        di
+            mov         di, DATABLOCK(SEARCHPATH)
         %%CopyPath:
-            mov     al, [es:si]
-            inc     si
-            cmp     al, ';'
-            je      %%EndPathItem
-            cmp     al, 0x00
-            je      %%EndPathItem
-            mov     [ds:di], al
-            inc     di
-            jmp     %%CopyPath
+            mov         al, [es:si]
+            inc         si
+            cmp         al, ';'
+            je          %%EndPathItem
+            cmp         al, 0x00
+            je          %%EndPathItem
+            mov         [ds:di], al
+            inc         di
+            jmp         %%CopyPath
         %%EndPathItem:
-            mov     cl, al
-            xor     al, al
-            mov     [ds:di], al
-            cmp     di, DATABLOCK(SEARCHPATH)
-            je      %%NullItem
-            mov     ax, [ds:di -1]
-            cmp     ax, 0x005c
-            je      %%HasSlash
-            mov     ax, 0x005c
-            mov     [ds:di], ax
+            mov         cl, al
+            xor         al, al
+            mov         [ds:di], al
+            cmp         di, DATABLOCK(SEARCHPATH)
+            je          %%NullItem
+            mov         ax, [ds:di -1]
+            cmp         ax, 0x005c
+            je          %%HasSlash
+            mov         ax, 0x005c
+            mov         [ds:di], ax
         %%HasSlash:
-            push      cx
-            push      si
-            push      es
-            push      ds
-            pop       es
+            push        cx
+            push        si
+            push        es
+            push        ds
+            pop         es
             FindExecInDir bx, DATABLOCK(SEARCHPATH)
-            pop       es
-            pop       si
-            pop       cx
-            cmp       ax, 0xffff
-            je        %%NullItem
-            mov       ch, al
-            pop       si
-            pop       es
-
-            pop       di
-
-            jmp       %%Found
-
-
+            pop         es
+            pop         si
+            pop         cx
+            cmp         ax, 0xffff
+            je          %%NullItem
+            mov         ch, al
+            pop         si
+            pop         es
+            pop         di
+            jmp         %%Found
         %%NullItem:
-            pop       di
-            cmp       cl, 0x0
-            jne       %%CheckPath
+            pop         di
+            cmp         cl, 0x0
+            jne         %%CheckPath
 
-            pop     es
-            pop     di
-            jmp     %%Done
-
-
+            pop         es
+            pop         di
+            jmp         %%Done
         %%PathNotSet:
-            pop     ds
-            pop     es
+            pop         ds
+            pop         es
             ; Display Path Not Set Message?
-            jmp     %%Done
+            jmp         %%Done
         %%FoundInPath:
-            pop     di
+            pop         di
         %%Found:
-            mov     si, DATABLOCK(SEARCHNAME)
+            mov         si, DATABLOCK(SEARCHNAME)
         %%CopyName:
             lodsb
             stosb
-            cmp     al, 0
-            jne     %%CopyName
-            jmp     %%Done
+            cmp         al, 0
+            jne         %%CopyName
+            jmp         %%Done
         %%Error:
-            pop     si
-            pop     di
+            pop         si
+            pop         di
         %%Done:
             ret
-
         %%Over:
     %endif
 
