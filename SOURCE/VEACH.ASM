@@ -32,6 +32,7 @@ struc tDATABLOCK
     .ALLFILES   resb 1
     .SORTED     resb 1
 
+    .RELATIVE   resb 1
     .WATCHCRLF  resb 1
 
     .MEMSTART   resw 1
@@ -217,13 +218,24 @@ MainParsing:
         %%PathEnvVarName:
             db          'PATH',0
         FindExecProc:
-
+            ; Add Relative Path Checking Only
             cld
             push        si
+            xor         ah, ah
+        %%RelativeTestLoop:
+            lodsb
+            cmp         al, ':'
+            je          %%IsRelative
+            cmp         al, '\'
+            je          %%IsRelative
+            cmp         al, 0x00
+            je          %%NotRelative
+            jmp         %%RelativeTestLoop
+        %%IsRelative:
+            inc         ah
+        %%NotRelative:
             pop         si
-
-            ; Add Relative Path Checking Only
-
+            mov         [DATABLOCK(RELATIVE)], ah
             xor         ah, ah
             mov         [di], ah
             push        di
