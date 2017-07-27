@@ -255,9 +255,7 @@ MainParsing:
             FindExecInDir si, DATABLOCK(SEARCHPATH)
             cmp         ax, 0xffff
             jne         %%FoundInPath
-
             mov         bx, si
-
             push        es
             push        ds
             SearchEnv   %%PathEnvVarName
@@ -265,7 +263,6 @@ MainParsing:
             push        ds
             pop         es
             pop         ds
-
             ; Clone path name
         %%CheckPath:
             push        di
@@ -312,7 +309,6 @@ MainParsing:
             pop         di
             cmp         cl, 0x0
             jne         %%CheckPath
-
             pop         es
             pop         di
             jmp         %%Done
