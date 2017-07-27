@@ -215,7 +215,7 @@ MainParsing:
 
             jmp         %%Over
         %%PathEnvVarName:
-            db          'PATHR',0
+            db          'PATH',0
         FindExecProc:
 
             cld
