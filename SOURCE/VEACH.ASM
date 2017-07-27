@@ -215,7 +215,7 @@ MainParsing:
 
             jmp         %%Over
         %%PathEnvVarName:
-            db          'PATH',0
+            db          'PATHR',0
         FindExecProc:
 
             cld
@@ -315,6 +315,7 @@ MainParsing:
         %%PathNotSet:
             pop         ds
             pop         es
+            pop         di
             ; Display Path Not Set Message?
             jmp         %%Done
         %%FoundInPath:
