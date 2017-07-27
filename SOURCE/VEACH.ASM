@@ -52,6 +52,7 @@ struc tDATABLOCK
     .COMSPEC    resb 128 ; Stored COMSPEC or location of COMMAND.COM
     .SEARCHNAME resb 128 ; Temporary Fully qualified Search Filename
     .SEARCHPATH resb 128 ; Path to search for executables.
+    .RELNAME    resb 128 ; Reformatted name for relative path search only
 
     .TEMPNAME   resb 128 ; Remove when W switch is removed
 
@@ -104,6 +105,7 @@ MainParsing:
             push        ax
             push        cx
             push        dx
+            ; StdOutChar  "?"
             ; StdOutStr   DATABLOCK(SEARCHNAME)
             ; StdOutCRLF
             mov         dx, DATABLOCK(DTA)
@@ -218,7 +220,41 @@ MainParsing:
             jmp         %%Over
         %%PathEnvVarName:
             db          'PATH',0
+
+        GetCurrentDir:
+            push        di
+            push        si
+            mov         ah, 0x19
+            int         0x21    ; Get Current Disk
+            add         al, 0x41
+            mov         si, DATABLOCK(SEARCHPATH)
+            mov         [si], al
+            mov         ax, 0x5c3a
+            mov         [si + 1], ax
+            add         si, 3
+            mov         ah, 0x47
+            mov         dl, 0x00
+            int         0x21    ; Get Current Working Directory
+            jc          %%NoAddSlash
+            lodsb
+            cmp         al, 0
+            je          %%NoAddSlash
+        %%AddSlash:
+            lodsb
+            cmp         al, 0
+            jne         %%AddSlash
+            mov         ax, 0x005c
+            mov         [si - 1], ax
+        %%NoAddSlash:
+            pop         si
+            pop         di
+        ret
+
         FindExecProc:
+            ; Null Result now.
+            xor         ah, ah
+            mov         [di], ah
+
             ; Test if Filename includes relative path
             cld
             push        si
@@ -240,60 +276,60 @@ MainParsing:
             cmp         al, 0x00
             jne         %%RelativeTestLoop
             pop         si
-
             mov         [DATABLOCK(RELATIVE)], bx
+
             ; Check Current Working Directory
             ; Convert to CWD/Relative Path
             xor         ah, ah
-            mov         [di], ah
-            push        di
-            push        si
-            mov         ah, 0x19
-            int         0x21    ; Get Current Disk
-            add         al, 0x41
-            mov         si, DATABLOCK(SEARCHPATH)
-            mov         [si], al
-            mov         ax, 0x5c3a
-            mov         [si + 1], ax
-            add         si, 3
-            mov         ah, 0x47
-            mov         dl, 0x00
-            int         0x21    ; Get Current Working Directory
+            call        GetCurrentDir
             jc          %%Error
-            lodsb
-            cmp         al, 0
-            je          %%NoAddSlash
-        %%AddSlash:
-            lodsb
-            cmp         al, 0
-            jne         %%AddSlash
-            mov         ax, 0x005c
-            mov         [si - 1], ax
-        %%NoAddSlash:
-            pop         si
+
             push        si
-            mov         ax, [DATABLOCK(RELATIVE)]
-            cmp         ax, 0x0000
+            push        cx
+            mov         cx, [DATABLOCK(RELATIVE)]
+            cmp         cx, 0x0000
             je          %%SearchCWD
-            ; Remake SEARCHPATH and HOLDNAME
+            ; Remake SEARCHPATH and RELNAME
+            push        di
+            mov         di, DATABLOCK(RELNAME)
+            xor         bx, bx
+            mov         bl, cl
+            push        si
+            add         si, bx
+        %%CopyRelName:
+            lodsb
+            stosb
+            cmp         al, 0x00
+            jne         %%CopyRelName
+            pop         si
+            pop         di
+            mov         si, DATABLOCK(RELNAME)
         %%SearchCWD:
+            pop         cx
             FindExecInDir si, DATABLOCK(SEARCHPATH)
             pop         si
+
             cmp         ax, 0xffff
             jne         %%FoundInPath
-            mov         ah, [DATABLOCK(RELATIVE)]
-            cmp         ah, 0x00
-            jne         %%RelativeNotFound
-        ; Check the PATH environment directories
+            mov         bx, [DATABLOCK(RELATIVE)]
+            cmp         bx, 0x0000
+            je          %%FetchPathEnv
+            jmp         %%Done
+
+        %%FetchPathEnv:
+        ; Find the PATH environment directories
             mov         bx, si
-            push        es
             push        ds
             SearchEnv   %%PathEnvVarName
-            jc          %%PathNotSet
-            push        ds
+            push        ds  ; mov es, ds
             pop         es
             pop         ds
-        ; Clone path name
+            jc          %%PathNotSet
+            jmp         %%CheckPath
+        %%PathNotSet:
+            ; Display Path Not Set Message?
+            jmp         %%Done
+
         %%CheckPath:
             push        di
             mov         di, DATABLOCK(SEARCHPATH)
@@ -322,7 +358,7 @@ MainParsing:
             push        cx
             push        si
             push        es
-            push        ds
+            push        ds ; mov es, ds
             pop         es
             FindExecInDir bx, DATABLOCK(SEARCHPATH)
             pop         es
@@ -331,29 +367,17 @@ MainParsing:
             cmp         ax, 0xffff
             je          %%NullItem
             mov         ch, al
-            pop         si
-            pop         es
             pop         di
             jmp         %%Found
         %%NullItem:
             pop         di
             cmp         cl, 0x0
             jne         %%CheckPath
-            pop         es
-            pop         di
-            jmp         %%Done
-        %%PathNotSet:
-            pop         ds
-            pop         es
-            pop         di
-            ; Display Path Not Set Message?
-            jmp         %%Done
-        %%RelativeNotFound:
-            pop         di
             jmp         %%Done
         %%FoundInPath:
-            pop         di
         %%Found:
+            push        ds
+            pop         es
             mov         si, DATABLOCK(SEARCHNAME)
         %%CopyName:
             lodsb
@@ -362,9 +386,9 @@ MainParsing:
             jne         %%CopyName
             jmp         %%Done
         %%Error:
-            pop         si
-            pop         di
         %%Done:
+            push        ds
+            pop         es
             ret
         %%Over:
     %endif
