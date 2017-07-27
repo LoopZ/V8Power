@@ -20,39 +20,42 @@
 
 %include "COMMON.INC"
 
-%idefine SIZEOF_STACK   0x0200
-%idefine SIZEOF_MEMORY  0x4000
-%idefine SIZEOF_BUFFER  2
+%idefine SIZEOF_STACK   0x0100  ; Required Stack bytes, don't need this much.
+%idefine SIZEOF_MEMORY  0x4000  ; Maximum bytes of memory program can use.
+%idefine SIZEOF_BUFFER  2       ; Size of StdIn/File buffer. Should increase
+                                ; this and do some buffer caching reads to
+                                ; increase performance.
 
 struc tDATABLOCK
 
-    .EXITCODE   resb 1
-    .CONTINUE   resb 1
-    .EXECUTE    resb 1
-    .ALLFILES   resb 1
-    .SORTED     resb 1
+    .EXITCODE   resb 1  ; Stored Exitcode
+    .CONTINUE   resb 1  ; Continue despite errors
+    .EXECUTE    resb 1  ; execute mode flag
+    .ALLFILES   resb 1  ; include dir,sys and hidden files
+    .SORTED     resb 1  ; sort list
 
-    .RELATIVE   resb 1
-    .WATCHCRLF  resb 1
+    .RELATIVE   resb 1  ; relative path search only
+    .WATCHCRLF  resb 1  ; cr/lf input tracking
 
-    .MEMSTART   resw 1
-    .MEMPTR     resw 1
-    .MEMTOP     resw 1
+    .MEMSTART   resw 1  ; start of heap
+    .MEMPTR     resw 1  ; first free heap byte, sometimes destroyable temp
+                        ; data exists above MEMPTR. like, sorted list index.
+    .MEMTOP     resw 1  ; end of heap. All memory above here can be freed when
+                        ; doing the Shell Execute.
 
-    .CMDLEN     resw 1
-    .CMDLN      resw 1
+    .CMDLEN     resw 1  ; Length of Command Line
+    .CMDLN      resw 1  ; ASCIIZ Command Line
 
-    .BUFFER     resb SIZEOF_BUFFER
+    .BUFFER     resb SIZEOF_BUFFER ; Standard Input Buffer
 
-    .DTA        resb 128
-    .COMSPEC    resb 128
-    .SEARCHNAME resb 128
-    .SEARCHPATH resb 128
+    .DTA        resb 128 ; Directory searching buffer
+    .COMSPEC    resb 128 ; Stored COMSPEC or location of COMMAND.COM
+    .SEARCHNAME resb 128 ; Temporary Fully qualified Search Filename
+    .SEARCHPATH resb 128 ; Path to search for executables.
 
-    ; Remove when W switch is removed
-    .TEMPNAME   resb 128
+    .TEMPNAME   resb 128 ; Remove when W switch is removed
 
-    .ZERO       resb 0
+    .ZERO       resb 0   ; Unused at present
 
     .STACK      resb SIZEOF_STACK
 
@@ -62,6 +65,7 @@ endstruc
 
 %idefine DATABLOCK(x) DATA_START + tDATABLOCK. %+ x
 
+    ; Wipe data area with zeros
     push        cx
     push        di
     xor         al, al
@@ -74,7 +78,7 @@ ClearDataArea:
     pop         di
     pop         cx
 
-
+    ; Move stack and setup memory pointers
     mov         sp, DATABLOCK(STACK) + SIZEOF_STACK
     mov         ax, sp
     add         ax, 0x0002
@@ -91,12 +95,10 @@ MainParsing:
 
     call        Index
 
-
 ; %1 FILE, %2 DIR, AX = 0 As is, 1-3 + extension, 0xffff not found.
 %imacro FindExecInDir 2
     %ifndef FindExecInDirProc_Declared
         %idefine FindExecInDirProc_Declared
-
             jmp     %%Over
         FindFirstMatchFileProc:
             push        ax
@@ -213,12 +215,11 @@ MainParsing:
 %imacro FindExec 2
     %ifndef FindExecProc_Declared
         %idefine FindExecProc_Declared
-
             jmp         %%Over
         %%PathEnvVarName:
             db          'PATH',0
         FindExecProc:
-            ; Add Relative Path Checking Only
+            ; Test if Filename includes relative path
             cld
             push        si
             xor         ah, ah
@@ -236,6 +237,8 @@ MainParsing:
         %%NotRelative:
             pop         si
             mov         [DATABLOCK(RELATIVE)], ah
+            ; Check Current Working Directory
+            ; Convert to CWD/Relative Path
             xor         ah, ah
             mov         [di], ah
             push        di
@@ -252,7 +255,6 @@ MainParsing:
             mov         dl, 0x00
             int         0x21    ; Get Current Working Directory
             jc          %%Error
-            cld
             lodsb
             cmp         al, 0
             je          %%NoAddSlash
@@ -270,6 +272,7 @@ MainParsing:
             mov         ah, [DATABLOCK(RELATIVE)]
             cmp         ah, 0x00
             jne         %%RelativeNotFound
+        ; Check the PATH environment directories
             mov         bx, si
             push        es
             push        ds
@@ -278,7 +281,7 @@ MainParsing:
             push        ds
             pop         es
             pop         ds
-            ; Clone path name
+        ; Clone path name
         %%CheckPath:
             push        di
             mov         di, DATABLOCK(SEARCHPATH)
