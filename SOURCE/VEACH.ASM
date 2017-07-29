@@ -251,11 +251,11 @@ MainParsing:
         ret
 
         FindExecProc:
-            ; Null Result now.
+        ; Null Result now.
             xor         ah, ah
             mov         [di], ah
 
-            ; Test if Filename includes relative path
+        ; Test if Filename includes relative path
             cld
             push        si
             xor         bx, bx
@@ -278,8 +278,8 @@ MainParsing:
             pop         si
             mov         [DATABLOCK(RELATIVE)], bx
 
-            ; Check Current Working Directory
-            ; Convert to CWD/Relative Path
+        ; Check Current Working Directory
+        ; Convert to CWD/Relative Path
             xor         ah, ah
             call        GetCurrentDir
             jc          %%Error
@@ -289,7 +289,7 @@ MainParsing:
             mov         cx, [DATABLOCK(RELATIVE)]
             cmp         cx, 0x0000
             je          %%SearchCWD
-            ; Remake SEARCHPATH and RELNAME
+        ; Remake SEARCHPATH and RELNAME
             push        di
             mov         di, DATABLOCK(RELNAME)
             xor         bx, bx
@@ -327,7 +327,7 @@ MainParsing:
             jc          %%PathNotSet
             jmp         %%CheckPath
         %%PathNotSet:
-            ; Display Path Not Set Message?
+        ; Display Path Not Set Message?
             jmp         %%Done
 
         %%CheckPath:
@@ -458,11 +458,7 @@ Repeater:
     multipush   bx, cx, es, ds, si, di
     push        cs
     pop         es
-    ; mov         ax, StackBottom + SIZEOF_STACK
-    ; add         ax, [DATABLOCK(MEMPTR)]
-    ; add         ax, 2
     mov         ax, [DATABLOCK(MEMTOP)]
-;    inc         ax
 
     mov         cl, 4
     shr         ax, cl
@@ -470,12 +466,11 @@ Repeater:
     mov         bx, ax
     mov         ax, 0x4a00
     int         0x21
-    jnc         .Reduced
     multipop    bx, cx, es, ds, si, di
+    jnc         .Reduced
     StdOutStr   Memory_Error_Message
     Terminate   8
 .Reduced:
-    multipop    bx, cx, es, ds, si, di
 
     ; ShellExec   Program, Options
 
