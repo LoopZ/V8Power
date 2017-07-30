@@ -19,14 +19,13 @@
 %idefine NoVideoOutput
 %idefine CommandLineParseAbort
 
-%include "COMMON.INC"
-%include "FIND.INC"
-
 %idefine SIZEOF_STACK   0x0100  ; Required Stack bytes, don't need this much.
 %idefine SIZEOF_MEMORY  0x4000  ; Maximum bytes of memory program can use.
 %idefine SIZEOF_BUFFER  2       ; Size of StdIn/File buffer. Should increase
                                 ; this and do some buffer caching reads to
                                 ; increase performance.
+
+%include "COMMON.INC"
 
 struc tDATABLOCK
 
@@ -44,6 +43,8 @@ struc tDATABLOCK
                         ; data exists above MEMPTR. like, sorted list index.
     .MEMTOP     resw 1  ; end of heap. All memory above here can be freed when
                         ; doing the Shell Execute.
+
+    SHELLEXECBLOCK
 
     .CMDLEN     resw 1  ; Length of Command Line
     .CMDLN      resw 1  ; ASCIIZ Command Line
@@ -67,6 +68,9 @@ struc tDATABLOCK
 endstruc
 
 %idefine DATABLOCK(x) DATA_START + tDATABLOCK. %+ x
+
+%include "FIND.INC"
+%include 'EXEC.INC'
 
     ; Wipe data area with zeros
     push        cx
@@ -129,13 +133,21 @@ Repeater:
     DebugInt    ax
     DebugChar   ' '
     loop        Repeater
+
+    StdOutCRLF
+    ShellExec   Program, Options
+
     jmp         Done
 
-    ; ShellExec   Program, Options
 
 Done:
     mov     al, [DATABLOCK(EXITCODE)]
     Terminate al
+
+Program:
+    db 'C:\FDOS\BIN\MEM.EXE',0
+Options:
+    db '/C/P',0
 
     UseAdvancedStdIn
 
