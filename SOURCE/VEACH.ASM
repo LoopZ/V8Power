@@ -99,13 +99,17 @@ MainParsing:
     call        Index
 
     FindComspec DATABLOCK(COMSPEC)
-    StdOutStr   DATABLOCK(COMSPEC)
-    StdOutCRLF
-    jmp         Done
 
     mov         cx, [DATABLOCK(CMDLEN)]
-    cld
     mov         si, [DATABLOCK(CMDLN)]
+
+    StdOutIntWord   cx
+    StdOutCHar  '-'
+    StdOutStr   si
+    StdOutCRLF
+
+    jmp         Done
+    cld
 Repeater:
     lodsb
     StdOutChar  al
@@ -207,9 +211,6 @@ SortedIndex:
     ret
 
 SwitchI:
-    mov         al, [DATABLOCK(EXECUTE)]
-    cmp         al, 0x0
-    jne         SwitchError
     mov         bx, [DATABLOCK(MEMPTR)]
     xor         dx, dx
 
@@ -333,9 +334,6 @@ SwitchL:
 
 SwitchF:
     mov         bx, [DATABLOCK(MEMPTR)]
-    mov         al, [DATABLOCK(EXECUTE)]
-    cmp         al, 0x0
-    jne         SwitchError
     xor         dl, dl
     mov         dh, [si]
     mov         [si], dl
@@ -366,9 +364,6 @@ FileError:
 
 SwitchD:
     mov         bx, [DATABLOCK(MEMPTR)]
-    mov         al, [DATABLOCK(EXECUTE)]
-    cmp         al, 0x0
-    jne         SwitchError
     mov         al, [si]
     push        ax
     xor         al, al
@@ -437,33 +432,40 @@ SwitchD:
     ret
 
 SwitchC:
-    mov         al, [DATABLOCK(EXECUTE)]
-    cmp         al, 0x0
-    jne         SwitchError
-    inc         al
+    mov         al, 0x01
     mov         [DATABLOCK(CONTINUE)], al
     ret
 
 SwitchS:
-    mov         al, [DATABLOCK(EXECUTE)]
-    cmp         al, 0x0
-    jne         SwitchError
-    inc         al
+    mov         al, 0x01
     mov         [DATABLOCK(SORTED)], al
     ret
 
 SwitchX:
-    mov         al, [DATABLOCK(EXECUTE)]
-    cmp         al, 0x0
-    jne         SwitchError
-    inc         al
+    mov         al, 0x01
     mov         [DATABLOCK(EXECUTE)], al
+    mov         [CommandLineParseAbortFlag], al
+    inc         di
+    xor         cx, cx
+    cld
+    mov         al, [di]
+    cmp         al, 0x20
+    jne         .Measure
+    inc         di
+.Measure:
+    lodsb
+    cmp         al, 0x00
+    je          .Measured
+    cmp         al, 0x0d
+    je          .Measured
+    inc         cx
+    jmp         .Measure
+.Measured:
+    mov         [DATABLOCK(CMDLN)], di
+    mov         [DATABLOCK(CMDLEN)], cx
     ret
 
 SwitchA:
-    mov         al, [DATABLOCK(EXECUTE)]
-    cmp         al, 0x0
-    jne         SwitchError
     xor         al, al
     mov         ah, [di]
     cmp         ah, '-'
@@ -476,13 +478,7 @@ SwitchA:
     ret
 
 NoSwitch:
-    mov         al, [DATABLOCK(EXECUTE)]
-    cmp         al, 0x01
-    jne         SwitchError
-    inc         al
-    mov         [DATABLOCK(EXECUTE)], al
-    mov         [DATABLOCK(CMDLN)], di
-    mov         [DATABLOCK(CMDLEN)], cx
+    jmp         SwitchError
     ret
 
 SwitchW:
