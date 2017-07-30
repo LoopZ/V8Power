@@ -97,7 +97,6 @@ MainParsing:
 
     call        Index
 
-
     FindComspec DATABLOCK(COMSPEC)
     StdOutStr   DATABLOCK(COMSPEC)
     StdOutCRLF
