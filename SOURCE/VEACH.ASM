@@ -241,7 +241,6 @@ MainParsing:
             add         si, 3
             mov         [si], dh
             mov         ah, 0x47
-            ; mov         dl, 0x00
             int         0x21    ; Get Current Working Directory
             jc          %%DriveLetterError
             lodsb
@@ -312,17 +311,21 @@ MainParsing:
             jna         %%SkipCaseAdj
             sub         al, 0x20
         %%SkipCaseAdj:
-            DebugChar   '+'
             call        GetCurrentDir
-            StdOutStr   DATABLOCK(SEARCHPATH)
-            StdOutCRLF
+        %%NoColon:
+            xor         bx, bx
+            mov         bl, ch
+            mov         al, [si + bx]
+            cmp         al, '\'
+            jne         %%NotRootDir
+            mov         [DATABLOCK(SEARCHPATH) + bx + 1], bh
+        %%NotRootDir:
             push        si
             pop         si
 
-        %%NoColon:
         ; Set RELNAME to Filename part of relative name
             mov         di, DATABLOCK(RELNAME)
-            xor         bx, bx
+        ;    xor         bx, bx
             mov         bl, cl
             push        si
             add         si, bx
