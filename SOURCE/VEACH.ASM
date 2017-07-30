@@ -303,6 +303,7 @@ MainParsing:
             cmp         cx, 0x0000
             je          %%SearchCWD
 
+        ; Check if drive is specified
             cmp         ch, 0x02
             jne         %%NoColon
             mov         al, [si]
@@ -313,19 +314,49 @@ MainParsing:
         %%SkipCaseAdj:
             call        GetCurrentDir
         %%NoColon:
+        ; Check if Root is specified
             xor         bx, bx
             mov         bl, ch
             mov         al, [si + bx]
             cmp         al, '\'
             jne         %%NotRootDir
             mov         [DATABLOCK(SEARCHPATH) + bx + 1], bh
+            inc         bx
         %%NotRootDir:
-            push        si
-            pop         si
+        ; Clone relative path
+            push        di
+            cmp         cl, 0x00
+            je          %%CloneDone
+            mov         di, DATABLOCK(SEARCHPATH)
+        %%FindEnd:
+            mov         ah, [di]
+            cmp         ah, 0x00
+            je          %%FoundEnd
+            inc         di
+            jmp         %%FindEnd
+        %%FoundEnd:
+            cmp         cl, ch
+            jae         %%CloneRelative
+            mov         cl, ch
+        %%CloneRelative:
+            cmp         bl, cl
+            jae         %%CloneDone
+            mov         al, [si + bx]
+            ; DebugChar   al
+            mov         [di], ax
+            inc         di
+            inc         bl
+            jmp         %%CloneRelative
+        %%CloneDone:
+            pop         di
 
         ; Set RELNAME to Filename part of relative name
             mov         di, DATABLOCK(RELNAME)
         ;    xor         bx, bx
+            cmp         cl, ch
+            jae         %%HighValSet
+            mov         cl, ch
+        %%HighValSet:
             mov         bl, cl
             push        si
             add         si, bx
