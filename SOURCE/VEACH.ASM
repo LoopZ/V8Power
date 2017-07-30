@@ -17,6 +17,7 @@
 ; NASM for DOS
 
 %idefine NoVideoOutput
+%idefine CommandLineParseAbort
 
 %include "COMMON.INC"
 %include "FIND.INC"

@@ -225,6 +225,10 @@ VersionID:
 ; Common Data Section
 SECTION _DATA
 
+%ifdef CommandLineParseAbort
+    CommandLineParseAbortFlag:  DB 0
+%endif
+
 %ifdef TextOutput
 	VideoMode:      DB 0
 	VideoPage:      DB 0
@@ -1094,6 +1098,17 @@ AdvancedStdIn:
     mov         di, si
     xor         dh, dh
 %%Loop:
+    %ifdef  CommandLineParseAbort
+        push    ax
+        mov     al, [CommandLineParseAbortFlag]
+        cmp     al, 0x00
+        pop     ax
+        je      %%NoAbort
+        xor     al, al
+        mov     [CommandLineParseAbortFlag], al
+        jmp     %%Abort
+    %%NoAbort:
+    %endif
     lodsb
     cmp         al, 0x0d
     je          %%Next
@@ -1217,6 +1232,7 @@ SwitchError:
 %%Done:
     cmp         bx, 0
     jne         SwitchError
+%%Abort:
 %endmacro
 
 %imacro NumberParamProc 0
