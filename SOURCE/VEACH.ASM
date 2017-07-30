@@ -59,6 +59,7 @@ struc tDATABLOCK
     .SEARCHPATH resb 128 ; Path to search for executables.
     .RELNAME    resb 128 ; Reformatted name for relative path search only
     .EXECBUF    resb 256 ; Execution Data Expansion String
+    .CMDBUF     resb 128 ; Executed command buffer
 
     %ifndef NoWhereIS
     .WHERENAME  resb 128 ; Remove when W switch is removed
@@ -126,15 +127,11 @@ MainParsing:
 
     FindComspec DATABLOCK(COMSPEC)
 
-;    mov         cx, [DATABLOCK(CMDLEN)]
-;    mov         si, [DATABLOCK(CMDLN)]
-
 ; Run through list
     cld
     mov         si, [DATABLOCK(MEMPTR)]
     mov         di, DATABLOCK(EXECBUF)
     mov         dx, [DATABLOCK(MEMTOP)]
-;     mov         cx, [DATABLOCK(MEMCOUNT)]
     xor         bx, bx
 .RunLoop:
     inc         bx
@@ -143,7 +140,6 @@ MainParsing:
     lodsw
     inc         ax          ; ignore size of string
     mov         cx, ax
-
     multipush   si, di
     mov         si, [DATABLOCK(CMDLN)]
 .CloneOptions:
@@ -198,14 +194,42 @@ MainParsing:
 .AddNumberDone:
     multipop    ax, bx, cx, dx
     jmp         .CloneOptions
-
 .CloneDone:
     multipop    si, di
-
 ;  Temporary Display ExecBuf
     pushall
-    StdOutChar  '+'
+    mov         si, DATABLOCK(EXECBUF)
+.SearchFirst:
+    lodsb
+    cmp         al, 0x0d
+    je          .FoundFirst
+    cmp         al, 0x00
+    je          .FoundFirst
+    cmp         al, 0x20
+    je          .FoundFirst
+    jmp         .SearchFirst
+.FoundFirst:
+    dec         si
+    xor         ah, ah
+    mov         [si], ah
+    push        ax
+    FindExec    di, DATABLOCK(CMDBUF)
+    pop         ax
+    mov         [si], al
+    cmp         al, 0x20
+    jne         .CollapseLoop
+    inc         si
+.CollapseLoop:
+    lodsb
+    stosb
+    cmp         al, 0x0
+    jne         .CollapseLoop
+
+    StdOutChar  '?'
     StdOutStr   DATABLOCK(EXECBUF)
+    StdOutCRLF
+    StdOutChar  '='
+    StdOutStr   DATABLOCK(CMDBUF)
     StdOutCRLF
     popall
     jmp         .RunLoop
