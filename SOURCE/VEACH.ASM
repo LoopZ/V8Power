@@ -18,6 +18,7 @@
 
 %idefine NoVideoOutput
 %idefine CommandLineParseAbort
+%idefine NoWhereIs
 
 %idefine SIZEOF_STACK   0x0100  ; Required Stack bytes, don't need this much.
 %idefine SIZEOF_MEMORY  0x4000  ; Maximum bytes of memory program can use.
@@ -57,7 +58,9 @@ struc tDATABLOCK
     .SEARCHPATH resb 128 ; Path to search for executables.
     .RELNAME    resb 128 ; Reformatted name for relative path search only
 
-    .TEMPNAME   resb 128 ; Remove when W switch is removed
+    %ifndef NoWhereIS
+    .WHERENAME  resb 128 ; Remove when W switch is removed
+    %endif
 
     .ZERO       resb 0   ; Unused at present
 
@@ -497,6 +500,7 @@ NoSwitch:
     jmp         SwitchError
     ret
 
+%ifndef NoWhereIs
 SwitchW:
     xor         ah, ah
     mov         [si], ah
@@ -504,20 +508,23 @@ SwitchW:
     StdOutStr   DATABLOCK(TEMPNAME)
     StdOutCRLF
     ret
+%endif
 
     HelpSwitchHandler
 
 CommandLineSwitches:
     SwitchData  0,  0, NoSwitch
-    SwitchData  'I', 0, SwitchI ; StdIO
-    SwitchData  'F', 1, SwitchF ; From File
+    SwitchData  'I', 0, SwitchI ; List From StdIn
+    SwitchData  'F', 1, SwitchF ; List From File
     SwitchData  'A', 1, SwitchA ; All Files and Directories on/off
     SwitchData  'D', 1, SwitchD ; Directory Search
     SwitchData  'L', 0, SwitchL ; Display List
     SwitchData  'X', 0, SwitchX ; Execute
-    SwitchData  'C', 0, SwitchC ; Continue despite any errors
+    SwitchData  'C', 0, SwitchC ; Continue despite any exec errorlevels
     SwitchData  'S', 0, SwitchS ; Sort List
+%ifndef NoWhereIs
     SwitchData  'W', 1, SwitchW ; Temp Switch for testing FindExec
+%endif
     HelpSwitchData
     SwitchData  0,  0, 0
 
