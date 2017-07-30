@@ -44,6 +44,7 @@ struc tDATABLOCK
                         ; data exists above MEMPTR. like, sorted list index.
     .MEMTOP     resw 1  ; end of heap. All memory above here can be freed when
                         ; doing the Shell Execute.
+    .MEMCOUNT   resw 1  ; Count of items in list
 
     SHELLEXECBLOCK
 
@@ -57,6 +58,7 @@ struc tDATABLOCK
     .SEARCHNAME resb 128 ; Temporary Fully qualified Search Filename
     .SEARCHPATH resb 128 ; Path to search for executables.
     .RELNAME    resb 128 ; Reformatted name for relative path search only
+    .EXECBUF    resb 256 ; Execution Data Expansion String
 
     %ifndef NoWhereIS
     .WHERENAME  resb 128 ; Remove when W switch is removed
@@ -124,33 +126,49 @@ MainParsing:
 
     FindComspec DATABLOCK(COMSPEC)
 
-    mov         cx, [DATABLOCK(CMDLEN)]
-    mov         si, [DATABLOCK(CMDLN)]
+;    mov         cx, [DATABLOCK(CMDLEN)]
+;    mov         si, [DATABLOCK(CMDLN)]
 
+; Run through list
     cld
-    add     cx, 2
-Repeater:
+    mov         si, [DATABLOCK(MEMPTR)]
+    mov         di, DATABLOCK(EXECBUF)
+    mov         dx, [DATABLOCK(MEMTOP)]
+;     mov         cx, [DATABLOCK(MEMCOUNT)]
+    xor         bx, bx
+.RunLoop:
+    cmp         si, dx
+    jae         .RunDone
+    lodsw
+    inc         ax          ; ignore size of string
+    mov         cx, ax
 
+    multipush   si, di
+    mov         si, [DATABLOCK(CMDLN)]
+.CloneOptions:
     lodsb
-    xor         ah, ah
-    DebugInt    ax
-    DebugChar   ' '
-    loop        Repeater
+    stosb
+    cmp         al, 0
+    jne         .CloneOptions
+    multipop    si, di
 
+;  Temporary Display ExecBuf
+    pushall
+    StdOutChar  '+'
+    StdOutStr   DATABLOCK(EXECBUF)
     StdOutCRLF
-    ShellExec   Program, Options
+    popall
+    jmp         .RunLoop
+.RunDone:
+
+;    StdOutCRLF
+;    ShellExec   Program, Options
 
     jmp         Done
-
 
 Done:
     mov     al, [DATABLOCK(EXITCODE)]
     Terminate al
-
-Program:
-    db 'C:\FDOS\BIN\MEM.EXE',0
-Options:
-    db '/C/P',0
 
     UseAdvancedStdIn
 
@@ -159,6 +177,8 @@ Out_of_Memory:
     Terminate   8
 
 Index:
+    push        cx
+    xor         cx, cx
     xor         ah, ah
     mov         si, [DATABLOCK(MEMSTART)]
     mov         di, [DATABLOCK(MEMPTR)]
@@ -167,6 +187,7 @@ Index:
 .Repeat:
     cmp         si, bx
     jae         .Done
+    inc         cx
     mov         al, [si]
 ;    cmp         al, 0x00
 ;    je          .Done
@@ -178,10 +199,13 @@ Index:
     jae         Out_of_Memory
     jmp         .Repeat
 .Done:
+    pop         cx
+    mov         [DATABLOCK(MEMCOUNT)], cx
     mov         [DATABLOCK(MEMTOP)], di
     mov         al, [DATABLOCK(SORTED)]
     cmp         al, 0x00
     jne         SortedIndex
+
     ret
 
 ; Super simple bubble sort
@@ -460,10 +484,12 @@ SwitchX:
     mov         [CommandLineParseAbortFlag], al
     inc         di
     xor         cx, cx
+.Strip:
     mov         al, [di]
     cmp         al, 0x20
     jne         .Measure
     inc         di
+    jmp         .Strip
 .Measure:
     mov         [DATABLOCK(CMDLN)], di
 .MeasureLoop:
@@ -529,7 +555,7 @@ CommandLineSwitches:
     SwitchData  0,  0, 0
 
 DefaultExecuteOptions:
-    db  "* test",0x0d,0
+    db  "*",0
 
 Memory_Error_Message:
     db  "Memory Error",CRLF,0

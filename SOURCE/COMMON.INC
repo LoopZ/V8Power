@@ -88,7 +88,6 @@ VersionID:
 	push	    dx
 	push	    si
 	push	    di
-	push	    bp
 	push	    es
 	push	    ds
 	push        bp
@@ -98,7 +97,6 @@ VersionID:
     pop         bp
 	pop 	    ds
 	pop		    es
-	pop		    bp
 	pop		    di
 	pop		    si
 	pop		    dx
