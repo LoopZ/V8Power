@@ -98,25 +98,7 @@ MainParsing:
 
     call        Index
 
-    FindComspec DATABLOCK(COMSPEC)
-
-    mov         cx, [DATABLOCK(CMDLEN)]
-    mov         si, [DATABLOCK(CMDLN)]
-
-    StdOutIntWord   cx
-    StdOutCHar  '-'
-    StdOutStr   si
-    StdOutCRLF
-
-    jmp         Done
-    cld
-Repeater:
-    lodsb
-    StdOutChar  al
-    loop        Repeater
-    jmp         Done
-
-    multipush   bx, cx, es, ds, si, di
+    push        es
     push        cs
     pop         es
     mov         ax, [DATABLOCK(MEMTOP)]
@@ -127,11 +109,27 @@ Repeater:
     mov         bx, ax
     mov         ax, 0x4a00
     int         0x21
-    multipop    bx, cx, es, ds, si, di
+    pop         es
     jnc         .Reduced
     StdOutStr   Memory_Error_Message
     Terminate   8
 .Reduced:
+
+    FindComspec DATABLOCK(COMSPEC)
+
+    mov         cx, [DATABLOCK(CMDLEN)]
+    mov         si, [DATABLOCK(CMDLN)]
+
+    cld
+    add     cx, 2
+Repeater:
+
+    lodsb
+    xor         ah, ah
+    DebugInt    ax
+    DebugChar   ' '
+    loop        Repeater
+    jmp         Done
 
     ; ShellExec   Program, Options
 
@@ -447,21 +445,27 @@ SwitchX:
     mov         [CommandLineParseAbortFlag], al
     inc         di
     xor         cx, cx
-    cld
     mov         al, [di]
     cmp         al, 0x20
     jne         .Measure
     inc         di
 .Measure:
-    lodsb
+    mov         [DATABLOCK(CMDLN)], di
+.MeasureLoop:
+    mov         al, [di]
+    inc         di
     cmp         al, 0x00
     je          .Measured
     cmp         al, 0x0d
     je          .Measured
     inc         cx
-    jmp         .Measure
+    jmp         .MeasureLoop
 .Measured:
-    mov         [DATABLOCK(CMDLN)], di
+    cmp         cx, 0x000
+    jne         .HasOptions
+    mov         di, DefaultExecuteOptions
+    jmp         .Measure
+.HasOptions:
     mov         [DATABLOCK(CMDLEN)], cx
     ret
 
@@ -504,6 +508,9 @@ CommandLineSwitches:
     SwitchData  'W', 1, SwitchW ; Temp Switch for testing FindExec
     HelpSwitchData
     SwitchData  0,  0, 0
+
+DefaultExecuteOptions:
+    db  "* test",0x0d,0
 
 Memory_Error_Message:
     db  "Memory Error",CRLF,0
