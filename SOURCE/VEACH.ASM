@@ -324,9 +324,9 @@ MainParsing:
             inc         bx
         %%NotRootDir:
         ; Clone relative path
-            push        di
             cmp         cl, 0x00
-            je          %%CloneDone
+            je          %%SkipClone
+            push        di
             mov         di, DATABLOCK(SEARCHPATH)
         %%FindEnd:
             mov         ah, [di]
@@ -342,13 +342,30 @@ MainParsing:
             cmp         bl, cl
             jae         %%CloneDone
             mov         al, [si + bx]
-            ; DebugChar   al
+        ; .. Walking up to parent directory
+            cmp         al, '.'
+            jne         %%NoWalkUp
+            mov         dx, [si + bx + 1]
+            cmp         dx, '.\'
+            jne         %%NoWalkUp
+            add         bx, 3
+        %%Walking:
+            cmp         di, DATABLOCK(SEARCHPATH) + 0x03
+            jna         %%CloneRelative
+            dec         di
+            mov         al, [di - 1]
+            cmp         al, '\'
+            je          %%CloneRelative
+            jmp         %%Walking
+        %%NoWalkUp:
             mov         [di], ax
             inc         di
             inc         bl
             jmp         %%CloneRelative
         %%CloneDone:
+            mov        [di], ah
             pop         di
+        %%SkipClone:
 
         ; Set RELNAME to Filename part of relative name
             mov         di, DATABLOCK(RELNAME)
@@ -375,7 +392,7 @@ MainParsing:
             pop         si
 
         ; Temporary Always Match for Search Parsing Tests
-            je          %%FoundInPath
+        ;    je          %%FoundInPath
 
             cmp         ax, 0xffff
             jne         %%FoundInPath
