@@ -137,6 +137,7 @@ MainParsing:
 ;     mov         cx, [DATABLOCK(MEMCOUNT)]
     xor         bx, bx
 .RunLoop:
+    inc         bx
     cmp         si, dx
     jae         .RunDone
     lodsw
@@ -147,9 +148,58 @@ MainParsing:
     mov         si, [DATABLOCK(CMDLN)]
 .CloneOptions:
     lodsb
+    cmp         al, '*'
+    je          .AddItem
+    cmp         al, '@'
+    je          .AddIndex
+    cmp         al, '#'
+    je          .AddCount
     stosb
     cmp         al, 0
     jne         .CloneOptions
+    jmp         .CloneDone
+.AddItem:
+    push        si
+    mov         si, cx
+.AddItemLoop:
+    lodsb
+    cmp         al, 0
+    je          .AddItemDone
+    stosb
+    jmp         .AddItemLoop
+.AddItemDone:
+    pop         si
+    jmp         .CloneOptions
+.AddIndex:
+    mov         ax, bx
+    jmp         .AddNumber
+.AddCount:
+    mov         ax, [DATABLOCK(MEMCOUNT)]
+.AddNumber:
+    multipush   ax, bx, cx, dx
+    mov         bx, 0x000A
+    mov         cx, 0x0001
+.AddNumberLoop:
+    cmp         ax, bx
+    jge         .AddNumberTooBig
+    push        ax
+.AddNumberOK:
+    pop         ax
+    add         ax, 0x0030
+    stosb
+    loop       .AddNumberOK
+    jmp        .AddNumberDone
+.AddNumberTooBig:
+    inc         cx
+    xor         dx, dx
+    div         bx
+    push        dx
+    jmp         .AddNumberLoop
+.AddNumberDone:
+    multipop    ax, bx, cx, dx
+    jmp         .CloneOptions
+
+.CloneDone:
     multipop    si, di
 
 ;  Temporary Display ExecBuf
@@ -199,8 +249,8 @@ Index:
     jae         Out_of_Memory
     jmp         .Repeat
 .Done:
-    pop         cx
     mov         [DATABLOCK(MEMCOUNT)], cx
+    pop         cx
     mov         [DATABLOCK(MEMTOP)], di
     mov         al, [DATABLOCK(SORTED)]
     cmp         al, 0x00
