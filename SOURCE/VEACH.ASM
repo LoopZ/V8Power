@@ -289,7 +289,7 @@ MainParsing:
             mov         cx, [DATABLOCK(RELATIVE)]
             cmp         cx, 0x0000
             je          %%SearchCWD
-        ; Remake SEARCHPATH and RELNAME
+        ; Set RELNAME to Filename part of relative name
             push        di
             mov         di, DATABLOCK(RELNAME)
             xor         bx, bx
@@ -304,10 +304,16 @@ MainParsing:
             pop         si
             pop         di
             mov         si, DATABLOCK(RELNAME)
+
+
+
         %%SearchCWD:
             pop         cx
             FindExecInDir si, DATABLOCK(SEARCHPATH)
             pop         si
+
+        ; Temporary Always Match for Search Parsing Tests
+            je          %%FoundInPath
 
             cmp         ax, 0xffff
             jne         %%FoundInPath
