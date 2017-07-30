@@ -224,18 +224,26 @@ MainParsing:
         GetCurrentDir:
             push        di
             push        si
+            push        dx
+            cmp         al, 0x00
+            jne         %%SkipCurDisk
             mov         ah, 0x19
             int         0x21    ; Get Current Disk
-            add         al, 0x41
+            inc         al
+        %%SkipCurDisk:
+            xor         dh, dh
+            mov         dl, al
+            add         al, 0x40
             mov         si, DATABLOCK(SEARCHPATH)
             mov         [si], al
             mov         ax, 0x5c3a
             mov         [si + 1], ax
             add         si, 3
+            mov         [si], dh
             mov         ah, 0x47
-            mov         dl, 0x00
+            ; mov         dl, 0x00
             int         0x21    ; Get Current Working Directory
-            jc          %%NoAddSlash
+            jc          %%DriveLetterError
             lodsb
             cmp         al, 0
             je          %%NoAddSlash
@@ -245,7 +253,12 @@ MainParsing:
             jne         %%AddSlash
             mov         ax, 0x005c
             mov         [si - 1], ax
+            jmp         %%NoAddSlash
+        %%DriveLetterError:
+            mov         si, DATABLOCK(SEARCHPATH)
+            mov         [si], dh
         %%NoAddSlash:
+            pop         dx
             pop         si
             pop         di
         ret
@@ -280,17 +293,34 @@ MainParsing:
 
         ; Check Current Working Directory
         ; Convert to CWD/Relative Path
-            xor         ah, ah
+            xor         al, al
             call        GetCurrentDir
             jc          %%Error
 
             push        si
             push        cx
+            push        di
             mov         cx, [DATABLOCK(RELATIVE)]
             cmp         cx, 0x0000
             je          %%SearchCWD
+
+            cmp         ch, 0x02
+            jne         %%NoColon
+            mov         al, [si]
+            sub         al, 0x40
+            cmp         al, 0x20
+            jna         %%SkipCaseAdj
+            sub         al, 0x20
+        %%SkipCaseAdj:
+            DebugChar   '+'
+            call        GetCurrentDir
+            StdOutStr   DATABLOCK(SEARCHPATH)
+            StdOutCRLF
+            push        si
+            pop         si
+
+        %%NoColon:
         ; Set RELNAME to Filename part of relative name
-            push        di
             mov         di, DATABLOCK(RELNAME)
             xor         bx, bx
             mov         bl, cl
@@ -302,12 +332,10 @@ MainParsing:
             cmp         al, 0x00
             jne         %%CopyRelName
             pop         si
-            pop         di
             mov         si, DATABLOCK(RELNAME)
 
-
-
         %%SearchCWD:
+            pop         di
             pop         cx
             FindExecInDir si, DATABLOCK(SEARCHPATH)
             pop         si
