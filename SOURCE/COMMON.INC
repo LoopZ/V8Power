@@ -220,6 +220,31 @@ VersionID:
     pop     bx
 %endmacro
 
+%imacro StrCat 2
+    cld
+    push        si
+    push        di
+    mov         ax, %2
+    mov         si, %1
+    mov         di, ax
+%%FindEnd:
+    lodsb
+    cmp         al, 0
+    jne         %%FindEnd
+    dec         si
+    push        si
+    xchg        si, di
+%%Clone:
+    lodsb
+    stosb
+    cmp         al, 0
+    jne         %%Clone
+    pop         ax
+    pop         di
+    pop         si
+%endmacro
+
+
 ; Common Data Section
 SECTION _DATA
 

@@ -196,7 +196,7 @@ MainParsing:
     jmp         .CloneOptions
 .CloneDone:
     multipop    si, di
-;  Temporary Display ExecBuf
+
     pushall
     mov         si, DATABLOCK(EXECBUF)
 .SearchFirst:
@@ -214,30 +214,84 @@ MainParsing:
     mov         [si], ah
     push        ax
     FindExec    di, DATABLOCK(CMDBUF)
+    xor         cx, cx
     pop         ax
     mov         [si], al
-    cmp         al, 0x20
-    jne         .CollapseLoop
-    inc         si
-.CollapseLoop:
-    lodsb
-    stosb
-    cmp         al, 0x0
-    jne         .CollapseLoop
 
-    StdOutChar  '?'
-    StdOutStr   DATABLOCK(EXECBUF)
+.SearchChar:
+    lodsb
+    cmp         al, 0x0d
+    je          .SearchChar
+    cmp         al, 0x0
+    je          .DoCat
+    cmp         al, 0x20
+    jne         .DoSpaceCat
+    jmp         .SearchChar
+.DoSpaceCat:
+    dec         si
+    mov         dx, 0x01
+.DoCat:
+    dec         si
+
+    mov         al, [DATABLOCK(CMDBUF)]
+    cmp         al, 0
+    je          .NotExec
+
+    mov         bx, si
+    StrCat      DATABLOCK(CMDBUF), si
+    mov         si, ax
+
+    cmp         si, DATABLOCK(EXECBUF) + 4
+    jna         .NotExec
+
+    mov         ax, [si - 4]
+    cmp         ax, '.B'
+    jne         .NotBatch
+    mov         ax, [si - 2]
+    cmp         ax, 'AT'
+    jne         .NotBatch
+    DebugChar   '%'
+    mov         di, DATABLOCK(CMDBUF)
+    mov         si, DATABLOCK(COMSPEC)
+    jmp         .Execute
+.NotBatch:
+    xor         al, al
+    mov         ah, [si]
+    mov         [si], al
+    cmp         ah, 0
+    je          .NullParams
+    inc         si
+.NullParams:
+    xchg        di, si
+    mov         si, DATABLOCK(CMDBUF)
+.Execute:
+    push        di
+    StdOutChar  '!'
+    StdOutStr   si
     StdOutCRLF
-    StdOutChar  '='
-    StdOutStr   DATABLOCK(CMDBUF)
+    StdOutChar  '+'
+    pop         di
+    StdOutStr   di
     StdOutCRLF
+    xor         al, al
+    cmp         al, 0
+    je          .NoExecError
+    mov         [cs:DATABLOCK(EXITCODE)], al
+.NoExecError:
     popall
+    mov         al, [cs:DATABLOCK(EXITCODE)]
     jmp         .RunLoop
+.NotExec:
+    popall
+    mov         al, [DATABLOCK(CONTINUE)]
+    cmp         al, 0
+    jne         .RunLoop
+    StdOutStr   Invalid_Format_Error_Message
+    Terminate   11
 .RunDone:
 
 ;    StdOutCRLF
 ;    ShellExec   Program, Options
-
     jmp         Done
 
 Done:
@@ -631,6 +685,9 @@ CommandLineSwitches:
 DefaultExecuteOptions:
     db  "*",0
 
+SpaceStr:
+    db 0x20,0
+
 Memory_Error_Message:
     db  "Memory Error",CRLF,0
 
@@ -642,6 +699,9 @@ File_Not_Found_Message:
 
 File_Read_Error_Message:
     db "File read error",CRLF,0
+
+Invalid_Format_Error_Message:
+    db "Invalid file format",CRLF,0
 
 DATA_START:
 
