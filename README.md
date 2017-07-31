@@ -525,7 +525,7 @@ Delete row (line) at the current location.
 #### veach *[options]* ######
 Do something for each item in a list.
 <table>
-<tr><td><b><i>/S</i></b></td>
+<tr><td width="125pt"><b><i>/S</i></b></td>
     <td>Turn on list sorting.</td></tr>
 <tr><td><b><i>/L</i></b></td>
     <td>Display list contents.</td></tr>
