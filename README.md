@@ -85,6 +85,7 @@ Here is color table used for all **/A**, **/F** and **/B** switches:
 <tr><td>14</td><td>0x0e</td><td>Yellow</td></tr>
 <tr><td>15</td><td>0x0f</td><td>White</td></tr>
 </table>
+
 * * *
 
 #### v8help *[options]* ######
@@ -93,6 +94,7 @@ Displays help text from V8Power Tools README.TXT document.
 <tr><td width="125pt"></td><td>Lists all V8Power Tools commands.</td></tr>
 <tr><td><b><i>commmand</i></b></td><td>Displays help for that V8Power Tool.</td></tr>
 </table>
+
 * * *
 
 #### vcls *[options]* ######
@@ -118,6 +120,7 @@ Clear screen, area or row (line).
 <tr><td><b>/W <i>width</i></b></td><td>Total <b><i>width</i></b> of area to clear.</td></tr>
 <tr><td><b>/H <i>height</i></b></td><td>Total <b><i>height</i></b> of area to clear.</td></tr>
 </table>
+
 * * *
 
 #### vcursor *[options]* ######
@@ -136,6 +139,7 @@ around this issue. Also, this utility will not have any effect in a
 Windows terminal.</i>
 
 * * *
+
 #### vdelay *[ms]* ######
 Simple delay in milliseconds.
 <table>
@@ -145,6 +149,7 @@ Simple delay in milliseconds.
 <tr><td><i>/S</i></td><td>Use safe general purpose timer. <i>(Default)</i></td></tr>
 <tr><td><i>/I</i></td><td>Use high precision interrupt timer. <i>(Not compatible with VirtualBox)</i></td></tr>
 </table>
+
 * * *
 
 #### vecho *[options]* *[text]* ######
@@ -178,6 +183,7 @@ Output text to display.
 
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
+
 * * *
 
 #### vgotoxy *[options]* ######
@@ -204,6 +210,7 @@ position and change rows if needed.</td></tr>
 <b><i>EOT</i></b> <i>(End of All Text)</i>
 position.</td></tr>
 </table>
+
 * * *
 
 #### vframe *[options]* ######
@@ -230,6 +237,7 @@ Draw a box windowing thingy and move cursor to its inside top left position.
 <tr><td><i><b>textbox</b></i></td><td>Draw a <b><i>textbox</i></b> style frame with a little padding and margins.</td></tr>
 <tr><td><i><b>optionbox</b></i></td><td>Draw a hidden style <b><i>optionbox</i></b> for choices inside a frame.</td></tr>
 </table>
+
 * * *
 
 #### vpcspkr *[hz:][ms]* ######
@@ -244,6 +252,7 @@ then 0 is assumed)</td></tr>
 <tr><td><i>/I</i></td><td>Use high precision interrupt timer. <i>(Not compatible with VirtualBox)</i></td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
+
 * * *
 
 #### vver *[options]* ######
@@ -257,6 +266,7 @@ V8Power information program.
 <tr><td><b><i>license</i></b></td><td>Outputs <b><i>license</i></b> information to <b>STDOUT</b>.</td></tr>
 <tr><td><b><i>url</i></b></td><td>Outputs the website <b><i>url</i></b> information to <b>STDOUT</b>.</td></tr>
 </table>
+
 * * *
 
 #### vprogres *[options]* ######
@@ -276,6 +286,7 @@ of the bar (default is from cursor to end of line).</td></tr>
 <b><i>center</i></b> (Default) or <b><i>right</i></b> side of the progress bar.</td></tr>
 <tr><td><b>OF <i>max</i></b></td><td>Calculate percentage of <b><i>max</i></b>. Example 5 of 7.</td></tr>
 </table>
+
 * * *
 
 #### vchoice *[options]* ######
@@ -311,6 +322,7 @@ will exit vchoice and return 100+ the current choice number.</td></tr>
 errorlevel of 200.</td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
+
 * * *
 
 #### vpause *[options]* ######
@@ -323,6 +335,7 @@ pause times-out. (returns errorlevel 1) (/T has been depreciated)</td></tr>
 errorlevel of 200.</td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
+
 * * *
 
 #### vline *[options]* ######
@@ -334,6 +347,7 @@ Draws a line.
 <tr><td><b><i>dumb</i></b></td><td>Draws a <b><i>dumb</i></b> without regard to what already exists.</td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
+
 * * *
 
 #### vinfo *[options]* ######
@@ -372,6 +386,7 @@ Returns these exit codes:<br>
 </pre>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
+
 * * *
 
 #### verrlvl *[options]* ######
@@ -380,6 +395,7 @@ Sets current errorlevel. Mostly for testing batch file logic.
 <tr><td width="125pt"></td><td>Sets errorlevel to 0</td></tr>
 <tr><td><b><i>n</i></b></td><td>Sets errorlevel to <b><i>n</i></b> (0-255)</td></tr>
 </table>
+
 * * *
 
 #### vmath *[options]* ######
@@ -400,6 +416,7 @@ on numbers from 0-32767. Good for looping, determining screen offsets and etc.
 <tr><td><b><i>/D</i></b></td><td>Set output to decimal.</td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
+
 * * *
 
 #### vstr *[options]* ######
@@ -423,6 +440,7 @@ Also, adding :n will output n number of lines.</td></tr>
 <tr><td><b>/P <i>s1</i></b></td><td>Print text <b><i>s1</b></i>. </td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
+
 * * *
 
 #### vmode *[options]* ######
@@ -447,6 +465,7 @@ Fonts:
 </pre>
 </td></tr>
 </table>
+
 * * *
 
 #### vfdutil *[options]* ######
@@ -464,6 +483,7 @@ The drive and path must exist.<br> Example: "vfdutil /u C:\TEMP\TEST????.$$$"</t
 <tr><td><b><i>/S filespec</i></b></td><td>Search the PATH for a given filespec and output all matching files to STDOUT. The current directory is not searched. If any filespec is not found, exits with an errorlevel 1.</td></tr>
 <tr><td><b><i>/T filespec</i></b></td><td>Just like /S except only errorlevel 0 or 1 is returned.</td></tr>
 </table>
+
 * * *
 
 #### vask ######
@@ -490,6 +510,7 @@ prompt times-out and returns the initial default value. (returns errorlevel 1)</
 
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
+
 * * *
 
 #### vinsert *[options]* ######
@@ -505,6 +526,7 @@ Insert a blank row (line) at the current location.
 <tr><td><b>/G</b></td><td>Global Insert.</td></tr>
 <tr><td><b>/L</b></td><td>Local Insert. <b>(Default)</b></td></tr>
 </table>
+
 * * *
 
 #### vdelete *[options]* ######
@@ -520,6 +542,7 @@ Delete row (line) at the current location.
 <tr><td><b>/G</b></td><td>Global Delete.</td></tr>
 <tr><td><b>/L</b></td><td>Local Delete. <b>(Default)</b></td></tr>
 </table>
+
 * * *
 
 #### veach *[options]* ######
