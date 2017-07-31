@@ -12,7 +12,7 @@ grep -A 1000 ^%1 %VDOC%|grep -n ^-- |vstr /b/f : 1|vstr /l 0|set /p VCOUNT=
 set /e VSTART=vmath %VSTART% - 1
 set /e VCOUNT=vmath %VCOUNT% - 1
 
-type %VDOC% | vstr /l %VSTART%:%VCOUNT%
+type %VDOC% | vstr /l %VSTART%:%VCOUNT% | more
 
 set VSTART=
 set VCOUNT=
@@ -22,7 +22,7 @@ goto Done
 vecho /fYellow "V8Power Tools " /fGray /n
 vver ver
 vecho /fGray /p Commands:
-grep -A 2 ^- %DOSDIR%\DOC\V8POWER\README.TXT | grep -v ^- | vstr /b /f " " 1 | sort
+grep -A 2 ^- %DOSDIR%\DOC\V8POWER\README.TXT | grep -v ^- | vstr /b /f " " 1 | sort | more
 goto Done
 
 :GrepRequired

@@ -10,12 +10,14 @@ Putting the power of an 8-cylinder engine under the hood of DOS batch files.
 
 Probable roadmap for the future of V8Power Tools:
 
-    vline - line drawing utility, single, double, smart, dumb, vertical...
+    vline - additional options like smart and vertical
     vinfo - more system information provided by utility.
-    vstr - Like trim, squeeze...
+    vstr - Like trim, squeeze, implode, explode...
     vecho - Word wrapping and more control-code ascii support.
     vpcspkr - More music style support like maybe, C#, C. and such.
     vver - verify all utils are present and proper version.
+    veach - duplicate checking and some other options
+
     vchkbox - Postponed, Checkboxes.
     vview - Postponed, Text file viewer, user license agreement and whatnots..
 

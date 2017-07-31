@@ -176,9 +176,6 @@ CommandLineSwitches:
     HelpSwitchData
     SwitchData  0,  0, 0
 
-CRLFString:
-    db  CRLF,0
-
 Repeat:
     dw 1
 NoNewLine:

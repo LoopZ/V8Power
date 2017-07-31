@@ -273,6 +273,9 @@ CommandLineSI:
 CommandLineErrorMsg:
     DB          "Parameter Error",0
 
+CRLFString:
+    db          0xd,0xa,0x0
+
 ; Just Prefixing Here
 SECTION _TEXT
 
@@ -467,11 +470,7 @@ endstruc
 %endmacro
 
 %imacro WriteCRLF 0
-    jmp         %%Over
-%%CRLFString:
-    db  CRLF,0
-%%Over:
-    WriteStr    %%CRLFString
+    WriteStr    CRLFString
 %endmacro
 
 ; Write a ASCIIZ String and display control codes as characters
@@ -684,18 +683,21 @@ endstruc
 	%endif
 %endmacro
 
+StdOutStr_Proc:
+.OutLoop:
+    mov		ah, 0x02
+    mov		dl, [di]
+    cmp		dl, 0
+    je		.Done
+    int		0x21
+    inc		di
+    jmp		.OutLoop
+.Done:
+    ret
 
 %imacro StdOutStr 1
-	mov		di, %1
-%%OutLoop:
-	mov		ah, 0x02
-	mov		dl, [di]
-	cmp		dl, 0
-	je		%%Done
-	int		0x21
-	inc		di
-	jmp		%%OutLoop
-%%Done:
+    mov     di, %1
+    call    StdOutStr_Proc
 %endmacro
 
 ; Write AX to standard output as HEX
@@ -771,11 +773,14 @@ endstruc
 %endmacro
 
 %imacro StdOutCRLF 0
-	mov		ah, 0x02
-	mov		dl, 0x0d
-	int		0x21
-	mov		dl, 0x0a
-	int		0x21
+    push        di
+    StdOutStr   CRLFString
+    pop         di
+;	mov		ah, 0x02
+;	mov		dl, 0x0d
+;	int		0x21
+;	mov		dl, 0x0a
+;	int		0x21
 %endmacro
 
 %imacro AdvancedStdOut 0

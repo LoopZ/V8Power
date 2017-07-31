@@ -520,3 +520,45 @@ Delete row (line) at the current location.
 <tr><td><b>/G</b></td><td>Global Delete.</td></tr>
 <tr><td><b>/L</b></td><td>Local Delete. <b>(Default)</b></td></tr>
 </table>
+* * *
+
+#### veach *[options]* ######
+Do something for each item in a list.
+<table>
+<tr><td><b><i>/S</i></b></td>
+    <td>Turn on list sorting.</td></tr>
+<tr><td><b><i>/L</i></b></td>
+    <td>Display list contents.</td></tr>
+<tr><td><b>/F <i>file</i></b></td>
+    <td>Add items to list from <b><i>file</i></b>.</td></tr>
+<tr><td><b><i>/I</i></b></td>
+    <td>Add items to list from the Standard Input device.</td></tr>
+<tr><td><b>/D <i>spec</i></b></td>
+    <td>Modifies /d <b><i>spec</i></b> to the list.</td></tr>
+<tr><td><b>/A <i>+/-</i></b></td>
+    <td>Modifies <b>/D</b> switch to enable all files and directories.
+    </td></tr>
+<tr><td><b>/C</b></td>
+    <td>When the <b>/X</b> switch is used, allows continuing despite a
+	subprocess error.</td></tr>
+<tr><td><b>/X <i>cmdln</i></b></td>
+    <td>Execute item with command line and all subsequent switches
+	are passed to the subprocess. * is expanded to item, # is
+	number of items and @ is index of item. If no command line
+	data follows the <b>/X</b> switch, * is assumed.</td></tr>
+
+<tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
+
+</table>
+
+
+	/d spec		Add filenames matching spec to the list.
+	/a +/-		Modifies /d switch to enable all files and directories
+	/c			When the /x switch is used, allows continuing despite a
+				subprocess error.
+	/x [cmdln]	Execute item with command line and all subsequent switches
+				are passed to the subprocess. * is expanded to item, # is
+				number of items and @ is index of item. If no command line
+				data follows the /x switch, * is assumed.
+
+   tba         (Still under development, more to be announced)
