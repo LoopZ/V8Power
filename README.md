@@ -550,15 +550,3 @@ Do something for each item in a list.
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 
 </table>
-
-
-	/d spec		Add filenames matching spec to the list.
-	/a +/-		Modifies /d switch to enable all files and directories
-	/c			When the /x switch is used, allows continuing despite a
-				subprocess error.
-	/x [cmdln]	Execute item with command line and all subsequent switches
-				are passed to the subprocess. * is expanded to item, # is
-				number of items and @ is index of item. If no command line
-				data follows the /x switch, * is assumed.
-
-   tba         (Still under development, more to be announced)
