@@ -152,6 +152,42 @@ VersionID:
 %%NotOpen:
 %endmacro
 
+%imacro PrepareMemory 0
+    push        cx
+    push        di
+    xor         al, al
+    mov         cx, DATABLOCK(STACK) - DATA_START
+    mov         di, DATA_START
+    cld
+%%ClearLoop:
+    stosb
+    loop        %%ClearLoop
+    pop         di
+    pop         cx
+
+    ; Move stack and setup memory pointers
+    mov         sp, DATABLOCK(STACK) + SIZEOF_STACK
+    mov         ax, sp
+    add         ax, 0x0002
+    mov         [DATABLOCK(MEMSTART)], ax
+    mov         [DATABLOCK(MEMPTR)], ax
+%endmacro
+
+%imacro ShrinkMemory 1
+    push        es
+    push        cs
+    pop         es
+    mov         ax, %1
+
+    mov         cl, 4
+    shr         ax, cl
+    inc         ax
+    mov         bx, ax
+    mov         ax, 0x4a00
+    int         0x21
+    pop         es
+%endmacro
+
 %idefine VideoOutput
 %idefine TextOutput
 

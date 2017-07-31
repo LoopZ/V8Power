@@ -18,26 +18,77 @@
 
 %include "COMMON.INC"
 
+%idefine SIZEOF_STACK   0x0100  ; Required Stack bytes, don't need this much.
+%idefine SIZEOF_MEMORY  0x4000  ; DATABLOCK(MAX)imum bytes of memory program can use.
+
+struc tDATABLOCK
+
+;    .EXITCODE   resb 1  ; Stored Exitcode
+
+    .MEMSTART   resw 1  ; start of heap
+    .MEMPTR     resw 1  ; first free heap byte, sometimes destroyable temp
+                        ; data exists above MEMPTR. like, sorted list index.
+
+    .QUERYING        resb 1
+    .POLLING         resb 1
+    .CONTROLC        resb 1
+
+    .TIMEOUT         resw 1
+    .TIMEOUTMAX      resw 1
+    .SELECTCHARS     resb 1
+    .MAX             resb 1
+    .DEFAULTCHOICE   resb 1
+    .SELECTED        resb 1
+    .LASTSELECTED    resb 1
+    .HOTCHOICE       resb 1
+    .LASTHOT         resb 1
+    .SELECTEDATTR    resb 1
+    .FIRSTATTR       resb 1
+    .HOTATTR         resb 1
+    .NOTATTR         resb 1
+    .POSITION        resw 1
+    .OPTIONBOX       resw 2
+    .SEARCHING       resb 1
+    .POSTAL          resb 1
+    .POSTALCODE      resb 1
+
+
+    .ZERO       resb 0   ; Unused at present
+
+    .STACK      resb SIZEOF_STACK
+
+    .HEAP       resb 0
+
+endstruc
+
+%idefine DATABLOCK(x) DATA_START + tDATABLOCK. %+ x
+
+    PrepareMemory
+    ShrinkMemory [DATABLOCK(MEMPTR)]
+    mov         al, 1
+    mov         [DATABLOCK(SELECTED)], al
+    mov         [DATABLOCK(SELECTCHARS)], al
+
     DumpKeystrokes
 
     FrameBounds
     WhereXY
     mov         al, [TextAttr]
-    mov         [FirstAttr], al
+    mov         [DATABLOCK(FIRSTATTR)], al
     or          al, 0x08
-    mov         [SelectedAttr], al
+    mov         [DATABLOCK(SELECTEDATTR)], al
     and         al, 0x77
-    mov         [NotAttr], al
+    mov         [DATABLOCK(NOTATTR)], al
     mov         al, [TextAttr]
     not         al
     and         al, 0x7f
-    mov         [HotAttr], al
+    mov         [DATABLOCK(HOTATTR)], al
 
-    mov         [Position], dx
+    mov         [DATABLOCK(POSITION)], dx
     mov         ax, [WindMin]
-    mov         [OptionBox], ax
+    mov         [DATABLOCK(OPTIONBOX)], ax
     mov         ax, [WindMax]
-    mov         [OptionBox + 2], ax
+    mov         [DATABLOCK(OPTIONBOX) + 2], ax
 
     mov         di, CountChoice
     call        EachChoice
@@ -47,40 +98,40 @@
     AllocTempVideoPage
 
     mov         al, [TextAttr]
-    mov         [SelectedAttr], al
-;   mov         ah, [HotAttr]
+    mov         [DATABLOCK(SELECTEDATTR)], al
+;   mov         ah, [DATABLOCK(HOTATTR)]
 ;   cmp         ah, 0x00
 ;   jne         KeyBoardLoop
 ;   mov         al, [TextAttr]
 ;   not         al
 ;   and         al, 0x7f
-;   mov         [HotAttr], al
+;   mov         [DATABLOCK(HOTATTR)], al
 
     jmp         KeyBoardLoop
 
 ShowChoices:
-;   mov         al, [SelectedAttr]
-;   mov         ah, [HotAttr]
+;   mov         al, [DATABLOCK(SELECTEDATTR)]
+;   mov         ah, [DATABLOCK(HOTATTR)]
 ;   cmp         al, ah
 ;   jne         .MultiColor
-;   mov         al, [HotChoice]
-;   mov         [Selected], al
+;   mov         al, [DATABLOCK(HOTCHOICE)]
+;   mov         [DATABLOCK(SELECTED)], al
 ;.MultiColor:
     mov         di, SelectChoice
     call        EachChoice
-    mov         bl, [Selected]
-    mov         [LastSelected], bl
-    mov         bl, [HotChoice]
-    mov         [LastHot], bl
+    mov         bl, [DATABLOCK(SELECTED)]
+    mov         [DATABLOCK(LASTSELECTED)], bl
+    mov         bl, [DATABLOCK(HOTCHOICE)]
+    mov         [DATABLOCK(LASTHOT)], bl
     ret
 
 TimedOut:
     pop         es
-    mov         al, [DefaultChoice]
-    mov         [Selected], al
+    mov         al, [DATABLOCK(DEFAULTCHOICE)]
+    mov         [DATABLOCK(SELECTED)], al
     jmp         Chosen
 
-ShowTimeOut:
+ShowTimeout:
     push        cx
     push        bx
     push        dx
@@ -92,14 +143,14 @@ ShowTimeOut:
     mov         cx, 200
     div         cx
 
-    mov         dx, [TimeOutMax]
+    mov         dx, [DATABLOCK(TIMEOUTMAX)]
     cmp         ax, dx
     jb          .Smaller
     mov         ax, dx
 .Smaller:
     mov         dl, [TextAttr]
     push        dx
-    mov         dl, [FirstAttr]
+    mov         dl, [DATABLOCK(FIRSTATTR)]
     mov         [TextAttr], dl
     mov         dx, [WindMax]
     push        dx
@@ -164,26 +215,26 @@ NoDisplayTimeOut:
 
 KeyBoardLoop:
     call        ShowChoices
-    mov         cx, [TimeOut]
+    mov         cx, [DATABLOCK(TIMEOUT)]
     push        es
     mov         bx, 0x0040
     mov         es, bx
     mov         bx, 0x006c
     mov         dx, [es:bx]
 .WaitLoop:
-	IdleCPU
-    mov         ax, [TimeOut]
+    IdleCPU
+    mov         ax, [DATABLOCK(TIMEOUT)]
     cmp         ax, 0
-    je          .NoTimeOut
+    je          .NoTimeout
     cmp         cx, 0
     je          TimedOut
     mov         ax, [es:bx]
     cmp         ax, dx
-    je          .NoTimeOut
+    je          .NoTimeout
     dec         cx
     mov         dx, ax
-    call        ShowTimeOut
-.NoTimeOut:
+    call        ShowTimeout
+.NoTimeout:
     mov         ax, 0x0100
     int         0x16
     jz          .WaitLoop
@@ -191,11 +242,11 @@ KeyBoardLoop:
 
     mov         ax, 0x0000
     int         0x16
-    push		ax
-    mov			ah, [ControlC]
-    cmp			ax, 0x0103
-    pop			ax
-    je			ControlCQuit
+    push        ax
+    mov         ah, [DATABLOCK(CONTROLC)]
+    cmp         ax, 0x0103
+    pop         ax
+    je          ControlCQuit
 
     ; up down to navigate
     cmp         ah, 0x48
@@ -208,7 +259,7 @@ KeyBoardLoop:
     cmp         al, 0x0d
     je          Chosen
     ; test selection type off
-    mov         bl, [SelectChars]
+    mov         bl, [DATABLOCK(SELECTCHARS)]
     cmp         bl, 0
     je          .OtherKeypress
     ; adjust upper case
@@ -222,10 +273,10 @@ KeyBoardLoop:
     mov         al, bl
 .NotLowercase:
     ; test selection type auto
-    mov         bl, [SelectChars]
+    mov         bl, [DATABLOCK(SELECTCHARS)]
     cmp         bl, 1
     je          .AutoPress
-    mov         bl, [SelectChars]
+    mov         bl, [DATABLOCK(SELECTCHARS)]
     cmp         bl, 4
     je          .YesNoPress
     ; letter, number or other
@@ -245,18 +296,18 @@ KeyBoardLoop:
 .YesNoPress:
     jmp         KeyBoardLoop
 .AutoPress:
-    mov         [Searching], al
+    mov         [DATABLOCK(SEARCHING)], al
     mov         di, SearchChoice
     call        EachChoice
     jmp         .Changed
 .AlphaPress:
-    mov         bl, [SelectChars]
+    mov         bl, [DATABLOCK(SELECTCHARS)]
     cmp         bl, 2
     jne         .Changed
     sub         al, 0x40
     jmp         .DoKeySelect
 .NumberPress:
-    mov         bl, [SelectChars]
+    mov         bl, [DATABLOCK(SELECTCHARS)]
     cmp         bl, 3
     jne         .Changed
     sub         al, 0x30
@@ -264,79 +315,79 @@ KeyBoardLoop:
     jne         .DoKeySelect
     mov         al, 0x0a
 .DoKeySelect:
-    mov         ah, [Max]
+    mov         ah, [DATABLOCK(MAX)]
     cmp         al, ah
     jle         .OkKeySelect
     mov         al, ah
 .OkKeySelect:
-    mov         [Selected], al
+    mov         [DATABLOCK(SELECTED)], al
 ;    jmp         .Changed
 
 .Changed:
     ; When polling exit if changed
-    mov         al, [Polling]
+    mov         al, [DATABLOCK(POLLING)]
     cmp         al, 1
     je          FakeChosen
 
     jmp         KeyBoardLoop
 
 .GoUp:
-    mov         al, [Selected]
+    mov         al, [DATABLOCK(SELECTED)]
     cmp         al, 1
     jle         KeyBoardLoop
     dec         al
-    mov         [Selected], al
+    mov         [DATABLOCK(SELECTED)], al
     jmp         .Changed
 .GoDown:
-    mov         al, [Selected]
-    mov         ah, [Max]
+    mov         al, [DATABLOCK(SELECTED)]
+    mov         ah, [DATABLOCK(MAX)]
     cmp         al, ah
     jge         KeyBoardLoop
     inc         al
-    mov         [Selected], al
+    mov         [DATABLOCK(SELECTED)], al
     jmp         .Changed
 
 .Select:
-    mov         al, [HotChoice]
-    mov         ah, [Selected]
+    mov         al, [DATABLOCK(HOTCHOICE)]
+    mov         ah, [DATABLOCK(SELECTED)]
     cmp         al, ah
     je          KeyBoardLoop
-    mov         [Selected], al
+    mov         [DATABLOCK(SELECTED)], al
     jmp         .Changed
 
 Chosen:
     xor         al, al
-    mov         [Polling], al
+    mov         [DATABLOCK(POLLING)], al
 FakeChosen:
     xor         al, al
-    mov         [HotChoice], al
-    mov         al, [Selected]
-    mov         ah, [Polling]
+    mov         [DATABLOCK(HOTCHOICE)], al
+    mov         al, [DATABLOCK(SELECTED)]
+    mov         ah, [DATABLOCK(POLLING)]
     push        ax
     cmp         ah, 1
     jne         .NotPolling
     xor         al, al
-    mov         [Selected], al
+    mov         [DATABLOCK(SELECTED)], al
     mov         di, SelectChoice
 .NotPolling:
     call        EachChoice
     pop         ax
-    mov         [Selected], al
+    mov         [DATABLOCK(SELECTED)], al
 
 Done:
     push        ax
 
-    mov         dx, [Position]
+    mov         dx, [DATABLOCK(POSITION)]
     GotoXY      dx
 
-    mov         al, [Querying]
+    mov         al, [DATABLOCK(QUERYING)]
     cmp         al, 0
     je          NoSTDOUT
     mov         di, StdOutChoice
     call        EachChoice
     StdOutCRLF
 
-    mov         dx, [Position]
+    mov         dx, [DATABLOCK(POSITION)]
     GotoXY      dx
 
 NoSTDOUT:
@@ -344,30 +395,30 @@ NoSTDOUT:
     FreeTempVideoPage
     pop         ax
 
-    mov         ah, [Polling]
+    mov         ah, [DATABLOCK(POLLING)]
     cmp         ah, 0
     je          .NotPolling
 
     add         al, 100
 
 .NotPolling:
-	mov			bl, [PostalCode]
-	cmp			bl, 0
-	je			.NoPostal
-	cmp			bl, al
-	jne			.NoPostal
-	GoPostal
+    mov         bl, [DATABLOCK(POSTALCODE)]
+    cmp         bl, 0
+    je          .NoPostal
+    cmp         bl, al
+    jne         .NoPostal
+    GoPostal
 .NoPostal:
     Terminate   al
 
 ControlCQuit:
     FreeTempVideoPage
-    mov			al, 200
+    mov         al, 200
     Terminate   al
 
 EachChoice:
-    mov         cl, [OptionBox + 3]
-    mov         ch, [OptionBox + 1]
+    mov         cl, [DATABLOCK(OPTIONBOX) + 3]
+    mov         ch, [DATABLOCK(OPTIONBOX) + 1]
     sub         cl, ch
     inc         cl
     xor         ch, ch
@@ -394,8 +445,8 @@ EachChoice:
     jmp         .Found
 .Missing:
     inc         dl
-    mov         cl, [OptionBox + 2]
-    mov         ch, [OptionBox + 0]
+    mov         cl, [DATABLOCK(OPTIONBOX) + 2]
+    mov         ch, [DATABLOCK(OPTIONBOX) + 0]
     sub         cl, ch
     cmp         dl, cl
     jle         .CheckLoop
@@ -409,9 +460,9 @@ EachChoice:
 CopyFromTempVideoProc
 
 CountChoice:
-    mov         al, [Max]
+    mov         al, [DATABLOCK(MAX)]
     inc         al
-    mov         [Max], al
+    mov         [DATABLOCK(MAX)], al
     ret
 
 SearchChoice:
@@ -427,31 +478,31 @@ SearchChoice:
     mov         al, bl
 .NotLowercase:
     pop         bx
-    mov         ah, [Searching]
+    mov         ah, [DATABLOCK(SEARCHING)]
     cmp         al, ah
     jne         .Done
-    mov         [Selected], bl
+    mov         [DATABLOCK(SELECTED)], bl
 .Done:
     ret
 
 SelectChoice:
     push        bx
     push        dx
-    mov         cl, [OptionBox + 2]
-    mov         ch, [OptionBox + 0]
+    mov         cl, [DATABLOCK(OPTIONBOX) + 2]
+    mov         ch, [DATABLOCK(OPTIONBOX) + 0]
     sub         cl, ch
     inc         cl
     xor         ch, ch
 
     mov         bh, [VideoPage]
     xor         dl, dl
-    mov         al, [HotChoice]
+    mov         al, [DATABLOCK(HOTCHOICE)]
     cmp         al, bl
     je          .IsHot
-    mov         al, [Selected]
+    mov         al, [DATABLOCK(SELECTED)]
     cmp         al, bl
     jne         .NotThis
-    mov         bl, [SelectedAttr]
+    mov         bl, [DATABLOCK(SELECTEDATTR)]
     mov         ax, [TempVideoPagePtr]
     cmp         ax, 0
     je          .ChangeLoop
@@ -463,7 +514,7 @@ SelectChoice:
     call        CopyFromTempVideo
     jmp         .Done
 .IsHot:
-    mov         bl, [HotAttr]
+    mov         bl, [DATABLOCK(HOTATTR)]
     mov         ax, [TempVideoPagePtr]
     cmp         ax, 0
     je          .ChangeLoop
@@ -480,14 +531,14 @@ SelectChoice:
     cmp         ax, 0
     pop         ax
     je          .Restore
-    mov         al, [LastHot]
+    mov         al, [DATABLOCK(LASTHOT)]
     cmp         al, bl
     je          .Restore
-    mov         al, [LastSelected]
+    mov         al, [DATABLOCK(LASTSELECTED)]
     cmp         al, bl
     jne         .Done
 .Restore:
-    mov         bl, [NotAttr]
+    mov         bl, [DATABLOCK(NOTATTR)]
     mov         ax, [TempVideoPagePtr]
     cmp         ax, 0
     je          .ChangeLoop
@@ -518,13 +569,13 @@ SelectChoice:
     ret
 
 StdOutChoice:
-    mov         al, [Selected]
+    mov         al, [DATABLOCK(SELECTED)]
     cmp         bl, al
     jne         .NotThis
     push        bx
     push        dx
-    mov         cl, [OptionBox + 2]
-    mov         ch, [OptionBox + 0]
+    mov         cl, [DATABLOCK(OPTIONBOX) + 2]
+    mov         ch, [DATABLOCK(OPTIONBOX) + 0]
     sub         cl, ch
     inc         cl
     xor         ch, ch
@@ -557,7 +608,7 @@ StdOutChoice:
 
 SwitchT:
     NumberParam
-    mov         [TimeOutMax], ax
+    mov         [DATABLOCK(TIMEOUTMAX)], ax
     cmp         ax, 0
     je          .SwitchOff
     cmp         ax, 3600
@@ -571,7 +622,7 @@ SwitchT:
     div         cx
     inc         ax
 .SwitchOff:
-    mov         [TimeOut], ax
+    mov         [DATABLOCK(TIMEOUT)], ax
     ret
 
 SwitchD:
@@ -591,18 +642,18 @@ SwitchD:
 .NotUpper:
     NumberParam
 .ValidateP:
-    mov         ah, [Max]
+    mov         ah, [DATABLOCK(MAX)]
     cmp         al, ah
     jle         .Done
     mov         al, ah
 .Done:
-    mov         [Selected], al
-    mov         [DefaultChoice], al
+    mov         [DATABLOCK(SELECTED)], al
+    mov         [DATABLOCK(DEFAULTCHOICE)], al
     ret
 
 SwitchQ:
     mov         al, 1
-    mov         [Querying], al
+    mov         [DATABLOCK(QUERYING)], al
     ret
 SwitchP:
     mov         al, [di]
@@ -621,45 +672,45 @@ SwitchP:
 .NotUpper:
     NumberParam
 ValidateD:
-    mov         ah, [Max]
+    mov         ah, [DATABLOCK(MAX)]
     cmp         al, ah
     jle         .Done
     mov         al, ah
 .Done:
-    mov         [Selected], al
+    mov         [DATABLOCK(SELECTED)], al
     mov         al, 1
-    mov         [Polling], al
+    mov         [DATABLOCK(POLLING)], al
     ret
 
 OptNone:
     mov         al, 0
-    mov         [SelectChars], al
+    mov         [DATABLOCK(SELECTCHARS)], al
     ret
 OptAuto:
     mov         al, 1
-    mov         [SelectChars], al
+    mov         [DATABLOCK(SELECTCHARS)], al
     ret
 OptAlpha:
     mov         al, 2
-    mov         [SelectChars], al
+    mov         [DATABLOCK(SELECTCHARS)], al
     ret
 OptNumber:
     mov         al, 3
-    mov         [SelectChars], al
+    mov         [DATABLOCK(SELECTCHARS)], al
     ret
 OptYesNo:
     mov         al, 4
-    mov         [SelectChars], al
+    mov         [DATABLOCK(SELECTCHARS)], al
     ret
 
 OptCtrlC:
     mov         al, 1
-    mov         [ControlC], al
+    mov         [DATABLOCK(CONTROLC)], al
     ret
 
 OptPostal:
     mov         al, 1
-    mov         [Postal], al
+    mov         [DATABLOCK(POSTAL)], al
     ret
 
 NoSwitch:
@@ -668,14 +719,14 @@ NoSwitch:
     je          .CheckPostal
     jmp         ax
 .CheckPostal:
-	mov			bl, [Postal]
-	cmp			bl, 0
-	je			.Error
+    mov         bl, [DATABLOCK(POSTAL)]
+    cmp         bl, 0
+    je          .Error
     NumberParam
-	mov			[PostalCode], al
-	xor			al, al
-	mov			[Postal], al
-	ret
+    mov         [DATABLOCK(POSTALCODE)], al
+    xor         al, al
+    mov         [DATABLOCK(POSTAL)], al
+    ret
 
 .Error:
     WriteStr    CommandLineErrorMsg
@@ -711,24 +762,5 @@ StyleTable:
     TableData 'POSTAL', OptPostal
     TableEnd
 
-Querying:       db 0
-Polling:        db 0
-ControlC:       db 0
-TimeOut:        dw 0
-TimeOutMax:     dw 0
-SelectChars:    db 1
-Max:		    db 0
-DefaultChoice:  db 0
-Selected: 		db 1
-LastSelected:	db 0
-HotChoice:		db 0
-LastHot:		db 0
-SelectedAttr:	db 0
-FirstAttr:		db 0
-HotAttr:		db 0
-NotAttr:		db 0
-Position:		dw 0
-OptionBox:		dw 0,0
-Searching:		db 0
-Postal:			db 0
-PostalCode:		db 0
+
+DATA_START:

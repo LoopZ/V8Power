@@ -83,25 +83,7 @@ endstruc
     jmp         CriticalDeath
 %endmacro
 
-    ; Wipe data area with zeros
-    push        cx
-    push        di
-    xor         al, al
-    mov         cx, DATABLOCK(STACK) - DATA_START
-    mov         di, DATA_START
-    cld
-ClearDataArea:
-    stosb
-    loop        ClearDataArea
-    pop         di
-    pop         cx
-
-    ; Move stack and setup memory pointers
-    mov         sp, DATABLOCK(STACK) + SIZEOF_STACK
-    mov         ax, sp
-    add         ax, 0x0002
-    mov         [DATABLOCK(MEMSTART)], ax
-    mov         [DATABLOCK(MEMPTR)], ax
+    PrepareMemory
 
 MainParsing:
 
@@ -113,18 +95,7 @@ MainParsing:
 
     call        Index
 
-    push        es
-    push        cs
-    pop         es
-    mov         ax, [DATABLOCK(MEMTOP)]
-
-    mov         cl, 4
-    shr         ax, cl
-    inc         ax
-    mov         bx, ax
-    mov         ax, 0x4a00
-    int         0x21
-    pop         es
+    ShrinkMemory  [DATABLOCK(MEMTOP)]
     jnc         .Reduced
     CriticalError ERR_General_Memory
 .Reduced:
