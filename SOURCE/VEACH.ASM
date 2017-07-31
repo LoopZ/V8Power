@@ -250,8 +250,14 @@ MainParsing:
     mov         ax, [si - 2]
     cmp         ax, 'AT'
     jne         .NotBatch
-    DebugChar   '%'
-    mov         di, DATABLOCK(CMDBUF)
+;    DebugChar   '%'
+    mov         ax, '/C'
+    mov         bx, 0x2000
+    mov         [DATABLOCK(EXECBUF)], ax
+    mov         [DATABLOCK(EXECBUF) + 2 ], bx
+    StrCat      DATABLOCK(EXECBUF), DATABLOCK(CMDBUF)
+
+    mov         di, DATABLOCK(EXECBUF)
     mov         si, DATABLOCK(COMSPEC)
     jmp         .Execute
 .NotBatch:
@@ -262,19 +268,21 @@ MainParsing:
     je          .NullParams
     inc         si
 .NullParams:
-    xchg        di, si
+    mov         di, si
     mov         si, DATABLOCK(CMDBUF)
 .Execute:
-    push        di
-    StdOutChar  '!'
-    StdOutStr   si
-    StdOutCRLF
-    StdOutChar  '+'
-    pop         di
-    StdOutStr   di
-    StdOutCRLF
-    xor         al, al
-    cmp         al, 0
+;    push        di
+;    StdOutChar  '!'
+;    StdOutStr   si
+;    StdOutCRLF
+;    StdOutChar  '+'
+;    pop         di
+;    StdOutStr   di
+;    StdOutCRLF
+;    xor         ax, ax
+
+    call        RunProgram
+    cmp         ax, 0
     je          .NoExecError
     mov         [cs:DATABLOCK(EXITCODE)], al
 .NoExecError:
@@ -289,10 +297,11 @@ MainParsing:
     StdOutStr   Invalid_Format_Error_Message
     Terminate   11
 .RunDone:
-
-;    StdOutCRLF
-;    ShellExec   Program, Options
     jmp         Done
+
+RunProgram:
+    ShellExec   si, di ; Program, Options
+    ret
 
 Done:
     mov     al, [DATABLOCK(EXITCODE)]
