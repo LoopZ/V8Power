@@ -48,7 +48,7 @@ Limited compatiblilty of advanced features <i>(no "set /p" batch support)</i>:
 * DosBOX (i/o redirection or querying using stdout will NOT work)<br>
 * Windows 3.11 Shell<br>
 * Windows 98 Shell and Command Line<br>
->* Windows XP SP3 Shell (except vcursor)<br>
+* Windows XP SP3 Shell (except vcursor)<br>
 
 * * *
 
