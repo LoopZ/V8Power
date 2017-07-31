@@ -105,8 +105,7 @@ if not "%1" == "" goto Done
 
 :veach
 set VSTAGE=veach
-bin\vecho /g/s- /n "Planing "
-bin\vecho /g/s- /f 10 waypoints /f gray ...
+bin\vecho /g Planing /f10 waypoints /s-/f gray ...
 %ASM% -ISOURCE\ SOURCE\VEACH.ASM -fbin -O9 -o BIN\VEACH.COM
 if ERRORLEVEL 1 goto Error
 if not "%1" == "" goto Done

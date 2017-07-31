@@ -31,6 +31,13 @@
         mov         di, DATABLOCK(EXECLINE)
         push        di
         inc         di
+        mov         al, [si]
+        cmp         al, 0
+        je         .Copying
+        cmp         al, 0x0d
+        je         .Copying
+        mov         al, 0x20
+        stosb
     .Copying:
         lodsb
         cmp         al, 0x0d
@@ -39,10 +46,10 @@
         inc         cx
         cmp         al, 0
         jne         .Copying
-        mov         ah, 0x0d
-        mov         [di], ah
-        inc         di
-        inc         cx
+        dec         di
+        mov         al, 0x0d
+        stosb
+        xor         al, al
     .Fill:
         stosb
         cmp         di, DATABLOCK(SAVESTACK)

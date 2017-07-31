@@ -153,12 +153,29 @@ SwitchM:
 .Done:
     ret
 
+SwitchC:
+    StdOutStr   0x81
+    StdOutCRLF
+    mov         di, 0x80
+    xor         ax, ax
+.Repeat:
+    lodsb
+    StdOutIntWord
+    push        ax
+    StdOutChar ' '
+    pop         ax
+    cmp         al,0
+    jne         .Repeat
+    StdOutCRLF
+    Terminate 0
+
 NoSwitch:
     LookupParam OptionsTable
     cmp         ax, 0xffff
     je          .NotOption
     mov         [OptionProcessed], ax
     jmp         ax
+
 
 .NotOption:
     NumberParam
@@ -175,6 +192,7 @@ CommandLineSwitches:
     SwitchData 'D', 1, SwitchD
     SwitchData 'V', 0, SwitchV
     SwitchData 'M', 0, SwitchM
+    SwitchData 'C', 0, SwitchC
     HelpSwitchData
     SwitchData  0,  0, 0
 

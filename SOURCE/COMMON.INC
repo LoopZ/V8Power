@@ -1073,13 +1073,17 @@ AdvancedStdIn:
     je          SwitchError
     cmp         al, ah
     jne         %%QuoteLoop
-    jmp         %%Loop
+    ; jmp         %%Loop
 %%Next:
     mov         cx, si
     sub         cx, di
     cmp         cx, 1
     push        cx
-    jle         %%Skip
+    jbe          %%Skip
+;    ja          %%Maybe
+;    cmp         al, 0x20
+;    je          %%Skip
+%%Maybe:
     cmp         al, 0x0d
     jne         %%NotEnd
     dec         si
@@ -1122,7 +1126,7 @@ AdvancedStdIn:
     cmp         al, 0x20
     jne         %%ResetBX
     cmp         cx, 1
-    jle         %%KeepBX
+    jbe         %%KeepBX
 %%ResetBX:
     xor         bx, bx
 %%KeepBX:
@@ -1132,11 +1136,11 @@ AdvancedStdIn:
     mov         di, si
     lodsb
     cmp         al, SwitchChar
-    jl          SwitchError
+    jb          SwitchError
     cmp         al, 0x61
-    jl          %%CaseOK
+    jb          %%CaseOK
     cmp         al, 0x7a
-    jg          %%CaseOK
+    ja          %%CaseOK
     sub         al, 0x20
 %%CaseOK:
     mov         bx, CommandLineSwitches

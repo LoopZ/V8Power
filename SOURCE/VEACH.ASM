@@ -252,7 +252,7 @@ MainParsing:
     jne         .NotBatch
 ;    DebugChar   '%'
     mov         ax, '/C'
-    mov         bx, 0x2000
+    mov         bx, 0x0020
     mov         [DATABLOCK(EXECBUF)], ax
     mov         [DATABLOCK(EXECBUF) + 2 ], bx
     StrCat      DATABLOCK(EXECBUF), DATABLOCK(CMDBUF)
@@ -261,6 +261,21 @@ MainParsing:
     mov         si, DATABLOCK(COMSPEC)
     jmp         .Execute
 .NotBatch:
+    mov         ax, [si - 4]
+    cmp         ax, '.C'
+    jne         .NotCOM
+    mov         ax, [si - 2]
+    cmp         ax, 'OM'
+    jne         .NotCOM
+    jmp         .BinaryExec
+.NotCOM:
+    mov         ax, [si - 4]
+    cmp         ax, '.E'
+    jne         .NotExec
+    mov         ax, [si - 2]
+    cmp         ax, 'XE'
+    jne         .NotExec
+.BinaryExec:
     xor         al, al
     mov         ah, [si]
     mov         [si], al
@@ -277,8 +292,10 @@ MainParsing:
 ;    StdOutCRLF
 ;    StdOutChar  '+'
 ;    pop         di
+;    push        di
 ;    StdOutStr   di
 ;    StdOutCRLF
+;    pop         di
 ;    xor         ax, ax
 
     call        RunProgram
