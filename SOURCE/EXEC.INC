@@ -82,9 +82,10 @@
         mov         ss, [cs:di]
         mov         sp, [cs:di + 2]
         jc          %%ErrorCode
-        xor         ax, ax
+        mov         ah, 0x4d
+        int         0x21
     %%ErrorCode:
-        mov         [DATABLOCK(ENVIRONMENT)], ax
+        mov         [cs:DATABLOCK(ENVIRONMENT)], ax
         popall
         mov         ax, [DATABLOCK(ENVIRONMENT)]
         ret

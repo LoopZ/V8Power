@@ -78,6 +78,11 @@ endstruc
 %include "FIND.INC"
 %include 'EXEC.INC'
 
+%imacro CriticalError 1
+    mov         si, %1
+    jmp         CriticalDeath
+%endmacro
+
     ; Wipe data area with zeros
     push        cx
     push        di
@@ -121,8 +126,7 @@ MainParsing:
     int         0x21
     pop         es
     jnc         .Reduced
-    StdOutStr   Memory_Error_Message
-    Terminate   8
+    CriticalError ERR_General_Memory
 .Reduced:
 
     FindComspec DATABLOCK(COMSPEC)
@@ -304,15 +308,21 @@ MainParsing:
     mov         [cs:DATABLOCK(EXITCODE)], al
 .NoExecError:
     popall
-    mov         al, [cs:DATABLOCK(EXITCODE)]
+    mov         al, [DATABLOCK(EXITCODE)]
+    cmp         al, 0
+    jne         .ExecError
     jmp         .RunLoop
+.ExecError:
+    mov         ah, [DATABLOCK(CONTINUE)]
+    cmp         ah, 1
+    je          .RunLoop
+    CriticalError ERR_Child
 .NotExec:
     popall
     mov         al, [DATABLOCK(CONTINUE)]
     cmp         al, 0
     jne         .RunLoop
-    StdOutStr   Invalid_Format_Error_Message
-    Terminate   11
+    CriticalError ERR_Invalid_Format
 .RunDone:
     jmp         Done
 
@@ -320,15 +330,45 @@ RunProgram:
     ShellExec   si, di ; Program, Options
     ret
 
+ShowError:
+    cld
+    mov         ah, al
+    lodsb
+    cmp         al, 0
+    jne         .ErrorOverride
+    mov         al, ah
+.ErrorOverride:
+    cmp         al, 0
+    jne         .SetError
+    mov         al, 1
+.SetError:
+    mov         [DATABLOCK(EXITCODE)], al
+    xor         ah, ah
+    push        ax
+    StdOutStr   ERR_Message
+    inc         di
+    pop         ax
+    StdOutIntWord ax
+    StdOutStr   di
+    inc         di
+    push        di
+    StdOutStr   si
+    pop         di
+    StdOutStr   di
+    ret
+
+CriticalDeath:
+    call    ShowError
+
 Done:
     mov     al, [DATABLOCK(EXITCODE)]
     Terminate al
 
+Out_of_Memory:
+    CriticalError ERR_Out_Of_Memory
+
     UseAdvancedStdIn
 
-Out_of_Memory:
-    StdOutStr   Out_of_Memory_Message
-    Terminate   8
 
 Index:
     push        cx
@@ -549,9 +589,7 @@ FileError:
     je          .DieNow
     ret
 .DieNow:
-    StdOutStr   File_Read_Error_Message
-    mov         [DATABLOCK(EXITCODE)], al
-    Terminate   al
+    CriticalError  ERR_File_Read
 
 SwitchD:
     mov         bx, [DATABLOCK(MEMPTR)]
@@ -711,23 +749,26 @@ CommandLineSwitches:
 DefaultExecuteOptions:
     db  "*",0
 
-SpaceStr:
-    db 0x20,0
+ERR_Message:
+    db  "ERROR #",0,", ",0," error",CRLF,0
 
-Memory_Error_Message:
-    db  "Memory Error",CRLF,0
+ERR_General_Memory:
+    db 9,"Memory allocation",0
 
-Out_of_Memory_Message:
-    db  "Out of memory",CRLF,0
+ERR_Out_Of_Memory:
+    db 8,"Out of memory",0
 
-File_Not_Found_Message:
-    db "File not found",CRLF,0
+ERR_File_Not_Found:
+    db 2,"File not",0
 
-File_Read_Error_Message:
-    db "File read error",CRLF,0
+ERR_File_Read:
+    db 0,"File read",0
 
-Invalid_Format_Error_Message:
-    db "Invalid file format",CRLF,0
+ERR_Child:
+    db 0,"Subprocess",0
+
+ERR_Invalid_Format:
+    db 11,"Invalid file format",0
 
 DATA_START:
 
