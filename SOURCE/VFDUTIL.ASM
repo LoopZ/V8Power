@@ -315,7 +315,8 @@ SwitchU:
     StdOutStr Unique
     StdOutCRLF
     SetIntVec 0x24, SavedInt24
-    jmp    DoPrint2
+    call    DoPrint2
+    Terminate 0
 .NumbOverflow:
     pop     cx
 .OutOfNumbs:

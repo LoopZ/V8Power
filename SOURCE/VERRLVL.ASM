@@ -24,18 +24,18 @@
 
     mov     al, [ExitCode]
     Terminate al
-    
+
 NoSwitch:
     NumberParam
     mov     [ExitCode], al
-    ret    
-    
+    ret
+
     HelpSwitchHandler
 
 CommandLineSwitches:
-    SwitchData  0,  0, NoSwitch  
+    SwitchData  0,  0, NoSwitch
     HelpSwitchData
     SwitchData  0,  0, 0
-    
+
 ExitCode:
     db 0
