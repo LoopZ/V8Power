@@ -592,10 +592,11 @@ SwitchD:
     je          .SkipItem
     mov         al, [DATABLOCK(ALLFILES)]
     cmp         al, 0x01
-    je          .Repeat
+    je          .IncludeAll
     mov         al, [DATABLOCK(DTA) + 0x15]
     test        al, 00011110b
     jnz         .SkipItem
+.IncludeAll:
     mov         di, bx
     inc         bx
     xor         ah, ah
