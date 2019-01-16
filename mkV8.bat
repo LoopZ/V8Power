@@ -55,7 +55,7 @@ if not "%1" == "" goto Done
 
 :vmath
 set VSTAGE=vmath
-bin\vecho /g/s- /n "Studying "
+bin\vecho /g/s- /n "Testing "
 bin\vecho /g/s- /f 13 belts /f gray ...
 %ASM% -ISOURCE\ SOURCE\VMATH.ASM -fbin -O9 -o BIN\VMATH.COM
 if ERRORLEVEL 1 goto Error
@@ -84,7 +84,7 @@ if not "%1" == "" goto Done
 
 :vprogres
 set VSTAGE=vprogres
-bin\vecho /g/s- "Studying " /f 9 gauges /f gray ...
+bin\vecho /g/s- "Examining " /f 9 gauges /f gray ...
 %ASM% -ISOURCE\ SOURCE\VPROGRES.ASM -fbin -O9 -o BIN\VPROGRES.COM
 if ERRORLEVEL 1 goto Error
 if not "%1" == "" goto Done
@@ -153,17 +153,31 @@ bin\vecho /g/s- "Releasing " /f 11 brakes /f gray ...
 if ERRORLEVEL 1 goto Error
 if not "%1" == "" goto Done
 
-rem :vchkbox
-rem set VSTAGE=vchkbox
-rem bin\vecho /g/s- "Eyeing up " /f 0x0a "traffic" /f gray ...
-rem %ASM% -ISOURCE\ SOURCE\VCHKBOX.ASM -fbin -O9 -o BIN\VCHKBOX.COM
-rem if ERRORLEVEL 1 goto Error
-rem if not "%1" == "" goto Done
+:vchkbox
+set VSTAGE=vchkbox
+bin\vecho /g/s- "Eyeing " /f 0x0a "surroundings" /f gray ...
+%ASM% -ISOURCE\ SOURCE\VCHKBOX.ASM -fbin -O9 -o BIN\VCHKBOX.COM
+if ERRORLEVEL 1 goto Error
+if not "%1" == "" goto Done
 
 :vinsert
 set VSTAGE=vinsert
 bin\vecho /g/s- "Reving " /f 13 engine /f gray ...
 %ASM% -ISOURCE\ SOURCE\VINSERT.ASM -fbin -O9 -o BIN\VINSERT.COM
+if ERRORLEVEL 1 goto Error
+if not "%1" == "" goto Done
+
+:vreadkey
+set VSTAGE=vreadkey
+bin\vecho /g/s- "Monitoring " /f 5 traffic /f gray ...
+%ASM% -ISOURCE\ SOURCE\VREADKEY.ASM -fbin -O9 -o BIN\VREADKEY.COM
+if ERRORLEVEL 1 goto Error
+if not "%1" == "" goto Done
+
+:vfont
+set VSTAGE=vfont
+bin\vecho /g/s- "Spotting " /f 10 gap /f gray ...
+%ASM% -ISOURCE\ SOURCE\VFONT.ASM -fbin -O9 -o BIN\VFONT.COM
 if ERRORLEVEL 1 goto Error
 if not "%1" == "" goto Done
 
@@ -181,7 +195,7 @@ bin\vecho /g/s- "Releasing " /f 14 clutch /f gray ...
 if ERRORLEVEL 1 goto Error
 if not "%1" == "" goto Done
 
-goto Skippy
+rem goto Skippy
 :vview
 set VSTAGE=vview
 bin\vecho /g/s- "Mashing " /f 12 accelerator /f gray ...

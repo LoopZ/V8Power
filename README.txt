@@ -564,3 +564,21 @@ Do something for each item in a list.
    tba         (Still under development, more to be announced)
 
 -------------------------------------------------------------------------------
+
+vfont [options]
+
+   tba         (Still under development, more to be announced)
+
+-------------------------------------------------------------------------------
+
+vreadkey [options]
+
+   tba         (Still under development, more to be announced)
+
+-------------------------------------------------------------------------------
+
+vchkbox [options]
+
+   tba         (Still under development, more to be announced)
+
+-------------------------------------------------------------------------------

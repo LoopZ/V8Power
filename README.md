@@ -573,3 +573,30 @@ Do something for each item in a list.
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 
 </table>
+
+* * *
+
+#### vfont *[options]* ######
+<table>
+
+<tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
+
+</table>
+
+* * *
+
+#### vreadkey *[options]* ######
+<table>
+
+<tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
+
+</table>
+
+* * *
+
+#### vchkbox *[options]* ######
+<table>
+
+<tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
+
+</table>
