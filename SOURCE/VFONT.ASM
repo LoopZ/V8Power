@@ -22,20 +22,31 @@
 
     Terminate 0
 
-
-SwitchD:
-    xor         ax, ax
-    mov         [DataHeight], al
-    mov         [FileSize], ax
-    jmp         SetFont
-
-NoSwitch:
+GetCharHeight:
     push        es
     mov         ax, 0x0040
     mov         es, ax
     mov         ah, [es:0x0085] ; EGA Character Height (word but anything above
                                 ; about 30 is never supported by hardware)
     pop         es
+    ret
+
+SwitchD:
+    call        GetCharHeight
+    mov         al, ah
+    cmp         al, 8
+    je          .KnownValue
+    cmp         al, 14
+    je          .KnownValue
+    mov         al, 16
+.KnownValue:
+    mov         [DataHeight], al
+    xor         ax, ax
+    mov         [FileSize], ax
+    jmp         SetFont
+
+NoSwitch:
+    call        GetCharHeight
     mov         al, [DataHeight]
     cmp         al, 0x00        ; Font Height Not set
     je          LoadFontFile
@@ -95,6 +106,11 @@ SetFont:
 ; Special Effects
 .NoSaveScreen:
 
+    mov         al, [DataInit]
+    cmp         al, 0x00
+    je          .NoInit
+
+.NoInit:
 ; Set Font
 
     mov         al, [DataReset]
