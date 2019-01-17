@@ -1497,6 +1497,11 @@ SwitchError:
     popf
 %endmacro
 
+%imacro DebugCRLF 0
+    DebugChar 0x0d
+    DebugChar 0x0a
+%endmacro
+
 ; macro to print a character for debugging
 %imacro DebugInt 0-1 ax
     pushf

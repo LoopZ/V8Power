@@ -160,9 +160,104 @@ SetFont:
 
 .Done:
     Terminate   0
+    DebugInt
 
 V8Font:
-    jmp         FontError
+    mov         si, DataTemp
+    cld
+.SkipToData:
+    lodsb
+    cmp         si, 0
+    je          FontError
+    cmp         al, 26
+    jne         .SkipToData
+.ReadBlock:
+    lodsb
+;    mov         ah, 0
+;    DebugInt
+;    DebugCRLF
+    mov         cx, [si]
+    cmp         al, 0
+    je          .DoneReading
+    cmp         al, 1
+    je          .ReadChars
+    add         si, cx
+    jo          FontError
+    jmp         .ReadBlock
+.ReadChars:
+    mov         ax, [si + 6]
+    cmp         ax, 8   ; Check 8 bit width
+    jne         FontError
+
+    mov         ax, [si + 8]
+    mov         bx, [DataVHeight]
+    cmp         bx, 0
+    jne         .CheckChars
+    mov         bx, ax
+    mov         [DataVHeight], bx
+    ; Clone BIOS font
+    push        ax
+    push        bx
+    push        cx
+    mov         cx, 0x0100
+    mul         cx
+    mov         cx, ax
+    mov         di, [FileSize]
+    add         di, DataTemp
+    xor         al, al
+.ClearFontLoop:
+    stosb
+    loop        .ClearFontLoop
+
+.DoneCloneBIOS:
+    pop         cx
+    pop         bx
+    pop         ax
+
+.CheckChars:
+    cmp         ax, bx   ; Check Height
+    jne         FontError
+    jne         .IgnoreChars
+.CloneChars:
+    push        cx
+    push        si
+    mov         ax, [si + 4] ; count
+    mul         bx
+    mov         cx, ax
+    mov         ax, [si + 2] ; first
+    mul         bx
+    mov         di, ax
+    mov         dx, [FileSize]
+    add         di, dx
+    add         di, DataTemp
+    add         si, 10
+.Cloning:
+    lodsb
+    stosb
+    loop        .Cloning
+    pop         si
+    pop         cx
+.IgnoreChars:
+    add         si, cx
+    jmp         .ReadBlock
+.DoneReading:
+    mov         bx, [DataVHeight]
+    mov         [DataHeight], bl
+    cmp         bx, 0
+    je          FontError
+    mov         ax, 0x0100
+    mul         bx
+    mov         cx, ax
+    mov         di, DataTemp
+    mov         si, [FileSize]
+    add         si, di
+    mov         [FileSize], cx
+.Relocate:
+    lodsb
+    stosb
+    loop        .Relocate
+;    Terminate   0
+    jmp         SetFont
 
 SwitchF:
     LookupParam FontOptionTable
@@ -248,6 +343,7 @@ CommandLineSwitches:
     SwitchData  'R',  0, SwitchR ; Reset settings
     SwitchData  'X',  0, SwitchX ; Special Effects
     SwitchData  'I',  0, SwitchI ; Initialize Display
+    SwitchData  'E',  1, SwitchE ; Export as V8FONT
 %endif
     SwitchData  'F',  1, SwitchF ; Font Height
     SwitchData  'D',  0, SwitchD ; Font Default
@@ -259,7 +355,7 @@ FontOptionTable:
     TableData "VGA",16
     TableEnd
 V8FontID:
-    db  'V8FONT',0
+    db  'V8FONT',0x0d,0x0a,0
 FileHandle:
     dw 0
 FileSize:
@@ -267,7 +363,9 @@ FileSize:
 VideoSize:
     dw 0
 DataHeight:
-    db  0
+    db 0
+DataVHeight:
+    dw 0
 DataAlternate:
     db 0
 DataSave:
