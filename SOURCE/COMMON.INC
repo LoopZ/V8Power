@@ -132,7 +132,6 @@ VersionID:
     %endif
 %endmacro
 
-
 %imacro FileOpen 2
     mov     dx, [%1]
     mov     ax, 0x3d00
@@ -318,7 +317,6 @@ SECTION _TEXT
 %idefine CRLF 0x0d,0x0a
 %idefine TAB  0x09
 %idefine SwitchChar '/'
-
 
 %imacro DumpKeystrokes 0
     push        ax
