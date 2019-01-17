@@ -569,7 +569,7 @@ vfont [options]
 Temporarily load a text mode bitmap font.
 
     file        Load font file.
-    /F l file   If current font has l (number, EGA or VGA) lines then load
+    /F n file   If current font has n (number, EGA or VGA) lines then load
                 font file. Can be chained for different resolutions.
     /D          Load default font for current resolution.
 

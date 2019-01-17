@@ -582,8 +582,8 @@ Temporarily load a text mode bitmap font.
 
 <tr><td><b><i>file</i></b></td>
     <td>Load font <b><i>file</i></b>.</td></tr>
-<tr><td><b>/F <i>l file</i></b></td>
-    <td>If current font has <b><i>l</i></b> (number, EGA or VGA) lines then load font <b><i>file</i></b>. Can be chained for different resolutions.</td></tr>
+<tr><td><b>/F <i>n file</i></b></td>
+    <td>If current font has <b><i>n</i></b> (number, EGA or VGA) lines then load font <b><i>file</i></b>. Can be chained for different resolutions.</td></tr>
 <tr><td><b>/D</td>
     <td>Load default ROM font for current resolution.</td></tr>
 
