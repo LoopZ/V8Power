@@ -22,6 +22,13 @@
 
     Terminate 0
 
+
+SwitchD:
+    xor         ax, ax
+    mov         [DataHeight], al
+    mov         [FileSize], ax
+    jmp         SetFont
+
 NoSwitch:
     push        es
     mov         ax, 0x0040
@@ -76,7 +83,38 @@ LoadFontFile:
     jb          FontError
     mov         [DataHeight], al
 
-    ret
+SetFont:
+    mov         al, [DataSave]
+    cmp         al, 0x00
+    je          .NoSaveScreen
+
+; Save Screen
+    mov         al, [DataEffects]
+    cmp         al, 0x00
+    je          .NoRestoreScreen
+; Special Effects
+.NoSaveScreen:
+
+; Set Font
+
+    mov         al, [DataReset]
+    cmp         al, 0x00
+    je          .NoScreenReset
+; Reset Stuff
+    jmp         .Done
+.NoScreenReset:
+    mov         al, [DataSave]
+    cmp         al, 0x00
+    je          .NoRestoreScreen
+; Restore Screen
+    mov         al, [DataEffects]
+    cmp         al, 0x00
+    je          .NoRestoreScreen
+; Special Effects
+.NoRestoreScreen:
+
+.Done:
+    Terminate   0
 
 V8Font:
     jmp         FontError
@@ -163,6 +201,7 @@ CommandLineSwitches:
     SwitchData  'X',  0, SwitchX ; Special Effects
     SwitchData  'I',  0, SwitchI ; Initialize Display
     SwitchData  'F',  1, SwitchF ; Font Height
+    SwitchData  'D',  1, SwitchD ; Font Default
     HelpSwitchData
     SwitchData  0,  0, 0
 
