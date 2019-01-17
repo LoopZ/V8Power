@@ -110,9 +110,37 @@ SetFont:
     cmp         al, 0x00
     je          .NoInit
 
+; Initialize Video
 .NoInit:
-; Set Font
 
+; Set Font
+    mov         bl, 0
+
+    mov         ax, [FileSize]
+    cmp         ax, 0
+    je          SetROMFont
+; Set Custom Font
+    mov         al, 0
+    mov         bh, [DataHeight]
+    mov         cx, 0x0100
+    mov         dx, 0x0000
+    jmp         .ApplyFont
+.SetROMFont:
+    mov         ah, [DataHeight]
+    mov         al, 0x02
+    cmp         ah, 8
+    je          .ApplyFont
+    mov         al, 0x01
+    cmp         ah, 14
+    je          .ApplyFont
+    mov         al, 0x04
+.ApplyFont:
+    mov         ah, 0x11
+    push        bp
+    push        DataTemp
+    pop         bp
+    int         0x10
+    pop         bp
     mov         al, [DataReset]
     cmp         al, 0x00
     je          .NoScreenReset
