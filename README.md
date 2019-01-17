@@ -577,7 +577,15 @@ Do something for each item in a list.
 * * *
 
 #### vfont *[options]* ######
+Temporarily load a text mode bitmap font.
 <table>
+
+<tr><td><b><i>file</i></b></td>
+    <td>Load font <b><i>file</i></b>.</td></tr>
+<tr><td><b>/F <i>l file</i></b></td>
+    <td>If current font has <b><i>l</i></b> (number, EGA or VGA) lines then load font <b><i>file</i></b>. Can be chained for different resolutions.</td></tr>
+<tr><td><b>/D</td>
+    <td>Load default ROM font for current resolution.</td></tr>
 
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 
