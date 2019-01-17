@@ -18,6 +18,8 @@
 
 %include "COMMON.INC"
 
+%define ALPHA_CODE
+
     CommandLineParser       ; insert code for command line parsing
 
     Terminate 0
@@ -175,6 +177,7 @@ SetFontTarget:
     mov         [DataHeight], al
     ret
 
+%ifndef ALPHA_CODE
 SwitchA:
     mov         al, 0x01
     mov         [DataAlternate], al
@@ -209,6 +212,7 @@ SwitchP:
     mov         al, 0x01
     mov         [DataPermanent], al
     ret
+%endif
 
 FontErrorMsg:
     db "Invalid font file format",0
@@ -237,12 +241,14 @@ InvalidOption:
 
 CommandLineSwitches:
     SwitchData  0,  0, NoSwitch
+%ifndef ALPHA_CODE
     SwitchData  'P',  0, SwitchP ; Permanent
     SwitchData  'A',  0, SwitchA ; Force Alternate
     SwitchData  'S',  0, SwitchS ; Store Contents
     SwitchData  'R',  0, SwitchR ; Reset settings
     SwitchData  'X',  0, SwitchX ; Special Effects
     SwitchData  'I',  0, SwitchI ; Initialize Display
+%endif
     SwitchData  'F',  1, SwitchF ; Font Height
     SwitchData  'D',  0, SwitchD ; Font Default
     HelpSwitchData
