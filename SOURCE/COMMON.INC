@@ -1516,6 +1516,25 @@ SwitchError:
     popf
 %endmacro
 
+%imacro DebugWord 0-1 ax
+    pushf
+    push    ax
+    push    bx
+    push    cx
+    push    dx
+    push    di
+    push    si
+    mov     ax, %1
+    StdOutHexWord
+    pop     si
+    pop     di
+    pop     dx
+    pop     cx
+    pop     bx
+    pop     ax
+    popf
+%endmacro
+
  ; macro that shows command line switch and data, mostly for debuging the
 ; command line parser
 %imacro DebugCmdLn 0
@@ -1648,15 +1667,39 @@ TempVideoPagePtr:
     mov     di, %2
     mov     si, %1
     cld
-%%Zeroing:
+%%Copying:
     lodsb
     stosb
-    loop    %%Zeroing
+    loop    %%Copying
     pop     ax
     pop     di
     pop     si
     pop     cx
 %endmacro
+
+%imacro CompareMemory 3
+    push    cx
+    push    si
+    push    di
+    push    ax
+    mov     cx, %3
+    mov     di, %2
+    mov     si, %1
+    cld
+    xor     ax, ax
+%%Comparing:
+    lodsb
+    xor     al, [di]
+    or      ah, al
+    inc     di
+    loop    %%Comparing
+    cmp     ah, 0x00
+    pop     ax
+    pop     di
+    pop     si
+    pop     cx
+%endmacro
+
 
 %imacro	CopyToTempVideo 0
 	mov		bx, [TempVideoPagePtr]
@@ -1840,7 +1883,6 @@ WriteStrProc:
 .WriteStrDone:
     ret
 %endif
-
 
 ; Terminate with exit code and return to DOS
 ProgramTerminate:

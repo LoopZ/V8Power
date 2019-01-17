@@ -30,13 +30,15 @@ NoSwitch:
                                 ; about 30 is never supported by hardware)
     pop         es
     mov         al, [DataHeight]
-    cmp         al, 0x00
-    je          ChangeFont
-    cmp         al, ah
-    je          ChangeFont
+    cmp         al, 0x00        ; Font Height Not set
+    je          LoadFontFile
+    cmp         al, ah          ; Font Height Match
+    je          LoadFontFile
+    xor         al, al          ; Reset For Next
+    mov         [DataHeight], al
     ret
 
-ChangeFont:
+LoadFontFile:
     mov         dl, [si]
     xor         al, al
     mov         [si], al
@@ -59,7 +61,25 @@ ChangeFont:
     mov         [FileSize], ax
     FileClose   FileHandle
     jc          FileError
+    CompareMemory DataTemp, V8FontID, 7
+    je          V8Font
+    ; Validate size is divisible by 256 (characters)
+    xor         dx, dx
+    mov         ax, [FileSize]
+    mov         cx, 0x0100
+    div         cx
+    cmp         dx, 0x0000
+    jne         FontError
+    cmp         ax, 30
+    ja          FontError
+    cmp         ax, 1
+    jb          FontError
+    mov         [DataHeight], al
+
     ret
+
+V8Font:
+    jmp         FontError
 
 SwitchF:
     LookupParam FontOptionTable
@@ -109,6 +129,8 @@ SwitchP:
     mov         [DataPermanent], al
     ret
 
+FontErrorMsg:
+    db "Invalid font file format",0
 FileErrorMsg:
     db 'File Error #',0
 FileError:
@@ -122,6 +144,9 @@ FileError:
     pop         ax
     Terminate   al
 
+FontError:
+    WriteStr    FontErrorMsg
+    Terminate   100
 ValueOutOfRange:
 InvalidOption:
     WriteStr    CommandLineErrorMsg
@@ -145,7 +170,8 @@ FontOptionTable:
     TableData "EGA",14
     TableData "VGA",16
     TableEnd
-
+V8FontID:
+    db  'V8FONT',0
 FileHandle:
     dw 0
 FileSize:
