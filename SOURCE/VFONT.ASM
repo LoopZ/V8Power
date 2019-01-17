@@ -199,15 +199,65 @@ V8Font:
     push        ax
     push        bx
     push        cx
-    mov         cx, 0x0100
-    mul         cx
-    mov         cx, ax
     mov         di, [FileSize]
     add         di, DataTemp
+    mov         cx, 0x07F
+    mov         bh, 0x03
+    cmp         al, 8
+    je          .Clone8
+    mov         cx, 0x0100
+    mov         bh, 0x02
+    cmp         al, 14
+    je          .Clone14
+    mov         bh, 0x06
+    cmp         al, 16
+    je          .Clone16
+
+    ; Unknown So Clear it
+    mul         cx
+    mov         cx, ax
     xor         al, al
 .ClearFontLoop:
     stosb
     loop        .ClearFontLoop
+    jmp         .DoneCloneBIOS
+
+.CloneCopy:
+    push        es
+    push        bp
+    push        ax
+    push        cx
+
+    mul         cx
+    mov         cx, ax
+    push        cx
+    mov         ax, 0x1130
+    int         0x10
+    pop         cx
+.CloneCopying:
+    mov         al, [es:bp]
+    mov         [ds:di], al
+    inc         bp
+    inc         di
+
+    loop        .CloneCopying
+
+    pop         cx
+    pop         ax
+    pop         bp
+    pop         es
+    ret
+
+.Clone8:
+    call        .CloneCopy
+    mov         bh, 0x04
+    call        .CloneCopy
+    jmp         .DoneCloneBIOS
+
+.Clone14:
+.Clone16:
+    call        .CloneCopy
+    jmp         .DoneCloneBIOS
 
 .DoneCloneBIOS:
     pop         cx
