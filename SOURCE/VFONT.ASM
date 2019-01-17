@@ -118,7 +118,7 @@ SetFont:
 
     mov         ax, [FileSize]
     cmp         ax, 0
-    je          SetROMFont
+    je          .SetROMFont
 ; Set Custom Font
     mov         al, 0
     mov         bh, [DataHeight]
@@ -137,8 +137,7 @@ SetFont:
 .ApplyFont:
     mov         ah, 0x11
     push        bp
-    push        DataTemp
-    pop         bp
+    mov         bp, DataTemp
     int         0x10
     pop         bp
     mov         al, [DataReset]
@@ -245,7 +244,7 @@ CommandLineSwitches:
     SwitchData  'X',  0, SwitchX ; Special Effects
     SwitchData  'I',  0, SwitchI ; Initialize Display
     SwitchData  'F',  1, SwitchF ; Font Height
-    SwitchData  'D',  1, SwitchD ; Font Default
+    SwitchData  'D',  0, SwitchD ; Font Default
     HelpSwitchData
     SwitchData  0,  0, 0
 
