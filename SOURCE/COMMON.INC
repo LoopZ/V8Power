@@ -735,14 +735,16 @@ StdOutStr_Proc:
 %endmacro
 
 ; Write AX to standard output as HEX
-%imacro StdOutHexByte 0
-	push	ax
-	mov		ah, 0x02
-	mov		dl, '0'
-	int		0x21
-	mov		dl, 'x'
-	int 	0x21
-	pop		ax
+%imacro StdOutHexByte 0-1 0x
+    %ifidni %1, 0x
+        push	ax
+        mov		ah, 0x02
+        mov		dl, '0'
+        int		0x21
+        mov		dl, 'x'
+        int 	0x21
+        pop		ax
+	%endif
 	mov		cx, 2
 %%Loopy:
 	push	cx
@@ -771,14 +773,16 @@ StdOutStr_Proc:
 %endmacro
 
 ; Write AX to standard output as HEX
-%imacro StdOutHexWord 0
-	push	ax
-	mov		ah, 0x02
-	mov		dl, '0'
-	int		0x21
-	mov		dl, 'x'
-	int 	0x21
-	pop		ax
+%imacro StdOutHexWord 0-1 0x
+    %ifidni %1, 0x
+        push	ax
+        mov		ah, 0x02
+        mov		dl, '0'
+        int		0x21
+        mov		dl, 'x'
+        int 	0x21
+        pop		ax
+	%endif
 	mov		cx, 4
 %%Loopy:
 	push	cx

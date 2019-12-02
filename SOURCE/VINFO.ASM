@@ -154,9 +154,9 @@ SwitchM:
     ret
 
 SwitchC:
-    StdOutStr   0x81
-    StdOutCRLF
-    mov         di, 0x80
+;    StdOutStr   0x81
+;    StdOutCRLF
+;    mov         di, 0x80
     xor         ax, ax
 .Repeat:
     lodsb
@@ -176,7 +176,6 @@ NoSwitch:
     mov         [OptionProcessed], ax
     jmp         ax
 
-
 .NotOption:
     NumberParam
     ; do something with ax
@@ -187,21 +186,202 @@ InvalidOption:
 
     HelpSwitchHandler
 
+ShowByte:
+    push    cx
+    StdOutHexByte none
+    pop     cx
+    ret
+
+ShowWord:
+    push    ax
+    mov     al, ah
+    call    ShowByte
+    pop     ax
+    call    ShowByte
+    ret
+
+ShowRAMline:
+    cld
+    mov     ax, ds
+    call    ShowWord
+    StdOutChar ':'
+    StdOutChar '0'
+    StdOutChar ' '
+    StdOutChar ' '
+    xor     si, si
+    mov     cx, 0x10
+.HexBytes:
+    lodsb
+    call    ShowByte
+    StdOutChar ' '
+    loopnz   .HexBytes
+    StdOutChar ' '
+    StdOutChar ' '
+    xor     si, si
+    mov     cx, 0x10
+.CharBytes:
+    lodsb
+    cmp       al, 7 ; bell
+    je        .Hidden
+    cmp       al, 8 ; backspace
+    je        .Hidden
+    cmp       al, 9 ; tab
+    je        .Hidden
+    cmp       al, 10 ; Carriage Return
+    je        .Hidden
+    cmp       al, 11 ; Vertical Tab
+    je        .Hidden
+    cmp       al, 12 ; Form Feed
+    je        .Hidden
+    cmp       al, 13 ; LineFeed
+    je        .Hidden
+    cmp       al, 26 ; EOF
+    je        .Hidden
+
+    StdOutChar al
+    jmp        .Shown;
+.Hidden:
+    StdOutChar '.'
+.Shown:
+    loopnz   .CharBytes
+    StdOutChar 10
+    StdOutChar 13
+    ret
+
+ShowRAM:
+    push    ds
+    mov     ax, ds
+    mov     cx, 0
+.cycle:
+    push    cx
+    push    ax
+    mov     ds, ax
+    call    ShowRAMline
+    pop     ax
+    pop     cx
+    inc     ax
+    loopnz  .cycle
+    pop     ds
+    ret
+
+SwitchU:
+    cld
+    push    di
+    mov     si, di
+.Loopy:
+    lodsb
+    cmp     al, 0
+    je      .Done
+    cmp     al, 0x61
+    jb      .NoCase
+    cmp     al, 0x7a
+    ja      .NoCase
+    sub     al, 0x20
+.NoCase:
+    stosb
+    jmp     .Loopy
+.Done:
+    pop     di
+    mov     bl, 1
+    mov     ax, 0xa000
+    jmp     SearchRAM
+
+SwitchR:
+    mov     bl, 0
+    xor     ax, ax
+
+SearchRAM:
+    cld
+    mov     si, di
+    mov     es, ax
+    xor     ax, ax
+    mov     di, ax
+.CheckPos:
+    push    di
+    push    si
+.CheckLoop:
+    lodsb
+    mov     ah, [es:di]
+    inc     di
+
+    cmp     al, 13
+    je      .Same
+    cmp     al, 0
+    je      .Same
+    cmp     bl, 0
+    je      .CheckChar
+
+    cmp     ah, 0x61
+    jb      .CheckChar
+    cmp     ah, 0x7a
+    ja      .CheckChar
+    sub     ah, 0x20
+.CheckChar:
+    cmp     al, ah
+    jne     .Diff
+    jmp     .CheckLoop
+.Same:
+    pop     si
+    pop     di
+    push    di
+    push    si
+    mov     ax, es
+    call    ShowWord
+    StdOutChar ':'
+    mov     ax, di
+    call    ShowWord
+    StdOutChar 10
+    StdOutChar 13
+
+    push    es
+    push    ds
+
+    push    es
+    pop     ds
+
+
+    call    ShowRAMline
+    mov     ax, ds
+    inc     ax
+    mov     ds, ax
+    call    ShowRAMline
+
+    pop     ds
+    pop     es
+.Diff:
+    pop     si
+    pop     di
+    inc     di
+    cmp     di, 0x0010
+    jb      .CheckPos
+    xor     di, di
+    push    es
+    pop     ax
+    inc     ax
+    push    ax
+    pop     es
+    cmp     ax, 0xffff
+    jne     .CheckPos
+
+    Terminate   0
+
 CommandLineSwitches:
     SwitchData  0,  0, NoSwitch
     SwitchData 'D', 1, SwitchD
     SwitchData 'V', 0, SwitchV
     SwitchData 'M', 0, SwitchM
     SwitchData 'C', 0, SwitchC
+    SwitchData 'U', 1, SwitchU
+    SwitchData 'R', 1, SwitchR
     HelpSwitchData
     SwitchData  0,  0, 0
 
 OptionsTable:
 %ifdef ASCII_Table
     TableData "ASCII", ShowAscii
+    TableData "RAM", ShowRAM
 %endif
     TableEnd
-
 
 OptionProcessed:
     dw 0xffff
@@ -213,4 +393,4 @@ SavedInt24:
     dw 0, 0
 Drive:
     db 0
-
+EndOfCode:

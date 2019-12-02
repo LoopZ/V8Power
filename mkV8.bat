@@ -2,6 +2,7 @@
 
 set ASM=NASM.EXE
 if exist %DOSDIR%\LINKS\NASM.BAT set ASM=call NASM
+if exist %DOSDIR%\LINKS\NASM.COM set ASM=NASM.COM
 
 if not "%1" == "" goto %1
 if not "%1" == "" goto VeryEnd

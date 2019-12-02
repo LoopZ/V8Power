@@ -53,9 +53,9 @@ NotQEMUBox:
 
 NotVBOX:
     mov         si, VMString
-    mov         bx, 0xf330
+    mov         bx, 0xf000
     mov         es, bx
-    mov         cx, 0x0200
+    mov         cx, 0xf000
     call        SearchString
     jnc         NotVMware
     mov         ax, 104
