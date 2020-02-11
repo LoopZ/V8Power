@@ -1,11 +1,10 @@
 @echo off
 
-REM Test for Presence of V8Power Tools
-if errorlevel 255 goto ClearError
+REM Test for Presence of V8Power Tools, default DOSBox command shell and
+REM the presence of "SET /P" support.
 
-:CheckPresence
 verrlvl 255
-if errorlevel 255 goto V8Present
+if errorlevel 255 goto ClearError
 
 :V8Missing
 echo V8Power Tools were not found.
@@ -16,37 +15,26 @@ verrlvl 0
 if errorlevel 1 goto V8Missing
 
 :V8Present
-verrlvl 0
+REM Test if running under the standard DOSBox command shell or if any other
+REM command shell that does not support SET /P
+set SetPCheck=n
+echo. | set /p SetPCheck=
+if "%SetPCheck%" == "n" goto SetPFailure
+echo y| set /p SetPCheck=
+if "%SetPCheck%" == "y" goto SetPSupport
 
-REM Test if running under DOSBox
-set EX01_InDOSBox=y
-echo. | set /p EX01_InDOSBox=
-if "%EX01_InDOSBox%" == "y" goto DOSBox
-goto NotDOSBox
-
-:DOSBox
-echo This Example is running inside DOSBox.
+:SetPFailure
+echo This Example is running using a commmand shell that does not support "SET /P".
 goto StartBatch
 
-:NotDOSBox
-echo No| set /p EX01_InDOSBox=
-if not "%EX01_InDOSBox%" == "No" goto NoSetP
-echo We are not using DOSBox.
-goto StartBatch
-
-:NoSetP
-echo Advanced "SET /P" not functional.
+:SetPSupport
+echo Advanced "SET /P" functionality supported.
 goto StartBatch
 
 :StartBatch
 REM Do Some Stuff Here
 
-:DoneBatch
-REM Batch file has completed.
-
-:AbortBatch
-REM Abort and cleanup
-
-set EX01_InDOSBOX=
+:CleanUpBatch
+set SetPCheck=
 
 :DontDoAnything

@@ -1,11 +1,7 @@
 @echo off
 
-REM Test for Presence of V8Power Tools
-if errorlevel 255 goto ClearError
-
-:CheckPresence
 verrlvl 255
-if errorlevel 255 goto V8Present
+if errorlevel 255 goto ClearError
 
 :V8Missing
 echo V8Power Tools were not found.
@@ -16,43 +12,34 @@ verrlvl 0
 if errorlevel 1 goto V8Missing
 
 :V8Present
-verrlvl 0
+set SetPCheck=n
+echo. | set /p SetPCheck=
+if "%SetPCheck%" == "n" goto SetPFailure
+echo y| set /p SetPCheck=
+if not "%SetPCheck%" == "y" goto SetPFailure
+vcursor | set /p SavedCursor=
+goto StartBatch
 
-REM Test if running under DOSBox
-set EX07_InDOSBox=y
-echo. | set /p EX07_InDOSBox=
-if "%EX07_InDOSBox%" == "y" goto DOSBox
-goto NotDOSBox
-
-:DOSBox
-echo This example will not work inside DOSBox or without "SET /P"
+:SetPFailure
+set SetPCheck=
+vecho Unable to run example. /fYellow "SET /P" /fGray support is required.
 goto DontDoAnything
-
-:NotDOSBox
-echo No| set /p EX07_InDOSBox=
-if not "%EX07_InDOSBox%" == "No" goto DOSBox
 
 :StartBatch
 vcls
-set EX07_COUNTER=1
-vecho "Counting to 10"
+set MyCounter=0
+vecho "Counting from 0 to 15" /p
 
 :LoopBatch
-vecho /bGray /f %EX07_COUNTER% %EX07_COUNTER%
-vmath %EX07_COUNTER% + 1 | set /p EX07_COUNTER=
-if not "%EX07_COUNTER%" == "11" goto LoopBatch
-
-REM Do Some Stuff Here
+vecho "Number " /bGray /f %MyCounter% "%MyCounter% " /fGray /bBlack 8^)
+vmath %MyCounter% + 1 | set /p MyCounter=
+if not "%MyCounter%" == "16" goto LoopBatch
 
 :DoneBatch
-vecho Done.
+vecho
 
-REM Batch file has completed.
-
-:AbortBatch
-REM Abort and cleanup
-
-REM Restore the original cursor size and shape.
-set EX07_InDOSBOX=
+:CleanUpBatch
+set MyCounter=
+set SetPCheck=
 
 :DontDoAnything

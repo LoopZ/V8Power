@@ -1,11 +1,7 @@
 @echo off
 
-REM Test for Presence of V8Power Tools
-if errorlevel 255 goto ClearError
-
-:CheckPresence
 verrlvl 255
-if errorlevel 255 goto V8Present
+if errorlevel 255 goto ClearError
 
 :V8Missing
 echo V8Power Tools were not found.
@@ -16,23 +12,13 @@ verrlvl 0
 if errorlevel 1 goto V8Missing
 
 :V8Present
-verrlvl 0
-
-REM Test if running under DOSBox
-set EX04_InDOSBox=y
-echo. | set /p EX04_InDOSBox=
-if "%EX04_InDOSBox%" == "y" goto DOSBox
-goto NotDOSBox
-
-:DOSBox
-set EX04_CURSOR=small
-goto StartBatch
-
-:NotDOSBox
-echo No| set /p EX04_InDOSBox=
-if not "%EX04_InDOSBox%" == "No" goto DOSBox
-vcursor | set /p EX04_CURSOR=
-goto StartBatch
+set SavedCursor=small
+set SetPCheck=n
+echo. | set /p SetPCheck=
+if "%SetPCheck%" == "n" goto StartBatch
+echo y| set /p SetPCheck=
+if not "%SetPCheck%" == "y" goto StartBatch
+vcursor | set /p SavedCursor=
 
 :StartBatch
 vcursor hide
@@ -47,17 +33,13 @@ vgotoxy eop sol
 vecho /n /fWhite "Press a key to continue... "
 vpause /fYellow /t10
 
-:DoneBatch
-REM Batch file has completed.
-
-:AbortBatch
-REM Abort and cleanup
-
+:CleanUpBatch
+REM Clear the screen with DOS default text attribute Light Grey on Black.
 vcls /a0x07
 
-REM Restore the original cursor size and shape.
-vcursor %EX04_CURSOR%
-set EX04_InDOSBOX=
-set EX04_CURSOR=
+REM Restore the cursor size and shape.
+vcursor %SavedCursor%
+set SetPCheck=
+set SavedCursor=
 
 :DontDoAnything

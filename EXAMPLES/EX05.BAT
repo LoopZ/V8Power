@@ -1,11 +1,7 @@
 @echo off
 
-REM Test for Presence of V8Power Tools
-if errorlevel 255 goto ClearError
-
-:CheckPresence
 verrlvl 255
-if errorlevel 255 goto V8Present
+if errorlevel 255 goto ClearError
 
 :V8Missing
 echo V8Power Tools were not found.
@@ -16,23 +12,13 @@ verrlvl 0
 if errorlevel 1 goto V8Missing
 
 :V8Present
-verrlvl 0
-
-REM Test if running under DOSBox
-set EX05_InDOSBox=y
-echo. | set /p EX05_InDOSBox=
-if "%EX05_InDOSBox%" == "y" goto DOSBox
-goto NotDOSBox
-
-:DOSBox
-set EX05_CURSOR=small
-goto StartBatch
-
-:NotDOSBox
-echo No| set /p EX05_InDOSBox=
-if not "%EX05_InDOSBox%" == "No" goto DOSBox
-vcursor | set /p EX05_CURSOR=
-goto StartBatch
+set SavedCursor=small
+set SetPCheck=n
+echo. | set /p SetPCheck=
+if "%SetPCheck%" == "n" goto StartBatch
+echo y| set /p SetPCheck=
+if not "%SetPCheck%" == "y" goto StartBatch
+vcursor | set /p SavedCursor=
 
 :StartBatch
 vcursor hide
@@ -55,10 +41,8 @@ vline hidden
 REM Display the choices.
 REM Note: if you write do many choices, they will begin to scroll off. So,
 REM the first choice "Leave me alone" will be missing and technically will
-REM not exist and "Absolutely" will become choice 1. One other thing to
-REM note about vchoice. If it is unable to allocate memory to preserve
-REM the pre-existing colors, they will be flattened. This occurs in DOSBox
-REM and in FreeDOS if a memory manager is not loaded.
+REM not exist and "Absolutely" will become choice 1.
+
 vecho "  Leave me alone."
 vecho "  Absolutely!"
 vecho "  Only on "/fGreen "Thursdays."
@@ -109,15 +93,18 @@ goto DoneBatch
 
 :DoneBatch
 REM Batch file has completed.
+goto CleanUpBatch
 
 :AbortBatch
 REM Abort and cleanup
 
+:CleanUpBatch
+REM Clear the screen with DOS default text attribute Light Grey on Black.
 vcls /a0x07
 
-REM Restore the original cursor size and shape.
-vcursor %EX05_CURSOR%
-set EX05_InDOSBOX=
-set EX05_CURSOR=
+REM Restore the cursor size and shape.
+vcursor %SavedCursor%
+set SetPCheck=
+set SavedCursor=
 
 :DontDoAnything

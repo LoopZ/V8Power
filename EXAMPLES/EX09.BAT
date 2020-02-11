@@ -1,11 +1,7 @@
 @echo off
 
-REM Test for Presence of V8Power Tools
-if errorlevel 255 goto ClearError
-
-:CheckPresence
 verrlvl 255
-if errorlevel 255 goto V8Present
+if errorlevel 255 goto ClearError
 
 :V8Missing
 echo V8Power Tools were not found.
@@ -16,23 +12,18 @@ verrlvl 0
 if errorlevel 1 goto V8Missing
 
 :V8Present
-verrlvl 0
-
-REM Test if running under DOSBox
-set EX09_InDOSBox=y
-echo. | set /p EX09_InDOSBox=
-if "%EX09_InDOSBox%" == "y" goto DOSBox
-goto NotDOSBox
-
-:DOSBox
-echo This example will not work inside DOSBox or without "SET /P"
-goto DontDoAnything
-
-:NotDOSBox
-echo No| set /p EX09_InDOSBox=
-if not "%EX09_InDOSBox%" == "No" goto DOSBox
-vcursor | set /p EX09_CURSOR=
+set SetPCheck=n
+echo. | set /p SetPCheck=
+if "%SetPCheck%" == "n" goto SetPFailure
+echo y| set /p SetPCheck=
+if not "%SetPCheck%" == "y" goto SetPFailure
+vcursor | set /p SavedCursor=
 goto StartBatch
+
+:SetPFailure
+set SetPCheck=
+vecho Unable to run example. /fYellow "SET /P" /fGray support is required.
+goto DontDoAnything
 
 :StartBatch
 vcursor hide
@@ -141,18 +132,21 @@ vecho "Scan complete."
 
 :DoneBatch
 REM Batch file has completed.
+goto CleanUpBatch
 
 :AbortBatch
 REM Abort and cleanup
 
-REM Restore the original cursor size and shape.
-vcursor %EX09_CURSOR%
-set EX09_CURSOR=
+:CleanUpBatch
 set EX09_COUNTER=
 set EX09_AMOUNT=
 set EX09_WIDTH=
 set EX09_LINE=
 set EX09_DRIVE=
 
+vcursor %SavedCursor%
+set SetPCheck=
+set SavedCursor=
+
 :DontDoAnything
-set EX09_InDOSBOX=
+

@@ -1,11 +1,7 @@
 @echo off
 
-REM Test for Presence of V8Power Tools
-if errorlevel 255 goto ClearError
-
-:CheckPresence
 verrlvl 255
-if errorlevel 255 goto V8Present
+if errorlevel 255 goto ClearError
 
 :V8Missing
 echo V8Power Tools were not found.
@@ -16,23 +12,18 @@ verrlvl 0
 if errorlevel 1 goto V8Missing
 
 :V8Present
-verrlvl 0
-
-REM Test if running under DOSBox
-set EX06_InDOSBox=y
-echo. | set /p EX06_InDOSBox=
-if "%EX06_InDOSBox%" == "y" goto DOSBox
-goto NotDOSBox
-
-:DOSBox
-echo This example will not work inside DOSBox or without "SET /P"
-goto DontDoAnything
-
-:NotDOSBox
-echo No| set /p EX06_InDOSBox=
-if not "%EX06_InDOSBox%" == "No" goto DOSBox
-vcursor | set /p EX06_CURSOR=
+set SetPCheck=n
+echo. | set /p SetPCheck=
+if "%SetPCheck%" == "n" goto SetPFailure
+echo y| set /p SetPCheck=
+if not "%SetPCheck%" == "y" goto SetPFailure
+vcursor | set /p SavedCursor=
 goto StartBatch
+
+:SetPFailure
+set SetPCheck=
+vecho Unable to run example. /fYellow "SET /P" /fGray support is required.
+goto DontDoAnything
 
 :StartBatch
 vcursor hide
@@ -64,27 +55,31 @@ REM vchoice will use the use the current cursor location to detect the
 REM area that contains the choices. Since the cursor is still inside the
 REM frame and below the line, we can just call vchoice and set it's
 REM selected color and default value.
-vchoice /fLightGreen /bBlack /t15 /d3 /q | set /p EX06_CHOICE=
+vchoice /fLightGreen /bBlack /t15 /d3 /q | set /p MyChoice=
 
 REM error 100 is always a bad parameter regardless of what tool is called.
 if errorlevel 100 goto AbortBatch
 
 vcls /fGray /bBlack
-vecho 'You have chosen "' /fYellow "%EX06_CHOICE%" /fGray '"'
+vecho 'You have chosen "' /bBlue /fYellow "%MyChoice%" /fGray /bBlack /s- '"'
 vdelay 2000
 
 :DoneBatch
 REM Batch file has completed.
+goto CleanUpBatch
 
 :AbortBatch
 REM Abort and cleanup
 
+:CleanUpBatch
+set MyChoice=
+
+REM Clear the screen with DOS default text attribute Light Grey on Black.
 vcls /a0x07
 
-REM Restore the original cursor size and shape.
-vcursor %EX06_CURSOR%
-set EX06_CURSOR=
-set EX06_CHOICE=
+REM Restore the cursor size and shape.
+vcursor %SavedCursor%
+set SetPCheck=
+set SavedCursor=
 
 :DontDoAnything
-set EX06_InDOSBOX=

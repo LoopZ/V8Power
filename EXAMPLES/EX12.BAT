@@ -1,5 +1,17 @@
 @echo off
 
+verrlvl 255
+if errorlevel 255 goto ClearError
+
+:V8Missing
+echo V8Power Tools were not found.
+goto DontDoAnything
+
+:ClearError
+verrlvl 0
+if errorlevel 1 goto V8Missing
+
+:V8Present
 goto StartBatch
 
 * Englishese Stuff *
@@ -16,40 +28,24 @@ BYE.ES="Asta la vista!"
 
 * The Batch file *
 :StartBatch
-
-REM Test for Presence of V8Power Tools
-if errorlevel 255 goto ClearError
-
-:CheckPresence
-verrlvl 255
-if errorlevel 255 goto V8Present
-
-:V8Missing
-echo V8Power Tools were not found.
-goto Done
-
-:ClearError
-verrlvl 0
-if errorlevel 1 goto V8Missing
-
-:V8Present
-verrlvl 0
-
 REM Configure the Language/String file to point to ourself.
-set MYSELF=%0
-if not exist %MYSELF% set MYSELF=%0.BAT
-if not exist %MYSELF% goto Missing
+set MySelf=%0
+if not exist %MySelf% set MySelf=%0.BAT
+if not exist %MySelf% goto Missing
 
-if "%LANG%" == "" set LANG=EN
+set MyLang=%LANG%
+if "%MyLang%" == "es" set MyLang=ES
+if not "%MyLang%" == "ES" set MyLang=EN
 
 REM Show the text.
-vecho /t %MYSELF% HELLO.%LANG%
-vecho /t %MYSELF% WORK.%LANG% "V8Power Tools"
-vecho /t %MYSELF% BYE.%LANG%
+vecho /t %MySelf% HELLO.%MyLang%
+vecho /t %MySelf% WORK.%MyLang% "V8Power Tools"
+vecho /t %MySelf% BYE.%MyLang%
 goto Done
 
 :Missing
-vecho /fRed "Unable to find myself."
+vecho /fRed "Unable to find MySelf."
 
 :Done
-set MYSELF=
+set MySelf=
+set MyLang=

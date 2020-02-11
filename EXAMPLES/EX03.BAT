@@ -1,11 +1,7 @@
 @echo off
 
-REM Test for Presence of V8Power Tools
-if errorlevel 255 goto ClearError
-
-:CheckPresence
 verrlvl 255
-if errorlevel 255 goto V8Present
+if errorlevel 255 goto ClearError
 
 :V8Missing
 echo V8Power Tools were not found.
@@ -16,23 +12,13 @@ verrlvl 0
 if errorlevel 1 goto V8Missing
 
 :V8Present
-verrlvl 0
-
-REM Test if running under DOSBox
-set EX03_InDOSBox=y
-echo. | set /p EX03_InDOSBox=
-if "%EX03_InDOSBox%" == "y" goto DOSBox
-goto NotDOSBox
-
-:DOSBox
-set EX03_CURSOR=small
-goto StartBatch
-
-:NotDOSBox
-echo No| set /p EX03_InDOSBox=
-if not "%EX03_InDOSBox%" == "No" goto DOSBox
-vcursor | set /p EX03_CURSOR=
-goto StartBatch
+set SavedCursor=small
+set SetPCheck=n
+echo. | set /p SetPCheck=
+if "%SetPCheck%" == "n" goto StartBatch
+echo y| set /p SetPCheck=
+if not "%SetPCheck%" == "y" goto StartBatch
+vcursor | set /p SavedCursor=
 
 :StartBatch
 vcursor hide
@@ -46,7 +32,7 @@ REM Draw the Title Bar
 vgotoxy /x1 /y1
 vcls /bGray /fBlack EOL
 vgotoxy /x22 /y1
-vecho /fBlack "Some kind of program " /fRed '1.2.3' /fBlack " Installer"
+vecho /fBlack "Some kind of program" /fRed '1.2.3' /fBlack Installer
 
 REM Move cursor to end of the page, then column 1. You should use this
 REM method to prevent issues if the screen is not using 25 rows of text.
@@ -59,18 +45,13 @@ vcls /bGray /fBlack /c0 EOL
 REM Wait for 5 seconds
 vdelay 5000
 
-:DoneBatch
-REM Batch file has completed.
-
-:AbortBatch
-REM Abort and cleanup
-
+:CleanUpBatch
 REM Clear the screen with DOS default text attribute Light Grey on Black.
 vcls /a0x07
 
-REM Restore the original cursor size and shape.
-vcursor %EX03_CURSOR%
-set EX03_InDOSBOX=
-set EX03_CURSOR=
+REM Restore the cursor size and shape.
+vcursor %SavedCursor%
+set SetPCheck=
+set SavedCursor=
 
 :DontDoAnything

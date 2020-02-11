@@ -33,19 +33,19 @@ rem Title Bar
 vgotoxy /x1/y1
 vcls /b Gray /f Black EOL
 vgotoxy /x 28 /y 1
-vecho /f Black "Something " /fRed '1.0' /fBlack " Installation"
+vecho /s- /f Black "Something " /fRed '1.0' /fBlack " Installation"
 
 rem Temporary bottom menu bar
 vgotoxy eop /x1
 vcls /bGray /fBlack /c0 EOL
 vgotoxy eop sor
-vecho /n  "Previous " /fWhite "(" /fRed "Alt+P" /fWhite ")"
+vecho /s- /n  "Previous " /fWhite "(" /fRed "Alt+P" /fWhite ")"
 vgotoxy right
 vecho /n "|"
 vgotoxy right
-vecho /n "Next " /fWhite "(" /fRed "Alt+N" /fWhite ")"
+vecho /s- /n "Next " /fWhite "(" /fRed "Alt+N" /fWhite ")"
 vgotoxy /x68
-vecho /n "Quit " /fWhite "(" /fRed "Alt+Q" /fWhite ")"
+vecho /s- /n "Quit " /fWhite "(" /fRed "Alt+Q" /fWhite ")"
 
 vframe /bBlue /fGray /x16 /y7 /w48 /h11 Hidden Shadow
 vframe /x18 /y7 /w44 /h11 DoubleSides
@@ -55,12 +55,12 @@ vecho /fLightGreen " What would you like to see?"
 vline Hidden Dumb
 
 :TryAgain
-vecho /fLightCyan  "   X. " /fYellow "Progress and Multi-Window Demo "
-vecho /fLightGreen "   5) " /fYellow "Display Locations and Writing Demo "
-vecho /fLightGreen "   b: " /fYellow "Cursor Movement Demo "
+vecho /fLightCyan  "   X." /fYellow "Progress and Multi-Window Demo "
+vecho /fLightGreen "   5)" /fYellow "Display Locations and Writing Demo "
+vecho /fLightGreen "   b:" /fYellow "Cursor Movement Demo "
 vecho
 vgotoxy /l /x8
-vecho /n /fWhite " 0" /fGray " - " /fLightRed "Return to "
+vecho /n /fWhite " 0" /fGray - /fLightRed "Return to "
 vecho /n /fLightMagenta "DOS "
 
 vchoice auto /d100/t15/fWhite/bRed
