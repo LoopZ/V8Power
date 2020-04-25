@@ -1,4 +1,4 @@
-; Copyright (C) 2016 Jerome Shidel
+; Copyright (C) 2016-2020 Jerome Shidel
 ;
 ;   This program is free software; you can redistribute it and/or modify
 ;   it under the terms of the GNU General Public License as published by
@@ -107,7 +107,7 @@ OptNameMsg:
 OptVerMsg:
     DB 'Version ',__DATE__,0
 OptCopyMsg:
-    DB 'Copyright (C) 2019 Jerome Shidel',0
+    DB 'Copyright (C) 2020 Jerome Shidel',0
 OptEmailMsg:
     DB 'mailto:V8Power@LoopZ.org',0
 OptURLMsg:
