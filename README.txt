@@ -23,7 +23,7 @@ Compiling V8Power Tools
         8086 or better cpu.
         EGA or better video adapter.
         FreeDOS(TM) 1.1 or higher (http://www.freedos.org)
-        NASM for DOS version 2.11.08 (http://wwww.nasm.us)
+        NASM for DOS version 2.14.02 (http://wwww.nasm.us)
 
     Compiling:
 
@@ -439,7 +439,7 @@ Simple String processing utility. Outputs results to STDOUT.
                 Also, adding :n will output n number of lines.
     /S s1 s2    Search and replace all occurrences of s1 with s2.
     /F s1 s2    Set delimiter to s1 and only return field position or range s2.
-    /T s2       Return tab field position or range s2.
+    /A code s2  Return code delimited field position or range s2. (tab=0x09)
     /P s1       Print text s1.
 
     tba         (Still under development, more to be announced)

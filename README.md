@@ -20,7 +20,7 @@ increased functionality.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8086 or better cpu. <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EGA or better video adapter. <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[FreeDOS™ 1.1 or higher](http://www.freedos.org) <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[NASM™ for DOS version 2.11.08](http://wwww.nasm.us) <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[NASM™ for DOS version 2.14.02](http://wwww.nasm.us) <br>
 
 #### &nbsp;&nbsp; Compiling ######
 
@@ -436,7 +436,7 @@ Simple String processing utility. Outputs results to STDOUT.
 Also, adding :n will output n number of lines.</td></tr>
 <tr><td><b>/S <i>s1 s2</i></b></td><td>Search and replace all occurrences of <b><i>s1</b></i> with <b><i>s2</b></i>.</td></tr>
 <tr><td><b>/F <i>s1 s2</i></b></td><td>Set delimiter to <b><i>s1</b></i> and only return field position or range <b><i>s2</b></i>. </td></tr>
-<tr><td><b>/T <i>s2</i></b></td><td>Return tab field position or range <b><i>s2</b></i>. </td></tr>
+<tr><td><b>/A <i>s2</i></b></td><td>Return code delimited field position or range <b><i>s2</b></i>. <i>(tab=0x09)</i></td></tr>
 <tr><td><b>/P <i>s1</i></b></td><td>Print text <b><i>s1</b></i>. </td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>

@@ -142,9 +142,22 @@ SwitchF:
     mov         [si], al
     ret
 
-SwitchT:
-    mov         ax, TabSearch
-    mov         [SearchFor], ax
+SwitchA:
+    NextSpecial SwitchFields
+    mov         [SearchFor], di
+    xor         al, al
+    mov         [si], al
+    push        di
+    NumberParam
+    pop         di
+    mov         [di], ax
+    xor         al, al
+    mov         [di + 1], al
+    ret
+
+; Old_TabSearch:
+;    mov         ax, TabSearch
+;    mov         [SearchFor], ax
 
 SwitchFields:
     push        cx
@@ -542,7 +555,7 @@ CommandLineSwitches:
     SwitchData  'D', 0, SwitchD
     SwitchData  'B', 0, SwitchB
     SwitchData  'F', 1, SwitchF
-    SwitchData  'T', 1, SwitchT
+    SwitchData  'A', 1, SwitchA
     SwitchData  'P', 1, SwitchP
     HelpSwitchData
     SwitchData  0,  0, 0
@@ -554,8 +567,8 @@ OptionsLines:
     TableData "TOTAL", TotalLines
     TableEnd
 
-TabSearch:
-    db 0x09,0
+;TabSearch:
+;    db 0x09,0
 
 MultiOptionSwitch:
     dw 0
