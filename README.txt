@@ -441,6 +441,9 @@ Simple String processing utility. Outputs results to STDOUT.
     /F s1 s2    Set delimiter to s1 and only return field position or range s2.
     /A code s2  Return code delimited field position or range s2. (tab=0x09)
     /P s1       Print text s1.
+    /T file ID  Look up ID in file and process it like command line options.
+                Any additional options that follow this switch are used to
+                populate %1-%9 variables in the text string.
 
     tba         (Still under development, more to be announced)
 

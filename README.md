@@ -438,6 +438,10 @@ Also, adding :n will output n number of lines.</td></tr>
 <tr><td><b>/F <i>s1 s2</i></b></td><td>Set delimiter to <b><i>s1</b></i> and only return field position or range <b><i>s2</b></i>. </td></tr>
 <tr><td><b>/A <i>s2</i></b></td><td>Return code delimited field position or range <b><i>s2</b></i>. <i>(tab=0x09)</i></td></tr>
 <tr><td><b>/P <i>s1</i></b></td><td>Print text <b><i>s1</b></i>. </td></tr>
+<tr><td><b>/T <i>file ID</i></b></td><td>Look up <b><i>ID</i></b> in <b><i>file</i></b>
+ and process it like command line options.<br>
+    			Any additional options that follow this switch are used to<br>
+    			populate <b><i>%1</i></b>-<b><i>%9</i></b> variables in the text string.
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
 

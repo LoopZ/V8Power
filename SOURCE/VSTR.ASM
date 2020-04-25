@@ -37,6 +37,8 @@
     pop     ax
 %endmacro
 
+MainParsing:
+
     CommandLineParser       ; insert code for command line parsing
 
     UseAdvancedStdIn
@@ -53,6 +55,8 @@ NoInput:
     StdOutCRLF
 Done:
     Terminate 0
+
+%include "TRANSLAT.INC"
 
 SwitchN:
     mov         al, 1
@@ -437,7 +441,6 @@ SwitchDoOr:
     mov         [Filter], ah
     ret
 
-
 InputFilter:
     mov     dh, [Filter]
     cmp     dh, 0
@@ -518,6 +521,9 @@ InputFilter:
     clc
     ret
 
+SwitchT:
+    Translator MainParsing
+
 HelpSwitchHandler
 
 NoSwitch:
@@ -556,6 +562,7 @@ CommandLineSwitches:
     SwitchData  'B', 0, SwitchB
     SwitchData  'F', 1, SwitchF
     SwitchData  'A', 1, SwitchA
+    SwitchData  'T', 1, SwitchT
     SwitchData  'P', 1, SwitchP
     HelpSwitchData
     SwitchData  0,  0, 0
