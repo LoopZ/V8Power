@@ -13,6 +13,7 @@ VERSION=$(date +'%y.%m.%d')
 [[ -d "${HOME}/${DESTINATION}/${PROJECT}" ]] && rm -rf "${HOME}/${DESTINATION}/${PROJECT}"
 
 # Standard binaries release
+touch BIN/*
 
 mkdir -p "${HOME}/${DESTINATION}/${PROJECT}"
 cp -r BIN/* "${HOME}/${DESTINATION}/${PROJECT}/"

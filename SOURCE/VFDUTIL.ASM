@@ -312,6 +312,9 @@ SwitchU:
     je      .OutOfNumbs
     jmp     .Searching
 .NotFound:
+    mov      al, [Critical]
+    cmp      al, 0
+    jne      .OutOfNumbs
     StdOutStr Unique
     StdOutCRLF
     SetIntVec 0x24, SavedInt24

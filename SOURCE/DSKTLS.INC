@@ -157,9 +157,13 @@ MyInt24:
     mov     ax, di
     mov     [cs:ErrorCode], al
     pop     ax
+    mov     al, 0x01
+    mov     [cs:Critical], al
     mov     al, 0x03
     iret
 
+Critical:
+    db 0
 ErrorCode:
     dw 0
 
