@@ -406,7 +406,7 @@ Sets current errorlevel. Mostly for testing batch file logic.
 
 vmath [options]
 
-Super simple math utility. It is NOT as a calculator and is limited to working
+Super simple math utility. It is NOT a calculator and is limited to working
 on numbers from 0-32767. Good for looping, determining screen offsets and etc.
 
     +, ADD      Add next number to sum.
@@ -427,7 +427,7 @@ on numbers from 0-32767. Good for looping, determining screen offsets and etc.
 
 vstr [options]
 
-Simple String processing utility. Outputs results to STDOUT.
+Simple string processing utility. Outputs results to STDOUT.
 
     /N          Do not write a CRLF when done.
     /U          Input Filter: Convert to upper case.

@@ -399,7 +399,7 @@ Sets current errorlevel. Mostly for testing batch file logic.
 * * *
 
 #### vmath *[options]* ######
-Super simple math utility. It is NOT as a calculator and is limited to working
+Super simple math utility. It is NOT a calculator and is limited to working
 on numbers from 0-32767. Good for looping, determining screen offsets and etc.
 <table>
 <tr><td width="125pt"><b><i>+</i></b>,<b><i>ADD</i></b></td><td>Add next number to sum.</td></tr>
@@ -420,7 +420,7 @@ on numbers from 0-32767. Good for looping, determining screen offsets and etc.
 * * *
 
 #### vstr *[options]* ######
-Simple String processing utility. Outputs results to STDOUT.
+Simple string processing utility. Outputs results to STDOUT.
 <table>
 <tr><td width="125pt"></td><td>Preforms a Carriage Return and Line Feed to STDOUT.</td></tr>
 <tr><td><b>/N</td><td>Do not write a CRLF when done.</td></tr>
