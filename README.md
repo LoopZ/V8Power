@@ -561,7 +561,7 @@ Do something for each item in a list.
 <tr><td><b><i>/I</i></b></td>
     <td>Add items to list from the Standard Input device.</td></tr>
 <tr><td><b>/D <i>spec</i></b></td>
-    <td>Modifies /d <b><i>spec</i></b> to the list.</td></tr>
+    <td>Add filenames matching <b><i>spec</i></b> to the list.</td></tr>
 <tr><td><b>/A <i>+/-</i></b></td>
     <td>Modifies <b>/D</b> switch to enable all files and directories.
     </td></tr>
