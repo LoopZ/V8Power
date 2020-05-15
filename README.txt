@@ -1,6 +1,6 @@
 *******************************************************************************
 V8Power Tools
-Copyright 2018 Jerome Shidel
+Copyright 2018-2020 Jerome Shidel
 Released under GPL v2.0 License.
 *******************************************************************************
 
@@ -22,8 +22,8 @@ Compiling V8Power Tools
 
         8086 or better cpu.
         EGA or better video adapter.
-        FreeDOS(TM) 1.1 or higher (http://www.freedos.org)
-        NASM for DOS version 2.14.02 (http://wwww.nasm.us)
+        FreeDOS(TM) 1.1 (http://www.freedos.org) or higher
+        NASM for DOS version 2.14.02 (http://wwww.nasm.us) or newer
 
     Compiling:
 
@@ -47,7 +47,9 @@ Limited compatiblilty of advanced features (no "set /p" batch support):
     MS-DOS 6.2 and 6.22
     PC-DOS 7.0, 7.01 and 2000
     DR-DOS 7.03
-    DosBOX (i/o redirection or querying using stdout will NOT work)
+    DOSBox (i/o redirection or querying using stdout will NOT work using the
+        built-in DOSBox shell. However, they work fine in DOSBox when a
+        compatible shell like FreeCOM is used)
     Windows 3.11 Shell
     Windows 98 Shell and Command Line
     Windows XP SP3 Shell (except vcursor)

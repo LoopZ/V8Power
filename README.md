@@ -1,6 +1,6 @@
 # V8Power Tools
 #### Putting the power of an 8-cylinder engine under the hood of DOS batch files. ######
-Copyright 2018 Jerome Shidel.<br>
+Copyright 2018-2020 Jerome Shidel.<br>
 Released under the GPL v2.0 License.<br>
 
 * * *
@@ -19,8 +19,8 @@ increased functionality.
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8086 or better cpu. <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EGA or better video adapter. <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[FreeDOS™ 1.1 or higher](http://www.freedos.org) <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[NASM™ for DOS version 2.14.02](http://wwww.nasm.us) <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[FreeDOS™ 1.1](http://www.freedos.org) or higher<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[NASM™ for DOS version 2.14.02](http://wwww.nasm.us) or newer <br>
 
 #### &nbsp;&nbsp; Compiling ######
 
@@ -45,7 +45,7 @@ Limited compatiblilty of advanced features <i>(no "set /p" batch support)</i>:
 * MS-DOS 6.2 and 6.22<br>
 * PC-DOS 7.0, 7.01 and 2000<br>
 * DR-DOS 7.03<br>
-* DosBOX (i/o redirection or querying using stdout will NOT work)<br>
+* DOSBox (i/o redirection or querying using stdout will NOT work using the built-in DOSBox shell. However, they work fine in DOSBox when a compatible shell like FreeCOM is used)<br>
 * Windows 3.11 Shell<br>
 * Windows 98 Shell and Command Line<br>
 * Windows XP SP3 Shell (except vcursor)<br>
