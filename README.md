@@ -234,6 +234,7 @@ Draw a box windowing thingy and move cursor to its inside top left position.
  and process it like command line options.<br>
     			Any additional options that follow this switch are used to<br>
     			populate <b><i>%1</i></b>-<b><i>%9</i></b> variables in the text string.
+<tr><td><b>/P <i>n</i></b></td><td>Set an invisible pad character as <b><i>n</i></b> for <b><i>textbox</i></b> and <b><i>optionbox</i></b>.</td></tr>
 <tr><td><i>style</i></td><td>Box <i>styles</i> are <b><i>Single</i></b>, <b><i>Double</i></b>,
 <b><i>SingleSides</i></b>, <b><i>DoubleSides</i></b> and <b><i>Hidden</i></b>.</td></tr>
 <tr><td><i><b>shadow</b></i></td><td>Add a 3D style <b><i>shadow</i></b>.</td></tr>

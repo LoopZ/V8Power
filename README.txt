@@ -1,6 +1,6 @@
 *******************************************************************************
 V8Power Tools
-Copyright 2016-2020 Jerome Shidel
+Copyright 2015-2020 Jerome Shidel
 Released under GPL v2.0 License.
 *******************************************************************************
 
@@ -238,6 +238,7 @@ Draw a box windowing thingy and move cursor to its inside top left position.
     /T file ID  Look up ID in file and process it like command line options.
                 Any additional options that follow this switch are used to
                 populate %1-%9 variables in the text string.
+    /P n        Set an invisible pad character as n for textbox and optionbox.
     style       Box styles are Single, Double, SingleSides, DoubleSides
                 and Hidden.
     shadow      Add a 3D style shadow.
