@@ -1,4 +1,4 @@
-; Copyright (C) 2016 Jerome Shidel
+; Copyright (C) 2016-2020 Jerome Shidel
 ;
 ;   This program is free software; you can redistribute it and/or modify
 ;   it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
 ;   with this program; if not, write to the Free Software Foundation, Inc.,
 ;   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-; NASM for DOS 
+; NASM for DOS
 
 %include "COMMON.INC"
 
@@ -25,10 +25,10 @@ ProgramMain:
     GotoXY      [CurrentXY]
     Terminate 0
 
-NoSwitch:   
+NoSwitch:
     LookupParam OptionalTable
     jmp         DoWhatNow
-    
+
 SwitchQ:
     LookupParam QueryTable
 
@@ -40,10 +40,15 @@ DoWhatNow:
     WriteStr    CommandLineErrorMsg
     Terminate   100
     ret
-    
+
 XYSwitchHandlers
 
 ; LocalSwitchHandlers Don't use CurrentXY
+SwitchK:
+    NumberParam
+    mov         [BoundsChar], al
+    mov         al, 1
+    mov         [UseBoundsChar], al
 SwitchL:
     mov     ax, [WindMin]
     mov     dx, [CurrentXY]
@@ -60,7 +65,7 @@ SwitchL:
     sub     dl, al
     mov     [CurrentXY], dx
     ret
-    
+
 SwitchG:
     mov     ax, [WindMin]
     mov     dx, [CurrentXY]
@@ -91,24 +96,24 @@ WhereOutProc:
     StdOutHexByte
     StdOutCRLF
     ret
-    
+
 OptionSor:
     mov         al, 0
     mov         [CurrentX], al
     ret
-    
+
 OptionEor:
     mov         al, [WindMaxX]
     mov         ah, [WindMinX]
     sub         al, ah
     mov         [CurrentX], al
     ret
-        
+
 OptionSop:
     xor         ax, ax
     mov         [CurrentXY], ax
     ret
-    
+
 OptionEop:
     mov         ax, [WindMax]
     mov         bx, [WindMin]
@@ -116,7 +121,7 @@ OptionEop:
     sub         al, bl
     mov         [CurrentXY], ax
     ret
-        
+
 OptionUp:
     mov         al, [CurrentY]
     cmp         al, 0
@@ -124,7 +129,7 @@ OptionUp:
     dec         al
     mov         [CurrentY], al
     ret
-    
+
 OptionDown:
     mov         ah, [WindMaxY]
     mov         al, [WindMinY]
@@ -155,10 +160,10 @@ OptionRight:
     mov         [CurrentX], al
     ret
     ret
-    
+
 OptionNoMove:
     ret
-    
+
 OptionSot:
     mov         bx, [WindMin]
     mov         cx, [WindMax]
@@ -172,7 +177,7 @@ SearchStart:
     push        cx
     push        dx
     add         dh, bh
-    add         dl, bl  
+    add         dl, bl
     mov         ah, 0x02
     mov         bh, [VideoPage]
     int         0x10
@@ -189,7 +194,7 @@ SearchStart:
     jmp         .TestLoop
 .TestDone:
     ret
-    
+
 OptionEot:
     mov         bx, [WindMin]
     mov         cx, [WindMax]
@@ -204,7 +209,7 @@ SearchEnd:
     push        cx
     push        dx
     add         dh, bh
-    add         dl, bl  
+    add         dl, bl
     mov         ah, 0x02
     mov         bh, [VideoPage]
     int         0x10
@@ -221,7 +226,7 @@ SearchEnd:
     jmp         .TestLoop
 .TestDone:
     ret
-    
+
 OptionSol:
     mov         bx, [WindMin]
     mov         cx, [WindMax]
@@ -229,7 +234,7 @@ OptionSol:
     xor         dl, dl
     sub         ch, bh
     jmp         SearchStart
-    
+
 OptionEol:
     mov         bx, [WindMin]
     mov         cx, [WindMax]
@@ -239,7 +244,7 @@ OptionEol:
     mov         cx, dx
     xor         cl, cl
     jmp         SearchEnd
-    
+
 OptionNext:
     push        bx
     push        cx
@@ -253,20 +258,20 @@ OptionNext:
     cmp         dh, ch
     jl          .MoreY
     jmp         .Done
-.MoreY: 
+.MoreY:
     mov         dl, bl
     inc         dh
     jmp         .Done
 .MoreX:
-    inc         dl      
-.Done:  
+    inc         dl
+.Done:
     sub         dh, bh
     sub         dl, bl
     mov         [CurrentXY], dx
     pop         cx
     pop         bx
     ret
-    
+
 OptionPrev:
     push        bx
     push        cx
@@ -280,13 +285,13 @@ OptionPrev:
     cmp         dh, bh
     jg          .LessY
     jmp         .Done
-.LessY: 
+.LessY:
     mov         dl, cl
     dec         dh
     jmp         .Done
 .LessX:
-    dec         dl      
-.Done:  
+    dec         dl
+.Done:
     sub         dh, bh
     sub         dl, bl
     mov         [CurrentXY], dx
@@ -294,23 +299,23 @@ OptionPrev:
     pop         bx
     ret
     ret
-    
+
     HelpSwitchHandler
 
 CommandLineSwitches:
-    SwitchData  0,  0, NoSwitch  
+    SwitchData  0,  0, NoSwitch
     SwitchData 'Q', 1, SwitchQ
     XYSwitchData
     LocalSwitchData
     HelpSwitchData
     SwitchData  0,  0, 0
-    
+
 QueryTable:
     TableData "X", WhereXProc
     TableData "WHEREX", WhereXProc
     TableData "Y", WhereYProc
     TableData "WHEREY", WhereYProc
-    TableEnd    
+    TableEnd
 
 OptionalTable:
     TableData "SOL",OptionSol
@@ -328,4 +333,3 @@ OptionalTable:
     TableData "NEXT",OptionNext
     TableData "PREVIOUS",OptionPrev
     TableEnd
-    

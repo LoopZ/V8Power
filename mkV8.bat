@@ -218,9 +218,14 @@ goto VeryEnd
 
 :Done
 if not "%1" == "" echo.
-if not "%1" == "" dir BIN\%1.COM
-rem if not "%1" == "" goto VeryEnd
 
+if not "%1" == "" dir BIN\%1.COM | grep -i "%1"
+if "%2" == "" goto NoMore
+%0 %2 %3 %4 %5 %6 %7 %8 %9
+
+:NoMore
+
+rem if not "%1" == "" goto VeryEnd
 :vdocs
 if not exist BIN goto VeryEnd
 copy LICENSE BIN >NUL

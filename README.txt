@@ -1,6 +1,6 @@
 *******************************************************************************
 V8Power Tools
-Copyright 2018-2020 Jerome Shidel
+Copyright 2016-2020 Jerome Shidel
 Released under GPL v2.0 License.
 *******************************************************************************
 
@@ -123,6 +123,7 @@ Clear screen, area or row (line).
     /L          Local Screen Clear. Detects its surroundings and only clears
                 that.  Probably, a box or line or something. You don't really
                 need this option. Because, you can just redraw the box, maybe.
+    /K n        Use n instead of frame characters to detect bounds.
     TEXT        Clear the text only. Leave all colors intact and ignore their
                 color attributes.
     EOL         Clear from cursor to End of Line only.
@@ -183,6 +184,7 @@ Output text to display.
     /I          Write text that may waiting from the STDIN device.
     /G          Write text globally and ignore all framing.
     /L          Write text locally with regards to framing. (DEFAULT)
+    /K n        Use n instead of frame character to detect bounds.
     /X code     Erase rest of line using ascii code, but don't move the cursor.
     /E          Same as using "/X 0x20" or "/X32".
     /T file ID  Look up ID in file and process it like command line options.
@@ -204,6 +206,7 @@ Move or query cursor position.
     /Y row      Move cursor to row.
     /G          Move cursor based on entire screen. (default)
     /L          Move cursor based on its surroundings.
+    /K n        Use n instead of frame character to detect bounds.
     direction   Move cursor up, down, left or right one space.
     shift       Move cursor to the previous or next position and change
                 rows if needed.
@@ -285,6 +288,7 @@ Draw a progress bar at current location without moving cursor.
     /F color    Set the forground text attribute to color (or a value).
     /W width    Override default width of the bar.
                 (default is from cursor to end of line)
+    /K n        Use n instead of frame character to detect bounds.
     value       Sets the value in a percent of progress.
     off         Do not display percentage number.
     align       Percentage number on left, center (Default) or right side of
@@ -325,6 +329,7 @@ you prefix with a letter or number.
     /P n        Use polling mode and preselect item number n as the current
                 choice. Note, any change of selection will exit vchoice and
                 return 100+ the current choice number.
+    /K n        Use n instead of frame character to detect bounds.
     CTRL-C      When specified and Control-C is pressed, will exit with
                 errorlevel of 200.
 
@@ -340,6 +345,7 @@ Simple wait for keypress or time-out.
     (/T)        Depreciated. Now, /D.
     /D seconds  Delay in seconds to wait before the pause times-out. (returns
                 errorlevel 1)
+    /K n        Use n instead of frame character to detect bounds.
     CTRL-C      When specified and Control-C is pressed, will exit with
                 errorlevel of 200.
 
@@ -352,6 +358,7 @@ vline [options]
 Draws a line.
 
     [none]      Draws as local single dumb line on the current row.
+    /K n        Use n instead of frame character to detect bounds.
     single      Draws a single line.
     double      Draws a double line.
     hidden      Draws a invisible dumb line.
@@ -507,6 +514,7 @@ Prompt for text input.
     /F color    Set the forground text attribute to color (or a value).
     /G          Input text globally and ignore all framing.
     /L          Input text locally with regards to framing. (DEFAULT)
+    /K n        Use n instead of frame character to detect bounds.
     /C          When specified and Control-C is pressed, will exit with
                 errorlevel of 200 and return the default value.
     /W width    Override default width of the bar.
@@ -532,6 +540,7 @@ Insert a blank row (line) at the current location.
     /F color    Set the forground text attribute to color (or a value).
     /G          Global Insert.
     /L          Local Insert. (Default)
+    /K n        Use n instead of frame character to detect bounds.
 
 -------------------------------------------------------------------------------
 
@@ -546,6 +555,7 @@ Delete row (line) at the current location.
     /F color    Set the forground text attribute to color (or a value).
     /G          Global Delete.
     /L          Local Delete. (Default)
+    /K n        Use n instead of frame character to detect bounds.
 
 -------------------------------------------------------------------------------
 

@@ -1,4 +1,4 @@
-; Copyright (C) 2016 Jerome Shidel
+; Copyright (C) 2016-2020 Jerome Shidel
 ;
 ;   This program is free software; you can redistribute it and/or modify
 ;   it under the terms of the GNU General Public License as published by
@@ -732,6 +732,8 @@ NoSwitch:
     WriteStr    CommandLineErrorMsg
     Terminate   100
 
+    BoundsSwitchHandler
+
     HelpSwitchHandler
 
 CommandLineSwitches:
@@ -742,6 +744,7 @@ CommandLineSwitches:
     SwitchData  'Q',  0, SwitchQ
     SwitchData  'P',  1, SwitchP
     ColorSwitchData
+    BoundsSwitchData
     HelpSwitchData
     SwitchData  0,  0, 0
 

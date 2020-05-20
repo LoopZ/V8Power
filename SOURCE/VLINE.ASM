@@ -1,4 +1,4 @@
-; Copyright (C) 2016 Jerome Shidel
+; Copyright (C) 2016-2020 Jerome Shidel
 ;
 ;   This program is free software; you can redistribute it and/or modify
 ;   it under the terms of the GNU General Public License as published by
@@ -14,7 +14,7 @@
 ;   with this program; if not, write to the Free Software Foundation, Inc.,
 ;   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-; NASM for DOS 
+; NASM for DOS
 
 %include "COMMON.INC"
 
@@ -29,9 +29,9 @@
     GotoXY  dx
     xor     ax, ax
     mov     [CurrentH], al
-    
+
     CommandLineParser       ; insert code for command line parsing
-    
+
     mov     al, [LineStyle]
     cmp     al, 0
     jne     .NotHidden
@@ -42,7 +42,7 @@
     shr     al, cl
     or      al, ah
     mov     [TextAttr], al
-    
+
 .NotHidden:
     xor     ch, ch
     mov     cl, [LineDir]
@@ -51,7 +51,7 @@
     mov     cl, [CurrentW]
     cmp     cl, 0
     je      Vertical
-    
+
 Horizontal:
     mov     cl, [CurrentW]
     push    cx
@@ -65,14 +65,14 @@ Horizontal:
     mov     bl, [TextAttr]
     mov     ah, [LineStyle]
     cmp     ah, 2
-    je      .DoubleLine 
+    je      .DoubleLine
     mov     al, 0xc4
     jmp     .CharSet
 .DoubleLine:
     mov     al, 0xcd
 .CharSet:
     mov     ah, 0x09
-    int     0x10    
+    int     0x10
     pop     cx
     mov     dx, [Position]
     xor     dl, dl
@@ -82,7 +82,7 @@ Horizontal:
     jge     Done
     mov     [Position], dx
     jmp     Done
-    
+
 Vertical:
     mov     cl, [CurrentH]
     cmp     cl, 0
@@ -92,17 +92,17 @@ Done:
     mov     dx, [Position]
     GotoXY  dx
     Terminate 0
-    
+
 NoSwitch:
     LookupParam OptionsTable
     cmp         ax, 0xffff
     je          .NotOption
-    jmp         ax      
+    jmp         ax
 
 .NotOption:
     NumberParam
     ; do something with ax
-    
+
 .InvalidOption:
     WriteStr    CommandLineErrorMsg
     Terminate   100
@@ -140,17 +140,21 @@ OptVertical:
     mov     al, 1
     mov     [LineDir], al
     ret
-       
+
+
+    BoundsSwitchHandler
+
     HelpSwitchHandler
 
 CommandLineSwitches:
-    SwitchData  0,  0, NoSwitch  
+    SwitchData  0,  0, NoSwitch
     ColorSwitchData
     XYSwitchData
     SizeSwitchData
+    BoundsSwitchData
     HelpSwitchData
     SwitchData  0,  0, 0
-    
+
 OptionsTable:
     TableData "HIDE",           OptHidden
     TableData "HIDDEN",         OptHidden
@@ -165,7 +169,7 @@ OptionsTable:
     TableData "HOR",            OptHorizontal
     TableData "VER",            OptVertical
     TableEnd
-    
+
 Position:
     dw 0
 LineStyle:

@@ -1,4 +1,4 @@
-; Copyright (C) 2017 Jerome Shidel
+; Copyright (C) 2016-2020 Jerome Shidel
 ;
 ;   This program is free software; you can redistribute it and/or modify
 ;   it under the terms of the GNU General Public License as published by
@@ -292,6 +292,8 @@ SECTION _DATA
 	VideoPage:      DB 0
 	CursorShape:    DW 0
 	TextAttr:       DB 0x07
+	UseBoundsChar:  DB 0
+	BoundsChar:     DB 0
 	ScreenMax:
 		ScreenMaxX:	DB 0
 		ScreenMaxY	DB 0
@@ -1456,7 +1458,14 @@ SwitchError:
 		int				0x10
 		mov				ah, 0x08
 		int				0x10
-
+        mov             ah, [UseBoundsChar]
+        cmp             ah, 1
+        jne             %%NotBoundsChar
+        mov             ah, [BoundsChar]
+        cmp             al, ah
+        jne             %%NotFrame
+        jmp             %%Frame
+    %%NotBoundsChar:
 		cmp				al, 0xb3
 		jl				%%NotFrame
 		cmp				al, 0xda

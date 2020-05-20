@@ -1,6 +1,6 @@
 # V8Power Tools
 #### Putting the power of an 8-cylinder engine under the hood of DOS batch files. ######
-Copyright 2018-2020 Jerome Shidel.<br>
+Copyright 2016-2020 Jerome Shidel.<br>
 Released under the GPL v2.0 License.<br>
 
 * * *
@@ -111,6 +111,7 @@ Clear screen, area or row (line).
 <tr><td><b>/L</b></td><td>Local Screen Clear. Detects its surroundings and only clears that.
 	Probably, a box or line or something. You don't really need this option. Because,
 	you can just redraw the box, maybe.</b></td></tr>
+<tr><td><b>/K <i>n</i></b></td><td>Use <b><i>n</i></b> instead of frame characters to detect bounds.</td></tr>
 <tr><td><b>TEXT</b></td><td>Clear the text only. Leave all colors intact and ignore their color attributes.</td></tr>
 <tr><td><b>EOL</b></td><td>Clear from cursor to End of Line only.</td></tr>
 <tr><td><b>/C <i>code</i></b></td><td>Clear by filling with an ASCII character
@@ -172,6 +173,7 @@ Output text to display.
 <tr><td><b>/I</td><td>Write text that may waiting from the STDIN device.</td></tr>
 <tr><td><b>/G</td><td>Write text ignoring all framing.</td></tr>
 <tr><td><b>/L</td><td>Write text locally with regards to framing. <b>(DEFAULT)</b></td></tr>
+<tr><td><b>/K <i>n</i></b></td><td>Use <b><i>n</i></b> instead of frame characters to detect bounds.</td></tr>
 <tr><td><b>/X <i>code</i></b></td><td>Erase rest of line using ASCII
 <b><i>code</i></b>, but don't move the cursor.</td></tr>
 <tr><td><b>/E</b></td><td>Same as using <b>/X <i>0x20</i></b></td></tr>
@@ -196,6 +198,7 @@ Move or query cursor position.
 <tr><td><b>/Y <i>row</i></b></td><td>Move cursor to <b><i>row</i></b>.</td></tr>
 <tr><td><b>/G</b></td><td>Move cursor based on entire screen. (default)</td></tr>
 <tr><td><b>/L</b></td><td>Move cursor based on its surroundings.</td></tr>
+<tr><td><b>/K <i>n</i></b></td><td>Use <b><i>n</i></b> instead of frame characters to detect bounds.</td></tr>
 <tr><td><i>direction</i></td><td>Move cursor <b><i>up</i></b>, <b><i>down</i></b>,
 <b><i>left</i></b> or <b><i>right</i></b> one space.</td></tr>
 <tr><td><i>shift</i></td><td>Move cursor to the <b><i>previous</i></b> or <b><i>next</i></b>
@@ -280,6 +283,7 @@ Draw a progress bar at current location without moving cursor.
 <b><i>color</i></b> (or <b><i>value</i></b>).</td></tr>
 <tr><td><b>/W <i>width</i></b></td><td>Override default <b><i>width</i></b>
 of the bar (default is from cursor to end of line).</td></tr>
+<tr><td><b>/K <i>n</i></b></td><td>Use <b><i>n</i></b> instead of frame characters to detect bounds.</td></tr>
 <tr><td><i>value</i></td><td>Sets the <b><i>value</i></b> in a percent of progress.</td></tr>
 <tr><td><b><i>off</i></b></td><td>Do not display percentage number.</td></tr>
 <tr><td><i>align</i></td><td>Percentage number on <b><i>left</i></b>,
@@ -318,6 +322,7 @@ selected when the timeout is achieved.</td></tr>
 <tr><td><b>/P <i>n</i></b></td><td>Use <b>polling</b> mode and preselect item
 number <b><i>n</i></b> as the current choice. Note, any change of selection
 will exit vchoice and return 100+ the current choice number.</td></tr>
+<tr><td><b>/K <i>n</i></b></td><td>Use <b><i>n</i></b> instead of frame characters to detect bounds.</td></tr>
 <tr><td><b><i>CTRL-C</i></b></td><td>When specified and <b><i>CTRL-C</i></b> is pressed, will exit with
 errorlevel of 200.</td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
@@ -331,6 +336,7 @@ Simple wait for keypress or  time-out.
 <tr><td width="125pt"></td><td>Wait forever for keypress.</td></tr>
 <tr><td><b>/D <i>seconds</i></b></td><td>Delay in <b><i>seconds</i></b> to wait before the
 pause times-out. (returns errorlevel 1) (/T has been depreciated)</td></tr>
+<tr><td><b>/K <i>n</i></b></td><td>Use <b><i>n</i></b> instead of frame characters to detect bounds.</td></tr>
 <tr><td><b><i>CTRL-C</i></b></td><td>When specified and <b><i>CTRL-C</i></b> is pressed, will exit with
 errorlevel of 200.</td></tr>
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
@@ -341,6 +347,7 @@ errorlevel of 200.</td></tr>
 #### vline *[options]* ######
 Draws a line.
 <table><tr><td width="125pt"></td><td>Draws as local single dumb line on the current row. Wait forever for keypress.</td></tr>
+<tr><td><b>/K <i>n</i></b></td><td>Use <b><i>n</i></b> instead of frame characters to detect bounds.</td></tr>
 <tr><td><b><i>single</i></b></td><td>Draws a <b><i>single</i></b> line.</td></tr>
 <tr><td><b><i>double</i></b></td><td>Draws a <b><i>double</i></b> line.</td></tr>
 <tr><td><b><i>hidden</i></b></td><td>Draws a <b><i>hidden</i></b> dumb line.</td></tr>
@@ -502,6 +509,7 @@ Prompt for text input.
 <b><i>color</i></b> (or <b><i>value</i></b>).</td></tr>
 <tr><td><b>/G</td><td>Input text ignoring all framing.</td></tr>
 <tr><td><b>/L</td><td>Input text locally with regards to framing. <b>(DEFAULT)</b></td></tr>
+<tr><td><b>/K <i>n</i></b></td><td>Use <b><i>n</i></b> instead of frame characters to detect bounds.</td></tr>
 <tr><td><b>/C</td><td>When specified and Control-C is pressed, will exit with
                 errorlevel of 200 and return the default value.</td></tr>
 <tr><td><b>/T <i>file ID</i></b></td><td>Look up <b><i>ID</i></b> in <b><i>file</i></b>
@@ -529,6 +537,7 @@ Insert a blank row (line) at the current location.
 <b><i>color</i></b> (or a <b><i>value</i></b>).</td></tr>
 <tr><td><b>/G</b></td><td>Global Insert.</td></tr>
 <tr><td><b>/L</b></td><td>Local Insert. <b>(Default)</b></td></tr>
+<tr><td><b>/K <i>n</i></b></td><td>Use <b><i>n</i></b> instead of frame characters to detect bounds.</td></tr>
 </table>
 
 * * *
@@ -545,6 +554,7 @@ Delete row (line) at the current location.
 <b><i>color</i></b> (or a <b><i>value</i></b>).</td></tr>
 <tr><td><b>/G</b></td><td>Global Delete.</td></tr>
 <tr><td><b>/L</b></td><td>Local Delete. <b>(Default)</b></td></tr>
+<tr><td><b>/K <i>n</i></b></td><td>Use <b><i>n</i></b> instead of frame characters to detect bounds.</td></tr>
 </table>
 
 * * *

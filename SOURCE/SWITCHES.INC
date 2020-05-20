@@ -1,4 +1,4 @@
-; Copyright (C) 2016 Jerome Shidel
+; Copyright (C) 2016-2020 Jerome Shidel
 ;
 ;   This program is free software; you can redistribute it and/or modify
 ;   it under the terms of the GNU General Public License as published by
@@ -114,7 +114,22 @@ CurrentSize:
     pop         ax
 %endmacro
 
+%imacro BoundsSwitchHandler 0
+    SwitchK:
+        NumberParam
+        mov         [BoundsChar], al
+        mov         al, 1
+        mov         [UseBoundsChar], al
+        FrameBounds
+        ret
+%endmacro
+
 %imacro LocalSwitchHandlers 0
+    SwitchK:
+        NumberParam
+        mov         [BoundsChar], al
+        mov         al, 1
+        mov         [UseBoundsChar], al
     SwitchL:
         FrameBounds
         ret
@@ -136,9 +151,14 @@ CurrentSize:
     SwitchData  'H', 1, SwitchH
 %endmacro
 
+%imacro BoundsSwitchData 0
+    SwitchData 'K', 1, SwitchK
+%endmacro
+
 %imacro LocalSwitchData 0
     SwitchData 'L', 0, SwitchL
     SwitchData 'G', 0, SwitchG
+    BoundsSwitchData
 %endmacro
 
 %imacro HelpSwitchData 0
