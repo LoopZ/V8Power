@@ -109,7 +109,7 @@ OptVerMsg:
 OptCopyMsg:
     DB 'Copyright (C) 2015-2020 Jerome Shidel',0
 OptEmailMsg:
-    DB 'mailto:V8Power@LoopZ.org',0
+    DB 'mailto:V8Power@Shidel.net',0
 OptURLMsg:
     DB 'https://github.com/LoopZ/V8Power',0
 OptLicMsg:
