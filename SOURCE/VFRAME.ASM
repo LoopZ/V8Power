@@ -29,6 +29,17 @@ MainParsing:
     cmp         al, 1
     jne         NotOptionBox
     call        MakeBoxOption
+
+    mov         al, [BoxPad]
+    cmp         al, 0
+    je          NotFrameless
+
+    mov         ax, BoxPadding
+    mov         [BoxStyle], ax
+NotFrameless:
+    call        DrawBox
+    jmp         Done
+
 NotOptionBox:
     mov         al, [BoxText]
     cmp         al, 0x00
@@ -37,6 +48,7 @@ NotOptionBox:
     jmp         Done
 
 DrawTextBox:
+    ; Outer Box
     mov         ax, [BoxStyle]
     push        ax
     mov         ax, BoxHidden
@@ -44,6 +56,8 @@ DrawTextBox:
     call        DrawBox
     pop         ax
     mov         [BoxStyle], ax
+    ; Normal Box
+DrawNormalTextBox:
     xor         al, al
     mov         [BoxShadow], al
     mov         al, [CurrentX]
@@ -70,6 +84,15 @@ DrawTextBox:
     sub         ah, 2
     sub         al, 2
     mov         [CurrentSize], ax
+
+    mov         al, [BoxPad]
+    cmp         al, 1
+    jne         .DrawLining
+
+    mov         ax, BoxPadding
+    mov         [BoxStyle], ax
+
+.DrawLining:
     call        DrawBox
 
 Done:
@@ -95,8 +118,15 @@ DrawBox:
     mov         al, [TextAttr]
     mov         [BoxAttr], al
     mov         di, [BoxStyle]
+
+    ; Comment these to make padding visible (during debug & testing)
+    cmp         di, BoxPadding
+    je          .IsHidden
+
+    ; Comment these to make hidden boxes visible (during debug & testing)
     cmp         di, BoxHidden
     jne         .NotHiddenBox
+.IsHidden:
     mov         al, [TextAttr]
     and         al, 0xf0
     mov         ah, al
@@ -159,14 +189,14 @@ ShadowRow:
 
 WriteRow:
     push        dx
-    ; Top left
+    ; Left
     mov         ah, 0x09
     mov         al, [di]
     mov         bh, [VideoPage]
     mov         bl, [BoxAttr]
     mov         cx, 0x0001
     int         0x10
-    ; Top Bar
+    ; Center
     WhereXY
     inc         dx
     GotoXY      dx
@@ -192,7 +222,7 @@ WriteRow:
     mov         dl, cl
     dec         dl
     GotoXY      dx
-    ; top right
+    ; Right
     mov         ah, 0x09
     mov         al, [di+2]
     mov         bh, [VideoPage]
@@ -366,10 +396,32 @@ MakeBoxOption:
     int				0x10
     ret
 
+SwitchP:
+    NumberParam
+
+    push            di
+    cld
+    mov             di, BoxPadding
+    stosb
+    stosb
+    stosb
+    stosb
+    inc             di
+    stosb
+    stosb
+    stosb
+    stosb
+    mov             al, 1
+    mov             [BoxPad], al
+    pop             di
+    ret
+
+
 BoxSingle:          db 0xda,0xc4,0xbf,0xb3,0x20,0xb3,0xc0,0xc4,0xd9
 BoxSingleSides:     db 0xd5,0xcd,0xb8,0xb3,0x20,0xb3,0xd4,0xcd,0xbe
 BoxDoubleSides:     db 0xd6,0xc4,0xb7,0xba,0x20,0xba,0xd3,0xc4,0xbd
 BoxDouble:          db 0xc9,0xcd,0xbb,0xba,0x20,0xba,0xc8,0xcd,0xbc
+BoxPadding:         db 0x00,0x00,0x00,0x00,0x20,0x00,0x00,0x00,0x00
 
 BoxHidden:          ; dummy address to trip modification
 
@@ -384,6 +436,8 @@ ShadowAttr:
 BoxShadow:
     db  0
 BoxText:
+    db  0
+BoxPad:
     db  0
 BoxOpt:
     db 0
@@ -405,6 +459,7 @@ BoxStyleTable:
 CommandLineSwitches:
     SwitchData  0,  0, NoSwitch
     SwitchData 'C',  0, SwitchC
+    SwitchData 'P', 1, SwitchP
     ColorSwitchData
     XYSwitchData
     SizeSwitchData
