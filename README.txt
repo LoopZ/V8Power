@@ -490,7 +490,8 @@ File and directory utility.
     /C          Use before /D or /P to change drive or path without text output.
     /X          Use before /D or /P to return errorlevel 1-26 of drive letter.
     /F file     Calculate and output complete filename to STDOUT.
-    /N file     Calculate and output file's basename to STDOUT.
+    /B file     Calculate and output file's name with extension to STDOUT.
+    /N file     Calculate and output file's name without extension to STDOUT.
     /E file     Calculate and output file's extension to STDOUT.
     /U template Calculate and output unique file/dir name based on template to
                 STDOUT. The drive and path must exist.

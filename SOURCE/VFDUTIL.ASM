@@ -209,6 +209,18 @@ SwitchF:
     call    ExpandFileName
     jmp     DoPrint
 
+SwitchB:
+    call    ExpandFileName
+    mov     di, BufferEnd
+.Search1:
+    dec     di
+    mov     al, [di]
+    cmp     al, 0x5c        ; '\'
+    jne     .Search1
+    inc     di
+    StdOutStr di
+    jmp     DoPrint2
+
 SwitchN:
     call    ExpandFileName
     mov     ax, BufferEnd
@@ -502,6 +514,7 @@ CommandLineSwitches:
     SwitchData 'D', 1, SwitchD
     SwitchData 'X', 0, SwitchX
     SwitchData 'P', 1, SwitchP
+    SwitchData 'B', 1, SwitchB
     SwitchData 'N', 1, SwitchN
     SwitchData 'E', 1, SwitchE
     SwitchData 'U', 1, SwitchU

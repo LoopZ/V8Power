@@ -488,7 +488,8 @@ File and directory utility.
 <tr><td><b><i>/C</i></b></td><td>Use before /D or /P to change drive or path without text output.</td></tr>
 <tr><td><b><i>/X</i></b></td><td>Use before /D or /P to return errorlevel 1-26 of drive letter.</td></tr>
 <tr><td><b><i>/F file</i></b></td><td>Calculate and output complete filename to STDOUT.</td></tr>
-<tr><td><b><i>/N file</i></b></td><td>Calculate and output file's basename to STDOUT.</td></tr>
+<tr><td><b><i>/B file</i></b></td><td>Calculate and output file's name with extension to STDOUT.</td></tr>
+<tr><td><b><i>/N file</i></b></td><td>Calculate and output file's name without extension to STDOUT.</td></tr>
 <tr><td><b><i>/E file</i></b></td><td>Calculate and output file's extension to STDOUT.</td></tr>
 <tr><td><b><i>/U template</i></b></td><td>Calculate and output unique file/dir name based on template to STDOUT.
 The drive and path must exist.<br> Example: "vfdutil /u C:\TEMP\TEST????.$$$"</td></tr>
