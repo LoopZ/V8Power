@@ -204,7 +204,6 @@ DoExitCode:
     mov         al, ah
     jmp         ProgramTerminate
 
-
 SwitchF:
     call    ExpandFileName
     jmp     DoPrint
@@ -494,6 +493,77 @@ Searching:
 .NotFound:
     Terminate 1
 
+%include "INT64.INC"
+
+One:
+    dq 0x8000000
+
+FreeResult:
+    dq 0xFA000000
+FreeSpace:
+    dq 0x123456789abcdef
+
+SwitchM:
+    call            ExpandFileName
+    Int64_Zero      FreeSpace
+    mov             dl, [Buffer]
+    sub             dl, 0x40
+    mov             ah, 0x36
+    int             0x21
+    cmp             ax, 0xffff
+    je              .Error
+
+    mul                 cx          ; Sectors * Bytes dx:ax
+    mov                 cx, bx      ; Clusters
+    mov                 bx, dx      ; save dx as bx
+    mul                 cx          ; ax * cx
+    push                ax
+    push                dx
+    mov                 ax, bx      ; high word of Sector * bytes
+    mul                 cx          ; mul high word
+    pop                 bx
+    add                 bx, ax
+    adc                 dx, 0
+    pop                 ax
+    mov                 cx, dx
+    xor                 dx, dx
+    ; Freespace in      CX:BX:AX
+    Int64_Store         FreeSpace
+
+    push ax
+    push bx
+    mov                 ax, dx
+    StdOutHexWord       ax
+    StdOutChar          ':'
+    pop                 ax
+    StdOutHexWord       ax
+    StdOutChar          ':'
+    pop                 ax
+    StdOutHexWord       ax
+    StdOutCRLF
+
+.Error:
+    Int64_StdOutHex     FreeSpace
+    StdOutCRLF
+    mov     cx, 0
+.Testing:
+    push cx
+    Int64_StdOutHex     FreeResult
+    StdOutChar          '+'
+    Int64_StdOutHex     One
+    StdOutChar          '='
+    Int64_add           FreeResult, One
+    Int64_StdOutHex     FreeResult
+    StdOutCRLF
+    pop cx
+    inc cx
+    cmp cx, 10
+    jne            .Testing
+    ret
+
+SwitchR:
+    ret
+
 NoSwitch:
     LookupParam OptionsTable
     cmp         ax, 0xffff
@@ -520,6 +590,8 @@ CommandLineSwitches:
     SwitchData 'U', 1, SwitchU
     SwitchData 'S', 1, SwitchS
     SwitchData 'T', 1, SwitchT
+    SwitchData 'M', 1, SwitchM
+    SwitchData 'R', 1, SwitchR
 %ifdef PathPrint
     SwitchData 'W', 0, SwitchW
 %endif
