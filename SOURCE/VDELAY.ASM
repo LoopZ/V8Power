@@ -69,6 +69,7 @@ NoSwitch:
     mov         [DelayTime], ax
     ret
 
+    IdleCPUHandler
     HelpSwitchHandler
 
 CommandLineSwitches:

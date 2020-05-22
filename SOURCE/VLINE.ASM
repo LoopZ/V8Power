@@ -63,10 +63,16 @@ Horizontal:
     mov     ah, 0x02
     int     0x10
     mov     bl, [TextAttr]
+    mov     ah, [BoxPad]
+    test    ah, ah
+    jnz     .PadChar
     mov     ah, [LineStyle]
     cmp     ah, 2
     je      .DoubleLine
     mov     al, 0xc4
+    jmp     .CharSet
+.PadChar:
+    mov     al, [BoxPadChar]
     jmp     .CharSet
 .DoubleLine:
     mov     al, 0xcd
@@ -141,6 +147,12 @@ OptVertical:
     mov     [LineDir], al
     ret
 
+SwitchP:
+    NumberParam
+    mov             [BoxPadChar], al
+    mov             al, 1
+    mov             [BoxPad], al
+    ret
 
     BoundsSwitchHandler
 
@@ -148,6 +160,7 @@ OptVertical:
 
 CommandLineSwitches:
     SwitchData  0,  0, NoSwitch
+    SwitchData 'P', 1, SwitchP
     ColorSwitchData
     XYSwitchData
     SizeSwitchData
@@ -170,6 +183,10 @@ OptionsTable:
     TableData "VER",            OptVertical
     TableEnd
 
+BoxPad:
+    db 0
+BoxPadChar:
+    db 0
 Position:
     dw 0
 LineStyle:
