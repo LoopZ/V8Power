@@ -504,23 +504,23 @@ FreeSpace:
     dq 0x123456789abcdef
 
 SwitchM:
-    call            ExpandFileName
-    Int64_Zero      FreeSpace
-    mov             dl, [Buffer]
-    sub             dl, 0x40
-    mov             ah, 0x36
-    int             0x21
-    cmp             ax, 0xffff
-    je              .Error
+    call                ExpandFileName
+    Int64_Zero          FreeSpace
+    mov                 dl, [Buffer]
+    sub                 dl, 0x40
+    mov                 ah, 0x36
+    int                 0x21
+    cmp                 ax, 0xffff
+    je                  .Error
 
-    mul                 cx          ; Sectors * Bytes dx:ax
-    mov                 cx, bx      ; Clusters
-    mov                 bx, dx      ; save dx as bx
-    mul                 cx          ; ax * cx
+    mul                 cx              ; Sectors * Bytes dx:ax
+    mov                 cx, bx          ; Clusters
+    mov                 bx, dx          ; save dx as bx
+    mul                 cx              ; ax * cx
     push                ax
     push                dx
-    mov                 ax, bx      ; high word of Sector * bytes
-    mul                 cx          ; mul high word
+    mov                 ax, bx          ; high word of Sector * bytes
+    mul                 cx              ; mul high word
     pop                 bx
     add                 bx, ax
     adc                 dx, 0
@@ -540,6 +540,9 @@ SwitchM:
     StdOutChar          ':'
     pop                 ax
     StdOutHexWord       ax
+    StdOutCRLF
+
+    Int64_StdOutInt     FreeSpace
     StdOutCRLF
 
 .Error:

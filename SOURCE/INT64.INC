@@ -40,6 +40,17 @@
     %endif
 %endmacro
 
+%imacro Int64_StdOutInt 1
+    %ifdef SAVE_REGS
+        push si
+    %endif
+    mov  si, %1
+    call proc_Int64_StdOutInt
+    %ifdef SAVE_REGS
+        pop  si
+    %endif
+%endmacro
+
 %imacro Int64_Zero 1
     %ifdef SAVE_REGS
         push di
@@ -78,8 +89,8 @@ proc_Int64_CMP:
     mov  cx, [si]
     cmp  ax, cx
     jne  .Done              ; JNE and preserve flags
-    cmp  bx, 0              ; test if done
-    jne  .Repeat
+    test bx, bx             ; test if done
+    jnz  .Repeat
                             ; 0 and Int64's equal
 .Done:
     %ifdef SAVE_REGS
@@ -136,6 +147,70 @@ proc_Int64_StdOutHex:
         pop         ax
         popf
     %endif
+    ret
+
+proc_Int64_StdOutInt:
+    push        bp
+    push        si
+    push        di
+    %ifdef SAVE_REGS
+        pushf
+        push        ax
+        push        bx
+        push        cx
+        push        dx
+    %endif
+
+    mov  bx, [si]
+    mov  cx, [si + 2]
+    mov  di, [si + 4]
+    mov  si, [si + 6]
+
+    ; si:di:cx:bx is 64bit number
+
+    mov         bp, 0x000a      ; Base 10 divisor, all digits 0-9
+    push        bp              ; Push 10 to stack for terminate.
+
+.Repeat:
+    xor         dx, dx
+    xchg        ax, si
+    div         bp              ; 0 : si
+    xchg        ax, si
+    xchg        ax, di
+    div         bp              ; si remainder : di
+    xchg        ax, di
+    xchg        ax, cx
+    div         bp              ; di remainder : cx
+    xchg        ax, cx
+    xchg        ax, bx
+    div         bp              ; cx remainder : bx
+    mov         bx, ax
+    push        dx              ; push remainder to stack
+    or          ax, cx          ; or values to test non-zero
+    or          ax, di
+    or          ax, si
+    jnz         .Repeat         ; Not zero then repeat
+
+.Display:
+    pop         ax
+    cmp         ax, bp
+    je          .Done
+    add         al, 0x30
+    StdOutChar  al
+    jmp         .Display
+
+.Done:
+
+    %ifdef SAVE_REGS
+        pop         dx
+        pop         cx
+        pop         bx
+        pop         ax
+        popf
+    %endif
+    pop         si
+    pop         di
+    pop         bp
     ret
 
 proc_Int64_Zero:
