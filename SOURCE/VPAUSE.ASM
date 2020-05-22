@@ -171,6 +171,8 @@ SwitchT:
     mov         [TimeOut], ax
     ret
 
+    IdleCPUHandler
+
     ColorSwitchHandlers
 
     BoundsSwitchHandler

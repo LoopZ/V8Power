@@ -64,8 +64,36 @@ jmp BasicInitialize
 VersionID:
 	dd 0
 
-%imacro IdleCPU 0
+%imacro IdleCPUHandler 0
+IdleCPUHandlerProc:
+    pushf
+    push    ax
+    mov     al, [%%IdleCPUData]
+    cmp     al, 1
+    ja      %%NoIdle
+    je      %%Alternate
+    ; DOS 5.00+, Windows 3+ -- Release current VM time slice.
+    mov     ax, 0x1680
+    int     0x2f
+    cmp     al, 0x00
+    je      %%Done
+    mov     al, 1
+    mov     [%%IdleCPUData], al
+%%Alternate:
     hlt
+%%NoIdle:
+
+%%Done:
+    pop     ax
+    popf
+    ret
+%%IdleCPUData:
+    db 0
+%endmacro
+
+
+%imacro IdleCPU 0
+    call  IdleCPUHandlerProc
 %endmacro
 
 %imacro retz 0

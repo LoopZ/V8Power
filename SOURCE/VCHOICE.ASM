@@ -732,6 +732,7 @@ NoSwitch:
     WriteStr    CommandLineErrorMsg
     Terminate   100
 
+    IdleCPUHandler
     BoundsSwitchHandler
 
     HelpSwitchHandler
