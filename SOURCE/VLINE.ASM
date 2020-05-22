@@ -18,17 +18,7 @@
 
 %include "COMMON.INC"
 
-    FrameBounds
-
-    SetMaxSize
-
-    WhereXY
-    mov     [CurrentXY], dx
-    mov     [Position], dx
-    xor     dl, dl
-    GotoXY  dx
-    xor     ax, ax
-    mov     [CurrentH], al
+    call  PrepareSettings
 
     CommandLineParser       ; insert code for command line parsing
 
@@ -113,6 +103,20 @@ NoSwitch:
     WriteStr    CommandLineErrorMsg
     Terminate   100
 
+PrepareSettings:
+    FrameBounds
+
+    SetMaxSize
+
+    WhereXY
+    mov     [CurrentXY], dx
+    mov     [Position], dx
+    xor     dl, dl
+    GotoXY  dx
+    xor     ax, ax
+    mov     [CurrentH], al
+    ret
+
 ColorSwitchHandlers
 XYSwitchHandlers
 SizeSwitchHandlers
@@ -154,7 +158,21 @@ SwitchP:
     mov             [BoxPad], al
     ret
 
-    BoundsSwitchHandler
+SwitchK:
+    NumberParam
+    mov         ah, 1
+    mov         [BoundsChar], al
+    mov         [UseBoundsChar], ah
+    FrameBounds
+    WhereXY
+    mov     [CurrentXY], dx
+    mov     [Position], dx
+    xor     dl, dl
+    GotoXY  dx
+    xor     ax, ax
+    mov     [CurrentH], al
+    ret
+    jmp         PrepareSettings
 
     HelpSwitchHandler
 

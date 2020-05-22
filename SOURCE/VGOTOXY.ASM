@@ -46,9 +46,10 @@ XYSwitchHandlers
 ; LocalSwitchHandlers Don't use CurrentXY
 SwitchK:
     NumberParam
+    mov         ah, 1
     mov         [BoundsChar], al
-    mov         al, 1
-    mov         [UseBoundsChar], al
+    mov         [UseBoundsChar], ah
+
 SwitchL:
     mov     ax, [WindMin]
     mov     dx, [CurrentXY]
