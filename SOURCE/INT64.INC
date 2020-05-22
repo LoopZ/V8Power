@@ -148,7 +148,6 @@ proc_uInt64_StdOutHex:
     mov             ax, [si]
     push            cx
     StdOutHexWord   ax
-    ; StdOutChar ' '
     pop             cx
     sub             si, 2
     loop            .Repeat
@@ -301,4 +300,42 @@ proc_uInt64_ADD:
     ret
 
 proc_uInt64_MUL_WORD:
+    ; di address of Int64
+    ; bx multiplication factor
+    %ifdef SAVE_REGS
+        push    ax
+        push    cx
+        push    dx
+        push    si
+    %endif
+    mov     cx, 4
+    xor     si, si
+    clc
+    pushf
+.Repeat:
+    mov     ax, [di]
+    mul     bx
+    xchg    si, dx
+    popf
+    adc     ax, dx
+    pushf
+    mov     [di], ax
+    add     di, 2
+    loop    .Repeat
+    popf
+    jc      .Overflow
+    test    si, si
+    jnz     .Overflow
+    clc
+    jmp     .Done
+.Overflow:
+    stc
+.Done:
+    %ifdef SAVE_REGS
+        pop     si
+        pop     dx
+        pop     cx
+        pop     ax
+    %endif
+    ; Carry Flag on Overflow.
     ret

@@ -530,6 +530,52 @@ SwitchM:
     ret
 
 SwitchR:
+    xor           ah, ah
+    mov           al, [si - 1]
+    cmp           al, 'a'
+    jb            .NotLower
+    cmp           al, 'z'
+    ja            .NotLower
+    sub           al, 0x20
+.NotLower:
+    cmp           al, 'A'
+    jb            .NotLetter
+    cmp           al, 'Z'
+    ja            .NotLetter
+    mov           ah, 3
+    cmp           al, 'G'
+    je            .SetFactor
+    dec           ah
+    cmp           al, 'M'
+    je            .SetFactor
+    dec           ah
+    cmp           al, 'K'
+    je            .SetFactor
+    dec           ah
+    cmp           al, 'B'
+    je            .SetFactor
+    jmp           SwitchError
+.SetFactor:
+    dec           si
+    dec           cx
+.NotLetter:
+    push          ax
+    NumberParam
+    uInt64_Zero   RequiredSpace
+    mov           [RequiredSpace], ax
+    pop           ax
+    cmp           ah, 0
+    je            .NoFactor
+    xor           ch, ch
+    mov           cl, ah
+.Factor:
+    uInt64_MUL_WORD  RequiredSpace, 1024
+    loop .Factor
+.NoFactor:
+    uInt64_StdOutHex RequiredSpace
+    StdOutCRLF
+    uInt64_StdOutInt RequiredSpace
+    StdOutCRLF
     ret
 
 NoSwitch:
@@ -581,7 +627,8 @@ DTAEnd:
 
 FreeSpace:
     dq 0x123456789abcdef0
-
+RequiredSpace:
+    dq 0x123456789abcdef0
 ChangeFlag:
     db 0
 FoundFlag:
