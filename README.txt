@@ -500,6 +500,11 @@ File and directory utility.
                 files to STDOUT. The current directory is not searched. If any
                 filespec is not found, exits with an errorlevel 1.
     /T filespec Just like /S except only errorlevel 0 or 1 is returned.
+    /M location Output amount of disk freespace for location.
+    /R required Use in conjunction with /M to test for amount that the amount
+                of required space is available. Required is a limited to 65535.
+                But, it can be appended with B, K, M and etc. It will return
+                an errorlevel of 1 when there is not enough space.
 
     tba         (Still under development, more to be announced)
 

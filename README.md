@@ -495,6 +495,12 @@ File and directory utility.
 The drive and path must exist.<br> Example: "vfdutil /u C:\TEMP\TEST????.$$$"</td></tr>
 <tr><td><b><i>/S filespec</i></b></td><td>Search the PATH for a given filespec and output all matching files to STDOUT. The current directory is not searched. If any filespec is not found, exits with an errorlevel 1.</td></tr>
 <tr><td><b><i>/T filespec</i></b></td><td>Just like /S except only errorlevel 0 or 1 is returned.</td></tr>
+<tr><td><b><i>/M location</i></b></td><td>Output amount of disk freespace for <b><i>location</i></b>.</td></tr>
+<tr><td><b><i>/R required</i></b></td><td> Use in conjunction with <b><i>/M</i></b>to test for amount that the amount
+of <b><i>required</i></b> free space is available. <b><i>required</i></b> is a limited to 65535.
+But, it can be appended with <b><i>B</i></b>, <b><i>K</i></b>, <b><i>M</i></b> and etc. It will return an errorlevel  of 1
+when there is not enough space.</tr>
+
 </table>
 
 * * *
