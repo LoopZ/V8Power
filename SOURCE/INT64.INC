@@ -99,7 +99,7 @@
     %endif
     mov  di, %1
     mov  si, %2
-    call proc_uInt64_ADD
+    call proc_uInt64_CMP
     %ifdef SAVE_REGS
         pop  si
         pop  di
@@ -255,8 +255,8 @@ proc_uInt64_CMP:
     mov  bx, 8              ; Int64 Size in bytes
 .Repeat:
     sub  bx, 2
-    mov  ax, [di]
-    mov  cx, [si]
+    mov  ax, [di+bx]
+    mov  cx, [si+bx]
     cmp  ax, cx
     jne  .Done              ; JNE and preserve flags
     test bx, bx             ; test if done

@@ -502,8 +502,11 @@ ReadFreeSpace:
     mov                 ah, 0x36
     int                 0x21
     cmp                 ax, 0xffff
-    je                  .Error
-
+    jne                 .NoError
+    StdOutChar          '0'
+    StdOutCRLF
+    Terminate           1
+.NoError:
     mul                 cx              ; Sectors * Bytes dx:ax
     mov                 cx, bx          ; Clusters
     mov                 bx, dx          ; save dx as bx
@@ -519,15 +522,29 @@ ReadFreeSpace:
     mov                 cx, dx
     xor                 dx, dx
     uInt64_Store        FreeSpace       ; Freespace in CX:BX:AX
-.Error:
+    push                ax
+    mov                 al, 1
+    mov                 [KnowFreeSpace], al
+    pop                 ax
     ret
 
 SwitchM:
     call                ExpandFileName
     call                ReadFreeSpace
+
     uInt64_StdOutInt    FreeSpace
     StdOutCRLF
+ShowFreeSpace:
+    mov                 al, [CheckFreeSpace]
+    test                al, al
+    jnz                 .Compare
     ret
+.Compare:
+    uInt64_CMP    FreeSpace, FreeRequired
+    jb            .NotEnoughSpace
+    ret
+.NotEnoughSpace:
+    Terminate     1
 
 SwitchR:
     xor           ah, ah
@@ -542,6 +559,15 @@ SwitchR:
     jb            .NotLetter
     cmp           al, 'Z'
     ja            .NotLetter
+    mov           ah, 6
+    cmp           al, 'E'
+    je            .SetFactor
+    mov           ah, 5
+    cmp           al, 'P'
+    je            .SetFactor
+    mov           ah, 4
+    cmp           al, 'T'
+    je            .SetFactor
     mov           ah, 3
     cmp           al, 'G'
     je            .SetFactor
@@ -561,21 +587,23 @@ SwitchR:
 .NotLetter:
     push          ax
     NumberParam
-    uInt64_Zero   RequiredSpace
-    mov           [RequiredSpace], ax
+    uInt64_Zero   FreeRequired
+    mov           [FreeRequired], ax
     pop           ax
     cmp           ah, 0
     je            .NoFactor
     xor           ch, ch
     mov           cl, ah
 .Factor:
-    uInt64_MUL_WORD  RequiredSpace, 1024
+    uInt64_MUL_WORD  FreeRequired, 1024
+    jc               SwitchError
     loop .Factor
 .NoFactor:
-    uInt64_StdOutHex RequiredSpace
-    StdOutCRLF
-    uInt64_StdOutInt RequiredSpace
-    StdOutCRLF
+    mov             al, 1
+    mov             [CheckFreeSpace], al
+    mov             al, [KnowFreeSpace]
+    test            al, al
+    jnz             ShowFreeSpace
     ret
 
 NoSwitch:
@@ -627,8 +655,12 @@ DTAEnd:
 
 FreeSpace:
     dq 0x123456789abcdef0
-RequiredSpace:
+FreeRequired:
     dq 0x123456789abcdef0
+CheckFreeSpace:
+    db 0
+KnowFreeSpace:
+    db 0
 ChangeFlag:
     db 0
 FoundFlag:
