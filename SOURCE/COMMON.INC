@@ -1479,20 +1479,21 @@ SwitchError:
 		pop				dx
 		mov				ah, 0x02
 		int				0x10
-
 		jmp				%%Done
+
 	%%Check:
 		mov				ah, 0x02
 		int				0x10
 		mov				ah, 0x08
 		int				0x10
+
         mov             ah, [UseBoundsChar]
-        cmp             ah, 1
-        jne             %%NotBoundsChar
+        cmp             ah, 0
+        je              %%NotBoundsChar
         mov             ah, [BoundsChar]
         cmp             al, ah
-        jne             %%NotFrame
-        jmp             %%Frame
+        je              %%Frame
+        jmp             %%NotFrame
     %%NotBoundsChar:
 		cmp				al, 0xb3
 		jl				%%NotFrame

@@ -117,9 +117,9 @@ CurrentSize:
 %imacro BoundsSwitchHandler 0
     SwitchK:
         NumberParam
+        mov         ah, 1
         mov         [BoundsChar], al
-        mov         al, 1
-        mov         [UseBoundsChar], al
+        mov         [UseBoundsChar], ah
         FrameBounds
         ret
 %endmacro
@@ -127,9 +127,9 @@ CurrentSize:
 %imacro LocalSwitchHandlers 0
     SwitchK:
         NumberParam
+        mov         ah, 1
         mov         [BoundsChar], al
-        mov         al, 1
-        mov         [UseBoundsChar], al
+        mov         [UseBoundsChar], ah
     SwitchL:
         FrameBounds
         ret

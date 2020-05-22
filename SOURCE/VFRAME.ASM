@@ -134,6 +134,8 @@ DrawBox:
     shr         al, cl
     or          al, ah
     mov         [BoxAttr], al
+    cmp         di, BoxPadding
+    je          .NotHiddenBox
     mov         di, BoxSingle
     mov         [BoxStyle], di
 .NotHiddenBox:
