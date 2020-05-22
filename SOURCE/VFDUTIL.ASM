@@ -496,7 +496,7 @@ Searching:
 %include "INT64.INC"
 
 ReadFreeSpace:
-    Int64_Zero          FreeSpace
+    uInt64_Zero         FreeSpace
     mov                 dl, [Buffer]
     sub                 dl, 0x40
     mov                 ah, 0x36
@@ -518,15 +518,14 @@ ReadFreeSpace:
     pop                 ax
     mov                 cx, dx
     xor                 dx, dx
-    ; Freespace in      CX:BX:AX
-    Int64_Store         FreeSpace
+    uInt64_Store        FreeSpace       ; Freespace in CX:BX:AX
 .Error:
     ret
 
 SwitchM:
     call                ExpandFileName
     call                ReadFreeSpace
-    Int64_StdOutInt     FreeSpace
+    uInt64_StdOutInt    FreeSpace
     StdOutCRLF
     ret
 

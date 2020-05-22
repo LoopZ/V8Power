@@ -22,96 +22,112 @@
 
 ; Macro Functions
 
+; Signed 64-bit integer function macros
 ; Int64_StdOutHex   address
-; Int64_Zero        address
-; Int64_Store       address (from DX:CX:BX:AX)
-; Int64_Load        address (into DX:CX:BX:AX)
-; Int64_CMP         address1, address2 (test flags, ie JA, JBE and etc)
-; Int64_ADD         address1, address2 (result in address1, CF overflow)
+
+; Unsigned 64-bit integer function macros
+; uInt64_StdOutHex   address
+; uInt64_Zero        address
+; uInt64_Store       address (from DX:CX:BX:AX)
+; uInt64_Load        address (into DX:CX:BX:AX)
+; uInt64_CMP         address1, address2 (test flags, ie JA, JBE and etc)
+; uInt64_ADD         address1, address2 (result in address1, CF overflow)
 
 %imacro Int64_StdOutHex 1
+    uInt64_StdOutHex %1
+%endmacro
+
+%imacro Int64_Store 1
+    uInt64_Store %1
+%endmacro
+
+%imacro Int64_Load 1
+    uInt64_Load %1
+%endmacro
+
+%imacro uInt64_StdOutHex 1
     %ifdef SAVE_REGS
         push si
     %endif
     mov  si, %1
-    call proc_Int64_StdOutHex
+    call proc_uInt64_StdOutHex
     %ifdef SAVE_REGS
         pop  si
     %endif
 %endmacro
 
-%imacro Int64_StdOutInt 1
+%imacro uInt64_StdOutInt 1
     %ifdef SAVE_REGS
         push si
     %endif
     mov  si, %1
-    call proc_Int64_StdOutInt
+    call proc_uInt64_StdOutInt
     %ifdef SAVE_REGS
         pop  si
     %endif
 %endmacro
 
-%imacro Int64_Zero 1
+%imacro uInt64_Zero 1
     %ifdef SAVE_REGS
         push di
     %endif
     mov  di, %1
-    call proc_Int64_Zero
+    call proc_uInt64_Zero
     %ifdef SAVE_REGS
         pop  di
     %endif
 %endmacro
 
-%imacro Int64_Store 1
+%imacro uInt64_Store 1
     mov  [%1], ax
     mov  [%1 + 2], bx
     mov  [%1 + 4], cx
     mov  [%1 + 6], dx
 %endmacro
 
-%imacro Int64_Load 1
+%imacro uInt64_Load 1
     mov  ax, [%1]
     mov  bx, [%1 + 2]
     mov  cx, [%1 + 4]
     mov  dx, [%1 + 6]
 %endmacro
 
-%imacro Int64_CMP 2
+%imacro uInt64_CMP 2
     %ifdef SAVE_REGS
         push di
         push si
     %endif
     mov  di, %1
     mov  si, %2
-    call proc_Int64_ADD
+    call proc_uInt64_ADD
     %ifdef SAVE_REGS
         pop  si
         pop  di
     %endif
 %endmacro
 
-%imacro Int64_ADD 2
+%imacro uInt64_ADD 2
     %ifdef SAVE_REGS
         push di
         push si
     %endif
     mov  di, %1
     mov  si, %2
-    call proc_Int64_ADD
+    call proc_uInt64_ADD
     %ifdef SAVE_REGS
         pop  si
         pop  di
     %endif
 %endmacro
 
-%imacro Int64_MUL_WORD 2
+%imacro uInt64_MUL_WORD 2
     %ifdef SAVE_REGS
         push di
         push bx
     %endif
     mov  di, %1
     mov  bx, %2
-    call proc_Int64_MUL_WORD
+    call proc_uInt64_MUL_WORD
     %ifdef SAVE_REGS
         pop  bx
         pop  di
@@ -120,7 +136,7 @@
 
 ; Functions and procedures ----------------------------------------------------
 
-proc_Int64_StdOutHex:
+proc_uInt64_StdOutHex:
     ; si address of Int64
     %ifdef SAVE_REGS
         pushf
@@ -142,7 +158,7 @@ proc_Int64_StdOutHex:
     %endif
     ret
 
-proc_Int64_StdOutInt:
+proc_uInt64_StdOutInt:
     ; si address of Int64
     push        bp
     push        si
@@ -207,7 +223,7 @@ proc_Int64_StdOutInt:
     pop         bp
     ret
 
-proc_Int64_Zero:
+proc_uInt64_Zero:
     ; di address of Int64
     %ifdef SAVE_REGS
         pushf
@@ -229,7 +245,7 @@ proc_Int64_Zero:
     %endif
     ret
 
-proc_Int64_CMP:
+proc_uInt64_CMP:
     ; di first Int64
     ; si second Int64
     %ifdef SAVE_REGS
@@ -255,7 +271,7 @@ proc_Int64_CMP:
     %endif
     ret
 
-proc_Int64_ADD:
+proc_uInt64_ADD:
     ; di first Int64
     ; si second Int64
     %ifdef SAVE_REGS
@@ -284,5 +300,5 @@ proc_Int64_ADD:
     ; Carry Flag on Overflow.
     ret
 
-proc_Int64_MUL_WORD:
+proc_uInt64_MUL_WORD:
     ret
