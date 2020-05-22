@@ -495,16 +495,7 @@ Searching:
 
 %include "INT64.INC"
 
-One:
-    dq 0x8000000
-
-FreeResult:
-    dq 0xFA000000
-FreeSpace:
-    dq 0x123456789abcdef
-
-SwitchM:
-    call                ExpandFileName
+ReadFreeSpace:
     Int64_Zero          FreeSpace
     mov                 dl, [Buffer]
     sub                 dl, 0x40
@@ -529,39 +520,14 @@ SwitchM:
     xor                 dx, dx
     ; Freespace in      CX:BX:AX
     Int64_Store         FreeSpace
+.Error:
+    ret
 
-    push ax
-    push bx
-    mov                 ax, dx
-    StdOutHexWord       ax
-    StdOutChar          ':'
-    pop                 ax
-    StdOutHexWord       ax
-    StdOutChar          ':'
-    pop                 ax
-    StdOutHexWord       ax
-    StdOutCRLF
-
+SwitchM:
+    call                ExpandFileName
+    call                ReadFreeSpace
     Int64_StdOutInt     FreeSpace
     StdOutCRLF
-
-.Error:
-    Int64_StdOutHex     FreeSpace
-    StdOutCRLF
-    mov     cx, 0
-.Testing:
-    push cx
-    Int64_StdOutHex     FreeResult
-    StdOutChar          '+'
-    Int64_StdOutHex     One
-    StdOutChar          '='
-    Int64_add           FreeResult, One
-    Int64_StdOutHex     FreeResult
-    StdOutCRLF
-    pop cx
-    inc cx
-    cmp cx, 10
-    jne            .Testing
     ret
 
 SwitchR:
@@ -613,6 +579,10 @@ UniqueEnd:
 DTA:
     times 128 db 0
 DTAEnd:
+
+FreeSpace:
+    dq 0x123456789abcdef0
+
 ChangeFlag:
     db 0
 FoundFlag:

@@ -26,7 +26,7 @@
 ; Int64_Zero        address
 ; Int64_Store       address (from DX:CX:BX:AX)
 ; Int64_Load        address (into DX:CX:BX:AX)
-; Int64_CMP         address1, address2 (test flags, ie JG, JLE and etc)
+; Int64_CMP         address1, address2 (test flags, ie JA, JBE and etc)
 ; Int64_ADD         address1, address2 (result in address1, CF overflow)
 
 %imacro Int64_StdOutHex 1
@@ -76,30 +76,6 @@
     mov  dx, [%1 + 6]
 %endmacro
 
-proc_Int64_CMP:
-    %ifdef SAVE_REGS
-        push ax
-        push bx
-        push cx
-    %endif
-    mov  bx, 8              ; Int64 Size in bytes
-.Repeat:
-    sub  bx, 2
-    mov  ax, [di]
-    mov  cx, [si]
-    cmp  ax, cx
-    jne  .Done              ; JNE and preserve flags
-    test bx, bx             ; test if done
-    jnz  .Repeat
-                            ; 0 and Int64's equal
-.Done:
-    %ifdef SAVE_REGS
-        pop  cx
-        pop  bx
-        pop  ax
-    %endif
-    ret
-
 %imacro Int64_CMP 2
     %ifdef SAVE_REGS
         push di
@@ -128,7 +104,24 @@ proc_Int64_CMP:
     %endif
 %endmacro
 
+%imacro Int64_MUL_WORD 2
+    %ifdef SAVE_REGS
+        push di
+        push bx
+    %endif
+    mov  di, %1
+    mov  bx, %2
+    call proc_Int64_MUL_WORD
+    %ifdef SAVE_REGS
+        pop  bx
+        pop  di
+    %endif
+%endmacro
+
+; Functions and procedures ----------------------------------------------------
+
 proc_Int64_StdOutHex:
+    ; si address of Int64
     %ifdef SAVE_REGS
         pushf
         push        ax
@@ -150,6 +143,7 @@ proc_Int64_StdOutHex:
     ret
 
 proc_Int64_StdOutInt:
+    ; si address of Int64
     push        bp
     push        si
     push        di
@@ -214,6 +208,7 @@ proc_Int64_StdOutInt:
     ret
 
 proc_Int64_Zero:
+    ; di address of Int64
     %ifdef SAVE_REGS
         pushf
         push ax
@@ -234,7 +229,35 @@ proc_Int64_Zero:
     %endif
     ret
 
+proc_Int64_CMP:
+    ; di first Int64
+    ; si second Int64
+    %ifdef SAVE_REGS
+        push ax
+        push bx
+        push cx
+    %endif
+    mov  bx, 8              ; Int64 Size in bytes
+.Repeat:
+    sub  bx, 2
+    mov  ax, [di]
+    mov  cx, [si]
+    cmp  ax, cx
+    jne  .Done              ; JNE and preserve flags
+    test bx, bx             ; test if done
+    jnz  .Repeat
+                            ; 0 and Int64's equal
+.Done:
+    %ifdef SAVE_REGS
+        pop  cx
+        pop  bx
+        pop  ax
+    %endif
+    ret
+
 proc_Int64_ADD:
+    ; di first Int64
+    ; si second Int64
     %ifdef SAVE_REGS
         push ax
         push bx
@@ -259,4 +282,7 @@ proc_Int64_ADD:
         pop  ax
     %endif
     ; Carry Flag on Overflow.
+    ret
+
+proc_Int64_MUL_WORD:
     ret
