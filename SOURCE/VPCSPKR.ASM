@@ -130,6 +130,7 @@ SwitchI:
     mov         [DelayMode], al
     ret
 
+    IdleCPUHandler
     HelpSwitchHandler
 
 CommandLineSwitches:
