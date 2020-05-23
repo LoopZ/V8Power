@@ -37,7 +37,7 @@ if not exist BIN\%VSTAGE%.COM goto Error
 if not "%1" == "" goto Done
 
 :verrlvl
-set VSTAGE=vdelay
+set VSTAGE=verrlvl
 bin\vecho /g/s- "Studying " /f 10 "dipstick" /f gray ...
 %ASM% -ISOURCE\ SOURCE\%VSTAGE%.ASM -fbin -O9 -o BIN\%VSTAGE%.COM
 if ERRORLEVEL 1 goto Error
