@@ -346,7 +346,6 @@ Simple wait for keypress or time-out.
     (/T)        Depreciated. Now, /D.
     /D seconds  Delay in seconds to wait before the pause times-out. (returns
                 errorlevel 1)
-    /K n        Use n instead of frame character to detect bounds.
     CTRL-C      When specified and Control-C is pressed, will exit with
                 errorlevel of 200.
 

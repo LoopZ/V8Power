@@ -175,8 +175,6 @@ SwitchT:
 
     ColorSwitchHandlers
 
-    BoundsSwitchHandler
-
     HelpSwitchHandler
 
 CommandLineSwitches:
@@ -185,7 +183,6 @@ CommandLineSwitches:
     SwitchData  'T',  1, SwitchT
     ColorSwitchData
     HelpSwitchData
-    BoundsSwitchData
     SwitchData  0,  0, 0
 
 OptionsTable:

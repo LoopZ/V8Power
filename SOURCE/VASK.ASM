@@ -733,6 +733,8 @@ SwitchT:
     Translator MainParsing
 
     IdleCPUHandler
+
+
     LocalSwitchHandlers
     ColorSwitchHandlers
 	HelpSwitchHandler

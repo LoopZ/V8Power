@@ -91,6 +91,7 @@ endstruc
     mov         [DATABLOCK(OPTIONBOX) + 2], ax
 
     mov         di, CountChoice
+
     call        EachChoice
 
     CommandLineParser       ; insert code for command line parsing
@@ -733,6 +734,7 @@ NoSwitch:
     Terminate   100
 
     IdleCPUHandler
+
     BoundsSwitchHandler
 
     HelpSwitchHandler
