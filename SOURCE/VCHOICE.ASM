@@ -85,21 +85,14 @@ endstruc
     and         al, 0x7f
     mov         [DATABLOCK(HOTATTR)], al
 
+
+    CommandLineParser       ; insert code for command line parsing
+
     mov         [DATABLOCK(POSITION)], dx
     mov         ax, [WindMin]
     mov         [DATABLOCK(OPTIONBOX)], ax
     mov         ax, [WindMax]
     mov         [DATABLOCK(OPTIONBOX) + 2], ax
-
-    CommandLineParser       ; insert code for command line parsing
-
-    ;mov             ax, [WindMin]
-    ;StdOutHexWord   ax
-    ;StdOutCRLF
-    ;mov             ax, [WindMax]
-    ;StdOutHexWord   ax
-    ;StdOutCRLF
-    ;Terminate   1
 
     mov         di, CountChoice
 
