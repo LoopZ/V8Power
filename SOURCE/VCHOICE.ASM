@@ -72,6 +72,7 @@ endstruc
     DumpKeystrokes
 
     FrameBounds
+
     WhereXY
     mov         al, [TextAttr]
     mov         [DATABLOCK(FIRSTATTR)], al
@@ -90,11 +91,19 @@ endstruc
     mov         ax, [WindMax]
     mov         [DATABLOCK(OPTIONBOX) + 2], ax
 
+    CommandLineParser       ; insert code for command line parsing
+
+    ;mov             ax, [WindMin]
+    ;StdOutHexWord   ax
+    ;StdOutCRLF
+    ;mov             ax, [WindMax]
+    ;StdOutHexWord   ax
+    ;StdOutCRLF
+    ;Terminate   1
+
     mov         di, CountChoice
 
     call        EachChoice
-
-    CommandLineParser       ; insert code for command line parsing
 
     AllocTempVideoPage
 
