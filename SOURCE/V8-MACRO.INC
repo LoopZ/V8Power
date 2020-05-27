@@ -14,7 +14,7 @@
 ;   with this program; if not, write to the Free Software Foundation, Inc.,
 ;   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-; NASM 2.14rc0 for DOS
+; NASM 2.14rc0
 
 ; 8086 language extensions
 
@@ -32,6 +32,12 @@
 
 %imacro retc 0
         jnc     %%Skip
+        ret
+    %%Skip:
+%endmacro
+
+%imacro retnc 0
+        jc      %%Skip
         ret
     %%Skip:
 %endmacro
@@ -62,7 +68,7 @@
 	popf
 %endmacro
 
-%imacro multipush 0-*
+%imacro pushx 0-*
     %ifidni %0, 0
         pushall
     %elifidni %1, all
@@ -75,7 +81,7 @@
     %endif
 %endmacro
 
-%imacro multipop 1-*
+%imacro popx 1-*
     %ifidni %0, 0
         popall
     %elifidni %1, all

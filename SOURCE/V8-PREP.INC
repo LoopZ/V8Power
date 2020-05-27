@@ -14,7 +14,7 @@
 ;   with this program; if not, write to the Free Software Foundation, Inc.,
 ;   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-; NASM 2.14rc0 for DOS
+; NASM 2.14rc0
 
 use16
 
@@ -24,18 +24,23 @@ org 0x100
 
 %include 'V8-MACRO.INC'
 %include 'V8-STRUC.INC'
+%include 'V8-DOS.INC'
 
 %imacro Terminate 0-1 0
-    %idefine    Require_Terminate
-    mov         al, %1
-    jmp         proc_Terminate
+    %idefine            Require_Terminate
+    %if %1 = AL
+    %elif %1 = al
+    %elif %1 = 0
+        xor             al, al
+    %else
+        mov             al, %1
+    %endif
+    jmp                 proc_Terminate
 %endmacro
 
 %imacro PlaceHolderApplication 0
-    %idefine    Require_PlaceHolderApplication
-    mov         dx, Message_PlaceHolderApplication
-    mov         ah, 0x09
-    int         0x21
+    %idefine            Require_PlaceHolderApplication
+    DOS_PrintString     Message_PlaceHolderApplication
 %endmacro
 
 CODE_SEGMENT
