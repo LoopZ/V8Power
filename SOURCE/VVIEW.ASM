@@ -16,103 +16,10 @@
 
 ; NASM for DOS
 
-%include "COMMON.INC"
+%include "V8-PREP.INC"
 
-; Note, File I/O for viewing just uses the Translate Buffer File I/O area.
-; So, only one file can be viewed.
+     PlaceHolderApplication
 
-    FrameBounds
-
-MainParsing:
-
-    Placeholder
-    Terminate 0
-
-    CommandLineParser       ; insert code for command line parsing
-
-; Check window is not larger than 60 lines
-    mov     al, [WindMax+1]
-    sub     al, [WindMin+1]
-    cmp     al, 60
-    ja      ParamError
-
-; Check that Filename was set
-    mov    di, [FileName + 2]
-    cmp    di, 0
-    je     ParamError
-
-; Disable Smooth scrolling if not FullScreen
-    mov         bx, [WindMin]
-    cmp         bx, 0
-    jne         .CannotSmooth
-    mov         bx, [WindMax]
-    mov         dx, [ScreenMax]
-    cmp         bx, dx
-    je          .CanSmooth
-.CannotSmooth:
-    xor         al, al
-    mov         [SmoothScroll], al
-.CanSmooth:
-; Zero terminate filename
-    xor     al, al
-    mov     [di], al
-    mov     si, [FileName]
-
-    FileOpen  FileName, FileHandle
-    call      PageCalc
-    call      PageShow
-    FileClose FileHandle
-    Terminate 0
-
-PageCalc:
-    ret
-
-PageShow:
-    ret
+%include "V8-FINAL.INC"
 
 
-NoSwitch:
-    mov     [FileName], di
-    mov     [FileName + 2], si
-    ret
-
-%include "TRANSLAT.INC"
-
-SwitchT:
-    Translator MainParsing
-    LocalSwitchHandlers
-    ColorSwitchHandlers
-    HelpSwitchHandler
-
-SwitchS:
-    xor         ah, ah
-    mov         al, [di]
-    cmp         al, '-'
-    je          .SetSmooth
-    mov         ah, 1
-    cmp         al, '+'
-    jne         ParamError
-.SetSmooth:
-    mov         [SmoothScroll], ah
-    ret
-
-ParamError:
-    WriteStr    CommandLineErrorMsg
-	Terminate   100
-
-CommandLineSwitches:
-    SwitchData  0,  0, NoSwitch
-    ColorSwitchData
-    LocalSwitchData
-    HelpSwitchData
-    SwitchData 'T', 1, SwitchT
-    SwitchData 'S', 1, SwitchS
-    SwitchData  0,  0, 0
-
-SmoothScroll:   db 0
-
-FileName:       dw 0, 0
-ShiftOffset:    dw 0
-PageStart:      dd 0
-LineStart:      times 60 dw 0
-PageEnd:        dd 0

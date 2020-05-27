@@ -16,35 +16,10 @@
 
 ; NASM for DOS
 
-%include "COMMON.INC"
+%include "V8-PREP.INC"
 
-    CommandLineParser       ; insert code for command line parsing
+     PlaceHolderApplication
 
-    PlaceHolder
-
-    Terminate 0
-
-NoSwitch:
-    LookupParam OptionsTable
-    cmp         ax, 0xffff
-    je          .NotOption
-    jmp         ax
-
-.NotOption:
-    NumberParam
-    ; do something with ax
-
-.InvalidOption:
-    WriteStr    CommandLineErrorMsg
-    Terminate   100
-
-    HelpSwitchHandler
+%include "V8-FINAL.INC"
 
 
-CommandLineSwitches:
-    SwitchData  0,  0, NoSwitch
-    HelpSwitchData
-    SwitchData  0,  0, 0
-
-OptionsTable:
-    TableEnd

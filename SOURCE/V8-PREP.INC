@@ -1,4 +1,4 @@
-; Copyright (C) 2016 Jerome Shidel
+; Copyright (C) 2016-2020 Jerome Shidel
 ;
 ;   This program is free software; you can redistribute it and/or modify
 ;   it under the terms of the GNU General Public License as published by
@@ -14,12 +14,28 @@
 ;   with this program; if not, write to the Free Software Foundation, Inc.,
 ;   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-; NASM for DOS
+; NASM 2.14rc0 for DOS
 
-%include "V8-PREP.INC"
+use16
 
-     PlaceHolderApplication
+cpu 8086
 
-%include "V8-FINAL.INC"
+org 0x100
 
+%include 'V8-MACRO.INC'
+%include 'V8-STRUC.INC'
 
+%imacro Terminate 0-1 0
+    %idefine    Require_Terminate
+    mov         al, %1
+    jmp         proc_Terminate
+%endmacro
+
+%imacro PlaceHolderApplication 0
+    %idefine    Require_PlaceHolderApplication
+    mov         dx, Message_PlaceHolderApplication
+    mov         ah, 0x09
+    int         0x21
+%endmacro
+
+CODE_SEGMENT

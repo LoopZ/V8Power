@@ -1,4 +1,4 @@
-; Copyright (C) 2016 Jerome Shidel
+; Copyright (C) 2016-2020 Jerome Shidel
 ;
 ;   This program is free software; you can redistribute it and/or modify
 ;   it under the terms of the GNU General Public License as published by
@@ -14,12 +14,15 @@
 ;   with this program; if not, write to the Free Software Foundation, Inc.,
 ;   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-; NASM for DOS
+; NASM 2.14rc0 for DOS
 
-%include "V8-PREP.INC"
+DATA_SEGMENT
 
-     PlaceHolderApplication
+%idefine ApplicationDataBlock
 
-%include "V8-FINAL.INC"
-
-
+%ifdef Require_PlaceHolderApplication
+Message_PlaceHolderApplication:
+    DB "This program is only a placeholder executable. "
+    DB "It will be replaced by a program",0x0d,0x0a
+    DB "that actually does something at a later time.$"
+%endif
