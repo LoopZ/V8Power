@@ -62,11 +62,12 @@ cp -r SOURCE/* "${HOME}/${DESTINATION}/${PROJECT}/SOURCE/${PROJECT}/SOURCE"
 
 cp -r V8HELP.BAT "${HOME}/${DESTINATION}/${PROJECT}/BIN"
 
+lcase=$(echo "${PROJECT}" | tr '[:upper:]' '[:lower:]')
 cd "${HOME}/${DESTINATION}"
-[[ -f "${PROJECT}.zip" ]] && rm "${PROJECT}.zip"
+[[ -f "${lcase}.zip" ]] && rm "${lcase}.zip"
 cd "${PROJECT}"
 rm "BIN/V8POWER.TXT" >/dev/null
-zip -9 -r -k "../${PROJECT}.zip" *
+zip -9 -r -k "../${lcase}.zip" *
 cd "${CURDIR}"
 
 rm -rf "${HOME}/${DESTINATION}/${PROJECT}"
