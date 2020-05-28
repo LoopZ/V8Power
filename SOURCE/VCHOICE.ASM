@@ -649,7 +649,6 @@ SwitchD:
     cmp         ax, 100
     jae         SwitchError
     jz          SwitchError
-    dec         al
     mov         [DATABLOCK(SELECTED)], al
 
     mov         [DATABLOCK(DEFAULTCHOICE)], al

@@ -17,7 +17,9 @@ Probable roadmap for the future of V8Power Tools:
     vpcspkr - More music style support like maybe, C#, C. and such.
     vver - verify all utils are present and proper version.
     veach - duplicate checking and some other options
+    vchoice - old style [Y/N] style choices
 
+    vreadkey - Postponed, keyboard input.
     vchkbox - Postponed, Checkboxes.
     vview - Postponed, Text file viewer, user license agreement and whatnots..
 
