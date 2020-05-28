@@ -68,11 +68,10 @@ endstruc
 %imacro DOS_Terminate 0-1
     %if %0 = 0
         mov         ax, 0x4c00
-    %elif %1 = AL
-        mov         ah, 0x4c
-    %elif %1 = al
+    %elifidni %1, al
         mov         ah, 0x4c
     %else
+        mov         ah, 0x4c
         mov         al, %1
     %endif
     int             0x21
@@ -82,7 +81,7 @@ endstruc
 %imacro DOS_PrintString 0-1
     ; DS:DX = string pointer, string ends in $ character
     mov         ah, 0x09
-    %if %0 = 1
+    %ifidni %1, dx
         mov     dx, %1
     %endif
     int         0x21

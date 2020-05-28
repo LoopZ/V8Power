@@ -17,6 +17,7 @@
 ; NASM for DOS
 
 %include "COMMON.INC"
+%include "V8-DEBUG.INC"
 
 %idefine SIZEOF_STACK   0x0100  ; Required Stack bytes, don't need this much.
 %idefine SIZEOF_MEMORY  0x4000  ; DATABLOCK(MAX)imum bytes of memory program can use.
@@ -52,7 +53,6 @@ struc tDATABLOCK
     .POSTAL          resb 1
     .POSTALCODE      resb 1
 
-
     .ZERO       resb 0   ; Unused at present
 
     .STACK      resb SIZEOF_STACK
@@ -65,15 +65,16 @@ endstruc
 
     PrepareMemory
     ShrinkMemory [DATABLOCK(MEMPTR)]
-    mov         al, 1
-    mov         [DATABLOCK(SELECTED)], al
-    mov         [DATABLOCK(SELECTCHARS)], al
 
     DumpKeystrokes
 
     FrameBounds
 
-    WhereXY
+
+    mov         al, 1
+    mov         [DATABLOCK(SELECTED)], al
+    mov         [DATABLOCK(SELECTCHARS)], al
+
     mov         al, [TextAttr]
     mov         [DATABLOCK(FIRSTATTR)], al
     or          al, 0x08
@@ -85,18 +86,26 @@ endstruc
     and         al, 0x7f
     mov         [DATABLOCK(HOTATTR)], al
 
-
     CommandLineParser       ; insert code for command line parsing
 
+    WhereXY
     mov         [DATABLOCK(POSITION)], dx
+
     mov         ax, [WindMin]
     mov         [DATABLOCK(OPTIONBOX)], ax
     mov         ax, [WindMax]
     mov         [DATABLOCK(OPTIONBOX) + 2], ax
 
     mov         di, CountChoice
-
     call        EachChoice
+
+    call        ValidateSelections
+
+;    GotoXY          0x0103
+;    DebugHexByte    [DATABLOCK(SELECTED)]
+;    DebugChar       ','
+;    DebugHexByte    [DATABLOCK(MAX)]
+;    Terminate   0
 
     AllocTempVideoPage
 
@@ -176,13 +185,13 @@ ShowTimeout:
     push        ax
     mov         cx, 1
     cmp         ax, 1000
-    jge         .SetWidth
+    jae         .SetWidth
     inc         cx
     cmp         ax, 100
-    jge         .SetWidth
+    jae         .SetWidth
     inc         cx
     cmp         ax, 10
-    jge         .SetWidth
+    jae         .SetWidth
     inc         cx
 .SetWidth:
     mov         al, bl
@@ -267,9 +276,9 @@ KeyBoardLoop:
     je          .OtherKeypress
     ; adjust upper case
     cmp         al, 0x61
-    jl          .NotLowercase
+    jb          .NotLowercase
     cmp         al, 0x7a
-    jg          .NotLowercase
+    ja          .NotLowercase
     mov         bx, ax
     xor         bh, bh
     sub         bx, 0x20
@@ -284,13 +293,13 @@ KeyBoardLoop:
     je          .YesNoPress
     ; letter, number or other
     cmp         al, 0x30
-    jl          .OtherKeypress
+    jb          .OtherKeypress
     cmp         al, 0x39
-    jle         .NumberPress
+    jbe         .NumberPress
     cmp         al, 0x40
-    jle         .OtherKeypress
+    jbe         .OtherKeypress
     cmp         al, 0x5a
-    jg          .OtherKeypress
+    ja          .OtherKeypress
     jmp         .AlphaPress
 .OtherKeypress:
     ; StdOutHexWord
@@ -298,6 +307,7 @@ KeyBoardLoop:
 
 .YesNoPress:
     jmp         KeyBoardLoop
+
 .AutoPress:
     mov         [DATABLOCK(SEARCHING)], al
     mov         di, SearchChoice
@@ -337,15 +347,16 @@ KeyBoardLoop:
 .GoUp:
     mov         al, [DATABLOCK(SELECTED)]
     cmp         al, 1
-    jle         KeyBoardLoop
+    jbe         KeyBoardLoop
     dec         al
     mov         [DATABLOCK(SELECTED)], al
     jmp         .Changed
+
 .GoDown:
     mov         al, [DATABLOCK(SELECTED)]
     mov         ah, [DATABLOCK(MAX)]
     cmp         al, ah
-    jge         KeyBoardLoop
+    jae         KeyBoardLoop
     inc         al
     mov         [DATABLOCK(SELECTED)], al
     jmp         .Changed
@@ -628,61 +639,42 @@ SwitchT:
     mov         [DATABLOCK(TIMEOUT)], ax
     ret
 
-SwitchD:
-    mov         al, [di]
-    cmp         al, 0x61
-    jl          .NotLower
-    cmp         al, 0x7a
-    jg          .NotLower
-    sub         al, 0x20
-.NotLower:
-    cmp         al, 0x41
-    jl          .NotUpper
-    cmp         al, 0x5a
-    jg          .NotUpper
-    sub         al, 0x40
-    jmp         .ValidateP
-.NotUpper:
-    NumberParam
-.ValidateP:
-    mov         ah, [DATABLOCK(MAX)]
-    cmp         al, ah
-    jle         .Done
-    mov         al, ah
-.Done:
-    mov         [DATABLOCK(SELECTED)], al
-    mov         [DATABLOCK(DEFAULTCHOICE)], al
-    ret
-
 SwitchQ:
     mov         al, 1
     mov         [DATABLOCK(QUERYING)], al
     ret
-SwitchP:
-    mov         al, [di]
-    cmp         al, 0x61
-    jl          .NotLower
-    cmp         al, 0x7a
-    jg          .NotLower
-    sub         al, 0x20
-.NotLower:
-    cmp         al, 0x41
-    jl          .NotUpper
-    cmp         al, 0x5a
-    jg          .NotUpper
-    sub         al, 0x40
-    jmp         ValidateD
-.NotUpper:
+
+SwitchD:
     NumberParam
-ValidateD:
-    mov         ah, [DATABLOCK(MAX)]
-    cmp         al, ah
-    jle         .Done
-    mov         al, ah
-.Done:
+    cmp         ax, 100
+    jae         SwitchError
+    jz          SwitchError
+    dec         al
+    mov         [DATABLOCK(SELECTED)], al
+
+    mov         [DATABLOCK(DEFAULTCHOICE)], al
+    ret
+
+SwitchP:
+    NumberParam
+    cmp         ax, 100
+    jae         SwitchError
+    jz          SwitchError
     mov         [DATABLOCK(SELECTED)], al
     mov         al, 1
     mov         [DATABLOCK(POLLING)], al
+    ret
+
+ValidateSelections:
+    push        ax
+    mov         ah, [DATABLOCK(MAX)]
+    mov         al, [DATABLOCK(SELECTED)]
+    cmp         ah, al
+    ja          .Done
+    mov         [DATABLOCK(SELECTED)], ah
+    mov         [DATABLOCK(DEFAULTCHOICE)], ah
+.Done:
+    pop         ax
     ret
 
 OptNone:
@@ -743,7 +735,6 @@ NoSwitch:
 
 CommandLineSwitches:
     SwitchData  0,  0, NoSwitch
-    SwitchData  'S',  1, SwitchD
     SwitchData  'D',  1, SwitchD
     SwitchData  'T',  1, SwitchT
     SwitchData  'Q',  0, SwitchQ

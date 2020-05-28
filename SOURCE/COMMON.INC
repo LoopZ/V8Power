@@ -102,6 +102,12 @@ IdleCPUHandlerProc:
     %%Skip:
 %endmacro
 
+%imacro rete 0
+        jne     %%Skip
+        ret
+    %%Skip:
+%endmacro
+
 %imacro retc 0
         jnc     %%Skip
         ret
@@ -1517,69 +1523,6 @@ SwitchError:
 %imacro FrameBounds 0
 	FrameBoundsProc
 	call	FrameBounds_Proc
-%endmacro
-
-; macro to print a character for debugging
-%imacro DebugChar 0-1 al
-    pushf
-    push    ax
-    push    bx
-    push    cx
-    push    dx
-    push    di
-    push    si
-    mov     al, %1
-    WriteChar
-    pop     si
-    pop     di
-    pop     dx
-    pop     cx
-    pop     bx
-    pop     ax
-    popf
-%endmacro
-
-%imacro DebugCRLF 0
-    DebugChar 0x0d
-    DebugChar 0x0a
-%endmacro
-
-; macro to print a character for debugging
-%imacro DebugInt 0-1 ax
-    pushf
-    push    ax
-    push    bx
-    push    cx
-    push    dx
-    push    di
-    push    si
-    WriteInt %1
-    pop     si
-    pop     di
-    pop     dx
-    pop     cx
-    pop     bx
-    pop     ax
-    popf
-%endmacro
-
-%imacro DebugWord 0-1 ax
-    pushf
-    push    ax
-    push    bx
-    push    cx
-    push    dx
-    push    di
-    push    si
-    mov     ax, %1
-    StdOutHexWord
-    pop     si
-    pop     di
-    pop     dx
-    pop     cx
-    pop     bx
-    pop     ax
-    popf
 %endmacro
 
  ; macro that shows command line switch and data, mostly for debuging the

@@ -74,7 +74,7 @@
     %elifidni %1, all
         pushall
     %else
-        %rep  %0
+        %rep %0
             push    %1
         %rotate 1
         %endrep
@@ -88,8 +88,9 @@
         popall
     %else
         %rep %0
-        %rotate -1
+        ; %rotate -1 reverse order
             pop     %1
+        %rotate 1
         %endrep
     %endif
 %endmacro

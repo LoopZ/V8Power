@@ -156,6 +156,8 @@ SwitchP:
     mov             [BoxPadChar], al
     mov             al, 1
     mov             [BoxPad], al
+    xor             al, al
+    mov             [LineStyle], al
     ret
 
 SwitchK:

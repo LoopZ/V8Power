@@ -160,7 +160,6 @@ SetFont:
 
 .Done:
     Terminate   0
-    DebugInt
 
 V8Font:
     mov         si, DataTemp

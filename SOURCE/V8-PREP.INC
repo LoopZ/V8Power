@@ -28,8 +28,7 @@ org 0x100
 
 %imacro Terminate 0-1 0
     %idefine            Require_Terminate
-    %if %1 = AL
-    %elif %1 = al
+    %ifidni %1, al
     %elif %1 = 0
         xor             al, al
     %else

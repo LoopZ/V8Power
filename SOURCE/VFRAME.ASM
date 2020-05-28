@@ -18,6 +18,8 @@
 
 %include "COMMON.INC"
 
+%undef DEBUG
+
 ProgramMain:
     SetMaxSize
 
@@ -128,11 +130,13 @@ DrawBox:
     jne         .NotHiddenBox
 .IsHidden:
     mov         al, [TextAttr]
-    and         al, 0xf0
-    mov         ah, al
-    mov         cl, 4
-    shr         al, cl
-    or          al, ah
+    %ifndef DEBUG
+        and         al, 0xf0
+        mov         ah, al
+        mov         cl, 4
+        shr         al, cl
+        or          al, ah
+    %endif
     mov         [BoxAttr], al
     cmp         di, BoxPadding
     je          .NotHiddenBox
@@ -169,12 +173,18 @@ LastRow:
     GotoXY      dx
     pop         dx
     add         di, 3
+    push        ax
+    mov         al, [BoxOpt]
+    cmp         al, 1
+    pop         ax
+    je          NoShadowRow
+
     call        WriteRow
 
 ShadowRow:
     mov         al, [BoxShadow]
     cmp         al, 2
-    jl          .NoShadowRow
+    jl          NoShadowRow
     mov         bx, [WindMin]
     mov         dx, [WindMax]
     mov         cl, dl
@@ -184,7 +194,7 @@ ShadowRow:
     mov         dl, 0x01
     call        ShadowChars
 
-.NoShadowRow:
+NoShadowRow:
     mov         dx, 0x0101
     GotoXY      dx
     ret
