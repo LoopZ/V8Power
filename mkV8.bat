@@ -126,14 +126,14 @@ if ERRORLEVEL 1 goto Error
 if not exist BIN\%VSTAGE%.COM goto Error
 if not "%1" == "" goto Done
 
-:vview
-set VSTAGE=vview
-bin\vecho /g/s- /n "Studying "
-bin\vecho /g/s- /f 12 route /f gray ...
-%ASM% -ISOURCE\ SOURCE\%VSTAGE%.ASM -fbin -O9 -o BIN\%VSTAGE%.COM
-if ERRORLEVEL 1 goto Error
-if not exist BIN\%VSTAGE%.COM goto Error
-if not "%1" == "" goto Done
+:vwhat
+rem set VSTAGE=vwhat
+rem bin\vecho /g/s- /n "Studying "
+rem bin\vecho /g/s- /f 12 route /f gray ...
+rem %ASM% -ISOURCE\ SOURCE\%VSTAGE%.ASM -fbin -O9 -o BIN\%VSTAGE%.COM
+rem if ERRORLEVEL 1 goto Error
+rem if not exist BIN\%VSTAGE%.COM goto Error
+rem if not "%1" == "" goto Done
 
 :vpcspkr
 set VSTAGE=vpcspkr
