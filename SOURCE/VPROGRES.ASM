@@ -273,10 +273,13 @@ SwitchW:
     ColorSwitchHandlers
     HelpSwitchHandler
 
+    BoundsSwitchHandler
+
 CommandLineSwitches:
     SwitchData  0,  0, NoSwitch
     ColorSwitchData
     SwitchData 'W', 1, SwitchW
+    SwitchData 'K', 1, SwitchK
     HelpSwitchData
     SwitchData  0,  0, 0
 
