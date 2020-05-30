@@ -20,13 +20,13 @@
 
     FrameBounds
 
+    CommandLineParser       ; insert code for command line parsing
+
     WhereXY
     mov     [Position], dx
     xor     dl, dl
     GotoXY  dx
     xor     ax, ax
-
-    CommandLineParser       ; insert code for command line parsing
 
 Scrolling:
     mov         cx, [WindMin]
