@@ -743,7 +743,8 @@ CommandLineSwitches:
 	SwitchData  0,  0, NoSwitch
     ColorSwitchData
  	HelpSwitchData
-    LocalSwitchData
+    SwitchData 'L', 0, SwitchL
+    SwitchData 'G', 0, SwitchG
     SwitchData 'W', 1, SwitchW
     SwitchData 'D', 1, SwitchD
     SwitchData 'M', 1, SwitchM

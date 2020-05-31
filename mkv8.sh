@@ -1,5 +1,6 @@
 #!/bin/bash
 
+IGNORE=';VVIEW;VREADKEY;VCHKBOX;'
 
 function assemble () {
 
@@ -7,6 +8,10 @@ function assemble () {
     local n="${1##*/}"
     n="${n%.*}"
     echo -n ${n}
+    if [[ "${IGNORE/${n}}" != "${IGNORE}" ]] ; then
+        echo ', ignored'
+        return 0
+    fi
     local z=$(stat -f '%z' BIN/${n}.COM 2>/dev/null || echo 0)
     nasm -ISOURCE/ SOURCE/${n}.ASM -fbin -O9 -o BIN/${n}.COM || return $?
     [[ ! -e BIN/${n}.COM ]] && return 1
