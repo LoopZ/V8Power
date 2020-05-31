@@ -10,6 +10,8 @@ Putting the power of an 8-cylinder engine under the hood of DOS batch files.
 
 Probable roadmap for the future of V8Power Tools:
 
+    vask - fix /k option
+
     vfdutil - allow /m to accept root directory or just drive
     vfdutil - freespace output using same factor as /r input (ie K, M, etc)
     vline - additional options like smart and vertical
