@@ -1,6 +1,6 @@
 *******************************************************************************
 V8Power Tools
-Copyright 2018 Jerome Shidel
+Copyright 2015-2020 Jerome Shidel
 Released under GPL v2.0 License.
 *******************************************************************************
 
@@ -10,6 +10,8 @@ Putting the power of an 8-cylinder engine under the hood of DOS batch files.
 
 Probable roadmap for the future of V8Power Tools:
 
+    vfdutil - allow /m to accept root directory or just drive
+    vfdutil - freespace output using same factor as /r input (ie K, M, etc)
     vline - additional options like smart and vertical
     vinfo - more system information provided by utility.
     vstr - Like trim, squeeze, implode, explode...
@@ -27,6 +29,8 @@ Probable roadmap for the future of V8Power Tools:
 
     More range checking, prevent possible freeze/lockup when developer uses
     really bad settings.
+
+    Migrate to new codebase design & layout, (v8-*.inc)
 
     Optimizations and byte squeezing.
 
