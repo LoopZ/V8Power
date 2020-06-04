@@ -398,6 +398,18 @@ General system information utility.
                   104 - VMware.
                   200 - General, other emulator detected.
 
+More options that are mostly only useful for programmers and R&D. They have
+been available for a while. But are not officially (by me) part of the
+V8Power Tools API and may change or be removed at anytime. But since I use
+some of them, maybe they'll get moved into their own utilities.
+
+    ASCII       Display entire ASCII table
+    RAM         Dump all of conventional memory to StdOut.
+
+    /C *        output ascii values for remainder of command line
+    /R string   Search all of conventional memory for string
+    /U string   Search memory (a000:0000 and up) for caseless string
+
     tba         (Still under development, more to be announced)
 
 -------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 
-; Copyright (C) 2016 Jerome Shidel
+; Copyright (C) 2016-2020 Jerome Shidel
 ;
 ;   This program is free software; you can redistribute it and/or modify
 ;   it under the terms of the GNU General Public License as published by
@@ -35,6 +35,7 @@ Done:
 
 %include "DSKTLS.INC"
 %include "MACHINES.INC"
+%include "V8-VBIOS.INC"
 
 %ifdef ASCII_Table
 ShowAscii:
@@ -214,7 +215,7 @@ ShowRAMline:
     lodsb
     call    ShowByte
     StdOutChar ' '
-    loopnz   .HexBytes
+    loop    .HexBytes
     StdOutChar ' '
     StdOutChar ' '
     xor     si, si
@@ -243,7 +244,7 @@ ShowRAMline:
 .Hidden:
     StdOutChar '.'
 .Shown:
-    loopnz   .CharBytes
+    loop     .CharBytes
     StdOutChar 10
     StdOutChar 13
     ret
@@ -339,7 +340,6 @@ SearchRAM:
     push    es
     pop     ds
 
-
     call    ShowRAMline
     mov     ax, ds
     inc     ax
@@ -365,6 +365,11 @@ SearchRAM:
 
     Terminate   0
 
+SwitchG:
+    Probe_Display_Adapter
+    call ShowWord
+    ret
+
 CommandLineSwitches:
     SwitchData  0,  0, NoSwitch
     SwitchData 'D', 1, SwitchD
@@ -373,6 +378,7 @@ CommandLineSwitches:
     SwitchData 'C', 0, SwitchC
     SwitchData 'U', 1, SwitchU
     SwitchData 'R', 1, SwitchR
+    SwitchData 'G', 0, SwitchG
     HelpSwitchData
     SwitchData  0,  0, 0
 
