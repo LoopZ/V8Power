@@ -252,7 +252,7 @@ proc_uInt64_CMP:
         push bx
         push cx
     %endif
-    mov  bx, 8              ; Int64 Size in bytes
+    mov  bx, 8              ; Int64 Size in bytes, start MSB
 .Repeat:
     sub  bx, 2
     mov  ax, [di+bx]

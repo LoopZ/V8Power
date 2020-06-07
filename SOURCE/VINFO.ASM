@@ -367,8 +367,43 @@ SearchRAM:
 
 SwitchG:
     Probe_Display_Adapter
-    call ShowWord
-    ret
+    mov     ah, [QueryMode]
+    cmp     ah, 0
+    je      .SwitchGExit
+    push    ax
+    mov     ah, al
+    mov     di, .DisplayTypes
+    cmp     ah, 9
+    jna     .Find
+    xor     ah, ah
+.Find:
+    cmp     ah, 0
+    je      .Print
+    mov     al, [di]
+    inc     di
+    cmp     al, 0
+    jne     .Find
+    dec     ah
+    jmp     .Find
+.Print:
+    ; dec         di
+    StdOutStr   di
+    StdOutCRLF
+    pop  ax
+.SwitchGExit:
+    Terminate al
+
+.DisplayTypes:
+    db 'Unknown',0
+    db 'MDA',0
+    db 'HGC',0
+    db 'HGCPlus',0
+    db 'InColor',0
+    db 'CGA',0
+    db 'EGA',0
+    db 'MCGA',0
+    db 'VGA',0
+    db 'VESA/SuperVGA',0
 
 CommandLineSwitches:
     SwitchData  0,  0, NoSwitch
