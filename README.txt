@@ -397,6 +397,8 @@ General system information utility.
                   103 - VirtualBox.
                   104 - VMware.
                   200 - General, other emulator detected.
+    /P          Same as /M switch. However, excludes results and does not test
+                for virtual machine results.
 
 More options that are mostly only useful for programmers and R&D. They have
 been available for a while. But are not officially (by me) part of the

@@ -4,12 +4,12 @@ Version:        $VERSION$
 Entered-date:   $DATE$
 Description:    a set of batch file enhancement utilities for DOS that can provide text UI and other processing functions
 Keywords:       dos 16 bit batch vask vchoice vecho vpause vframe vmath vline vprogres
-Changes:        Additional multi-language support and bug fixes.
+Changes:        improved CPU level testing for vinfo
 Author:         Jerome Shidel <jerome _AT_ shidel.net>
 Maintained-by:  Jerome Shidel <jerome _AT_ shidel.net>
 Primary-site:   https://github.com/LoopZ/V8Power
-Alternate-site: http://www.ibiblio.org/pub/micro/pc-stuff/freedos/files/utils/v8power/
-Original-site:  http://up.lod.bz/V8Power/
+Alternate-site: http://www.ibiblio.org/pub/micro/pc-stuff/freedos/files/repositories/latest/pkg-html/v8power.html
+Original-site:  https://up.lod.bz/V8Power/
 Platforms:      DOS
 Copying-policy: GNU General Public License, Version 2
 End

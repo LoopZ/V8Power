@@ -154,6 +154,10 @@ SwitchM:
 .Done:
     ret
 
+SwitchP:
+    mov         [OptionProcessed], cx
+    jmp         DetectCPU
+
 SwitchC:
 ;    StdOutStr   0x81
 ;    StdOutCRLF
@@ -410,6 +414,7 @@ CommandLineSwitches:
     SwitchData 'D', 1, SwitchD
     SwitchData 'V', 0, SwitchV
     SwitchData 'M', 0, SwitchM
+    SwitchData 'P', 0, SwitchP
     SwitchData 'C', 0, SwitchC
     SwitchData 'U', 1, SwitchU
     SwitchData 'R', 1, SwitchR

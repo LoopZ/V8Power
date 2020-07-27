@@ -390,7 +390,10 @@ Returns these exit codes:<br>
 103 - VirtualBox<br>
 104 - VMware<br>
 200 - General, other emulator detected.<br>
-</pre>
+</pre></tr>
+<tr><td><b>/P</b></td><td>Same as <b>/M</b> switch. However, excludes results and does not test
+                for virtual machine results.</tr>
+
 <tr><td><i>tba</i></td><td><i>(Still under development, more to be announced)</i></td></tr>
 </table>
 
