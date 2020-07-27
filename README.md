@@ -389,7 +389,7 @@ Returns these exit codes:<br>
 102 - QEMU.<br>
 103 - VirtualBox<br>
 104 - VMware<br>
-200 - General, other emulator detected.<br>
+200 - General, other emulator detected.
 </pre></tr>
 <tr><td><b>/P</b></td><td>Same as <b>/M</b> switch. However, excludes results and does not test
                 for virtual machine results.</tr>
