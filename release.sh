@@ -1,5 +1,9 @@
 #!/bin/sh
 
+FDNLS=../../FreeDOS/FD-NLS/v8power
+
+ls ${FDNLS}
+
 # PRERELEASE='.pre'
 
 DESTINATION='Downloads'
@@ -31,9 +35,11 @@ done
 if [[ -f 'LICENSE' ]] ; then
 	cp 'LICENSE' "${HOME}/${DESTINATION}/${PROJECT}/LICENSE.txt"
 fi;
-if [[ -f 'README.txt' ]] ; then
-	cp 'README.txt' "${HOME}/${DESTINATION}/${PROJECT}-README.txt"
-	cp 'README.txt' "${HOME}/${DESTINATION}/${PROJECT}/README.txt"
+if [[ -f "${FDNLS}/help/v8power.en" ]] ; then
+	cp "${FDNLS}/help/v8power.en" "${HOME}/${DESTINATION}/${PROJECT}-README.txt"
+    mkdir -p "${HOME}/${DESTINATION}/${PROJECT}/HELP"
+
+	cp "${FDNLS}/help/"* "${HOME}/${DESTINATION}/${PROJECT}/HELP/"
 fi;
 if [[ -f 'CONTRIB.md' ]] ; then
 	cp 'CONTRIB.md' "${HOME}/${DESTINATION}/${PROJECT}/CONTRIB.md"
@@ -64,6 +70,12 @@ cp -r CONTRIB.md "${HOME}/${DESTINATION}/${PROJECT}/DOC/${PROJECT}"
 mkdir -p "${HOME}/${DESTINATION}/${PROJECT}/SOURCE/${PROJECT}"
 cp -r * "${HOME}/${DESTINATION}/${PROJECT}/SOURCE/${PROJECT}"
 rm -rf "${HOME}/${DESTINATION}/${PROJECT}/SOURCE/${PROJECT}/BIN"
+mkdir -p "${HOME}/${DESTINATION}/${PROJECT}/HELP"
+if [[ -f "${FDNLS}/help/v8power.en" ]] ; then
+	cp "${FDNLS}/help/v8power.en" "${HOME}/${DESTINATION}/${PROJECT}/DOC/${PROJECT}/README.txt"
+    mkdir -p "${HOME}/${DESTINATION}/${PROJECT}/HELP"
+	cp "${FDNLS}/help/"* "${HOME}/${DESTINATION}/${PROJECT}/HELP/"
+fi;
 
 mkdir -p "${HOME}/${DESTINATION}/${PROJECT}/SOURCE/${PROJECT}/SOURCE"
 cp -r SOURCE/* "${HOME}/${DESTINATION}/${PROJECT}/SOURCE/${PROJECT}/SOURCE"

@@ -173,7 +173,7 @@ CurrentSize:
 %endif
     Terminate 0
     %%Message:
-	DB 'See V8Help.bat or V8Power Tools docs.'
+	DB 'See V8Power Tools docs.'
     DB CRLF,0
 %endmacro
 
