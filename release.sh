@@ -28,8 +28,15 @@ while [[ -f "${HOME}/${DESTINATION}/${ARCHIVE}" ]] ; do
 	ARCHIVE="${PROJECT}-${VERSION}-${RELEASE}${PRERELEASE}.${FORMAT}"
 done
 
+if [[ -f 'LICENSE' ]] ; then
+	cp 'LICENSE' "${HOME}/${DESTINATION}/${PROJECT}/LICENSE.txt"
+fi;
 if [[ -f 'README.txt' ]] ; then
 	cp 'README.txt' "${HOME}/${DESTINATION}/${PROJECT}-README.txt"
+	cp 'README.txt' "${HOME}/${DESTINATION}/${PROJECT}/README.txt"
+fi;
+if [[ -f 'CONTRIB.md' ]] ; then
+	cp 'CONTRIB.md' "${HOME}/${DESTINATION}/${PROJECT}/CONTRIB.md"
 fi;
 
 CURDIR="$PWD"
@@ -60,8 +67,6 @@ rm -rf "${HOME}/${DESTINATION}/${PROJECT}/SOURCE/${PROJECT}/BIN"
 
 mkdir -p "${HOME}/${DESTINATION}/${PROJECT}/SOURCE/${PROJECT}/SOURCE"
 cp -r SOURCE/* "${HOME}/${DESTINATION}/${PROJECT}/SOURCE/${PROJECT}/SOURCE"
-
-cp -r V8HELP.BAT "${HOME}/${DESTINATION}/${PROJECT}/BIN"
 
 lcase=$(echo "${PROJECT}" | tr '[:upper:]' '[:lower:]')
 cd "${HOME}/${DESTINATION}"
