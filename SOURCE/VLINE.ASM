@@ -176,7 +176,7 @@ SwitchK:
     ret
     jmp         PrepareSettings
 
-    HelpSwitchHandler
+    HelpSwitchHandler 'vline'
 
 CommandLineSwitches:
     SwitchData  0,  0, NoSwitch

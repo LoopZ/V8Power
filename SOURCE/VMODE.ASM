@@ -1,4 +1,4 @@
-; Copyright (C) 2016 Jerome Shidel
+; Copyright (C) 2016-2020 Jerome Shidel
 ;
 ;   This program is free software; you can redistribute it and/or modify
 ;   it under the terms of the GNU General Public License as published by
@@ -279,7 +279,7 @@ SetModeCurrent:
     WriteStr    CommandLineErrorMsg
     Terminate   100
 
-    HelpSwitchHandler
+    HelpSwitchHandler 'vmode'
 
 CommandLineSwitches:
     SwitchData  0,  0, NoSwitch

@@ -18,6 +18,9 @@
 
 ; common code for command line switches
 
+%include "V8-HELP.INC"
+
+
 %imacro ColorSwitchHandlers 0
 SwitchA:
     NumberParam
@@ -165,29 +168,3 @@ CurrentSize:
     SwitchData '?', 0, SwitchHelp
 %endmacro
 
-%imacro NoHelpMessage 0
-%ifdef NoVideoOutput
-    StdOutStr   %%Message
-%else
-    WriteStr 	%%Message
-%endif
-    Terminate 0
-    %%Message:
-	DB 'See V8Power Tools docs.'
-    DB CRLF,0
-%endmacro
-
-%imacro HelpSwitchHandler 0-1 ''
-%ifidni %1, ''
-	%undef HelpText
-	%idefine NoHelpText
-%endif
-
-SwitchHelp:
-; %ifdef HelpText
-;    StdOutStr   %%Message
-;    Terminate 0
-; %else
-    NoHelpMessage
-; %endif
-%endmacro

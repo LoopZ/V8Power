@@ -189,7 +189,7 @@ InvalidOption:
     WriteStr    CommandLineErrorMsg
     Terminate   100
 
-    HelpSwitchHandler
+    HelpSwitchHandler 'vinfo'
 
 ShowByte:
     push    cx

@@ -301,7 +301,7 @@ OptionPrev:
     ret
     ret
 
-    HelpSwitchHandler
+    HelpSwitchHandler 'vgotoxy'
 
 CommandLineSwitches:
     SwitchData  0,  0, NoSwitch

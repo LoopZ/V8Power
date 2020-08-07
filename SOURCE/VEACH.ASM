@@ -1,4 +1,4 @@
-; Copyright (C) 2018 Jerome Shidel
+; Copyright (C) 2018-2020 Jerome Shidel
 ;
 ;   This program is free software; you can redistribute it and/or modify
 ;   it under the terms of the GNU General Public License as published by
@@ -700,7 +700,7 @@ SwitchW:
     ret
 %endif
 
-    HelpSwitchHandler
+    HelpSwitchHandler 'veach'
 
 CommandLineSwitches:
     SwitchData  0,  0, NoSwitch

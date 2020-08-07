@@ -730,7 +730,7 @@ NoSwitch:
 
     BoundsSwitchHandler
 
-    HelpSwitchHandler
+    HelpSwitchHandler 'vchoice'
 
 CommandLineSwitches:
     SwitchData  0,  0, NoSwitch

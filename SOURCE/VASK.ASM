@@ -737,7 +737,7 @@ SwitchT:
 
     LocalSwitchHandlers
     ColorSwitchHandlers
-	HelpSwitchHandler
+	HelpSwitchHandler 'vask'
 
 CommandLineSwitches:
 	SwitchData  0,  0, NoSwitch

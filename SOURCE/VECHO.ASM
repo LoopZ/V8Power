@@ -149,7 +149,7 @@ SwitchP:
     mov         [SqueezeFlag], al
     ret
 
-    HelpSwitchHandler
+    HelpSwitchHandler 'vecho'
 
 CommandLineSwitches:
     SwitchData  0,  0, NoSwitch

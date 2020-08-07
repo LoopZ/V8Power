@@ -524,7 +524,7 @@ InputFilter:
 SwitchT:
     Translator MainParsing
 
-HelpSwitchHandler
+HelpSwitchHandler 'vstr'
 
 NoSwitch:
     mov         ax, [MultiOptionSwitch]

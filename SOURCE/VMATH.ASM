@@ -1,4 +1,4 @@
-; Copyright (C) 2016 Jerome Shidel
+; Copyright (C) 2016-2020 Jerome Shidel
 ;
 ;   This program is free software; you can redistribute it and/or modify
 ;   it under the terms of the GNU General Public License as published by
@@ -157,7 +157,7 @@ OutResult:
 OutStyle:
     db 0
 
-    HelpSwitchHandler
+    HelpSwitchHandler 'vmath'
 
 CommandLineSwitches:
     SwitchData  0,  0, NoSwitch

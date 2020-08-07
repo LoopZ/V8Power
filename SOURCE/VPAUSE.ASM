@@ -175,7 +175,7 @@ SwitchT:
 
     ColorSwitchHandlers
 
-    HelpSwitchHandler
+    HelpSwitchHandler 'vpause'
 
 CommandLineSwitches:
     SwitchData  0,  0, NoSwitch

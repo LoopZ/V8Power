@@ -78,7 +78,7 @@ Oops:
     StdOutCRLF
     Terminate 100
 
-    HelpSwitchHandler
+    HelpSwitchHandler 'vver'
 
 CommandLineSwitches:
     SwitchData  0,  0, NoSwitch

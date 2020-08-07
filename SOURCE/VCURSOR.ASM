@@ -1,4 +1,4 @@
-; Copyright (C) 2016 Jerome Shidel
+; Copyright (C) 2016-2020 Jerome Shidel
 ;
 ;   This program is free software; you can redistribute it and/or modify
 ;   it under the terms of the GNU General Public License as published by
@@ -37,15 +37,15 @@ MainProgram:
 
     LookupParamProc
     NUmberParamProc
-     
+
 NoSwitch:
     push        es
     LookupParam CursorStyles
     cmp         ax, 0xffff
     jne         .Found
     NumberParam
-    
-    jmp         .Done    
+
+    jmp         .Done
 .Found:
     cmp         ax, 1
     jne         .NotHide
@@ -78,13 +78,13 @@ NoSwitch:
     mov         [CursorSet], al
     ret
 
-    HelpSwitchHandler
-        
+    HelpSwitchHandler 'vcursor'
+
 CommandLineSwitches:
-    SwitchData  0,  0, NoSwitch  
+    SwitchData  0,  0, NoSwitch
     HelpSwitchData
     SwitchData  0,  0, 0
-    
+
 CursorStyles:
     db "HIDE",0,1,0
     db "SMALL",0,2,0
