@@ -83,6 +83,7 @@ if [[ -f "${FDNLS}/help/en/v8power.en" ]] ; then
 	cp "${FDNLS}/help/en/v8power.en" "${HOME}/${DESTINATION}/${PROJECT}/DOC/${PROJECT}/README.txt"
     mkdir -p "${HOME}/${DESTINATION}/${PROJECT}/HELP"
 	for trs in "${FDNLS}/help/"*/* ; do
+	    [[ "${trs//.UTF}" != "${trs}" ]] && continue
 	    cp -av "${trs}" "${HOME}/${DESTINATION}/${PROJECT}/HELP/"
 	done
 
