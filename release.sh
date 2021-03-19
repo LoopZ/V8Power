@@ -79,10 +79,13 @@ mkdir -p "${HOME}/${DESTINATION}/${PROJECT}/SOURCE/${PROJECT}"
 cp -r * "${HOME}/${DESTINATION}/${PROJECT}/SOURCE/${PROJECT}"
 rm -rf "${HOME}/${DESTINATION}/${PROJECT}/SOURCE/${PROJECT}/BIN"
 mkdir -p "${HOME}/${DESTINATION}/${PROJECT}/HELP"
-if [[ -f "${FDNLS}/help/v8power.en" ]] ; then
-	cp "${FDNLS}/help/v8power.en" "${HOME}/${DESTINATION}/${PROJECT}/DOC/${PROJECT}/README.txt"
+if [[ -f "${FDNLS}/help/en/v8power.en" ]] ; then
+	cp "${FDNLS}/help/en/v8power.en" "${HOME}/${DESTINATION}/${PROJECT}/DOC/${PROJECT}/README.txt"
     mkdir -p "${HOME}/${DESTINATION}/${PROJECT}/HELP"
-	cp "${FDNLS}/help/"* "${HOME}/${DESTINATION}/${PROJECT}/HELP/"
+	for trs in "${FDNLS}/help/"*/* ; do
+	    cp -av "${trs}" "${HOME}/${DESTINATION}/${PROJECT}/HELP/"
+	done
+
 fi;
 
 mkdir -p "${HOME}/${DESTINATION}/${PROJECT}/SOURCE/${PROJECT}/SOURCE"
