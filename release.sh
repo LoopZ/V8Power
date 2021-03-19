@@ -1,6 +1,14 @@
 #!/bin/sh
+if [[ "${0##*/}" != 'release.sh' ]] ; then
+    echo bad script name
+    exit 1
+fi
 
 FDNLS=../../FreeDOS/FD-NLS/v8power
+if [[ ! -d "${FDNLS}" ]] ; then
+    echo missing NLS
+    exit 1
+fi
 
 ls ${FDNLS}
 

@@ -1,5 +1,5 @@
 
-; Copyright (C) 2016 Jerome Shidel
+; Copyright (C) 2016-2021 Jerome Shidel
 ;
 ;   This program is free software; you can redistribute it and/or modify
 ;   it under the terms of the GNU General Public License as published by
@@ -63,15 +63,15 @@ NotVBOX:
 
 NotVMware:
 
-OtherEmulation:
-    cld
-    mov         al, 0x90
-    mov         cx, 0x0008
-    mov         di, $
-    rep         stosb
-    jmp         VirtualMachine
-    nop
-    nop
+;OtherEmulation:
+;    cld
+;    mov         al, 0x90
+;    mov         cx, 0x0008
+;    mov         di, $
+;    rep         stosb
+;    jmp         VirtualMachine
+;    nop
+;    nop
 
 
 DetectCPU:

@@ -8,6 +8,9 @@ Putting the power of an 8-cylinder engine under the hood of DOS batch files.
 
 ===============================================================================
 
+Fix vinfo CPU reporting with a better algorithm. My Pentium Pro reports 686 (as
+it should). However, my 486DX2-66 stops and reports 186 not a 486.
+
 Probable roadmap for the future of V8Power Tools:
 
     vask - add /k option support
