@@ -1062,8 +1062,10 @@ AdvancedStdIn:
 %endmacro
 
 %imacro DelayTimer 1
+    clc
 	mov  		ax, 0x8301
 	int  		0x15
+	jc          %%Error
 
 	mov			ax, %1
 	push		ax
@@ -1079,14 +1081,18 @@ AdvancedStdIn:
 	mov  		ax, 0x8300
 	mov  		[%%DelayData], al
 	int  		0x15
+
 %%Loop:
     IdleCPU
 	mov  		al, [%%DelayData]
 	test 		al, 0x80
 	jz   		%%Loop
+	clc
 	jmp			%%Done
 %%DelayData:
 	DB			0
+%%Error:
+    stc
 %%Done:
 %endmacro
 
@@ -1097,10 +1103,12 @@ AdvancedStdIn:
 	Is286
 	cmp			ax, 0x0001
 	je			%%Delay286
+%%Delay8086:
 	DelayTicks	dx
 	jmp			%%NoDelay
 %%Delay286:
 	DelayTimer	dx
+	jc          Delay8086
 %%NoDelay:
 %endmacro
 

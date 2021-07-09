@@ -44,6 +44,7 @@ DelayFunc:
 	jmp			.NoDelay
 .Delay286:
 	DelayTimer	dx
+	jc          .Delay8086
 .NoDelay:
     ret
 
