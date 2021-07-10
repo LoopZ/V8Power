@@ -1061,7 +1061,7 @@ AdvancedStdIn:
 	pop			es
 %endmacro
 
-%imacro DelayTimer 1
+%imacro DelayTimerPrev 1
     clc
 	mov  		ax, 0x8301
 	int  		0x15
@@ -1094,6 +1094,80 @@ AdvancedStdIn:
 %%Error:
     stc
 %%Done:
+%endmacro
+
+%imacro DelayTimer 1
+	push		es
+
+	mov			ax, %1
+	push        %1
+	push        ax
+
+	xor  		dx, dx
+	mov  		cx, 55
+	div  		cx
+	cmp			dx, 23
+	jb			%%NoRoundUp
+	inc			ax
+%%NoRoundUp:
+;	cmp			ax, 0
+;	je			%%TimerEvent
+
+    clc
+    push        ax
+	mov  		ax, 0x8301
+	int  		0x15
+	pop         cx  ; pop old ax into cx
+	pop         ax
+	jc          %%Error
+	push        cx
+
+	push		ax
+	mov			cl, 0x0a
+	shl			ax, cl
+	mov			dx, ax
+	pop			ax
+	mov			cl, 0x06
+	shr			ax, cl
+	mov			cx, ax
+
+	mov			bx, %%DelayData
+	mov  		ax, 0x8300
+	mov  		[%%DelayData], al
+	int  		0x15
+    pop         cx
+	jc          %%Error
+
+    add         cx, 0x0002
+	mov  		dx, 0x0040
+	mov			es, dx
+	mov			di, 0x006C
+
+%%Loop:
+	mov			dx, [es:di]
+
+%%Wait:
+    IdleCPU
+	mov  		al, [%%DelayData]
+	test 		al, 0x80
+	; jnz   		%%TimerEvent
+
+	mov			ax, [es:di]
+	cmp			dx, ax
+	je			%%Wait
+	loop		%%Loop
+
+%%TimerEvent:
+	clc
+	jmp			%%Done
+%%DelayData:
+	DB			0
+%%Error:
+    stc
+%%Done:
+    pop         %1
+	pop			es
+
 %endmacro
 
 %imacro Delay 1
