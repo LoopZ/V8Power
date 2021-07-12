@@ -53,7 +53,7 @@ vecho /g /n /fDarkGray (%MKV8_STAGE%) /fGray /t %MKV8_SELF% MSG_%MKV8_STAGE% %MK
 if ERRORLEVEL 1 Echo missing message for %MKV8_STAGE%
 :DoCompile
 
-if exist BIN\%MKV8_STAGE%.COM del BIN\%MKV8_STAGE%.COM>NULL
+if exist BIN\%MKV8_STAGE%.COM del BIN\%MKV8_STAGE%.COM>NUL
 %MKV8_ASM% -ISOURCE\ SOURCE\%MKV8_STAGE%.ASM -fbin -O9 -o BIN\%MKV8_STAGE%.COM
 if ERRORLEVEL 1 goto CompileFail
 if not exist BIN\%MKV8_STAGE%.COM CompileFail
