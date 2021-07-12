@@ -26,6 +26,11 @@
 
 %include "DSKTLS.INC"
 
+SwitchV:
+    mov         al, 1
+    mov         [Verbose], al
+    ret
+
 NoSwitch:
     LookupParam OptionsTable
     cmp         ax, 0xffff
@@ -41,6 +46,7 @@ InvalidOption:
 CommandLineSwitches:
     SwitchData  0,  0, NoSwitch
     HelpSwitchData
+    SwitchData 'V', 0, SwitchV
     SwitchData  0,  0, 0
 
 OptionsTable:
