@@ -63,7 +63,7 @@ vecho /g /t %MKV8_SELF% MSG_SUCCESS
 goto VeryEnd
 :CompileFail
 vecho /g /t %MKV8_SELF% MSG_FAIL
-verrlvl 1>NULL
+verrlvl 1>NUL
 goto VeryEnd
 
 ### Displayed messages
@@ -108,7 +108,7 @@ bin\vecho /g/s-
 bin\vecho /g/s- /n /fLightCyan Vroom /fWhite "! "
 bin\vecho /g/s- /n /fLightRed Vroom /fWhite "! "
 bin\vecho /g/s- /fYellow "Lets roll" /fWhite "! " /fGray
-if not exist BIN\NULL goto AllDone
+if not exist BIN\NUL goto AllDone
 copy LICENSE BIN >NUL
 if exist README.TXT copy README.TXT BIN\V8POWER.TXT >NUL
 if not exist README.TXT copy README.md BIN\V8POWER.md >NUL
