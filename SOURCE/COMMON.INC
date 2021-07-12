@@ -753,6 +753,16 @@ endstruc
 	%endif
 %endmacro
 
+%imacro StdOutIntByte 0-1 al
+    push	ax
+	%ifnidni 1, al
+		mov		al, %1
+	%endif
+	xor     ah, ah
+	StdOutIntWord ax
+	pop		ax
+%endmacro
+
 StdOutStr_Proc:
 .OutLoop:
     mov		ah, 0x02

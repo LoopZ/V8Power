@@ -31,6 +31,38 @@ SwitchV:
     mov         [Verbose], al
     ret
 
+SwitchD:
+    NumberParam
+    push di
+    push es
+    mov             ah, 0x08
+    xor             di, di
+    mov             es, di
+    mov             dl, 0x80
+    push            ax
+    int             0x13
+    pop             ax
+    jc              .Error
+    pop             es
+    pop             di
+    cmp             dl, al
+    jna             .NotPresent
+    mov             ah, dl
+    mov             [HardDisk], ax
+    ret
+.NotPresentMsg:
+    db "No Hard Disk #",0
+.Error:
+    pop             es
+    pop             di
+.NotPresent:
+    push            ax
+    StdOutStr       .NotPresentMsg
+    pop             ax
+    StdOutIntByte   al
+    StdOutCRLF
+    ret
+
 NoSwitch:
     LookupParam OptionsTable
     cmp         ax, 0xffff
@@ -47,10 +79,16 @@ CommandLineSwitches:
     SwitchData  0,  0, NoSwitch
     HelpSwitchData
     SwitchData 'V', 0, SwitchV
+    SwitchData 'D', 1, SwitchD
     SwitchData  0,  0, 0
 
 OptionsTable:
     TableEnd
+
+Verbose:
+    db  0
+HardDisk:
+    dw  0
 
 Buffer:
     times 128 db 0
