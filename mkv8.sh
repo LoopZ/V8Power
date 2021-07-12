@@ -1,6 +1,7 @@
 #!/bin/bash
 
-IGNORE=';VVIEW;VREADKEY;VCHKBOX;'
+# IGNORE=';VVIEW;VREADKEY;VCHKBOX;'
+IGNORE=';;'
 
 function assemble () {
 

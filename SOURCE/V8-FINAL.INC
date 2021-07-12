@@ -19,7 +19,8 @@
 CODE_SEGMENT
 
 %ifndef Require_Terminate
-    Terminate           0
+    ; Terminate           0
+    %idefine Require_Terminate
 %endif
 
 %ifdef Require_Terminate

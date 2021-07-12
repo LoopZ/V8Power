@@ -81,7 +81,7 @@ endstruc
 %imacro DOS_PrintString 0-1
     ; DS:DX = string pointer, string ends in $ character
     mov         ah, 0x09
-    %ifidni %1, dx
+    %ifnidni %1, dx
         mov     dx, %1
     %endif
     int         0x21
