@@ -22,7 +22,57 @@
 
     CommandLineParser       ; insert code for command line parsing
 
+    call        CheckDrive
+
+
     Terminate 0
+
+CheckDrive:
+    mov             ax, [DriveID]
+    cmp             ah, 0
+    je              NoDriveAssigned
+    mov             ah, 0x08
+    push            di
+    push            es
+    xor             di, di
+    mov             es, di
+    mov             dl, 0x80
+    push            ax
+    int             0x13
+    mov             di, bx
+    pop             bx
+    mov             al, bl
+    mov             bx, di
+    pop             es
+    pop             di
+    jc              NoSuchHardDrive
+    cmp             dl, al
+    jna             NoSuchHardDrive
+    ret
+
+ErrorHeader:
+    push            ax
+    StdOutStr       Msg_ErrorHeader
+    pop             ax
+    ret
+
+NoDriveAssigned:
+    call            ErrorHeader
+    StdOutStr       Msg_NoDriveAssigned
+    jmp             ErrorTerminate
+
+NoSuchHardDrive:
+    call            ErrorHeader
+    push            ax
+    StdOutStr       Msg_NoSuchDrive
+    StdOutChar      '#'
+    pop             ax
+    StdOutIntByte   al
+
+ErrorTerminate:
+    StdOutCRLF
+    Terminate       1
+
 
 %include "DSKTLS.INC"
 
@@ -33,34 +83,8 @@ SwitchV:
 
 SwitchD:
     NumberParam
-    push di
-    push es
-    mov             ah, 0x08
-    xor             di, di
-    mov             es, di
-    mov             dl, 0x80
-    push            ax
-    int             0x13
-    pop             ax
-    jc              .Error
-    pop             es
-    pop             di
-    cmp             dl, al
-    jna             .NotPresent
-    mov             ah, dl
-    mov             [HardDisk], ax
-    ret
-.NotPresentMsg:
-    db "No Hard Disk #",0
-.Error:
-    pop             es
-    pop             di
-.NotPresent:
-    push            ax
-    StdOutStr       .NotPresentMsg
-    pop             ax
-    StdOutIntByte   al
-    StdOutCRLF
+    mov         ah, 0x01
+    mov         [DriveID], ax
     ret
 
 NoSwitch:
@@ -87,8 +111,17 @@ OptionsTable:
 
 Verbose:
     db  0
-HardDisk:
+DriveID:
     dw  0
+OperationMode:
+    db  0
+
+Msg_ErrorHeader:
+    db 'Error: ',0
+Msg_NoDriveAssigned:
+    db "No Drive Specified",0
+Msg_NoSuchDrive:
+    db "No Hard Disk ",0,0
 
 Buffer:
     times 128 db 0
