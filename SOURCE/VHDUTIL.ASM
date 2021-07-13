@@ -63,9 +63,27 @@ DisplayDrive:
     push            ax
     StdOutStr       Msg_HardDrive
     pop             ax
-    and             al, 0x80
+    and             al, 0x7F
     StdOutIntByte   al
     StdOutCRLF
+
+    mov             cx, 3
+.ReadRetry:
+    push            cx
+    mov             ax, 0x0201
+    mov             cx, 0x0001
+    xor             dh, dh
+    mov             dl, [PDA(DRIVE_ID)]
+    mov             bx, PDA(BUFFER)
+    int             0x13
+    pop             cx
+    jnc             .ReadOK
+    loop            .ReadRetry
+    mov             al, ah
+    call            ErrorMessage
+    jmp             ErrorTerminate
+.ReadOK:
+    StdOutHexASCIIDump PDA(BUFFER), 512
     jmp             Done
 
 .DisplayFloppy:

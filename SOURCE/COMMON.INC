@@ -873,6 +873,129 @@ StdOutStr_Proc:
 ;	int		0x21
 %endmacro
 
+%imacro StdOutHexDump 2
+    mov     cx, %2
+    mov     di, %1
+    xor     bx, bx
+    cld
+%%repeater:
+    lodsb
+    push    di
+    push    cx
+    push    bx
+    StdOutHexByte   al
+    pop     bx
+    inc     bx
+    cmp     bx, 40
+    jb     .NoNewLine
+    xor     bx, bx
+.NoNewLine:
+    pop     cx
+    pop     di
+    loop    %%repeater
+    cmp     bx, 0
+    je      %%Done
+    StdOutCRLF
+%%Done:
+%endmacro
+
+%imacro StdOutASCIIDump 2
+    mov     cx, %2
+    mov     di, %1
+    xor     bx, bx
+    cld
+%%repeater:
+    lodsb
+    push    di
+    push    cx
+    push    bx
+    cmp     al, 0x20
+    jb      %%NullChar
+    StdOutChar  al
+    jmp     %%NextChar
+%%NullChar:
+    StdOutChar  '.'
+%%NextChar:
+    pop     bx
+    inc     bx
+    cmp     bx, 80
+    jb     .NoNewLine
+    xor     bx, bx
+.NoNewLine:
+    pop     cx
+    pop     di
+    loop    %%repeater
+    cmp     bx, 0
+    je      %%Done
+    StdOutCRLF
+%%Done:
+%endmacro
+
+%imacro StdOutHexASCIIDump 2
+    xor     bx, bx
+    mov     cx, %2
+    mov     si, %1
+    cld
+%%LineRepeater:
+    push    cx
+    push    si
+        push    bx
+        mov     ax, bx
+        StdOutHexWord ax
+        StdOutChar " "
+        pop     bx
+        push    cx
+        mov     cx, 0x10
+    %%HexDigits:
+        lodsb
+            push    cx
+            push    bx
+            push    si
+            StdOutHexByte al
+            StdOutChar " "
+            pop     si
+            pop     bx
+            pop     cx
+        loop    %%HexDigits
+        pop     cx
+    pop     si
+    push    si
+        push    bx
+        push    si
+        StdOutChar " "
+        pop     si
+        pop     bx
+    mov     cx, 0x10
+%%ASCIIChars:
+    lodsb
+        push    cx
+        push    bx
+        push    si
+        cmp     al, 0x20
+        jb      %%NullChar
+        StdOutChar al
+        jmp     %%NextChar
+%%NullChar:
+        StdOutChar ' '
+%%NextChar:
+        pop     si
+        pop     bx
+        pop     cx
+    loop    %%ASCIIChars
+    StdOutCRLF
+    pop     si
+    pop     cx
+    add     bx, 0x10
+    add     si, 0x10
+    cmp     cx, 0x10
+    jbe     %%Finished
+    sub     cx, 0x10
+    jmp     %%LineRepeater
+%%Finished:
+%%Done:
+%endmacro
+
+
 %imacro AdvancedStdOut 0
 	%ifndef AdancedStdOut_Declared
 		%idefine AdancedStdOut_Declared
