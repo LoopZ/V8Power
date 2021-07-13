@@ -23,9 +23,43 @@
     CommandLineParser       ; insert code for command line parsing
 
     call            GetDriveInfo
+    mov             ah, [OperationMode]
+    cmp             ah, 0x0
+    je              DisplayDrive
 
-
+Done:
     Terminate 0
+
+DisplayDrive:
+    cmp             al, 0x80
+    jb              .DisplayFloppy
+.DisplayHD:
+.DisplayFloppy:
+    push            ax
+    StdOutStr       Msg_FloppyDrive
+    pop             ax
+    StdOutIntByte   al
+    StdOutCRLF
+    push            bx
+    StdOutStr       Msg_FloppyDriveType
+    pop             bx
+    cld
+    mov             si, Msg_FloppyDriveTable
+.CheckFloppyDriveType:
+    lodsb
+    cmp             al, bl
+    je              .ShowFloppyDriveType
+    cmp             al, 0xff
+    je              .ShowFloppyDriveType
+.NextFloppyDriveType:
+    lodsb
+    cmp             al,0x00
+    je              .CheckFloppyDriveType
+    jmp             .NextFloppyDriveType
+.ShowFloppyDriveType:
+    StdOutStr       si
+    StdOutCRLF
+    jmp             Done
 
 GetDriveInfo:
     mov             ax, [DriveID]
@@ -81,7 +115,6 @@ NoSuchDrive:
 .PrintMsg:
     push            ax
     call            StdOutStr_Proc
-    StdOutChar      '#'
     pop             ax
     StdOutIntByte   al
 
@@ -158,9 +191,25 @@ Msg_ErrorHeader:
 Msg_NoDriveAssigned:
     db "No Drive Specified",0
 Msg_NoSuchHardDrive:
-    db "No Hard Drive ",0
+    db "No "
+Msg_HardDrive:
+    db "Hard Drive #",0
 Msg_NoSuchFloppyDrive:
-    db "No Floppy Drive ",0
+    db "No "
+Msg_FloppyDrive:
+    db "Floppy Drive #",0
+Msg_FloppyDriveType:
+    db "Drive Type ",0
+Msg_FloppyDriveTable:
+    db 0,"Unknown",0
+    db 1,"360k",0
+    db 2,"1.2m",0
+    db 3,"720k",0
+    db 4,"1.44m",0
+    db 5,"2.88m (Maybe)",0
+    db 6,"2.88m",0
+    db 0x10,"ATAPI",0
+    db 0xff,"Other",0
 
 Buffer:
     times 128 db 0
