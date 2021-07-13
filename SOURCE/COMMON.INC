@@ -102,6 +102,12 @@ IdleCPUHandlerProc:
     %%Skip:
 %endmacro
 
+%imacro retnz 0
+        jz      %%Skip
+        ret
+    %%Skip:
+%endmacro
+
 %imacro rete 0
         jne     %%Skip
         ret

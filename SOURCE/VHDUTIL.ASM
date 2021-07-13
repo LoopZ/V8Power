@@ -22,12 +22,12 @@
 
     CommandLineParser       ; insert code for command line parsing
 
-    call        CheckDrive
+    call            GetDriveInfo
 
 
     Terminate 0
 
-CheckDrive:
+GetDriveInfo:
     mov             ax, [DriveID]
     cmp             ah, 0
     je              NoDriveAssigned
@@ -36,7 +36,8 @@ CheckDrive:
     push            es
     xor             di, di
     mov             es, di
-    mov             dl, 0x80
+    mov             dl, al
+    and             dl, 0x80
     push            ax
     int             0x13
     mov             di, bx
@@ -45,15 +46,24 @@ CheckDrive:
     mov             bx, di
     pop             es
     pop             di
-    jc              NoSuchHardDrive
+    jc              NoSuchDrive
+    push            ax
+    and             al, 0x7f
     cmp             dl, al
-    jna             NoSuchHardDrive
+    pop             ax
+    jna             NoSuchDrive
     ret
 
 ErrorHeader:
     push            ax
+    mov             al, [Quite]
+    cmp             al, 1
+    je              ErrorTerminateNoMsg
+    pop             ax
+    push            ax
     StdOutStr       Msg_ErrorHeader
     pop             ax
+    clc
     ret
 
 NoDriveAssigned:
@@ -61,16 +71,23 @@ NoDriveAssigned:
     StdOutStr       Msg_NoDriveAssigned
     jmp             ErrorTerminate
 
-NoSuchHardDrive:
+NoSuchDrive:
     call            ErrorHeader
+    mov             di, Msg_NoSuchFloppyDrive
+    cmp             al, 0x80
+    jb              .PrintMsg
+    mov             di, Msg_NoSuchHardDrive
+    sub             al, 0x80
+.PrintMsg:
     push            ax
-    StdOutStr       Msg_NoSuchDrive
+    call            StdOutStr_Proc
     StdOutChar      '#'
     pop             ax
     StdOutIntByte   al
 
 ErrorTerminate:
     StdOutCRLF
+ErrorTerminateNoMsg:
     Terminate       1
 
 
@@ -79,9 +96,25 @@ ErrorTerminate:
 SwitchV:
     mov         al, 1
     mov         [Verbose], al
+    xor         al, al
+    mov         [Quite], al
+    ret
+
+SwitchQ:
+    mov         al, 1
+    mov         [Quite], al
+    xor         al, al
+    mov         [Verbose], al
     ret
 
 SwitchD:
+    NumberParam
+    add         ax, 0x0080
+    mov         ah, 0x01
+    mov         [DriveID], ax
+    ret
+
+SwitchF:
     NumberParam
     mov         ah, 0x01
     mov         [DriveID], ax
@@ -102,13 +135,17 @@ InvalidOption:
 CommandLineSwitches:
     SwitchData  0,  0, NoSwitch
     HelpSwitchData
+    SwitchData 'Q', 0, SwitchQ
     SwitchData 'V', 0, SwitchV
     SwitchData 'D', 1, SwitchD
+    SwitchData 'F', 1, SwitchF
     SwitchData  0,  0, 0
 
 OptionsTable:
     TableEnd
 
+Quite:
+    db  0
 Verbose:
     db  0
 DriveID:
@@ -120,8 +157,10 @@ Msg_ErrorHeader:
     db 'Error: ',0
 Msg_NoDriveAssigned:
     db "No Drive Specified",0
-Msg_NoSuchDrive:
-    db "No Hard Disk ",0,0
+Msg_NoSuchHardDrive:
+    db "No Hard Drive ",0
+Msg_NoSuchFloppyDrive:
+    db "No Floppy Drive ",0
 
 Buffer:
     times 128 db 0
