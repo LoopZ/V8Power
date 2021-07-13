@@ -26,12 +26,13 @@ struc tPDA
     .QUITE          resb 1
     .VERBOSE        resb 1
 
+    .RESET          resb 0
     .DRIVE_ID       resw 1
     .DRIVE_TYPE     resb 1
 
     .MODE           resb 1
 
-    .BUFFER         resb 4096
+    .BUFFER         resb 512
     .BUFFER_END     resb 0
 
     .DTA            resb 128
@@ -59,6 +60,14 @@ DisplayDrive:
     cmp             al, 0x80
     jb              .DisplayFloppy
 .DisplayHD:
+    push            ax
+    StdOutStr       Msg_HardDrive
+    pop             ax
+    and             al, 0x80
+    StdOutIntByte   al
+    StdOutCRLF
+    jmp             Done
+
 .DisplayFloppy:
     push            ax
     StdOutStr       Msg_FloppyDrive
