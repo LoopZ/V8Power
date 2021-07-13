@@ -20,10 +20,35 @@
 
 %include "COMMON.INC"
 
+struc tPDA
+
+    .BEGIN          resb 0
+    .QUITE          resb 1
+    .VERBOSE        resb 1
+
+    .DRIVE_ID       resw 1
+    .DRIVE_TYPE     resb 1
+
+    .MODE           resb 1
+
+    .BUFFER         resb 4096
+    .BUFFER_END     resb 0
+
+    .DTA            resb 128
+    .DTA_END        resb 0
+
+    .END            resb 0
+
+endstruc
+
+%idefine PDA(x) PDA_START + tPDA. %+ x
+
+    ZeroMemory      PDA(BEGIN), PDA(END) - PDA(BEGIN)
+
     CommandLineParser       ; insert code for command line parsing
 
     call            GetDriveInfo
-    mov             ah, [OperationMode]
+    mov             ah, [PDA(MODE)]
     cmp             ah, 0x0
     je              DisplayDrive
 
@@ -59,10 +84,35 @@ DisplayDrive:
 .ShowFloppyDriveType:
     StdOutStr       si
     StdOutCRLF
+
+    StdOutStr       Msg_ChangeLine
+    mov             dl, [PDA(DRIVE_ID)]
+    mov             ah, 0x15
+    int             0x13
+    jnc             .GotDiskType
+    mov             al, ah
+    call            ErrorMessage
+
+    jmp             .NextTest
+.GotDiskType:
+    mov             di, Msg_Unknown
+    cmp             ah, 0
+    je              .ShowDiskType
+    mov             di, Msg_Unsupported
+    cmp             ah, 1
+    je              .ShowDiskType
+    mov             di, Msg_Supported
+    cmp             ah, 2
+    je              .ShowDiskType
+    mov             di, Msg_NotAFloppyDrive
+.ShowDiskType:
+    call            StdOutStr_Proc
+    StdOutCRLF
+.NextTest:
     jmp             Done
 
 GetDriveInfo:
-    mov             ax, [DriveID]
+    mov             ax, [PDA(DRIVE_ID)]
     cmp             ah, 0
     je              NoDriveAssigned
     mov             ah, 0x08
@@ -72,6 +122,10 @@ GetDriveInfo:
     mov             es, di
     mov             dl, al
     and             dl, 0x80
+    cmp             al, 1
+    jne             .TestNow
+    mov             dl, 1
+.TestNow:
     push            ax
     int             0x13
     mov             di, bx
@@ -86,11 +140,12 @@ GetDriveInfo:
     cmp             dl, al
     pop             ax
     jna             NoSuchDrive
+    mov             [PDA(DRIVE_TYPE)], bl
     ret
 
 ErrorHeader:
     push            ax
-    mov             al, [Quite]
+    mov             al, [PDA(QUITE)]
     cmp             al, 1
     je              ErrorTerminateNoMsg
     pop             ax
@@ -99,6 +154,15 @@ ErrorHeader:
     pop             ax
     clc
     ret
+
+ErrorMessage:
+    call            ErrorHeader
+    push            ax
+    StdOutChar      "#"
+    pop             ax
+    StdOutIntByte   al
+    ret
+
 
 NoDriveAssigned:
     call            ErrorHeader
@@ -128,29 +192,29 @@ ErrorTerminateNoMsg:
 
 SwitchV:
     mov         al, 1
-    mov         [Verbose], al
+    mov         [PDA(VERBOSE)], al
     xor         al, al
-    mov         [Quite], al
+    mov         [PDA(QUITE)], al
     ret
 
 SwitchQ:
     mov         al, 1
-    mov         [Quite], al
+    mov         [PDA(QUITE)], al
     xor         al, al
-    mov         [Verbose], al
+    mov         [PDA(VERBOSE)], al
     ret
 
 SwitchD:
     NumberParam
     add         ax, 0x0080
     mov         ah, 0x01
-    mov         [DriveID], ax
+    mov         [PDA(DRIVE_ID)], ax
     ret
 
 SwitchF:
     NumberParam
     mov         ah, 0x01
-    mov         [DriveID], ax
+    mov         [PDA(DRIVE_ID)], ax
     ret
 
 NoSwitch:
@@ -177,14 +241,6 @@ CommandLineSwitches:
 OptionsTable:
     TableEnd
 
-Quite:
-    db  0
-Verbose:
-    db  0
-DriveID:
-    dw  0
-OperationMode:
-    db  0
 
 Msg_ErrorHeader:
     db 'Error: ',0
@@ -198,10 +254,16 @@ Msg_NoSuchFloppyDrive:
     db "No "
 Msg_FloppyDrive:
     db "Floppy Drive #",0
+Msg_ChangeLine:
+    db "Change Line ",0
 Msg_FloppyDriveType:
     db "Drive Type ",0
+Msg_NotAFloppyDrive:
+    db "not a floppy",0
 Msg_FloppyDriveTable:
-    db 0,"Unknown",0
+    db 0,
+Msg_Unknown:
+    db "unknown",0
     db 1,"360k",0
     db 2,"1.2m",0
     db 3,"720k",0
@@ -210,15 +272,12 @@ Msg_FloppyDriveTable:
     db 6,"2.88m",0
     db 0x10,"ATAPI",0
     db 0xff,"Other",0
+Msg_Error:
+    db "error",0
+Msg_Unsupported:
+    db "un"
+Msg_Supported:
+    db "supported"
 
-Buffer:
-    times 128 db 0
-BufferEnd:
-Unique:
-    times 128 db 0  ; extra padding to prevent overflow if bad data is
-                    ; entered from command line.
-UniqueEnd:
-DTA:
-    times 128 db 0
-DTAEnd:
+PDA_START:
 
