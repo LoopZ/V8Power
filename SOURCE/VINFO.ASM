@@ -23,14 +23,15 @@
 
     CommandLineParser       ; insert code for command line parsing
 
-    mov     ax, [OptionProcessed]
-    cmp     ax, 0xffff
-    jne     Done
+    ; mov     ax, [OptionProcessed]
+    ; cmp     ax, 0xffff
+    ; jne     Done
 
     ; PlaceHolder
 
 Done:
     mov         al, [ExitCode]
+DoneTerminate:
     Terminate   al
 
 %include "DSKTLS.INC"
@@ -121,13 +122,13 @@ ShowAscii:
 %endif
 
 SwitchV:
-    mov         [OptionProcessed], cx
+    ; mov         [OptionProcessed], cx
     mov         al, 1
     mov         [QueryMode], al
     ret
 
 SwitchD:
-    mov         [OptionProcessed], cx
+    ; mov         [OptionProcessed], cx
     DiskStatus      [di]
     cmp         al, 0
     je          .Skip
@@ -141,7 +142,7 @@ SwitchD:
     ret
 
 SwitchM:
-    mov         [OptionProcessed], cx
+    ; mov         [OptionProcessed], cx
     DetectMachine
     cmp         al, 0
     je          .Skip
@@ -155,7 +156,7 @@ SwitchM:
     ret
 
 SwitchP:
-    mov         [OptionProcessed], cx
+    ; mov         [OptionProcessed], cx
     jmp         DetectCPU
 
 SwitchC:
@@ -178,7 +179,7 @@ NoSwitch:
     LookupParam OptionsTable
     cmp         ax, 0xffff
     je          .NotOption
-    mov         [OptionProcessed], ax
+    ; mov         [OptionProcessed], ax
     jmp         ax
 
 .NotOption:
@@ -410,14 +411,91 @@ SwitchG:
     db 'VESA/SuperVGA',0
 
 SwitchE:
-    mov         [OptionProcessed], cx
+    ; mov         [OptionProcessed], cx
     NumberParam
-    add         ax, 0x0080
-    cmp         ah, 0x00FF
-    je          SwitchError
+    dec         al
+    jo          SwitchError
+    add         al, 0x80
+    jo          SwitchError
     mov         [DRIVE_ID], al
 
-    ret
+    mov             cx, 3
+.ReadRetry:
+    push            cx
+    ZeroMemory      Buffer, 512
+    mov             ax, 0x0201
+    mov             cx, 0x0001
+    xor             dh, dh
+    mov             dl, [DRIVE_ID]
+    mov             bx, Buffer
+    int             0x13
+    pop             cx
+    jnc             .ReadOK
+    jcxz            .ReadFail
+    dec             cx
+    mov             dl, [DRIVE_ID]
+    mov             ah, 0x00
+    int             0x13
+    jmp            .ReadRetry
+.ReadFail:
+    mov             al, ah
+    mov             di, Msg_Error
+    push        ax
+    mov         ah, [QueryMode]
+    cmp         ah, 0
+    pop         ax
+
+    je          DoneTerminate
+    push        ax
+    StdOutStr   di
+    pop         ax
+    StdOutIntByte al
+    StdOutCRLF
+    mov         al, 0x20
+    je          DoneTerminate
+
+.ReadOK:
+    ; StdOutHexAsciiDump Buffer, Buffer + 512
+    ; StdOutCRLF
+    cld
+    mov             si, Buffer
+    xor             al, al
+    mov             cx, 512
+.Scan:
+    lodsb
+    test             al, 0xff
+    loopz           .Scan
+    mov             al, 0
+    mov             di, Msg_MBR_Empty
+    cmp             cx, 0
+    je              .Result
+    mov             al, 1
+    mov             di, Msg_No_MBR_Code
+    cmp             cx, 0x3f
+    jbe             .Result
+    mov             al, 2
+    mov             di, Msg_Found_MBR_Code
+.Result:
+    mov             [ExitCode], al
+    mov             ah, [QueryMode]
+    cmp             ah, 0
+    je              .Done
+    push            ax
+    StdOutStr       di
+    StdOutCRLF
+    pop             ax
+.Done:
+;    jmp             DoneTerminate
+     ret
+
+Msg_Error:
+    db  "Error #",0
+Msg_MBR_Empty:
+    db "MBR is empty",0
+Msg_No_MBR_Code:
+    db "No MBR Code",0
+Msg_Found_MBR_Code:
+    db "MBR Code Present",0
 
 
 CommandLineSwitches:
@@ -441,8 +519,8 @@ OptionsTable:
 %endif
     TableEnd
 
-OptionProcessed:
-    dw 0xffff
+;OptionProcessed:
+;    dw 0xffff
 QueryMode:
     db  0
 ExitCode:
@@ -454,3 +532,5 @@ Drive:
 DRIVE_ID:
     db 0
 EndOfCode:
+
+Buffer:
