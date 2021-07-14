@@ -1,5 +1,5 @@
 
-; Copyright (C) 2016-2020 Jerome Shidel
+; Copyright (C) 2016-2021 Jerome Shidel
 ;
 ;   This program is free software; you can redistribute it and/or modify
 ;   it under the terms of the GNU General Public License as published by
@@ -451,12 +451,14 @@ SwitchE:
     pop         ax
     StdOutIntByte al
     StdOutCRLF
-    mov         al, 0x20
+    mov         al, 100
     je          DoneTerminate
 
 .ReadOK:
     ; StdOutHexAsciiDump Buffer, Buffer + 512
     ; StdOutCRLF
+
+    ; Maybe also validate the signature 55h AAh at the end.
     cld
     mov             si, Buffer
     xor             al, al
@@ -469,11 +471,11 @@ SwitchE:
     mov             di, Msg_MBR_Empty
     cmp             cx, 0
     je              .Result
-    mov             al, 1
+    mov             al, 5
     mov             di, Msg_No_MBR_Code
     cmp             cx, 0x3f
     jbe             .Result
-    mov             al, 2
+    mov             al, 10
     mov             di, Msg_Found_MBR_Code
 .Result:
     mov             [ExitCode], al
