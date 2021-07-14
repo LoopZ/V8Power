@@ -931,10 +931,13 @@ StdOutStr_Proc:
 %%Done:
 %endmacro
 
-%imacro StdOutHexASCIIDump 2
+%imacro StdOutHexASCIIDumpProc 0
+%ifndef StdOutHexASCIIDumpProc_Declared
+    %idefine StdOutHexASCIIDumpProc_Declared
+
+    jmp %%Over
+StdOutHexASCIIDump_Proc:
     xor     bx, bx
-    mov     cx, %2
-    mov     si, %1
     cld
 %%LineRepeater:
     push    cx
@@ -942,7 +945,12 @@ StdOutStr_Proc:
         push    bx
         mov     ax, bx
         StdOutHexWord ax
-        StdOutChar " "
+        push    cx
+        mov     cx, 4
+        %%Spacing:
+            StdOutChar " "
+            loop    %%Spacing
+        pop     cx
         pop     bx
         push    cx
         mov     cx, 0x10
@@ -993,6 +1001,18 @@ StdOutStr_Proc:
     jmp     %%LineRepeater
 %%Finished:
 %%Done:
+    ret
+%%Over:
+%endif
+    call StdOutHexASCIIDump_Proc
+%endmacro
+
+%imacro StdOutHexASCIIDump 2
+
+    mov     cx, %2
+    mov     si, %1
+    sub     cx, si
+    StdOutHexASCIIDumpProc
 %endmacro
 
 
@@ -1864,6 +1884,26 @@ TempVideoPagePtr:
 %%Zeroing:
     stosb
     loop    %%Zeroing
+    pop     ax
+    pop     di
+    pop     cx
+%endmacro
+
+%imacro ZeroFill 2 ; From Mem ... To Mem - 1
+    push    cx
+    push    di
+    push    ax
+    mov     cx, %2
+    xor     ax, ax
+    mov     di, %1
+    sub     cx, di
+    cmp     cx, 0
+    je      %%Done
+    cld
+%%Zeroing:
+    stosb
+    loop    %%Zeroing
+%%Done:
     pop     ax
     pop     di
     pop     cx

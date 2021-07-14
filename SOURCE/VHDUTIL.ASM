@@ -20,6 +20,8 @@
 
 %include "COMMON.INC"
 
+
+
 struc tPDA
 
     .BEGIN          resb 0
@@ -35,8 +37,8 @@ struc tPDA
     .FILENAME       resb 128
     .FILENAME_END   resb 1
 
-    .MBR            resb 512
-    .MBR_END        resb 0
+    .MBR_BUFFER     resb 512
+    .MBR_BUFFER_END resb 0
 
     .DTA            resb 512
     .DTA_END        resb 0
@@ -47,7 +49,7 @@ endstruc
 
 %idefine PDA(x) PDA_START + tPDA. %+ x
 
-    ZeroMemory      PDA(BEGIN), PDA(END) - PDA(BEGIN)
+    ZeroFill      PDA(BEGIN), PDA(END)
 
     CommandLineParser       ; insert code for command line parsing
 
@@ -62,20 +64,22 @@ Done:
 
 DisplayDrive:
     cmp             al, 0x80
-    jb              .DisplayFloppy
-.DisplayHD:
+    jb              DisplayFloppy
+
+DisplayHD:
     push            ax
     StdOutStr       Msg_HardDrive
     pop             ax
     and             al, 0x7F
     StdOutIntByte   al
     StdOutCRLF
+    StdOutCRLF
     call            FetchMBR
-    StdOutHexASCIIDump PDA(MBR), PDA(MBR_END) - PDA(MBR)
+    StdOutHexASCIIDump PDA(MBR_BUFFER), PDA(MBR_BUFFER_END)
     StdOutCRLF
     jmp             Done
 
-.DisplayFloppy:
+DisplayFloppy:
     push            ax
     StdOutStr       Msg_FloppyDrive
     pop             ax
@@ -125,6 +129,10 @@ DisplayDrive:
     call            StdOutStr_Proc
     StdOutCRLF
 .NextTest:
+    StdOutCRLF
+    call            FetchMBR
+    StdOutHexASCIIDump PDA(MBR_BUFFER), PDA(MBR_BUFFER_END)
+    StdOutCRLF
     jmp             Done
 
 GetDriveInfo:
@@ -163,11 +171,12 @@ FetchMBR:
     mov             cx, 3
 .ReadRetry:
     push            cx
+    ZeroFill        PDA(MBR_BUFFER), PDA(MBR_BUFFER_END)
     mov             ax, 0x0201
     mov             cx, 0x0001
     xor             dh, dh
     mov             dl, [PDA(DRIVE_ID)]
-    mov             bx, PDA(MBR)
+    mov             bx, PDA(MBR_BUFFER)
     int             0x13
     pop             cx
     jnc             .ReadOK
@@ -222,7 +231,6 @@ ErrorTerminate:
 ErrorTerminateNoMsg:
     Terminate       1
 
-
 %include "DSKTLS.INC"
 
 SwitchV:
@@ -255,7 +263,7 @@ SwitchF:
 SwitchN:
     push            di
     push            cx
-    ZeroMemory      PDA(FILENAME), PDA(FILENAME_END) - PDA(FILENAME)
+    ZeroFill        PDA(FILENAME), PDA(FILENAME_END)
     pop             cx
     pop             si
     mov             di, PDA(FILENAME)
