@@ -32,10 +32,13 @@ struc tPDA
 
     .MODE           resb 1
 
-    .BUFFER         resb 512
-    .BUFFER_END     resb 0
+    .FILENAME       resb 128
+    .FILENAME_END   resb 1
 
-    .DTA            resb 128
+    .MBR            resb 512
+    .MBR_END        resb 0
+
+    .DTA            resb 512
     .DTA_END        resb 0
 
     .END            resb 0
@@ -53,6 +56,7 @@ endstruc
     cmp             ah, 0x0
     je              DisplayDrive
 
+
 Done:
     Terminate 0
 
@@ -66,24 +70,9 @@ DisplayDrive:
     and             al, 0x7F
     StdOutIntByte   al
     StdOutCRLF
-
-    mov             cx, 3
-.ReadRetry:
-    push            cx
-    mov             ax, 0x0201
-    mov             cx, 0x0001
-    xor             dh, dh
-    mov             dl, [PDA(DRIVE_ID)]
-    mov             bx, PDA(BUFFER)
-    int             0x13
-    pop             cx
-    jnc             .ReadOK
-    loop            .ReadRetry
-    mov             al, ah
-    call            ErrorMessage
-    jmp             ErrorTerminate
-.ReadOK:
-    StdOutHexASCIIDump PDA(BUFFER), 512
+    call            FetchMBR
+    StdOutHexASCIIDump PDA(MBR), PDA(MBR_END) - PDA(MBR)
+    StdOutCRLF
     jmp             Done
 
 .DisplayFloppy:
@@ -170,6 +159,25 @@ GetDriveInfo:
     mov             [PDA(DRIVE_TYPE)], bl
     ret
 
+FetchMBR:
+    mov             cx, 3
+.ReadRetry:
+    push            cx
+    mov             ax, 0x0201
+    mov             cx, 0x0001
+    xor             dh, dh
+    mov             dl, [PDA(DRIVE_ID)]
+    mov             bx, PDA(MBR)
+    int             0x13
+    pop             cx
+    jnc             .ReadOK
+    loop            .ReadRetry
+    mov             al, ah
+    call            ErrorMessage
+    jmp             ErrorTerminate
+.ReadOK:
+    ret
+
 ErrorHeader:
     push            ax
     mov             al, [PDA(QUITE)]
@@ -244,6 +252,20 @@ SwitchF:
     mov         [PDA(DRIVE_ID)], ax
     ret
 
+SwitchN:
+    push            di
+    push            cx
+    ZeroMemory      PDA(FILENAME), PDA(FILENAME_END) - PDA(FILENAME)
+    pop             cx
+    pop             si
+    mov             di, PDA(FILENAME)
+    cld
+.CopyFileName:
+    lodsb
+    stosb
+    loop            .CopyFileName
+    ret
+
 NoSwitch:
     LookupParam OptionsTable
     cmp         ax, 0xffff
@@ -261,8 +283,9 @@ CommandLineSwitches:
     HelpSwitchData
     SwitchData 'Q', 0, SwitchQ
     SwitchData 'V', 0, SwitchV
-    SwitchData 'D', 1, SwitchD
-    SwitchData 'F', 1, SwitchF
+    SwitchData 'D', 1, SwitchD  ; Hard Drive (number)
+    SwitchData 'F', 1, SwitchF  ; Floppy (number)
+    SwitchData 'N', 1, SwitchN  ; Specify File (name)
     SwitchData  0,  0, 0
 
 OptionsTable:
