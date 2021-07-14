@@ -75,8 +75,8 @@ DisplayHD:
     StdOutCRLF
     StdOutCRLF
     call            FetchMBR
-    StdOutHexASCIIDump PDA(MBR_BUFFER), PDA(MBR_BUFFER_END)
-    StdOutCRLF
+    ; StdOutHexASCIIDump PDA(MBR_BUFFER), PDA(MBR_BUFFER_END)
+    ; StdOutCRLF
     jmp             Done
 
 DisplayFloppy:
@@ -131,8 +131,8 @@ DisplayFloppy:
 .NextTest:
     StdOutCRLF
     call            FetchMBR
-    StdOutHexASCIIDump PDA(MBR_BUFFER), PDA(MBR_BUFFER_END)
-    StdOutCRLF
+    ; StdOutHexASCIIDump PDA(MBR_BUFFER), PDA(MBR_BUFFER_END)
+    ; StdOutCRLF
     jmp             Done
 
 GetDriveInfo:
@@ -165,6 +165,11 @@ GetDriveInfo:
     pop             ax
     jna             NoSuchDrive
     mov             [PDA(DRIVE_TYPE)], bl
+    mov             ah,0x48
+    mov             dl, [PDA(DRIVE_ID)]
+    mov             si, PDA(DTA)
+    DebugHexWord    [PDA(DTA)]
+
     ret
 
 FetchMBR:
