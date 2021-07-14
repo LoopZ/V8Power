@@ -116,6 +116,7 @@ ShowAscii:
     add         bx, cx
     cmp         bx, 0x100
     jl          .ShowAscii_3
+    StdOutCRLF
     ret
 .ShowAscii_CRLF:
     db          CRLF,0
@@ -143,7 +144,11 @@ SwitchD:
 
 SwitchM:
     ; mov         [OptionProcessed], cx
+    push ds
+    push es
     DetectMachine
+    pop  es
+    pop  ds
     cmp         al, 0
     je          .Skip
     mov         [ExitCode], al
@@ -157,6 +162,8 @@ SwitchM:
 
 SwitchP:
     ; mov         [OptionProcessed], cx
+    push ds
+    push es
     jmp         DetectCPU
 
 SwitchC:
