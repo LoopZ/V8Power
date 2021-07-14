@@ -409,6 +409,17 @@ SwitchG:
     db 'VGA',0
     db 'VESA/SuperVGA',0
 
+SwitchE:
+    mov         [OptionProcessed], cx
+    NumberParam
+    add         ax, 0x0080
+    cmp         ah, 0x00FF
+    je          SwitchError
+    mov         [DRIVE_ID], al
+
+    ret
+
+
 CommandLineSwitches:
     SwitchData  0,  0, NoSwitch
     SwitchData 'D', 1, SwitchD
@@ -419,6 +430,7 @@ CommandLineSwitches:
     SwitchData 'U', 1, SwitchU
     SwitchData 'R', 1, SwitchR
     SwitchData 'G', 0, SwitchG
+    SwitchData 'E', 1, SwitchE
     HelpSwitchData
     SwitchData  0,  0, 0
 
@@ -438,5 +450,7 @@ ExitCode:
 SavedInt24:
     dw 0, 0
 Drive:
+    db 0
+DRIVE_ID:
     db 0
 EndOfCode:

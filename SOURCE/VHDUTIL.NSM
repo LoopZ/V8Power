@@ -20,7 +20,29 @@
 
 %include "COMMON.INC"
 
+struc tDPD
+    .DATA_SIZE      resw 1
+    .FLAGS          resw 1
+    .CYLINDERS      resd 1
+    .HEADS          resd 1
+    .SECTORS_TRACK  resd 1
+    .TOTAL_SECTORS  resq 1
+    .BYTES_SECTOR   resw 1
+endstruc
 
+
+struc tDPTE
+    .BOOT_FLAG                  resb 1
+    .SYSTEM                     resb 1
+    .START_SECTOR_HEAD          resw 1
+    .START_SECTOR               resw 1
+    .START_CYLINDER             resw 1
+    .END_SECTOR_HEAD            resw 1
+    .END_SECTOR                 resw 1
+    .END_CYLINDER               resw 1
+    .PREV_PART_SIZE             resd 1
+    .THIS_PART_SIZE             resd 1
+endstruc
 
 struc tPDA
 
@@ -31,6 +53,10 @@ struc tPDA
     .RESET          resb 0
     .DRIVE_ID       resw 1
     .DRIVE_TYPE     resb 1
+    .CYLINDERS      resw 1
+    .SECTORS        resw 1
+    .HEADS          resw 1
+    .BPS            resw 1
 
     .MODE           resb 1
 
@@ -43,17 +69,24 @@ struc tPDA
     .DTA            resb 512
     .DTA_END        resb 0
 
+    .PART0          resb 16
+    .PART1          resb 16
+    .PART2          resb 16
+    .PART3          resb 16
+
     .END            resb 0
 
 endstruc
 
 %idefine PDA(x) PDA_START + tPDA. %+ x
+%idefine DPD(x) tDPD. %+ x
 
     ZeroFill      PDA(BEGIN), PDA(END)
 
     CommandLineParser       ; insert code for command line parsing
 
     call            GetDriveInfo
+
     mov             ah, [PDA(MODE)]
     cmp             ah, 0x0
     je              DisplayDrive
@@ -75,8 +108,8 @@ DisplayHD:
     StdOutCRLF
     StdOutCRLF
     call            FetchMBR
-    ; StdOutHexASCIIDump PDA(MBR_BUFFER), PDA(MBR_BUFFER_END)
-    ; StdOutCRLF
+    StdOutHexASCIIDump PDA(MBR_BUFFER), PDA(MBR_BUFFER_END)
+    StdOutCRLF
     jmp             Done
 
 DisplayFloppy:
@@ -130,9 +163,9 @@ DisplayFloppy:
     StdOutCRLF
 .NextTest:
     StdOutCRLF
-    call            FetchMBR
-    ; StdOutHexASCIIDump PDA(MBR_BUFFER), PDA(MBR_BUFFER_END)
-    ; StdOutCRLF
+    call            FetchBS
+    StdOutHexASCIIDump PDA(MBR_BUFFER), PDA(MBR_BUFFER_END)
+    StdOutCRLF
     jmp             Done
 
 GetDriveInfo:
@@ -152,6 +185,7 @@ GetDriveInfo:
 .TestNow:
     push            ax
     int             0x13
+    mov             si, di
     mov             di, bx
     pop             bx
     mov             al, bl
@@ -165,14 +199,32 @@ GetDriveInfo:
     pop             ax
     jna             NoSuchDrive
     mov             [PDA(DRIVE_TYPE)], bl
-    mov             ah,0x48
-    mov             dl, [PDA(DRIVE_ID)]
-    mov             si, PDA(DTA)
-    DebugHexWord    [PDA(DTA)]
-
     ret
 
 FetchMBR:
+    mov             dl, [PDA(DRIVE_ID)]
+    test            dl, 0x80
+    jz              .NotForFloppy
+    call            FetchSectorZero
+    ret
+.NotForFloppy:
+    mov             al, 0x01
+    call            ErrorMessage
+    jmp             ErrorTerminate
+
+FetchBS:
+    mov             dl, [PDA(DRIVE_ID)]
+    test            dl, 0x80
+    jnz             .HardDriveBS
+    call            FetchSectorZero
+    ret
+.HardDriveBS:
+    mov             al, 0x01
+    call            ErrorMessage
+    jmp             ErrorTerminate
+
+
+FetchSectorZero:
     mov             cx, 3
 .ReadRetry:
     push            cx
@@ -180,7 +232,6 @@ FetchMBR:
     mov             ax, 0x0201
     mov             cx, 0x0001
     xor             dh, dh
-    mov             dl, [PDA(DRIVE_ID)]
     mov             bx, PDA(MBR_BUFFER)
     int             0x13
     pop             cx
