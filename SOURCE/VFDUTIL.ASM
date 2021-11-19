@@ -24,13 +24,11 @@
     push        ds
     SearchEnv   PathStr
     pop         ds
-    jnc         NoPathFound
+    jc          NoPathFound
     mov         [PathData], si
 NoPathFound:
     pop         si
-
     CommandLineParser       ; insert code for command line parsing
-
     Terminate 0
 
 %include "DSKTLS.INC"

@@ -239,6 +239,12 @@ IdleCPUHandlerProc:
 	%undef TextOutput
 %endif
 
+%imacro DebugWrite 1
+    pushall
+    StdOutChar %1
+    popall
+%endmacro
+
 ; %1 is Offset of Search String, returns DS:SI points to data
 ; if not found then carry flag is set
 %imacro SearchEnv 1
@@ -252,7 +258,7 @@ IdleCPUHandlerProc:
         push    ax
         pop     ds
         xor     si, si
-        cli
+        cld
     .Search:
         lodsb
         cmp     al, 0x00
