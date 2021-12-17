@@ -1,6 +1,6 @@
 @echo off
 rem Please note, the only reason this demo uses very poor and
-rem inconsistent command formating, is demonstrate the flexibility
+rem inconsistent command-line formatting, is to demonstrate the flexibility
 rem of the V8Power Tools option parsing.
 
 if exist DEMOS\NUL cd DEMOS
