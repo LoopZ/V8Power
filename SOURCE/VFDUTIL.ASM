@@ -1,4 +1,4 @@
-; Copyright (C) 2016-2020 Jerome Shidel
+; Copyright (C) 2016-2021 Jerome Shidel
 ;
 ;   This program is free software; you can redistribute it and/or modify
 ;   it under the terms of the GNU General Public License as published by
@@ -604,6 +604,65 @@ SwitchR:
     jnz             ShowFreeSpace
     ret
 
+SwitchA:
+    call    ExpandFileName
+    ; find the end of the requested path
+    mov     di, Buffer
+    cld
+.SearchEnd:
+	inc		di
+	mov		al, [di]
+	test	al, al
+	jnz		.SearchEnd
+	; append a slash if needed
+	mov		al, [di - 1]
+	mov		ah, 0x5c        ; '\'
+    cmp     al, ah
+    je      .HasSlash
+    mov		[di], ah
+	inc		di
+.HasSlash:
+	; Add *.* to end of request
+	mov		ax, '*.'
+	mov		[di], ax
+	mov		[di + 2], al
+
+    mov     ah, 1Ah          ;Set DTA
+    mov     dx, DTA
+    int     0x21
+    mov     cx, 0xffff
+    mov     dx, Buffer
+    mov     ah, 0x4E         ;Find First File
+    int     0x21
+    jc      .ErrorResult
+.ScanDir:
+	cld
+	mov		si, DTA + 0x1e
+	lodsw
+	cmp		ax, 0x002e
+	je		.Ignore
+	cmp		ax, 0x2e2e
+	jne		.DontIgnore
+	lodsb
+	test	al, al
+	jz		.Ignore
+.DontIgnore:
+	jmp		.HasSomething
+    ; push    dx
+    ; StdOutStr DTA + 0x1e
+    ; StdOutCRLF
+    ; pop     dx
+.Ignore:
+    mov     ah, 0x4f         ;Find next
+    int     0x21
+    jc      .ErrorResult
+    jmp		.ScanDir
+.HasSomething:
+    xor		al, al
+.ErrorResult:
+	Terminate	al
+
+
 NoSwitch:
     LookupParam OptionsTable
     cmp         ax, 0xffff
@@ -632,6 +691,7 @@ CommandLineSwitches:
     SwitchData 'T', 1, SwitchT
     SwitchData 'M', 1, SwitchM
     SwitchData 'R', 1, SwitchR
+    SwitchData 'A', 1, SwitchA
 %ifdef PathPrint
     SwitchData 'W', 0, SwitchW
 %endif
