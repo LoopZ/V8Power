@@ -182,6 +182,40 @@ SwitchC:
     StdOutCRLF
     Terminate 0
 
+SwitchJ:
+	push 		ax
+	mov			al, 0x01
+	mov			[CaseSpecific], al
+	pop			ax
+SwitchK:
+    NumberParam
+    inc			ax
+    xor 		ah, ah
+    mov         cx, ax
+.Repeat:
+    lodsb
+    test		al, al
+    jz			.NotFound
+    loop        .Repeat
+    mov			cl, [CaseSpecific]
+    test		cl, cl
+    jnz			.CheckVerbose
+    cmp			al, 0x60
+    jbe			.CheckVerbose
+    cmp			al, 0x7b
+    jae			.CheckVerbose
+    sub			al, 0x20
+.CheckVerbose:
+    mov			cl, [QueryMode]
+    test		cl, cl
+    jz			.NotFound
+    push 		ax
+    StdOutChar  al
+    StdOutCRLF
+    pop			ax
+.NotFound:
+    Terminate   al
+
 NoSwitch:
     LookupParam OptionsTable
     cmp         ax, 0xffff
@@ -518,6 +552,8 @@ CommandLineSwitches:
     SwitchData 'R', 1, SwitchR
     SwitchData 'G', 0, SwitchG
     SwitchData 'E', 1, SwitchE
+    SwitchData 'K', 1, SwitchK
+    SwitchData 'J', 1, SwitchJ
     HelpSwitchData
     SwitchData  0,  0, 0
 
@@ -531,6 +567,8 @@ OptionsTable:
 ;OptionProcessed:
 ;    dw 0xffff
 QueryMode:
+    db  0
+CaseSpecific:
     db  0
 ExitCode:
     db  0
