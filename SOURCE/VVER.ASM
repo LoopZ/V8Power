@@ -107,7 +107,7 @@ OptNameMsg:
 OptVerMsg:
     DB 'Version ',__DATE__,0
 OptCopyMsg:
-    DB 'Copyright (C) 2015-2021 Jerome Shidel',0
+    DB 'Copyright (C) 2015-2022 Jerome Shidel',0
 OptEmailMsg:
     DB 'mailto:V8Power@Shidel.net',0
 OptURLMsg:
