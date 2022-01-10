@@ -1,4 +1,4 @@
-; Copyright (C) 2016-2020 Jerome Shidel
+; Copyright (C) 2016-2022 Jerome Shidel
 ;
 ;   This program is free software; you can redistribute it and/or modify
 ;   it under the terms of the GNU General Public License as published by
@@ -141,7 +141,7 @@ FillLine:
 %include "TRANSLAT.INC"
 
 SwitchT:
-    Translator MainParsing
+    Translator  MainParsing
 
 SwitchP:
     WriteStr    CRLFString

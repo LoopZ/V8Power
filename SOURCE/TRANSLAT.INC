@@ -1,4 +1,4 @@
-; Copyright (C) 2016-2020 Jerome Shidel
+; Copyright (C) 2016-2022 Jerome Shidel
 ;
 ;   This program is free software; you can redistribute it and/or modify
 ;   it under the terms of the GNU General Public License as published by
@@ -15,6 +15,10 @@
 ;   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 ; NASM for DOS
+
+%idefine TransBufSize 10240
+%idefine ReadBufSize 512
+; %idefine TransBufSize 256
 
 ; Options ComandLine Parser
 %imacro Translator 1
@@ -264,12 +268,12 @@ FileHandle:
     dw 0
 
 TransBuf:
-    times 256 db 0x0d
+    times TransBufSize db 0x0d
 TransBufEnd:
     db 0x0d,0
 
 ReadBuffer:
-    times 256 db 0
+    times ReadBufSize db 0
 ReadBufferEnd:
     db 0
 

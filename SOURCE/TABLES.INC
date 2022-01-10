@@ -58,5 +58,7 @@ ColorTable:
 ;   TableData "LIGHT MAGENTA",13
     TableData "YELLOW",14
     TableData "WHITE",15
+    TableData "LINKOFF",0x8000
+    TableData "LINKON",0x8001
     TableEnd
 %endmacro

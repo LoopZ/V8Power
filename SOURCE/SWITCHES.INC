@@ -37,6 +37,8 @@ SwitchColor:
 
 SwitchF:
     call        SwitchColor
+    cmp			ax, 0x000f
+    ja 			SwitchError
     mov         ah, [TextAttr]
     and         ah, 0xf0
     or          ah, al
@@ -45,6 +47,9 @@ SwitchF:
 
 SwitchB:
     call        SwitchColor
+    cmp			ax, 0x0007
+    ja 			BlinkOnOff
+
     mov         ah, [TextAttr]
     mov         cl, 4
     shl         al, cl
@@ -52,6 +57,26 @@ SwitchB:
     or          ah, al
     mov         [TextAttr], ah
     ret
+
+BlinkOnOff:
+	cmp			ax, 0x8000
+	je			BlinkOff
+	cmp			ax, 0x8001
+	je			BlinkOn
+	jmp			SwitchError
+
+BlinkOn:
+    mov         ah, [TextAttr]
+	or			ah, 0x80
+    mov         [TextAttr], ah
+	ret
+
+BlinkOff:
+    mov         ah, [TextAttr]
+	and			ah, 0x7f
+    mov         [TextAttr], ah
+	ret
+
 
     ColorTableData      ; insert color name table
 
