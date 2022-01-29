@@ -24,7 +24,7 @@ increased functionality.
 
 #### &nbsp;&nbsp; Compiling ######
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Insure the NASM directory is in your path spec. <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Ensure the NASM directory is in your path spec. <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Download the latest sources from [GitHub](http://github.com/LoopZ/V8Power).<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Run the mkV8.bat script. <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;All executibles will be placed in newly
@@ -54,7 +54,7 @@ Limited compatiblilty of advanced features <i>(no "set /p" batch support)</i>:
 
 ## V8Power Tools Usage
 
-Here is some basic information reguarding all utilities and how they operate.<br>
+Here is some basic information regarding all utilities and how they operate.<br>
  * Options, values and hexidecimal numbers are not case specific **/f white** is the same as **/F wHIte**.<br>
  * Hexidecimal numbers may be prefixed with **0x** to prevent them from being treated as base ten.
 <i>(Example: <b>10</b> and <b>0x10</b>)</i><br>

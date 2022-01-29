@@ -27,7 +27,7 @@ Compiling V8Power Tools
 
     Compiling:
 
-        Insure the NASM directory is in your path spec.
+        Ensure the NASM directory is in your path spec.
         Download the latest sources from http://github.com/LoopZ/V8Power
         Run the mkV8.bat script.
         All executibles will be placed in newly created BIN directory.
@@ -58,7 +58,7 @@ Limited compatiblilty of advanced features (no "set /p" batch support):
 
 V8Power Tools Usage
 
-Here is some basic information reguarding all utilities and how they operate.
+Here is some basic information regarding all utilities and how they operate.
 
     Options, values and hexidecimal numbers are not case specific /f white is
     the same as /F wHIte.
