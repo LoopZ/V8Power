@@ -1,18 +1,5 @@
-; Copyright (C) 2016-2020 Jerome Shidel
-;
-;	This program is free software; you can redistribute it and/or modify
-;	it under the terms of the GNU General Public License as published by
-;	the Free Software Foundation; either version 2 of the License, or
-;	(at your option) any later version.
-;
-;	This program is distributed in the hope that it will be useful,
-;	but WITHOUT ANY WARRANTY; without even the implied warranty of
-;	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;	GNU General Public License for more details.
-;
-;	You should have received a copy of the GNU General Public License along
-;	with this program; if not, write to the Free Software Foundation, Inc.,
-;	51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+; Copyright (C) 2016-2022 Jerome Shidel
+; Open source see License file
 
 ; NASM for DOS
 
@@ -23,6 +10,7 @@
 MainParsing:
 
     CommandLineParser       ; insert code for command line parsing
+
 
 PrepData:
     cld
@@ -74,10 +62,131 @@ PrepWindow:
     mov         ah, [Max]
     inc         ah
     cmp         al, ah
-    jbe         KeyEnd
+    jbe         .DonePrep
     dec         al
     mov         [Width], al
     jmp         .ValidWidth
+.DonePrep:
+	mov			al, [SimpleChoice]
+	test 		al, al
+	jz			KeyEnd
+
+ShowSimpleSelect:
+    WhereXY
+	mov			al, '['
+	call		CharDisplay
+    cld
+    mov         si, TextBuffer
+    mov         cl, [Width]
+    cmp			cl, 3
+    ja			.ShowLetters
+    jmp			SwitchError
+.ShowLetters:
+    xor			ch, ch
+    lodsb
+	test		al, al
+	jnz			.FirstChar
+    jmp			.DisplayDone
+.Display:
+	lodsb
+	test		al, al
+	jz			.DisplayDone
+	push		ax
+	mov			al, ','
+	call		CharDisplay
+	pop			ax
+.FirstChar:
+	call		CharDisplay
+	loop		.Display
+.DisplayDone:
+	mov			al, ']'
+	call		CharDisplay
+	mov			al, '?'
+	call		CharDisplay
+	call 		EditCursor
+	xor			bx, bx
+.WaitLoop:
+	GotoXY		dx
+    IdleCPU
+    mov         ax, 0x0100
+    int         0x16
+    jz          .WaitLoop
+    mov         ax, 0x0000
+    int         0x16
+    cmp			al, 0x03
+    jne			.NotCtrlC
+    mov			al, [ControlC]
+    test		al, al
+    jz 			.NotExact
+    Terminate	0xc8
+.NotCtrlC:
+	cmp			al, 0x0d
+	jne			.NotEnter
+	test		bx, bx
+	jnz			.Selected
+	call		.TryAgain
+	jmp			.WaitLoop
+.NotEnter:
+	xor			cx, cx
+	mov			ah, al
+	mov			si, TextBuffer
+.TextExact:
+	inc			cx
+	lodsb
+	test		al, al
+	jz			.NotExact
+	cmp			al, ah
+	je			.DisplayMatch
+	jmp			.TextExact
+.NotExact:
+	cmp			ah, 0x5a
+	ja			.NotUppercase
+	cmp			ah, 0x41
+	jb			.NotUppercase
+	add			ah, 0x20
+.NotUppercase:
+	xor			cx, cx
+	mov			si, TextBuffer
+.TextAny:
+	inc			cx
+	lodsb
+	test		al, al
+	jz			.NotMatched
+	cmp			al, 0x5a
+	ja			.NotUpper
+	cmp			al, 0x41
+	jb			.NotUpper
+	add			al, 0x20
+.NotUpper:
+	cmp			al, ah
+	je			.DisplayMatch
+	jmp			.TextAny
+
+.NotMatched:
+	call		.TryAgain
+	jmp			.WaitLoop
+.DisplayMatch:
+	call		.TryAgain
+	mov			bx, cx
+	mov			al, [TextBuffer + bx - 1]
+	call		CharDisplay
+	jmp			.WaitLoop
+
+.TryAgain:
+	test		bx, bx
+	retz
+	xor			bx, bx
+	dec			dl
+	mov			al, ' '
+	call 		CharDisplay
+	dec			dl
+	ret
+
+.Selected:
+	push		bx
+	StdOutCRLF
+	pop			ax
+	Terminate	al
 
 InputLoop:
     ; Draw the timeout number if used. Timeout, adjusts width if needed.
@@ -105,7 +214,7 @@ InputLoop:
     lodsb
     dec         cl
     mov         al, [EndCaps]
-    call        .CharDisplay
+    call        CharDisplay
 .TextDisplay:
     ; Draw the editing text
     lodsb
@@ -125,18 +234,18 @@ InputLoop:
     je          .NoPassword
     mov         al, [PswdChar]
 .NoPassword:
-    call        .CharDisplay
+    call        CharDisplay
     loop        .TextDisplay
     ; End of width, but not end of Text
     jmp         .WidthEnd
 .EndCap:
     mov         al, [EndCaps + 1]
-    call        .CharDisplay
+    call        CharDisplay
     jmp         .WidthEnd
 .TextEnd:
     ; Fill remander with spaces
     mov         al, 0x20
-    call        .CharDisplay
+    call        CharDisplay
     loop        .TextEnd
 .WidthEnd:
     ; Put cursor back to it's previous size and shape
@@ -168,7 +277,7 @@ InputLoop:
     pop         ax
     Terminate   al
 
-.CharDisplay:
+CharDisplay:
     push        ax
     GotoXY      dx
     pop         ax
@@ -727,13 +836,17 @@ SwitchP:
     mov     [PswdMode], al
     ret
 
+SwitchS:
+    mov     al, 1
+    mov     [SimpleChoice], al
+    ret
+
 %include "TRANSLAT.INC"
 
 SwitchT:
     Translator MainParsing
 
     IdleCPUHandler
-
 
     LocalSwitchHandlers
     ColorSwitchHandlers
@@ -751,6 +864,7 @@ CommandLineSwitches:
     SwitchData 'C', 0, SwitchC
     SwitchData 'P', 0, SwitchP
     SwitchData 'T', 1, SwitchT
+    SwitchData 'S', 0, SwitchS
     SwitchData  0,  0, 0
 
 OptionsTable:
@@ -769,4 +883,5 @@ PswdMode:      db 0
 EditMode:      dw 0 ; 0 insert mode, 1&2 overtype cursor size.
 Start:         db 0
 Width:         db 0
+SimpleChoice:  db 0
 Max:           db TextEnd - TextBuffer
