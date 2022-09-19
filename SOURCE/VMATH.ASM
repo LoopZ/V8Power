@@ -4,12 +4,56 @@
 ; NASM for DOS
 
 %idefine NoVideoOutput
+; %idefine Bit64
 
 %include "COMMON.INC"
 
     %idefine SwitchChar '^'
 
     CommandLineParser       ; insert code for command line parsing
+
+; Include 64-bit number math for 8086
+%ifdef Bit64
+    jmp  Start
+    %include "INT64.INC"
+Start:
+; %endif
+
+; Int64 development and testing
+;    uInt64_StdOutHex N1
+    uInt64_MOV       N3, N2
+    sInt64_ABS	     N3
+    uInt64_StdOutHex N2
+    StdOutCRLF
+    uInt64_StdOutInt N2
+    StdOutCRLF
+    sInt64_StdOutHex N3
+    StdOutCRLF
+    sInt64_StdOutInt N3
+    StdOutCRLF
+
+    mov  cx, 10
+OutLoop:
+    push cx
+    sInt64_DEC	N4
+    sInt64_StdOutInt N4
+    StdOutCRLF
+    pop  cx
+    loop OutLoop
+    jmp Done
+
+N1:
+    dq		0x123456789abcdef0
+N2:
+    dq  -0x10000
+    dq		-123456789123456789
+N3:
+    dq 0
+N4:
+    dq 0x7
+
+; end test area
+%endif
 
     mov     al, [OutStyle]
     cmp     al, 1

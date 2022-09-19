@@ -13,16 +13,46 @@
 ; Int64_StdOutHex   address
 
 ; Unsigned 64-bit integer function macros
-; uInt64_StdOutHex   address
-; uInt64_Zero        address
-; uInt64_Store       address (from DX:CX:BX:AX)
-; uInt64_Load        address (into DX:CX:BX:AX)
-; uInt64_CMP         address1, address2 (test flags, ie JA, JBE and etc)
-; uInt64_ADD         address1, address2 (result in address1, CF overflow)
+; uInt64_StdOutHex	address
+; uInt64_StdOutInt	address
+; uInt64_Zero		address
+; uInt64_Store		address (from DX:CX:BX:AX)
+; uInt64_Load		address (into DX:CX:BX:AX)
+; uInt64_MOV		dest, src
+; uInt64_CMP		address1, address2 (test flags, ie JA, JBE and etc)
+; uInt64_INC		address, (CF if overflow)
+; uInt64_DEC		address, (CF if underflow)
+; uInt64_ADD		address1, address2 (result in address1, CF overflow)
 
-%imacro Int64_StdOutHex 1
-    uInt64_StdOutHex %1
-%endmacro
+; Signed versions identical to the Unsigned 64-bit versions
+; sInt64_StdOutHex	address
+; sInt64_Zero		address
+; sInt64_Store		address (from DX:CX:BX:AX)
+; sInt64_Load		address (into DX:CX:BX:AX)
+; sInt64_MOV		dest, src
+
+; Signed 64-bit integer function macros
+; sInt64_ABS   		address
+; sInt64_StdOutInt	address
+; sInt64_INC		address, (CF if overflow)
+; sInt64_DEC		address, (CF if underflow)
+
+
+; coming soon, or at least someday eventually.
+; uInt64_MUL		address1, address2 (result in address1, CF overflow)
+; uInt64_DIV		address1, address2 (result in address1, CF overflow)
+
+; sInt64_CMP		address1, address2 (test flags, ie JA, JBE and etc)
+; sInt64_ADD		address1, address2 (result in address1, CF overflow)
+; sInt64_MUL		address1, address2 (result in address1, CF overflow)
+; sInt64_DIV		address1, address2 (result in address1, CF overflow)
+
+; -----------------------------------------------------------------------------
+%idefine sInt64_StdOutHex 	uInt64_StdOutHex
+%idefine sInt64_Zero		uInt64_Zero
+%idefine sInt64_Store		uInt64_Store
+%idefine sInt64_Load 		uInt64_Load
+%idefine sInt64_MOV 		uInt64_MOV
 
 %imacro Int64_Store 1
     uInt64_Store %1
@@ -79,6 +109,20 @@
     mov  dx, [%1 + 6]
 %endmacro
 
+%imacro uInt64_MOV 2
+    %ifdef SAVE_REGS
+        push di
+        push si
+    %endif
+    mov  di, %1
+    mov  si, %2
+    call proc_uInt64_MOV
+    %ifdef SAVE_REGS
+        pop  si
+        pop  di
+    %endif
+%endmacro
+
 %imacro uInt64_CMP 2
     %ifdef SAVE_REGS
         push di
@@ -118,6 +162,72 @@
     %ifdef SAVE_REGS
         pop  bx
         pop  di
+    %endif
+%endmacro
+
+%imacro uInt64_INC 1
+    %ifdef SAVE_REGS
+        push si
+    %endif
+    mov  si, %1
+    call proc_uInt64_INC
+    %ifdef SAVE_REGS
+        pop  si
+    %endif
+%endmacro
+
+%imacro uInt64_DEC 1
+    %ifdef SAVE_REGS
+        push si
+    %endif
+    mov  si, %1
+    call proc_uInt64_DEC
+    %ifdef SAVE_REGS
+        pop  si
+    %endif
+%endmacro
+
+%imacro sInt64_INC 1
+    %ifdef SAVE_REGS
+        push si
+    %endif
+    mov  si, %1
+    call proc_sInt64_INC
+    %ifdef SAVE_REGS
+        pop  si
+    %endif
+%endmacro
+
+%imacro sInt64_DEC 1
+    %ifdef SAVE_REGS
+        push si
+    %endif
+    mov  si, %1
+    call proc_sInt64_DEC
+    %ifdef SAVE_REGS
+        pop  si
+    %endif
+%endmacro
+
+%imacro sInt64_ABS 1
+    %ifdef SAVE_REGS
+        push si
+    %endif
+    mov  si, %1
+    call proc_sInt64_ABS
+    %ifdef SAVE_REGS
+        pop  si
+    %endif
+%endmacro
+
+%imacro sInt64_StdOutInt 1
+    %ifdef SAVE_REGS
+        push si
+    %endif
+    mov  si, %1
+    call proc_sInt64_StdOutInt
+    %ifdef SAVE_REGS
+        pop  si
     %endif
 %endmacro
 
@@ -231,6 +341,25 @@ proc_uInt64_Zero:
     %endif
     ret
 
+proc_uInt64_MOV:
+    ; di destination Int64
+    ; si source Int64
+    %ifdef SAVE_REGS
+        push ax
+    %endif
+    mov  ax, [si]
+    mov	 [di], ax
+    mov  ax, [si + 2]
+    mov	 [di + 2], ax
+    mov  ax, [si + 4]
+    mov	 [di + 4], ax
+    mov  ax, [si + 6]
+    mov	 [di + 6], ax
+    %ifdef SAVE_REGS
+        pop ax
+    %endif
+    ret
+
 proc_uInt64_CMP:
     ; di first Int64
     ; si second Int64
@@ -326,3 +455,125 @@ proc_uInt64_MUL_WORD:
     %endif
     ; Carry Flag on Overflow.
     ret
+
+proc_uInt64_INC:
+    ; si address destination/source Int64, CF if overflowed
+	inc word [si]
+	jnz	 .DoneInc
+	inc word [si + 2]
+	jnz	 .DoneInc
+	inc word [si + 4]
+	jnz	 .DoneInc
+	inc word [si + 6]
+	jnz	 .DoneInc
+	stc
+	jmp	.Done
+.DoneInc:
+	clc
+.Done:
+	ret
+
+proc_uInt64_DEC:
+    ; si address destination/source Int64, CF if overflowed
+    	push	ax
+    	mov	ax, 0xffff
+	dec 	word [si]
+	cmp	ax, [si]
+	jne	 .DoneInc
+	dec 	word [si + 2]
+	cmp	ax, [si + 2]
+	jne	 .DoneInc
+	dec 	word [si + 4]
+	cmp	ax, [si + 4]
+	jne	 .DoneInc
+	dec 	word [si + 6]
+	cmp	ax, [si + 6]
+	jne	 .DoneInc
+	stc
+	jmp	.Done
+.DoneInc:
+	clc
+.Done:
+	pop	ax
+	ret
+
+proc_sInt64_INC:
+    %ifdef SAVE_REGS
+	push	ax
+	push    bx
+    %endif
+	mov	ax, [si+6]
+	and	ax, 0x8000
+	call	proc_uInt64_INC
+	jc	.Done
+	mov	bx, [si+6]
+	and	bx, 0x8000
+	cmp	ax, bx
+	je	.Done
+.Done:
+    %ifdef SAVE_REGS
+	pop	bx
+	pop	ax
+    %endif
+	ret
+
+proc_sInt64_DEC:
+    %ifdef SAVE_REGS
+	push	ax
+	push    bx
+    %endif
+	mov	ax, [si+6]
+	and	ax, 0x8000
+	call	proc_uInt64_DEC
+	jc	.Done
+	mov	bx, [si+6]
+	and	bx, 0x8000
+	cmp	ax, bx
+	je	.Done
+.Done:
+    %ifdef SAVE_REGS
+	pop	bx
+	pop	ax
+    %endif
+	ret
+
+
+proc_sInt64_ABS:
+    ; si address destination/source Int64
+    push	ax
+    mov		ax, [si+6]
+    test	ax, 0x8000
+    jz		.Positive
+    not		word [si+6]
+    not		word [si+4]
+    not		word [si+2]
+    not		word [si]
+    call	proc_uInt64_INC
+    stc
+    jmp		.Done
+.Positive:
+    clc
+.Done:
+    pop		ax
+    ret
+
+proc_sInt64_StdOutInt:
+    ; si address destination/source Int64
+    %ifdef SAVE_REGS
+	push    di
+    %endif
+    mov  	di, temp_StdOutInt
+    call	proc_uInt64_MOV
+    mov		si, di
+    call	proc_sInt64_ABS
+    jnc		.NotNegative
+    StdOutChar  '-'
+.NotNegative:
+    call	proc_uInt64_StdOutInt
+    %ifdef SAVE_REGS
+        pop	di
+    %endif
+    ret
+
+temp_StdOutInt:
+    dq 0
