@@ -148,12 +148,13 @@ OutStyle:
 
 CommandLineSwitches:
     SwitchData  0,  0, NoSwitch
-    HelpSwitchData
     SwitchData  0,  0, 0
 
 OptionsTable:
+
     TableData '/H', SwitchH
     TableData '/D', SwitchD
+    TableData '/?', SwitchHelp
     TableData 'ADD', OptPlus
     TableData '+', OptPlus
     TableData 'ADD', OptPlus
