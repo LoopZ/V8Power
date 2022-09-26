@@ -19,6 +19,7 @@ NoPathFound:
     Terminate 0
 
 %include "DSKTLS.INC"
+%include "INT64.INC"
 
 ExpandFileName:
     push    si
@@ -478,8 +479,6 @@ Searching:
 .NotFound:
     Terminate 1
 
-%include "INT64.INC"
-
 ReadFreeSpace:
     uInt64_Zero         FreeSpace
     mov                 dl, [Buffer]
@@ -649,7 +648,6 @@ SwitchA:
 .ErrorResult:
 	Terminate	al
 
-
 NoSwitch:
     LookupParam OptionsTable
     cmp         ax, 0xffff
@@ -659,6 +657,8 @@ NoSwitch:
 InvalidOption:
     WriteStr    CommandLineErrorMsg
     Terminate   100
+
+Int64_Procs
 
     HelpSwitchHandler 'vfdutil'
 

@@ -22,7 +22,7 @@
 ; uInt64_CMP		address1, address2 (test flags, ie JA, JBE and etc)
 ; uInt64_INC		address, (CF if overflow)
 ; uInt64_DEC		address, (CF if underflow)
-; uInt64_ADD		address1, address2 (result in address1, CF overflow)
+; Ascii_uInt64		address1, address2 (convert from ascii, result in address1, CF overflow or error)
 
 ; Signed versions identical to the Unsigned 64-bit versions
 ; sInt64_StdOutHex	address
@@ -30,6 +30,8 @@
 ; sInt64_Store		address (from DX:CX:BX:AX)
 ; sInt64_Load		address (into DX:CX:BX:AX)
 ; sInt64_MOV		dest, src
+; sInt64_ADD		address1, address2 (result in address1, CF overflow)
+; Ascii_sInt64		address1, address2 (convert from ascii, result in address1, CF overflow or error)
 
 ; Signed 64-bit integer function macros
 ; sInt64_ABS   		address
@@ -43,7 +45,6 @@
 ; uInt64_DIV		address1, address2 (result in address1, CF overflow)
 
 ; sInt64_CMP		address1, address2 (test flags, ie JA, JBE and etc)
-; sInt64_ADD		address1, address2 (result in address1, CF overflow)
 ; sInt64_MUL		address1, address2 (result in address1, CF overflow)
 ; sInt64_DIV		address1, address2 (result in address1, CF overflow)
 
@@ -53,6 +54,12 @@
 %idefine sInt64_Store		uInt64_Store
 %idefine sInt64_Load 		uInt64_Load
 %idefine sInt64_MOV 		uInt64_MOV
+%idefine sInt64_ADD		uInt64_ADD	; Humm
+
+%imacro call_proc 1
+	%define %1_REQUIRED
+	call proc_%1
+%endmacro
 
 %imacro Int64_Store 1
     uInt64_Store %1
@@ -67,7 +74,7 @@
         push si
     %endif
     mov  si, %1
-    call proc_uInt64_StdOutHex
+    call_proc uInt64_StdOutHex
     %ifdef SAVE_REGS
         pop  si
     %endif
@@ -78,7 +85,7 @@
         push si
     %endif
     mov  si, %1
-    call proc_uInt64_StdOutInt
+    call_proc uInt64_StdOutInt
     %ifdef SAVE_REGS
         pop  si
     %endif
@@ -89,7 +96,7 @@
         push di
     %endif
     mov  di, %1
-    call proc_uInt64_Zero
+    call_proc uInt64_Zero
     %ifdef SAVE_REGS
         pop  di
     %endif
@@ -116,7 +123,7 @@
     %endif
     mov  di, %1
     mov  si, %2
-    call proc_uInt64_MOV
+    call_proc uInt64_MOV
     %ifdef SAVE_REGS
         pop  si
         pop  di
@@ -130,7 +137,7 @@
     %endif
     mov  di, %1
     mov  si, %2
-    call proc_uInt64_CMP
+    call_proc uInt64_CMP
     %ifdef SAVE_REGS
         pop  si
         pop  di
@@ -144,7 +151,7 @@
     %endif
     mov  di, %1
     mov  si, %2
-    call proc_uInt64_ADD
+    call_proc uInt64_ADD
     %ifdef SAVE_REGS
         pop  si
         pop  di
@@ -158,7 +165,7 @@
     %endif
     mov  di, %1
     mov  bx, %2
-    call proc_uInt64_MUL_WORD
+    call_proc uInt64_MUL_WORD
     %ifdef SAVE_REGS
         pop  bx
         pop  di
@@ -170,7 +177,7 @@
         push si
     %endif
     mov  si, %1
-    call proc_uInt64_INC
+    call_proc uInt64_INC
     %ifdef SAVE_REGS
         pop  si
     %endif
@@ -181,7 +188,7 @@
         push si
     %endif
     mov  si, %1
-    call proc_uInt64_DEC
+    call_proc uInt64_DEC
     %ifdef SAVE_REGS
         pop  si
     %endif
@@ -192,7 +199,7 @@
         push si
     %endif
     mov  si, %1
-    call proc_sInt64_INC
+    call_proc sInt64_INC
     %ifdef SAVE_REGS
         pop  si
     %endif
@@ -203,7 +210,7 @@
         push si
     %endif
     mov  si, %1
-    call proc_sInt64_DEC
+    call_proc sInt64_DEC
     %ifdef SAVE_REGS
         pop  si
     %endif
@@ -214,7 +221,7 @@
         push si
     %endif
     mov  si, %1
-    call proc_sInt64_ABS
+    call_proc sInt64_ABS
     %ifdef SAVE_REGS
         pop  si
     %endif
@@ -225,13 +232,61 @@
         push si
     %endif
     mov  si, %1
-    call proc_sInt64_StdOutInt
+    call_proc sInt64_StdOutInt
     %ifdef SAVE_REGS
         pop  si
     %endif
 %endmacro
 
+%imacro ASCII_sInt64 2
+    %ifdef SAVE_REGS
+        push si
+        push di
+    %endif
+    %ifidni %2, di
+	    mov  si, %2
+	    mov	 di, %1
+    %else
+	    mov	 di, %1
+	    mov  si, %2
+    %endif
+    call_proc	ASCII_sInt64
+    %ifdef SAVE_REGS
+        pop  di
+        pop  si
+    %endif
+%endmacro
+
+%imacro ASCII_uInt64 2
+    %define uInt64_Zero_REQUIRED
+    %define uInt64_MUL_WORD_REQUIRED
+    %define sInt64_NEG_REQUIRED
+    %ifdef SAVE_REGS
+        push si
+        push di
+    %endif
+    %ifidni %2, di
+	    mov  si, %2
+	    mov	 di, %1
+    %else
+	    mov	 di, %1
+	    mov  si, %2
+    %endif
+    call_proc	ASCII_uInt64
+    %ifdef SAVE_REGS
+        pop  di
+        pop  si
+    %endif
+%endmacro
+
+
 ; Functions and procedures ----------------------------------------------------
+%imacro Int64_procs 0
+%rep 10
+
+%ifdef uInt64_StdOutHex_REQUIRED
+%ifndef uInt64_StdOutHex_DEFINED
+%define uInt64_StdOutHex_DEFINED
 
 proc_uInt64_StdOutHex:
     ; si address of Int64
@@ -253,6 +308,12 @@ proc_uInt64_StdOutHex:
         popf
     %endif
     ret
+%endif
+%endif
+
+%ifdef uInt64_StdOutInt_REQUIRED
+%ifndef uInt64_StdOutInt_DEFINED
+%define uInt64_StdOutInt_DEFINED
 
 proc_uInt64_StdOutInt:
     ; si address of Int64
@@ -319,6 +380,12 @@ proc_uInt64_StdOutInt:
     pop         bp
     ret
 
+%endif
+%endif
+
+%ifdef uInt64_Zero_REQUIRED
+%ifndef uInt64_Zero_DEFINED
+%define uInt64_Zero_DEFINED
 proc_uInt64_Zero:
     ; di address of Int64
     %ifdef SAVE_REGS
@@ -340,6 +407,12 @@ proc_uInt64_Zero:
         popf
     %endif
     ret
+%endif
+%endif
+
+%ifdef uInt64_MOV_REQUIRED
+%ifndef uInt64_MOV_DEFINED
+%define uInt64_MOV_DEFINED
 
 proc_uInt64_MOV:
     ; di destination Int64
@@ -359,6 +432,12 @@ proc_uInt64_MOV:
         pop ax
     %endif
     ret
+%endif
+%endif
+
+%ifdef uInt64_CMP_REQUIRED
+%ifndef uInt64_CMP_DEFINED
+%define uInt64_CMP_DEFINED
 
 proc_uInt64_CMP:
     ; di first Int64
@@ -386,6 +465,13 @@ proc_uInt64_CMP:
     %endif
     ret
 
+%endif
+%endif
+
+
+%ifdef uInt64_ADD_REQUIRED
+%ifndef uInt64_ADD_DEFINED
+%define uInt64_ADD_DEFINED
 proc_uInt64_ADD:
     ; di first Int64
     ; si second Int64
@@ -414,7 +500,12 @@ proc_uInt64_ADD:
     %endif
     ; Carry Flag on Overflow.
     ret
+%endif
+%endif
 
+%ifdef uInt64_MUL_WORD_REQUIRED
+%ifndef uInt64_MUL_WORD_DEFINED
+%define uInt64_MUL_WORD_DEFINED
 proc_uInt64_MUL_WORD:
     ; di address of Int64
     ; bx multiplication factor
@@ -423,6 +514,7 @@ proc_uInt64_MUL_WORD:
         push    cx
         push    dx
         push    si
+        push	di
     %endif
     mov     cx, 4
     xor     si, si
@@ -448,6 +540,7 @@ proc_uInt64_MUL_WORD:
     stc
 .Done:
     %ifdef SAVE_REGS
+    	pop	di
         pop     si
         pop     dx
         pop     cx
@@ -455,7 +548,13 @@ proc_uInt64_MUL_WORD:
     %endif
     ; Carry Flag on Overflow.
     ret
+%endif
+%endif
 
+
+%ifdef uInt64_INC_REQUIRED
+%ifndef uInt64_INC_DEFINED
+%define uInt64_INC_DEFINED
 proc_uInt64_INC:
     ; si address destination/source Int64, CF if overflowed
 	inc word [si]
@@ -472,7 +571,12 @@ proc_uInt64_INC:
 	clc
 .Done:
 	ret
+%endif
+%endif
 
+%ifdef uInt64_DEC_REQUIRED
+%ifndef uInt64_DEC_DEFINED
+%define uInt64_DEC_DEFINED
 proc_uInt64_DEC:
     ; si address destination/source Int64, CF if overflowed
     	push	ax
@@ -496,7 +600,12 @@ proc_uInt64_DEC:
 .Done:
 	pop	ax
 	ret
+%endif
+%endif
 
+%ifdef sInt64_INC_REQUIRED
+%ifndef sInt64_INC_DEFINED
+%define sInt64_INC_DEFINED
 proc_sInt64_INC:
     %ifdef SAVE_REGS
 	push	ax
@@ -504,7 +613,7 @@ proc_sInt64_INC:
     %endif
 	mov	ax, [si+6]
 	and	ax, 0x8000
-	call	proc_uInt64_INC
+	call_proc 	uInt64_INC
 	jc	.Done
 	mov	bx, [si+6]
 	and	bx, 0x8000
@@ -517,6 +626,12 @@ proc_sInt64_INC:
     %endif
 	ret
 
+%endif
+%endif
+
+%ifdef sInt64_DEC_REQUIRED
+%ifndef sInt64_DEC_DEFINED
+%define sInt64_DEC_DEFINED
 proc_sInt64_DEC:
     %ifdef SAVE_REGS
 	push	ax
@@ -524,7 +639,7 @@ proc_sInt64_DEC:
     %endif
 	mov	ax, [si+6]
 	and	ax, 0x8000
-	call	proc_uInt64_DEC
+	call_proc	uInt64_DEC
 	jc	.Done
 	mov	bx, [si+6]
 	and	bx, 0x8000
@@ -537,7 +652,12 @@ proc_sInt64_DEC:
     %endif
 	ret
 
+%endif
+%endif
 
+%ifdef sInt64_ABS_REQUIRED
+%ifndef sInt64_ABS_DEFINED
+%define sInt64_ABS_DEFINED
 proc_sInt64_ABS:
     ; si address destination/source Int64
     push	ax
@@ -548,7 +668,7 @@ proc_sInt64_ABS:
     not		word [si+4]
     not		word [si+2]
     not		word [si]
-    call	proc_uInt64_INC
+    call_proc	uInt64_INC
     stc
     jmp		.Done
 .Positive:
@@ -557,23 +677,202 @@ proc_sInt64_ABS:
     pop		ax
     ret
 
+%endif
+%endif
+
+%ifdef sInt64_NEG_REQUIRED
+%ifndef sInt64_NEG_DEFINED
+%define sInt64_NEG_DEFINED
+proc_sInt64_NEG:
+    ; si address destination/source Int64
+    push	ax
+    mov		ax, [si+6]
+    test	ax, 0x8000
+    jnz		.Negative
+    not		word [si+6]
+    not		word [si+4]
+    not		word [si+2]
+    not		word [si]
+    call_proc	uInt64_INC
+    stc
+    jmp		.Done
+.Negative:
+    clc
+.Done:
+    pop		ax
+    ret
+
+%endif
+%endif
+
+%ifdef sInt64_StdOutInt_REQUIRED
+%ifndef sInt64_StdOutInt_DEFINED
+%define sInt64_StdOutInt_DEFINED
 proc_sInt64_StdOutInt:
     ; si address destination/source Int64
     %ifdef SAVE_REGS
 	push    di
     %endif
-    mov  	di, temp_StdOutInt
-    call	proc_uInt64_MOV
+    push	bp
+    mov		bp, sp
+    sub		sp, 8
+    mov  	di, sp
+    call_proc	uInt64_MOV
     mov		si, di
-    call	proc_sInt64_ABS
+    call_proc	sInt64_ABS
     jnc		.NotNegative
     StdOutChar  '-'
 .NotNegative:
-    call	proc_uInt64_StdOutInt
+    call_proc	uInt64_StdOutInt
+    mov		sp, bp
+    pop		bp
     %ifdef SAVE_REGS
         pop	di
     %endif
     ret
 
-temp_StdOutInt:
-    dq 0
+%endif
+%endif
+
+%ifdef ASCII_uInt64_REQUIRED
+%ifndef ASCII_uInt64_DEFINED
+%define ASCII_uInt64_DEFINED
+%define ASCII_sInt64_REQUIRED
+proc_ASCII_uInt64:
+    ; for now not going to worry about it.
+
+%endif
+%endif
+
+%ifdef ASCII_sInt64_REQUIRED
+%ifndef ASCII_sInt64_DEFINED
+%define ASCII_sInt64_DEFINED
+proc_ASCII_sInt64:
+    ; si address source ASCII text
+    ; di address destination Int64
+    %ifndef SAVE_REGS
+	push	di
+    %endif
+    call_proc	uInt64_Zero
+    %ifndef SAVE_REGS
+	pop	di
+    %endif
+    %ifdef SAVE_REGS
+	push		di
+	push		si
+	push		bx
+	push		dx
+	push		ax
+    %endif
+
+    xor		dx, dx
+    mov		ax, [si]
+    cmp		al, '-'
+    jne		.NotNeg
+    or 		dl, 1 		; negative flag
+    inc		si
+    mov 	ax, [si]
+.NotNeg:
+    cmp		al, '0'
+    jne		.NotHex
+    cmp		ah, 'x'
+    je		.IsHex
+    cmp		ah, 'X'
+    jne		.NotHex
+.IsHex:
+    inc		si		; 'add si, 2' is 1 byte more then 2x 'inc si'
+    inc		si
+    or		dl, 2		; hex flag
+    jmp		.NotHex
+.NotHex:
+
+    cld
+.ConvertLoop:
+    lodsb
+    cmp		al, '0'
+    jb		.BadAscii
+    cmp		al, '9'
+    jna		.HaveDigit
+    test	dl, 2
+    jz		.HaveDigit
+    cmp		al, 'a'
+    jb		.NotLower
+    cmp		al, 'f'
+    ja		.NotLower
+    sub		al, 0x20	; make upper case
+.NotLower:
+    cmp		al, 'A'
+    jb		.BadAscii
+    cmp		al, 'F'
+    ja		.BadAscii
+    sub         al, 0x07	; shift value down to top of numbers
+.HaveDigit:
+    xor		ah, ah
+    sub		al, 0x30
+    cmp		al, 0xf
+    ja		.BadAscii
+    mov		bx, 10
+    test	dl, 2
+    jz		.ShiftNum
+    mov		bx, 0x10
+.ShiftNum:
+    %ifndef SAVE_REGS
+        push    ax
+        push    dx
+        push    si
+        push	di
+    %endif
+    call_proc	uInt64_MUL_WORD
+    %ifndef SAVE_REGS
+        pop    di
+        pop    si
+        pop    dx
+        pop    ax
+    %endif
+    jc		.MathError
+    adc		[di], ax
+    adc		[di + 2], word 0
+    adc		[di + 4], word 0
+    adc		[di + 6], word 0
+    jc		.MathError
+
+    ; should test highest bit for overflow. when using signed numbers.
+    jmp		.ConvertLoop
+
+.BadAscii:
+    cmp		al, 0
+    je		.EndNumber
+    cmp		al, 32
+    je		.EndNumber
+    cmp		al, 13
+    je		.EndNumber
+    jmp		.MathError
+.EndNumber:
+    test	dl, 1
+    jz		.DontMakeNeg
+    xchg	si, di
+    call_proc	sInt64_NEG
+    xchg	si, di
+
+.DontMakeNeg:
+    clc
+    jmp		.Done
+
+.MathError:
+;    call 	proc_uInt64_Zero
+    stc
+.Done:
+    %ifdef SAVE_REGS
+    	pop		ax
+    	pop		dx
+    	pop		bx
+    	pop		si
+	pop		di
+    %endif
+    ret
+%endif
+%endif
+
+%endrep
+
+%endmacro
