@@ -6,7 +6,6 @@
 %idefine NoVideoOutput
 
 ; %idefine Bit64
-; %idefine DevBit64
 
 %include "COMMON.INC"
 
@@ -17,47 +16,6 @@
 ; Include 64-bit number math for 8086
 %ifdef Bit64
     %include "INT64.INC"
-%endif
-%ifdef DevBit64
-
-; Int64 development and testing
-    mov  cx, 70
-    clc
-OutLoop1:
-    push cx
-    uInt64_SHR		N0, 1
-    pushf
-    sInt64_StdOutBin 	N0
-    StdOutCRLF
-    call  SlowDown
-    popf
-    jnc			.NoLoss
-    StdOutStr		T0
-    jmp			Done
-.NoLoss:
-    pop  cx
-    loop OutLoop1
-    jmp Done
-
-SlowDown:
-   pushf
-   push cx
-   mov  cx, 2
-.WaitLoop:
-   hlt
-   loop  .WaitLoop
-   pop  cx
-   popf
-   ret
-
-N0:
-   dq 0x1000002345000
-N1:
-   dq 0x100000
-T0:
-   db 'Bit Lost',0
-
-; end test area
 %endif
 ; -----------------------------------------------------------------------------
 %ifndef Bit64
@@ -337,15 +295,14 @@ OptionsTable:
     TableData '/?', SwitchHelp
     TableData 'ADD', OptPlus
     TableData '+', OptPlus
-    TableData 'ADD', OptPlus
-    TableData '-', OptMinus
     TableData 'SUB', OptMinus
-    TableData '*', OptMultiply
+    TableData '-', OptMinus
     TableData 'MUL', OptMultiply
-    TableData '/', OptDivide
+    TableData '*', OptMultiply
     TableData 'DIV', OptDivide
-    TableData '\', OptMod
+    TableData '/', OptDivide
     TableData 'MOD', OptMod
+    TableData '\', OptMod
     TableData 'SHR', OptShr
     TableData 'SHL', OptShl
     TableData 'AND', OptAnd
