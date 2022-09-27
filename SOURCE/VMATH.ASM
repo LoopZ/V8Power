@@ -5,8 +5,8 @@
 
 %idefine NoVideoOutput
 
-%idefine Bit64
-%idefine DevBit64
+; %idefine Bit64
+; %idefine DevBit64
 
 %include "COMMON.INC"
 
@@ -25,14 +25,14 @@
     clc
 OutLoop1:
     push cx
-    uInt64_SHL		N0, 1
+    uInt64_SHR		N0, 1
     pushf
     sInt64_StdOutBin 	N0
     StdOutCRLF
     call  SlowDown
     popf
     jnc			.NoLoss
-    StdOutStr		'BitLost'
+    StdOutStr		T0
     jmp			Done
 .NoLoss:
     pop  cx
@@ -51,10 +51,11 @@ SlowDown:
    ret
 
 N0:
-   dq 1
+   dq 0x1000002345000
 N1:
    dq 0x100000
-
+T0:
+   db 'Bit Lost',0
 
 ; end test area
 %endif
@@ -155,6 +156,9 @@ OptXor:
 
 RealSwitches:
 
+SwitchB:
+    ret
+
 SwitchH:
     mov     al, 1
     mov     [OutStyle], al
@@ -188,12 +192,16 @@ OutResult:
     mov     al, [OutStyle]
     cmp     al, 1
     je      OutHex
+    ja      OutBin
     sInt64_StdOutInt 	OutResult
     jmp     Done
 OutHex:
     StdOutChar		'0'
     StdOutChar		'x'
     sInt64_StdOutHex 	OutResult
+    jmp     Done
+OutBin:
+    sInt64_StdOutBin 	OutResult
 Done:
     StdOutCRLF
     Terminate 0
@@ -236,43 +244,33 @@ OptMod:
     jmp     ClearLastOpt
 
 OptShr:
-    ;xor     dx, dx
-    ;mov     cx, [OutResult]
-    ;xchg    ax, cx
-    ;shr     ax, cl
-    ;mov     [OutResult], ax
+    mov      cx, [TempVal]
+    sInt64_SHR OutResult, cx
     jmp     ClearLastOpt
 
 OptShl:
-    ;xor     dx, dx
-    ;mov     cx, [OutResult]
-    ;xchg    ax, cx
-    ;shl     ax, cl
-    ;mov     [OutResult], ax
+    mov      cx, [TempVal]
+    sInt64_SHL OutResult, cx
     jmp     ClearLastOpt
 
 OptAnd:
-    ;xor     dx, dx
-    ;mov     cx, [OutResult]
-    ;and     ax, cx
-    ;mov     [OutResult], ax
+    sInt64_AND OutResult, TempVal
     jmp     ClearLastOpt
 
 OptOr:
-    ;xor     dx, dx
-    ;mov     cx, [OutResult]
-    ;or      ax, cx
-    ;mov     [OutResult], ax
+    sInt64_OR OutResult, TempVal
     jmp     ClearLastOpt
 
 OptXor:
-    ;xor     dx, dx
-    ;mov     cx, [OutResult]
-    ;xor     ax, cx
-    ;mov     [OutResult], ax
+    sInt64_XOR OutResult, TempVal
     jmp     ClearLastOpt
 
 RealSwitches:
+
+SwitchB:
+    mov     al, 2
+    mov     [OutStyle], al
+    ret
 
 SwitchH:
     mov     al, 1
@@ -333,6 +331,7 @@ CommandLineSwitches:
 
 OptionsTable:
 
+    TableData '/B', SwitchB
     TableData '/H', SwitchH
     TableData '/D', SwitchD
     TableData '/?', SwitchHelp

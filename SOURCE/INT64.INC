@@ -35,6 +35,11 @@
 ; uInt64_RCR		dest (CF for bit in/out)
 ; uInt64_ROL		dest, bits
 ; uInt64_ROR		dest, bits
+; uInt64_SHL		dest, bits  (CF if any bits were pushed off the end)
+; uInt64_SHR		dest, bits  (CF if any bits were pushed off the end)
+; uInt64_AND		dest, address2
+; uInt64_XOR		dest, address2
+; uInt64_OR		dest, address2
 ; uInt64_CMP		address1, address2 (then test flags, ie JA, JBE and etc)
 ; uInt64_INC		address, (CF if overflow)
 ; uInt64_DEC		address, (CF if underflow)
@@ -54,6 +59,8 @@
 ; sInt64_RCR		dest (CF for bit in/out)
 ; sInt64_ROL		dest, bits
 ; sInt64_ROR		dest, bits
+; sInt64_SHL		dest, bits  (CF if any bits were pushed off the end)
+; sInt64_SHR		dest, bits  (CF if any bits were pushed off the end)
 ; sInt64_ADD		dest, address2 (result in dest, CF overflow)
 ; sInt64_SUB		dest, address2 (result in dest, CF overflow)
 
@@ -89,6 +96,9 @@
 %idefine sInt64_ROL 		uInt64_ROL
 %idefine sInt64_SHR 		uInt64_SHR
 %idefine sInt64_SHL 		uInt64_SHL
+%idefine sInt64_AND 		uInt64_AND
+%idefine sInt64_XOR 		uInt64_XOR
+%idefine sInt64_OR 		uInt64_OR
 %idefine sInt64_ADD		uInt64_ADD	; Humm
 %idefine sInt64_SUB		uInt64_SUB	; Humm
 
@@ -276,6 +286,49 @@
         pop  di
     %endif
 %endmacro
+
+%imacro uInt64_AND 2
+    %ifdef SAVE_REGS
+        push di
+        push si
+    %endif
+    mov  di, %1
+    mov  si, %2
+    call_proc uInt64_AND
+    %ifdef SAVE_REGS
+        pop  si
+        pop  di
+    %endif
+%endmacro
+
+%imacro uInt64_XOR 2
+    %ifdef SAVE_REGS
+        push di
+        push si
+    %endif
+    mov  di, %1
+    mov  si, %2
+    call_proc uInt64_XOR
+    %ifdef SAVE_REGS
+        pop  si
+        pop  di
+    %endif
+%endmacro
+
+%imacro uInt64_OR 2
+    %ifdef SAVE_REGS
+        push di
+        push si
+    %endif
+    mov  di, %1
+    mov  si, %2
+    call_proc uInt64_OR
+    %ifdef SAVE_REGS
+        pop  si
+        pop  di
+    %endif
+%endmacro
+
 
 %imacro uInt64_CMP 2
     %ifdef SAVE_REGS
@@ -798,6 +851,157 @@ proc_uInt64_ROR:
 .DoneShift:
     %ifdef SAVE_REGS
         pop cx
+        pop ax
+    %endif
+    ret
+%endif
+%endif
+
+%ifdef uInt64_SHL_REQUIRED
+%ifndef uInt64_SHL_DEFINED
+%define uInt64_SHL_DEFINED
+
+proc_uInt64_SHL:
+    ; di destination Int64
+    ; cx is bits to rotate
+    %ifdef SAVE_REGS
+        push ax
+        push cx
+        push dx
+    %endif
+    xor  dl, dl
+.ShiftLoop:
+    cmp  cx, 0
+    jz   .DoneShift
+    clc
+    call_proc uInt64_RCL
+    jnc   .NoLostBit
+    or	  dl, 1
+.NoLostBit:
+    dec   cx
+    jmp  .ShiftLoop
+.DoneShift:
+    clc
+    test  dl, dl
+    jz    .NoLoss
+    stc
+.NoLoss:
+    %ifdef SAVE_REGS
+        pop dx
+        pop cx
+        pop ax
+    %endif
+    ret
+%endif
+%endif
+
+%ifdef uInt64_SHR_REQUIRED
+%ifndef uInt64_SHR_DEFINED
+%define uInt64_SHR_DEFINED
+
+proc_uInt64_SHR:
+    ; di destination Int64
+    ; cx is bits to rotate
+    %ifdef SAVE_REGS
+        push ax
+        push cx
+        push dx
+    %endif
+    xor  dl, dl
+.ShiftLoop:
+    cmp  cx, 0
+    jz   .DoneShift
+    clc
+    call_proc uInt64_RCR
+    jnc   .NoLostBit
+    or	  dl, 1
+.NoLostBit:
+    dec   cx
+    jmp  .ShiftLoop
+.DoneShift:
+    clc
+    test  dl, dl
+    jz    .NoLoss
+    stc
+.NoLoss:
+    %ifdef SAVE_REGS
+        pop dx
+        pop cx
+        pop ax
+    %endif
+    ret
+%endif
+%endif
+
+%ifdef uInt64_AND_REQUIRED
+%ifndef uInt64_AND_DEFINED
+%define uInt64_AND_DEFINED
+
+proc_uInt64_AND:
+    ; di destination Int64
+    ; si source Int64
+    %ifdef SAVE_REGS
+        push ax
+    %endif
+    mov  ax, [si]
+    and	 [di], ax
+    mov  ax, [si + 2]
+    and	 [di + 2], ax
+    mov  ax, [si + 4]
+    and	 [di + 4], ax
+    mov  ax, [si + 6]
+    and	 [di + 6], ax
+    %ifdef SAVE_REGS
+        pop ax
+    %endif
+    ret
+%endif
+%endif
+
+%ifdef uInt64_XOR_REQUIRED
+%ifndef uInt64_XOR_DEFINED
+%define uInt64_XOR_DEFINED
+
+proc_uInt64_XOR:
+    ; di destination Int64
+    ; si source Int64
+    %ifdef SAVE_REGS
+        push ax
+    %endif
+    mov  ax, [si]
+    xor	 [di], ax
+    mov  ax, [si + 2]
+    xor	 [di + 2], ax
+    mov  ax, [si + 4]
+    xor	 [di + 4], ax
+    mov  ax, [si + 6]
+    xor	 [di + 6], ax
+    %ifdef SAVE_REGS
+        pop ax
+    %endif
+    ret
+%endif
+%endif
+
+%ifdef uInt64_OR_REQUIRED
+%ifndef uInt64_OR_DEFINED
+%define uInt64_OR_DEFINED
+
+proc_uInt64_OR:
+    ; di destination Int64
+    ; si source Int64
+    %ifdef SAVE_REGS
+        push ax
+    %endif
+    mov  ax, [si]
+    or	 [di], ax
+    mov  ax, [si + 2]
+    or	 [di + 2], ax
+    mov  ax, [si + 4]
+    or	 [di + 4], ax
+    mov  ax, [si + 6]
+    or	 [di + 6], ax
+    %ifdef SAVE_REGS
         pop ax
     %endif
     ret
