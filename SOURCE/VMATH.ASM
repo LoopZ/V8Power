@@ -228,12 +228,12 @@ OptNone:
 
 OptPlus:
     sInt64_ADD     OutResult, TempVal
+    jc	    OverFlowError
     jmp     ClearLastOpt
 
 OptMinus:
-    ;mov     cx, [OutResult]
-    ;sub     cx, ax
-    ;mov     [OutResult], cx
+    sInt64_SUB     OutResult, TempVal
+    jc	    OverFlowError
     jmp     ClearLastOpt
 
 OptMultiply:
@@ -244,19 +244,14 @@ OptMultiply:
     jmp     ClearLastOpt
 
 OptDivide:
-    ;xor     dx, dx
-    ;mov     cx, [OutResult]
-    ;xchg    ax, cx
-    ;div     cx
-    ;mov     [OutResult], ax
+    sInt64_DIV OutResult, TempVal ; out Quotient, Remainder
+    jc	    OverFlowError
     jmp     ClearLastOpt
 
 OptMod:
-    ;xor     dx, dx
-    ;mov     cx, [OutResult]
-    ;xchg    ax, cx
-    ;div     cx
-    ;mov     [OutResult], dx
+    sInt64_DIV OutResult, TempVal
+    sInt64_MOV OutResult, TempVal ; mov Remainder into result
+    jc	    OverFlowError
     jmp     ClearLastOpt
 
 OptShr:
@@ -327,6 +322,13 @@ NoSwitch:
 .InvalidOption:
     WriteStr    CommandLineErrorMsg
     Terminate   100
+
+OverFlowError:
+    WriteStr    OverFlowErrorMessage
+    Terminate   100
+
+OverFlowErrorMessage:
+  db 'overflow error',CRLF,0
 
 Int64_Procs
 

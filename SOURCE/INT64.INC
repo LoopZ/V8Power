@@ -55,6 +55,7 @@
 %idefine sInt64_Load 		uInt64_Load
 %idefine sInt64_MOV 		uInt64_MOV
 %idefine sInt64_ADD		uInt64_ADD	; Humm
+%idefine sInt64_SUB		uInt64_SUB	; Humm
 
 %imacro call_proc 1
 	%define %1_REQUIRED
@@ -116,6 +117,28 @@
     mov  dx, [%1 + 6]
 %endmacro
 
+%imacro push_Int64 1
+    mov  ax, [%1 + 6]
+    push ax
+    mov  ax, [%1 + 4]
+    push ax
+    mov  ax, [%1 + 2]
+    push ax
+    mov  ax, [%1 + 0]
+    push ax
+%endmacro
+
+%imacro pop_Int64 1
+    pop  ax
+    mov  [%1], ax
+    pop  ax
+    mov  [%1 + 2], ax
+    pop  ax
+    mov  [%1 + 4], ax
+    pop  ax
+    mov  [%1 + 6], ax
+%endmacro
+
 %imacro uInt64_MOV 2
     %ifdef SAVE_REGS
         push di
@@ -152,6 +175,20 @@
     mov  di, %1
     mov  si, %2
     call_proc uInt64_ADD
+    %ifdef SAVE_REGS
+        pop  si
+        pop  di
+    %endif
+%endmacro
+
+%imacro uInt64_SUB 2
+    %ifdef SAVE_REGS
+        push di
+        push si
+    %endif
+    mov  di, %1
+    mov  si, %2
+    call_proc uInt64_SUB
     %ifdef SAVE_REGS
         pop  si
         pop  di
@@ -224,6 +261,43 @@
     call_proc sInt64_ABS
     %ifdef SAVE_REGS
         pop  si
+    %endif
+%endmacro
+
+%imacro sInt64_DIV 2
+    %ifdef SAVE_REGS
+    	push	ax
+    	%ifnidni %1, di
+    		push di
+    	%endif
+    	%ifnidni %2, si
+	        push si
+	%endif
+    %endif
+
+    %ifidni %2, di
+    	push	di
+    %endif
+    %ifnidni %1, di
+    	mov	di, %1
+    %endif
+    %ifnidni %2, si
+    	mov	si, %2
+    %endif
+    %ifidni %2, di
+    	pop	si
+    %endif
+
+    call_proc sInt64_DIV
+
+    %ifdef SAVE_REGS
+    	%ifnidni %2, si
+	    	pop si
+	%endif
+    	%ifnidni %1, di
+        	pop di
+        %endif
+        pop	ax
     %endif
 %endmacro
 
@@ -503,6 +577,135 @@ proc_uInt64_ADD:
 %endif
 %endif
 
+
+%ifdef uInt64_SUB_REQUIRED
+%ifndef uInt64_SUB_DEFINED
+%define uInt64_SUB_DEFINED
+
+proc_uInt64_SUB:
+    ; di first Int64
+    ; si second Int64
+    %ifdef SAVE_REGS
+        push ax
+        push bx
+        push cx
+        push dx
+    %endif
+    xor  bx, bx
+    mov  cx, 4          ; Words in Int64
+    xor  dx, dx
+.Repeat:
+    test    dx, dx
+    jz	    .NoBorrowNow
+    call    .Borrow
+.NoBorrowNow:
+    mov     ax, [di + bx]
+    sub     ax, [si + bx]
+    cmp     ax, [di + bx]
+    jbe	    .NoBorrowNext
+    inc	    dx
+.NoBorrowNext:
+    mov     [di + bx], ax
+    add     bx, 2
+    loop    .Repeat
+    clc
+    test    dx, dx
+    jz	    .Done
+    stc
+.Done:
+    %ifdef SAVE_REGS
+    	pop  dx
+        pop  cx
+        pop  bx
+        pop  ax
+    %endif
+    ; Carry Flag on Underflow.
+    ret
+.Borrow:
+    push    bx
+    push    cx
+.BorrowAgain:
+    mov     ax, [di + bx]
+    dec	    ax
+    mov	    [di+bx], ax
+    cmp     ax, 0xffff
+    jne     .BorrowDone
+    add	    bx, 2
+    loop    .BorrowAgain
+.BorrowDone:
+    xor	    dx, dx
+.BorrowFail:
+    pop     cx
+    pop     bx
+    ret
+
+%endif
+%endif
+
+%ifdef uInt64_SUB_SS_REQUIRED
+%ifndef uInt64_SUB_SS_DEFINED
+%define uInt64_SUB_SS_DEFINED
+proc_uInt64_SUB_SS:
+    ; di first Int64
+    ; si second Int64
+    %ifdef SAVE_REGS
+        push ax
+        push bx
+        push cx
+        push dx
+    %endif
+    xor  bx, bx
+    mov  cx, 4          ; Words in Int64
+    xor  dx, dx
+.Repeat:
+    test    dx, dx
+    jz	    .NoBorrowNow
+    call    .Borrow
+.NoBorrowNow:
+    mov     ax, [ss:di + bx]
+    sub     ax, [ss:si + bx]
+    cmp     ax, [ss:di + bx]
+    jbe	    .NoBorrowNext
+    inc	    dx
+.NoBorrowNext:
+    mov     [di + bx], ax
+    add     bx, 2
+    loop    .Repeat
+    clc
+    test    dx, dx
+    jz	    .Done
+    stc
+.Done:
+    %ifdef SAVE_REGS
+    	pop  dx
+        pop  cx
+        pop  bx
+        pop  ax
+    %endif
+    ; Carry Flag on Underflow.
+    ret
+.Borrow:
+    push    bx
+    push    cx
+.BorrowAgain:
+    mov     ax, [ss:di + bx]
+    dec	    ax
+    mov	    [ss:di+bx], ax
+    cmp     ax, 0xffff
+    jne     .BorrowDone
+    add	    bx, 2
+    loop    .BorrowAgain
+.BorrowDone:
+    xor	    dx, dx
+.BorrowFail:
+    pop     cx
+    pop     bx
+    ret
+
+%endif
+%endif
+
+
 %ifdef uInt64_MUL_WORD_REQUIRED
 %ifndef uInt64_MUL_WORD_DEFINED
 %define uInt64_MUL_WORD_DEFINED
@@ -693,13 +896,222 @@ proc_sInt64_NEG:
     not		word [si+4]
     not		word [si+2]
     not		word [si]
-    call_proc	uInt64_INC
+    call_proc	uInt64_INC	; maybe DEC instead, need to test more
     stc
     jmp		.Done
 .Negative:
     clc
 .Done:
     pop		ax
+    ret
+
+%endif
+%endif
+
+%ifdef sInt64_DIV_REQUIRED
+%ifndef sInt64_DIV_DEFINED
+%define sInt64_DIV_DEFINED
+
+proc_sInt64_DIV:
+    ; this could be streamlined and consolidated a lot.
+
+
+    ; si address source Int64 divisor; si out is remainder
+    ; di address source Int64 dividend; di out is quotient
+    %ifdef SAVE_REGS
+	push    ax
+    %endif
+    push	bp
+    mov		bp, sp
+
+    ; save positive/negative result flag
+    mov		ax, [di+6]
+    xor		ax, [si+6]
+    push	ax	; bp - 2 = result +/- flag
+
+    ; convert numbers to positive if needed
+    push	di
+    push	si
+    call_proc   sInt64_ABS
+    mov         si, di
+    call_proc   sInt64_ABS
+    pop		si
+    pop		di
+
+    ; count bits in divisor
+    push	si
+    xor		cx, cx
+    xor		bx, bx
+    mov		ax, 1
+.CountLoop:
+    inc		bx
+    test	ax, [si]
+    jz		.BitNotSet
+    mov		cx, bx
+.BitNotSet:
+    rol		ax, 1
+    test	bx, 0x0010
+    jz		.NotIncSI
+    inc		si
+.NotIncSI:
+    cmp		bx, 63
+    je		.DoneCount
+.DoneCount:
+    pop		si
+
+    ; push numbers onto stack in preparation for division
+
+    %idefine Int64_DIV_A ss:bp-10
+    %idefine Int64_DIV_B ss:bp-18
+    %idefine Int64_DIV_C ss:bp-26
+    push_Int64	di	; bp - 10
+    push_Int64  si	; bp - 18
+    push_Int64  si	; bp - 26 ; just making space for temp value
+    push	cx
+    ; clear result values
+    push	di
+    call_proc	uInt64_Zero
+    mov		di, si
+    call_proc	uInt64_Zero
+    pop		di
+
+    ; set number of operations (high bit is excluded)
+    pop		bx
+    mov		cx, 64
+    ; sub		cx, bx
+
+.DivLoop:
+    push	cx
+
+    ; copy divisor B to C
+    mov		ax, [Int64_DIV_B]
+    mov		[Int64_DIV_C], ax
+    mov		ax, [Int64_DIV_B + 2]
+    mov		[Int64_DIV_C + 2], ax
+    mov		ax, [Int64_DIV_B + 4]
+    mov		[Int64_DIV_C+ 4], ax
+    mov		ax, [Int64_DIV_B + 6]
+    mov		[Int64_DIV_C + 6], ax
+
+    ; shift temp left CX bits
+    call	.SHL_C
+    jc		.IsLessThan
+
+    ; is temp < remaining
+    mov		ax, [Int64_DIV_A + 6]
+    cmp		ax, [Int64_DIV_C + 6]
+    jb		.IsLessThan
+    mov		ax, [Int64_DIV_A + 4]
+    cmp		ax, [Int64_DIV_C + 4]
+    jb		.IsLessThan
+    mov		ax, [Int64_DIV_A + 2]
+    cmp		ax, [Int64_DIV_C + 2]
+    jb		.IsLessThan
+    mov		ax, [Int64_DIV_A]
+    cmp		ax, [Int64_DIV_C]
+    jb		.IsLessThan
+
+    ; Temp is not larger than the remainder
+    call 	.TempNotLarger
+
+    ; Is Less Than remainder, proceed to next bit
+.IsLessThan:
+    pop		cx
+    loop	.DivLoop
+
+    ; move remainder to si
+     mov	ax, [Int64_DIV_A]
+     mov	[si], ax
+     mov	ax, [Int64_DIV_A + 2]
+     mov	[si + 2], ax
+     mov	ax, [Int64_DIV_A + 4]
+     mov	[si + 4], ax
+     mov	ax, [Int64_DIV_A + 6]
+     mov	[si + 6], ax
+
+    ; check flag to see if result is negative
+    mov		ax, [ss:bp-2]
+    test	ax, 0x8000	; either (but not both) are negative
+    jz		.PositiveResult
+    xchg	di, si
+    call_proc	sInt64_NEG
+    xchg	di, si
+    clc
+ .PositiveResult:
+
+    ; pop_Int64		si
+    ; pop_Int64		di
+    ; discard remaining data on stack
+    mov		sp, bp
+    pop		bp
+    %ifdef SAVE_REGS
+	pop    ax
+    %endif
+    ret
+
+.TempNotLarger:
+    ; So, first subtract it from the remainder
+    push	di
+    push	si
+    mov		di, bp
+    sub		di, 10
+    mov		si, bp
+    sub		si, 26
+    push	cx
+    call_proc	uInt64_SUB_SS
+    pop		cx
+    pop		si
+    pop		di
+
+    ; create bit shift value
+    xor		ax, ax
+    mov		[Int64_DIV_C + 6], ax
+    mov		[Int64_DIV_C + 4], ax
+    mov		[Int64_DIV_C + 2], ax
+    inc		ax
+    mov		[Int64_DIV_C], ax
+    call	.SHL_C
+
+    ; Then add bit shift value to result
+    clc
+    mov		ax, [Int64_DIV_C]
+    adc		[di], ax
+    mov		ax, [Int64_DIV_C + 2]
+    adc		[di + 2], ax
+    mov		ax, [Int64_DIV_C + 4]
+    adc		[di + 4], ax
+    mov		ax, [Int64_DIV_C + 6]
+    adc		[di + 6], ax
+    ret
+
+.SHL_C:
+    ; shift C left CX bits
+    push	cx
+.LoopSHL_C:
+    clc
+    dec		cx
+    jz		.DoneSHL_C
+
+    mov		ax, [Int64_DIV_C]
+    rcl		ax, 1
+    mov		[Int64_DIV_C], ax
+
+    mov		ax, [Int64_DIV_C + 2]
+    rcl		ax, 1
+    mov		[Int64_DIV_C + 2], ax
+
+    mov		ax, [Int64_DIV_C + 4]
+    rcl		ax, 1
+    mov		[Int64_DIV_C + 4], ax
+
+    mov		ax, [Int64_DIV_C + 6]
+    rcl		ax, 1
+    mov		[Int64_DIV_C + 6], ax
+
+    jnc		.LoopSHL_C
+    stc
+.DoneSHL_C:
+    pop		cx
     ret
 
 %endif
