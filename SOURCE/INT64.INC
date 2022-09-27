@@ -7,52 +7,70 @@
 ; registers.
 %idefine SAVE_REGS
 
+; Below are a list of 64-bit integer functions for working with signed and
+; unsigned number on the 8086 platform without the need for a coprocessor.
+; The macros listed before the "comming soon" section appear to be functioning
+; properly. However, these are all highly experimental and much testing is still
+; required. Functions below the "coming soon" section either do not exist or
+; have not been finished. Those obviously will not work correctly, yet.
+
+; Also, some unsigned macros (like uInt64_MOV) is identical to it's signed
+; counterpart. This is for programmer convenience and permits using consistent
+; u* or s* macros with specific numbers.
+
 ; Macro Functions
 
-; Signed 64-bit integer function macros
-; Int64_StdOutHex   address
-
 ; Unsigned 64-bit integer function macros
+; Ascii_uInt64		dest, address2 (convert from ascii to uInt64, CF overflow or error)
 ; uInt64_StdOutHex	address
 ; uInt64_StdOutInt	address
 ; uInt64_Zero		address
 ; uInt64_Store		address (from DX:CX:BX:AX)
 ; uInt64_Load		address (into DX:CX:BX:AX)
+; uInt64_PUSH		address (push uInt64 onto stack)
+; uInt64_POP		address (pop uInt64 from stack)
 ; uInt64_MOV		dest, src
-; uInt64_CMP		address1, address2 (test flags, ie JA, JBE and etc)
+; uInt64_CMP		address1, address2 (then test flags, ie JA, JBE and etc)
 ; uInt64_INC		address, (CF if overflow)
 ; uInt64_DEC		address, (CF if underflow)
-; Ascii_uInt64		address1, address2 (convert from ascii, result in address1, CF overflow or error)
+; uInt64_ADD		dest, address2 (result in dest, CF overflow)
+; uInt64_SUB		dest, address2 (result in dest, CF overflow)
 
 ; Signed versions identical to the Unsigned 64-bit versions
 ; sInt64_StdOutHex	address
 ; sInt64_Zero		address
 ; sInt64_Store		address (from DX:CX:BX:AX)
 ; sInt64_Load		address (into DX:CX:BX:AX)
+; sInt64_PUSH		address (push sInt64 onto stack)
+; sInt64_POP		address (pop sInt64 from stack)
 ; sInt64_MOV		dest, src
-; sInt64_ADD		address1, address2 (result in address1, CF overflow)
-; Ascii_sInt64		address1, address2 (convert from ascii, result in address1, CF overflow or error)
+; sInt64_ADD		dest, address2 (result in dest, CF overflow)
+; uInt64_SUB		dest, address2 (result in dest, CF overflow)
 
-; Signed 64-bit integer function macros
-; sInt64_ABS   		address
+; Signed 64-bit integer function macros only. They are different from or do
+; not have unsigned Int64 counterparts.
+; Ascii_sInt64		dest, address2 (convert from ascii to sInt64, CF overflow or error)
 ; sInt64_StdOutInt	address
 ; sInt64_INC		address, (CF if overflow)
 ; sInt64_DEC		address, (CF if underflow)
+; sInt64_ABS   		address, (CF if number was not positive)
+; sInt64_NEG   		address, (CF if number was positive)
 
+; coming soon, or at least someday eventually, maybe.
+; uInt64_MUL		dest, address2 (result in dest, CF overflow)
+; uInt64_DIV		dest, address2 (result in dest, CF overflow)
 
-; coming soon, or at least someday eventually.
-; uInt64_MUL		address1, address2 (result in address1, CF overflow)
-; uInt64_DIV		address1, address2 (result in address1, CF overflow)
-
-; sInt64_CMP		address1, address2 (test flags, ie JA, JBE and etc)
-; sInt64_MUL		address1, address2 (result in address1, CF overflow)
-; sInt64_DIV		address1, address2 (result in address1, CF overflow)
+; sInt64_CMP		address1, address2 (then test flags, ie JA, JBE and etc)
+; sInt64_MUL		dest, address2 (result in dest, CF overflow)
+; sInt64_DIV		dest, address2 (result in dest, CF overflow)
 
 ; -----------------------------------------------------------------------------
 %idefine sInt64_StdOutHex 	uInt64_StdOutHex
 %idefine sInt64_Zero		uInt64_Zero
 %idefine sInt64_Store		uInt64_Store
 %idefine sInt64_Load 		uInt64_Load
+%idefine sInt64_PUSH 		uInt64_PUSH
+%idefine sInt64_POP 		uInt64_POP
 %idefine sInt64_MOV 		uInt64_MOV
 %idefine sInt64_ADD		uInt64_ADD	; Humm
 %idefine sInt64_SUB		uInt64_SUB	; Humm
@@ -117,7 +135,7 @@
     mov  dx, [%1 + 6]
 %endmacro
 
-%imacro push_Int64 1
+%imacro uInt64_PUSH 1
     mov  ax, [%1 + 6]
     push ax
     mov  ax, [%1 + 4]
@@ -128,7 +146,7 @@
     push ax
 %endmacro
 
-%imacro pop_Int64 1
+%imacro uInt64_POP 1
     pop  ax
     mov  [%1], ax
     pop  ax
@@ -964,9 +982,9 @@ proc_sInt64_DIV:
     %idefine Int64_DIV_A ss:bp-10
     %idefine Int64_DIV_B ss:bp-18
     %idefine Int64_DIV_C ss:bp-26
-    push_Int64	di	; bp - 10
-    push_Int64  si	; bp - 18
-    push_Int64  si	; bp - 26 ; just making space for temp value
+    sInt64_PUSH 	di	; bp - 10
+    sInt64_PUSH   	si	; bp - 18
+    sInt64_PUSH   	si	; bp - 26 ; just making space for temp value
     push	cx
     ; clear result values
     push	di
@@ -1039,8 +1057,8 @@ proc_sInt64_DIV:
     clc
  .PositiveResult:
 
-    ; pop_Int64		si
-    ; pop_Int64		di
+    ; sInt64_POP		si
+    ; sInt64_POP		di
     ; discard remaining data on stack
     mov		sp, bp
     pop		bp
