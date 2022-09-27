@@ -4,7 +4,9 @@
 ; NASM for DOS
 
 %idefine NoVideoOutput
-; %idefine Bit64
+
+;%idefine Bit64
+;%idefine DevBit64
 
 %include "COMMON.INC"
 
@@ -19,61 +21,36 @@
 %ifdef DevBit64
 
 ; Int64 development and testing
-;    uInt64_StdOutHex N1
-    uInt64_MOV       N3, N2
-    sInt64_ABS	     N3
-    uInt64_StdOutHex N2
-    StdOutCRLF
-    uInt64_StdOutInt N2
-    StdOutCRLF
-    sInt64_StdOutHex N3
-    StdOutCRLF
-    sInt64_StdOutInt N3
-    StdOutCRLF
-    StdOutCRLF
-
-    Ascii_sInt64     N3, T1
-    sInt64_StdOutInt N3
-    StdOutStr        T0X
-    sInt64_StdOutHex N3
-    StdOutCRLF
-    Ascii_sInt64     N3, T2
-    sInt64_StdOutInt N3
-    StdOutStr        T0X
-    sInt64_StdOutHex N3
-
-    StdOutCRLF
-    StdOutCRLF
-
-    mov  cx, 10
-OutLoop:
+    mov  cx, 70
+    clc
+OutLoop1:
     push cx
-    sInt64_DEC	N4
-    sInt64_StdOutInt N4
+    uInt64_ROR		N0, 1
+    pushf
+    sInt64_StdOutBin 	N0
     StdOutCRLF
+    call  SlowDown
+    popf
     pop  cx
-    loop OutLoop
+    loop OutLoop1
     jmp Done
 
+SlowDown:
+   pushf
+   push cx
+   mov  cx, 2
+.WaitLoop:
+   hlt
+   loop  .WaitLoop
+   pop  cx
+   popf
+   ret
+
+N0:
+   dq 1
 N1:
-    dq		0x123456789abcdef0
-N2:
-    dq  -0x10000
-    dq		-123456789123456789
-N3:
-    dq 0
-N4:
-    dq 0x7
+   dq 0x100000
 
-T0X:
-    db ' / 0x',0
-
-T1:
-    db '-0x1234567890aBcDeF',0
-T2:
-    db '0x7fffffffffffffff',0
-T3:
-    db '1234567890',0
 
 ; end test area
 %endif
