@@ -5,8 +5,8 @@
 
 %idefine NoVideoOutput
 
-;%idefine Bit64
-;%idefine DevBit64
+%idefine Bit64
+%idefine DevBit64
 
 %include "COMMON.INC"
 
@@ -25,12 +25,16 @@
     clc
 OutLoop1:
     push cx
-    uInt64_ROR		N0, 1
+    uInt64_SHL		N0, 1
     pushf
     sInt64_StdOutBin 	N0
     StdOutCRLF
     call  SlowDown
     popf
+    jnc			.NoLoss
+    StdOutStr		'BitLost'
+    jmp			Done
+.NoLoss:
     pop  cx
     loop OutLoop1
     jmp Done
