@@ -1637,19 +1637,19 @@ proc_sInt64_MUL:
     sub		ax, 18
     mov		[Int64_MULRP], ax	; save initial result position
 
-    mov		bx, bp
-    sub		bx, 26		; temp result pointer
-
     mov     	cx, 4		; we have 4 passes with 4 operations each
 
 .PassLoop:
     call	.MulTempClear	; clear temporary MUL result
     push	Int64_MULA	; save number memory start postition
     push	Int64_MULB	; save number memory start postition
-    push	bx		; save temp result memory position
     push	cx		; save cx to count passes
 
-    mov		word [Int64_MULX], 0	; clear multiplication high word
+    mov		bx, bp
+    sub		bx, 26		; temp result pointer MULTR  ss:bx
+
+    xor 	ax, ax
+    mov		[Int64_MULX], ax	; clear multiplication high word
     clc
     pushf				; push initial no-carry for addition
 
@@ -1657,34 +1657,34 @@ proc_sInt64_MUL:
     mov		ax, [Int64_MULA]	; load AX with MULA word
     mul		word [Int64_MULB]	; multiply by MULB word
     mov		[ss:bx], ax
-    xchg	dx, [Int64_MULX]	; swap current high word with prev one
+    xchg	dx, [Int64_MULX] 	; swap current high word with prev one
     popf				; restore flags for addition carry
     adc		[ss:bx], dx
     pushf				; save addition carry flag
     add		bx, 2			; next temp result word
     add		Int64_MULA, 2		; next word to MUL
-    add		Int64_MULB, 2		; next word to MUL
     loop	.MulLoop
-
-    call	.MulAddTemp		; add temp result to result
     popf				; discard addition carry flag
 
+    call	.MulAddTemp		; add temp result to result
+
     pop		cx		; restore cx of pass count
-    pop		bx
     pop		Int64_MULB	; restore number memory start postition
     pop		Int64_MULA	; restore number memory start postition
-    inc		Int64_MULB	; next word to multiple MULA.
+    add		Int64_MULB, 2	; next word to multiple MULA.
     loop	.PassLoop
 
     ; move result into position
     mov		ax, [Int64_MULRES]
-    adc		[di], ax
+    mov		[di], ax
     mov		ax, [Int64_MULRES + 2]
-    adc		[di + 2], ax
+    mov		[di + 2], ax
     mov		ax, [Int64_MULRES + 4]
-    adc		[di + 4], ax
+    mov		[di + 4], ax
     mov		ax, [Int64_MULRES + 6]
-    adc		[di + 6], ax
+    mov		[di + 6], ax
+    test	ax, 0x8000
+    jnz		.Overflow
 
     ; test for overflow
     mov		ax, [Int64_MULRES + 8]
@@ -1693,6 +1693,15 @@ proc_sInt64_MUL:
     or		ax, [Int64_MULRES + 14]
     test	ax, ax
     jnz		.Overflow
+
+    ; check flag to see if result is negative
+    mov		ax, [ss:bp-2]
+    test	ax, 0x8000	; either (but not both) are negative
+    jz		.PositiveResult
+    xchg	di, si
+    call_proc	sInt64_NEG
+    xchg	di, si
+.PositiveResult:
     clc
     jmp     .Done
 .Overflow:
@@ -1708,9 +1717,8 @@ proc_sInt64_MUL:
     ; on ret MULRP is incremented
     push	di
     mov		di, [Int64_MULRP]
-    clc
     mov		ax, [Int64_MULTR]
-    adc		[ss:di], ax
+    add		[ss:di], ax
     mov		ax, [Int64_MULTR + 2]
     adc		[ss:di + 2], ax
     mov		ax, [Int64_MULTR + 4]

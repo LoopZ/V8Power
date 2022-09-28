@@ -5,7 +5,7 @@
 
 %idefine NoVideoOutput
 
-; %idefine Bit64
+%idefine Bit64
 
 %include "COMMON.INC"
 
@@ -17,18 +17,6 @@
 %ifdef Bit64
     %include "INT64.INC"
 %endif
-
-jmp Main
-;	sInt64_MUL N0, N1
-;	sInt64_StdOutInt  N0
-;	jmp	Done
-
-N0:
-  dq	123456789
-N1:
-  dq    987654321
-
-sMUL:
 
 Main:
 ; -----------------------------------------------------------------------------
