@@ -5,6 +5,15 @@
 
 ; Undefine if you need to save a couple bytes and don't care about trashed
 ; registers.
+
+; known issues:
+; -10 + - 5, overflow, could use -10 - 5
+; -10 + 12, overflow, could use 12 - 10
+; 100 + -5, overflow, could use 100 - 5
+; -10 - -5, overflow, could use -10 + 5
+; so...
+; +/- neg, change sign and switch +/-
+; 1st neg, swap 1st & 2nd, switch +/-
 %idefine SAVE_REGS
 
 ; Below are a list of 64-bit integer functions for working with signed and
@@ -1083,6 +1092,7 @@ proc_uInt64_CMP:
 proc_uInt64_ADD:
     ; di first Int64
     ; si second Int64
+
     %ifdef SAVE_REGS
         push ax
         push bx
