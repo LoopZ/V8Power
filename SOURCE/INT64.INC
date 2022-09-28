@@ -9,10 +9,7 @@
 
 ; Below are a list of 64-bit integer functions for working with signed and
 ; unsigned number on the 8086 platform without the need for a coprocessor.
-; The macros listed before the "comming soon" section appear to be functioning
-; properly. However, these are all highly experimental and much testing is still
-; required. Functions below the "coming soon" section either do not exist or
-; have not been finished. Those obviously will not work correctly, yet.
+; These are all highly experimental and much testing is still required.
 
 ; Also, some unsigned macros (like uInt64_MOV) is identical to it's signed
 ; counterpart. This is for programmer convenience and permits using consistent
@@ -53,7 +50,9 @@
 ; uInt64_DEC		address, (CF if underflow)
 ; uInt64_ADD		dest, address2 (result in dest, CF overflow)
 ; uInt64_SUB		dest, address2 (result in dest, CF underflow)
-; uInt64_DIV		dest, address2 (result in dest, CF on error, DIV by 0)
+; uInt64_DIV		dest, address2 (result in dest, remainder in address2,
+;				        CF on DIV by 0)
+; uInt64_MUL		dest, address2 (result in dest, CF on overflow)
 
 ; Signed versions identical to the Unsigned 64-bit versions
 ; sInt64_StdOutBin	address
@@ -72,7 +71,9 @@
 ; sInt64_SHR		dest, bits  (CF if any bits were pushed off the end)
 ; sInt64_ADD		dest, address2 (result in dest, CF overflow)
 ; sInt64_SUB		dest, address2 (result in dest, CF underflow)
-; sInt64_DIV		dest, address2 (result in dest, CF on error, DIV by 0)
+; sInt64_DIV		dest, address2 (result in dest, remainder in address2,
+;				        CF on DIV by 0)
+; sInt64_MUL		dest, address2 (result in dest, CF on overflow)
 
 
 ; Signed 64-bit integer function macros only. They are different from or do
@@ -84,19 +85,13 @@
 ; sInt64_ABS   		address, (CF if number was not positive)
 ; sInt64_NEG   		address, (CF if number was positive)
 
-; coming soon, or at least someday eventually, maybe.
-; uInt64_MUL		dest, address2 (result in dest, CF overflow)
-
-; sInt64_CMP		address1, address2 (then test flags, ie JA, JBE and etc)
-; sInt64_MUL		dest, address2 (result in dest, CF overflow)
-; sInt64_DIV		dest, address2 (result in dest, CF overflow)
-
 ; -----------------------------------------------------------------------------
 %idefine sInt64_StdOutBin	uInt64_StdOutBin
 %idefine sInt64_StdOutHex 	uInt64_StdOutHex
 %idefine sInt64_Zero		uInt64_Zero
 %idefine sInt64_Store		uInt64_Store
 %idefine sInt64_Load 		uInt64_Load
+%idefine sInt64_CMP 		uInt64_CMP
 %idefine sInt64_PUSH 		uInt64_PUSH
 %idefine sInt64_POP 		uInt64_POP
 %idefine sInt64_MOV 		uInt64_MOV
