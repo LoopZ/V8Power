@@ -18,6 +18,14 @@
 ; counterpart. This is for programmer convenience and permits using consistent
 ; u* or s* macros with specific numbers.
 
+; On a side note, the techniques used here to perform 64-bit integer math are
+; scalable upwards with proportional additional performance costs. For example,
+; dividing two 256 bit numbers should take slightly less than 4x times as long
+; as two 64 bit numbers. Eventually, I may rewrite this library for overall
+; improvements. When/if that happens, I may rename it BigInts and have it
+; support any size integers. Possible with a default cap at 2048 bit numbers.
+; After all, this is for DOS. :-)
+
 ; Macro Functions
 
 ; Unsigned 64-bit integer function macros
@@ -103,6 +111,9 @@
 %idefine sInt64_OR 		uInt64_OR
 %idefine sInt64_ADD		uInt64_ADD	; Humm
 %idefine sInt64_SUB		uInt64_SUB	; Humm
+
+%idefine uInt64_MUL		sInt64_MUL
+%idefine uInt64_DIV		sInt64_DIV
 
 %imacro call_proc 1
 	%define %1_REQUIRED
@@ -468,6 +479,43 @@
     %endif
 
     call_proc sInt64_DIV
+
+    %ifdef SAVE_REGS
+    	%ifnidni %2, si
+	    	pop si
+	%endif
+    	%ifnidni %1, di
+        	pop di
+        %endif
+        pop	ax
+    %endif
+%endmacro
+
+%imacro sInt64_MUL 2
+    %ifdef SAVE_REGS
+    	push	ax
+    	%ifnidni %1, di
+    		push di
+    	%endif
+    	%ifnidni %2, si
+	        push si
+	%endif
+    %endif
+
+    %ifidni %2, di
+    	push	di
+    %endif
+    %ifnidni %1, di
+    	mov	di, %1
+    %endif
+    %ifnidni %2, si
+    	mov	si, %2
+    %endif
+    %ifidni %2, di
+    	pop	si
+    %endif
+
+    call_proc sInt64_MUL
 
     %ifdef SAVE_REGS
     	%ifnidni %2, si
@@ -1335,26 +1383,15 @@ proc_sInt64_NEG:
 %endif
 %endif
 
-%ifdef sInt64_DIV_REQUIRED
-%ifndef sInt64_DIV_DEFINED
-%define sInt64_DIV_DEFINED
+%ifdef sInt64_MULDIV_Unsign_REQUIRED
+%ifndef sInt64_MULDIV_Unsign_DEFINED
+%define sInt64_MULDIV_Unsign_DEFINED
 
-proc_sInt64_DIV:
-    ; this could be streamlined and consolidated a lot.
-
-
-    ; si address source Int64 divisor; si out is remainder
-    ; di address source Int64 dividend; di out is quotient
-    %ifdef SAVE_REGS
-	push    ax
-    %endif
-    push	bp
-    mov		bp, sp
-
+proc_sInt64_MULDIV_Unsign:
     ; save positive/negative result flag
     mov		ax, [di+6]
     xor		ax, [si+6]
-    push	ax	; bp - 2 = result +/- flag
+    push	ax
 
     ; convert numbers to positive if needed
     push	di
@@ -1364,6 +1401,31 @@ proc_sInt64_DIV:
     call_proc   sInt64_ABS
     pop		si
     pop		di
+    pop		ax
+    ret
+%endif
+%endif
+
+%ifdef sInt64_DIV_REQUIRED
+%ifndef sInt64_DIV_DEFINED
+%define sInt64_DIV_DEFINED
+
+proc_sInt64_DIV:
+    ; possibly could be improved by determining the maximum number of
+    ; iterations required instead of just max shifting the divisor to the left.
+    ; but, for now, I think the additional code required outweighs any
+    ; performance gain that may provide.
+
+    ; si address source Int64 divisor; si out is remainder
+    ; di address source Int64 dividend; di out is quotient
+    %ifdef SAVE_REGS
+	push    ax
+    %endif
+    push	bp
+    mov		bp, sp
+
+    call_proc   sInt64_MULDIV_Unsign
+    push	ax	; bp - 2 = result +/- flag
 
     ; test DIV by zero error
     mov		ax, [si]
@@ -1492,6 +1554,9 @@ proc_sInt64_DIV:
     mov		ax, [Int64_DIVADD + 6]
     adc		[di + 6], ax
     ; reduce remainder by SUB value
+    ; basically, this portion is identical to the Int64_SUB macro. However,
+    ; one of the values used is on the stack. That prevents using the exiting
+    ; macro / function to perform the subtraction.
     push	di
     mov		di, bp
     sub 	di, 10
@@ -1537,6 +1602,134 @@ proc_sInt64_DIV:
     pop     bx
     ret
 
+%endif
+%endif
+
+%ifdef sInt64_MUL_REQUIRED
+%ifndef sInt64_MUL_DEFINED
+%define sInt64_MUL_DEFINED
+
+proc_sInt64_MUL:
+    sInt64_PUSH	si	; save original value at SI
+    push	si
+    push	bp
+    mov		bp, sp
+
+    call_proc   sInt64_MULDIV_Unsign
+    push	ax	; bp - 2 = result +/- flag
+
+    ; create and clear result buffer
+    xor		ax, ax
+    mov		cx, 16 + 8 + 2 + 2
+.ClearTemps:
+    push ax
+    loop .ClearTemps
+    %idefine    Int64_MULRES  ss:bp-18	; 128-bit result, would be more work
+    					; to use a 64-bit result.
+    %idefine    Int64_MULTR   ss:bp-26	; temp pass result
+    %idefine    INt64_MULX    ss:bp-28  ; high word of multiplication
+    %idefine    Int64_MULRP   ss:bp-30  ; position in result
+
+    %idefine    Int64_MULA  di
+    %idefine    Int64_MULB  si
+
+    mov		ax, bp
+    sub		ax, 18
+    mov		[Int64_MULRP], ax	; save initial result position
+
+    mov		bx, bp
+    sub		bx, 26		; temp result pointer
+
+    mov     	cx, 4		; we have 4 passes with 4 operations each
+
+.PassLoop:
+    call	.MulTempClear	; clear temporary MUL result
+    push	Int64_MULA	; save number memory start postition
+    push	Int64_MULB	; save number memory start postition
+    push	bx		; save temp result memory position
+    push	cx		; save cx to count passes
+
+    mov		word [Int64_MULX], 0	; clear multiplication high word
+    clc
+    pushf				; push initial no-carry for addition
+
+.MulLoop:
+    mov		ax, [Int64_MULA]	; load AX with MULA word
+    mul		word [Int64_MULB]	; multiply by MULB word
+    mov		[ss:bx], ax
+    xchg	dx, [Int64_MULX]	; swap current high word with prev one
+    popf				; restore flags for addition carry
+    adc		[ss:bx], dx
+    pushf				; save addition carry flag
+    add		bx, 2			; next temp result word
+    add		Int64_MULA, 2		; next word to MUL
+    add		Int64_MULB, 2		; next word to MUL
+    loop	.MulLoop
+
+    call	.MulAddTemp		; add temp result to result
+    popf				; discard addition carry flag
+
+    pop		cx		; restore cx of pass count
+    pop		bx
+    pop		Int64_MULB	; restore number memory start postition
+    pop		Int64_MULA	; restore number memory start postition
+    inc		Int64_MULB	; next word to multiple MULA.
+    loop	.PassLoop
+
+    ; move result into position
+    mov		ax, [Int64_MULRES]
+    adc		[di], ax
+    mov		ax, [Int64_MULRES + 2]
+    adc		[di + 2], ax
+    mov		ax, [Int64_MULRES + 4]
+    adc		[di + 4], ax
+    mov		ax, [Int64_MULRES + 6]
+    adc		[di + 6], ax
+
+    ; test for overflow
+    mov		ax, [Int64_MULRES + 8]
+    or		ax, [Int64_MULRES + 10]
+    or		ax, [Int64_MULRES + 12]
+    or		ax, [Int64_MULRES + 14]
+    test	ax, ax
+    jnz		.Overflow
+    clc
+    jmp     .Done
+.Overflow:
+    stc
+.Done:
+   mov		sp, bp
+   pop		bp
+   pop		si
+   sInt64_POP	si	; restore original value at SI
+   ret
+
+.MulAddTemp:
+    ; on ret MULRP is incremented
+    push	di
+    mov		di, [Int64_MULRP]
+    clc
+    mov		ax, [Int64_MULTR]
+    adc		[ss:di], ax
+    mov		ax, [Int64_MULTR + 2]
+    adc		[ss:di + 2], ax
+    mov		ax, [Int64_MULTR + 4]
+    adc		[ss:di + 4], ax
+    mov		ax, [Int64_MULTR + 6]
+    adc		[ss:di + 6], ax
+    pop		di
+    mov		ax, 0x02
+    add		[Int64_MULRP], ax	; increment MULRP
+    ret
+
+.MulTempClear:
+   ; on ret, bx points to MULTR
+   xor		ax, ax
+   mov		[Int64_MULTR], ax
+   mov		[Int64_MULTR+2], ax
+   mov		[Int64_MULTR+4], ax
+   mov		[Int64_MULTR+6], ax
+   ret
 
 %endif
 %endif

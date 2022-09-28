@@ -13,10 +13,24 @@
 
     CommandLineParser       ; insert code for command line parsing
 
-; Include 64-bit number math for 8086
+; Include 64-bit integer math for 8086
 %ifdef Bit64
     %include "INT64.INC"
 %endif
+
+jmp Main
+;	sInt64_MUL N0, N1
+;	sInt64_StdOutInt  N0
+;	jmp	Done
+
+N0:
+  dq	123456789
+N1:
+  dq    987654321
+
+sMUL:
+
+Main:
 ; -----------------------------------------------------------------------------
 %ifndef Bit64
     mov     al, [OutStyle]
@@ -184,10 +198,8 @@ OptMinus:
     jmp     ClearLastOpt
 
 OptMultiply:
-    ;xor     dx, dx
-    ;mov     cx, [OutResult]
-    ;mul     cx
-    ;mov     [OutResult], ax
+    sInt64_MUL OutResult, TempVal
+    jc	    OverFlowError
     jmp     ClearLastOpt
 
 OptDivide:
