@@ -3,18 +3,23 @@
 
 ; NASM 2.14rc0 for DOS
 
+%idefine SAVE_REGS
 ; Undefine if you need to save a couple bytes and don't care about trashed
 ; registers.
 
-; known issues:
-; -10 + - 5, overflow, could use -10 - 5
-; -10 + 12, overflow, could use 12 - 10
-; 100 + -5, overflow, could use 100 - 5
-; -10 - -5, overflow, could use -10 + 5
-; so...
-; +/- neg, change sign and switch +/-
-; 1st neg, swap 1st & 2nd, switch +/-
-%idefine SAVE_REGS
+; -----------------------------------------------------------------------------
+; When doing addition and subtraction, some known issues can occur with
+; using uInt64_ADD/SUB. using sInt64_ADD/SUB automatically compensates for
+; the situation. If any of these situations could occur and you don't want
+; an overflow, use the sInt version instead of the uInt ones.
+
+; adding a negative, like -10 + -5
+; subtracting a negative, like 10 - -5
+; adding a positive to a negative that results in positive, like -10 + 12
+
+; So unless you are working on a 64-bit unsigned integer, just use the sInt
+; versions.
+; -----------------------------------------------------------------------------
 
 ; Below are a list of 64-bit integer functions for working with signed and
 ; unsigned number on the 8086 platform without the need for a coprocessor.
@@ -113,8 +118,6 @@
 %idefine sInt64_AND 		uInt64_AND
 %idefine sInt64_XOR 		uInt64_XOR
 %idefine sInt64_OR 		uInt64_OR
-%idefine sInt64_ADD		uInt64_ADD	; Humm
-%idefine sInt64_SUB		uInt64_SUB	; Humm
 
 %idefine uInt64_MUL		sInt64_MUL
 %idefine uInt64_DIV		sInt64_DIV
@@ -122,6 +125,11 @@
 %imacro call_proc 1
 	%define %1_REQUIRED
 	call proc_%1
+%endmacro
+
+%imacro jmp_proc 1
+	%define %1_REQUIRED
+	jmp proc_%1
 %endmacro
 
 %imacro Int64_Store 1
@@ -383,6 +391,34 @@
     mov  di, %1
     mov  si, %2
     call_proc uInt64_SUB
+    %ifdef SAVE_REGS
+        pop  si
+        pop  di
+    %endif
+%endmacro
+
+%imacro sInt64_ADD 2
+    %ifdef SAVE_REGS
+        push di
+        push si
+    %endif
+    mov  di, %1
+    mov  si, %2
+    call_proc sInt64_ADD
+    %ifdef SAVE_REGS
+        pop  si
+        pop  di
+    %endif
+%endmacro
+
+%imacro sInt64_SUB 2
+    %ifdef SAVE_REGS
+        push di
+        push si
+    %endif
+    mov  di, %1
+    mov  si, %2
+    call_proc sInt64_SUB
     %ifdef SAVE_REGS
         pop  si
         pop  di
@@ -1086,13 +1122,44 @@ proc_uInt64_CMP:
 %endif
 
 
+%ifdef sInt64_ADD_REQUIRED
+%ifndef sInt64_ADD_DEFINED
+%define sInt64_ADD_DEFINED
+proc_sInt64_ADD:
+    ; di first Int64
+    ; si second Int64
+    ; check to flip operation (are we adding a negative)
+    test	[si+7], byte 0x80
+    jz		.NotAddNeg
+    sInt64_PUSH si
+    call_proc   sInt64_ABS
+    call_proc	sInt64_SUB
+    sInt64_POP  si
+    ret
+.NotAddNeg:
+    ; check if first is negative, flip sign and numbers, then subtract
+    test	[di+7], byte 0x80
+    jz		.NoNeedToFix
+    sInt64_PUSH si
+    xchg	di, si		; swap si, di
+    call_proc   sInt64_ABS	; abs si
+    call_proc	sInt64_SUB	; sub di by si
+    xchg	di, si
+    call_proc   sInt64_MOV	; si -> di
+    sInt64_POP  si
+    ret
+
+.NoNeedToFix:
+    jmp_proc	uInt64_ADD
+%endif
+%endif
+
 %ifdef uInt64_ADD_REQUIRED
 %ifndef uInt64_ADD_DEFINED
 %define uInt64_ADD_DEFINED
 proc_uInt64_ADD:
     ; di first Int64
     ; si second Int64
-
     %ifdef SAVE_REGS
         push ax
         push bx
@@ -1121,6 +1188,25 @@ proc_uInt64_ADD:
 %endif
 %endif
 
+%ifdef sInt64_SUB_REQUIRED
+%ifndef sInt64_SUB_DEFINED
+%define sInt64_SUB_DEFINED
+proc_sInt64_SUB:
+    ; di first Int64
+    ; si second Int64
+    ; check to flip operation (are we subtracting a negative)
+    test	[si+7], byte 0x80
+    jz		.NotSubNeg
+    sInt64_PUSH si
+    call_proc	sInt64_ABS
+    call_proc	sInt64_ADD
+    sInt64_POP 	si
+    ret
+.NotSubNeg:
+.NoNeedToFix:
+    jmp_proc	uInt64_SUB
+%endif
+%endif
 
 %ifdef uInt64_SUB_REQUIRED
 %ifndef uInt64_SUB_DEFINED
