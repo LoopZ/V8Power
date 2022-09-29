@@ -983,6 +983,7 @@ proc_uInt64_MOV:
 
 proc_uInt64_RCL:
     ; di destination Int64
+    ; cf set/clear in/out
     %ifdef SAVE_REGS
         push ax
     %endif
@@ -1011,6 +1012,7 @@ proc_uInt64_RCL:
 
 proc_uInt64_RCR:
     ; di destination Int64
+    ; cf set/clear in/out
     %ifdef SAVE_REGS
         push ax
     %endif
