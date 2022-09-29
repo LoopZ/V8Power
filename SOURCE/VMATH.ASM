@@ -172,6 +172,9 @@ ClearLastOpt:
     ret
 
 OptNone:
+    test    [NeedOpt], byte 1
+    jnz	    NoOptError
+    mov	    [NeedOpt], byte 1
     sInt64_MOV     OutResult, TempVal
     jmp     ClearLastOpt
 
@@ -192,13 +195,13 @@ OptMultiply:
 
 OptDivide:
     sInt64_DIV OutResult, TempVal ; out Quotient, Remainder
-    jc	    OverFlowError
+    jc	    DivZeroError
     jmp     ClearLastOpt
 
 OptMod:
     sInt64_DIV OutResult, TempVal
     sInt64_MOV OutResult, TempVal ; mov Remainder into result
-    jc	    OverFlowError
+    jc	    DivZeroError
     jmp     ClearLastOpt
 
 OptShr:
@@ -257,15 +260,36 @@ NoSwitch:
     jmp         [LastOpt]
 
 .InvalidOption:
-    WriteStr    CommandLineErrorMsg
+    mov		si,CommandLineErrorMsg
+DieNow:
+    WriteStr	si
+    WriteStr    ErrorMessage
     Terminate   100
 
 OverFlowError:
-    WriteStr    OverFlowErrorMessage
-    Terminate   100
+    mov		si,OverFlowErrorMessage
+    jmp		DieNow
+
+DivZeroError:
+    mov		si,DivZeroErrorMessage
+    jmp		DieNow
+
+NoOptError:
+    mov		si, NoOptErrorMessage
+    jmp		DieNow
+
 
 OverFlowErrorMessage:
-  db 'overflow error',CRLF,0
+  db 'overflow',0
+
+NoOptErrorMessage:
+  db 'no operator',0
+
+DivZeroErrorMessage:
+  db 'divide by zero',0
+
+ErrorMessage:
+  db ' error',CRLF,0
 
 Int64_Procs
 
@@ -277,6 +301,9 @@ TempVal:
 ; -----------------------------------------------------------------------------
 LastOpt:
     dw OptNone
+
+NeedOpt:
+    db 0
 
 OutStyle:
     db 0
