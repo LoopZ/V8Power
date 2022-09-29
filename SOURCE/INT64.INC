@@ -1373,60 +1373,30 @@ proc_sInt64_SUB:
 %define uInt64_SUB_DEFINED
 
 proc_uInt64_SUB:
-    ; di first Int64
-    ; si second Int64
     %ifdef SAVE_REGS
         push ax
         push bx
         push cx
-        push dx
     %endif
     xor  bx, bx
     mov  cx, 4          ; Words in Int64
-    xor  dx, dx
+    clc
+    pushf
 .Repeat:
-    test    dx, dx
-    jz	    .NoBorrowNow
-    call    .Borrow
-.NoBorrowNow:
+    popf
     mov     ax, [di + bx]
-    sub     ax, [si + bx]
-    cmp     ax, [di + bx]
-    jbe	    .NoBorrowNext
-    inc	    dx
-.NoBorrowNext:
+    sbb     ax, [si + bx]
     mov     [di + bx], ax
+    pushf
     add     bx, 2
     loop    .Repeat
-    clc
-    test    dx, dx
-    jz	    .Done
-    stc
-.Done:
+    popf
     %ifdef SAVE_REGS
-    	pop  dx
         pop  cx
         pop  bx
         pop  ax
     %endif
     ; Carry Flag on Underflow.
-    ret
-.Borrow:
-    push    bx
-    push    cx
-.BorrowAgain:
-    mov     ax, [di + bx]
-    dec	    ax
-    mov	    [di+bx], ax
-    cmp     ax, 0xffff
-    jne     .BorrowDone
-    add	    bx, 2
-    loop    .BorrowAgain
-.BorrowDone:
-    xor	    dx, dx
-.BorrowFail:
-    pop     cx
-    pop     bx
     ret
 
 %endif
@@ -1741,7 +1711,6 @@ proc_sInt64_DIV:
     mov		ax, [Int64_DIVREM]
     mov		[si], ax
 
-
     ; check flag to see if result is negative
     mov		ax, [ss:bp-2]
     test	ax, 0x8000	; either (but not both) are negative
@@ -1795,62 +1764,24 @@ proc_sInt64_DIV:
 
 .ValueFits:
     ; add bit value to result
-    clc
     mov		ax, [Int64_DIVADD]
-    adc		[di], ax
+    add		[di], ax
     mov		ax, [Int64_DIVADD + 2]
     adc		[di + 2], ax
     mov		ax, [Int64_DIVADD + 4]
     adc		[di + 4], ax
     mov		ax, [Int64_DIVADD + 6]
     adc		[di + 6], ax
-    ; reduce remainder by SUB value
-    ; basically, this portion is identical to the Int64_SUB macro. However,
-    ; one of the values used is on the stack. That prevents using the exiting
-    ; macro / function to perform the subtraction.
-    push	di
-    mov		di, bp
-    sub 	di, 10
-    xor  bx, bx
-    mov  cx, 4          ; Words in Int64
-    xor  dx, dx
-.SubRepeat:
-    test    dx, dx
-    jz	    .NoBorrowNow
-    call    .SubBorrow
-.NoBorrowNow:
-    mov     ax, [ss:di + bx]
-    sub     ax, [Int64_DIVSUB + bx]
-    cmp     ax, [ss:di + bx]
-    jbe	    .NoBorrowNext
-    inc	    dx
-.NoBorrowNext:
-    mov     [di + bx], ax
-    add     bx, 2
-    loop    .SubRepeat
-    clc
-    test    dx, dx
-    jz	    .SubDone
-    stc
-.SubDone:
-    pop	     di
-    ret
-.SubBorrow:
-    push    bx
-    push    cx
-.BorrowAgain:
-    mov     ax, [ss:di + bx]
-    dec	    ax
-    mov	    [ss:di + bx], ax
-    cmp     ax, 0xffff
-    jne     .BorrowDone
-    add	    bx, 2
-    loop    .BorrowAgain
-.BorrowDone:
-    xor	    dx, dx
-.BorrowFail:
-    pop     cx
-    pop     bx
+
+    ; reduce remainder
+    mov     ax, [Int64_DIVSUB]
+    sub     [Int64_DIVREM], ax
+    mov     ax, [Int64_DIVSUB + 2]
+    sbb     [Int64_DIVREM + 2], ax
+    mov     ax, [Int64_DIVSUB + 4]
+    sbb     [Int64_DIVREM + 4], ax
+    mov     ax, [Int64_DIVSUB + 6]
+    sbb     [Int64_DIVREM + 6], ax
     ret
 
 %endif
