@@ -1307,6 +1307,7 @@ proc_sInt64_ADD:
     xchg	di, si
     call_proc   sInt64_MOV	; si -> di
     sInt64_POP  si
+    clc		; it's ok if we rolled over.
     ret
 
 .NoNeedToFix:
@@ -1363,8 +1364,24 @@ proc_sInt64_SUB:
     sInt64_POP 	si
     ret
 .NotSubNeg:
+    ; check if first is negative, flip sign and numbers, then add
+    test	[di+7], byte 0x80
+    jz		.NoNeedToFix
+    sInt64_PUSH si
+    xchg	di, si		; swap si, di
+    call_proc   sInt64_ABS	; abs si
+    call_proc	sInt64_ADD	; sub di by si
+    xchg	di, si
+    call_proc	sInt64_NEG	; flip the sign.
+    call_proc   sInt64_MOV	; si -> di
+    sInt64_POP  si
+    clc		; it's ok if we rolled over.
+    ret
+
 .NoNeedToFix:
-    jmp_proc	uInt64_SUB
+    call_proc	uInt64_SUB
+    clc		; don't care about underflow when crossing zero
+    ret
 %endif
 %endif
 
