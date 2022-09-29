@@ -122,29 +122,33 @@
 %idefine uInt64_MUL		sInt64_MUL
 %idefine uInt64_DIV		sInt64_DIV
 
+%idefine Int64_STORE		uInt64_STORE
+%idefine Int64_LOAD		uInt64_LOAD
+
+; -----------------------------------------------------------------------------
+
 %imacro call_proc 1
+; used internally to generate a dependency and call the appropriate function
 	%define %1_REQUIRED
 	call proc_%1
 %endmacro
 
 %imacro jmp_proc 1
+; used internally to generate a dependency and jump the appropriate function
 	%define %1_REQUIRED
 	jmp proc_%1
 %endmacro
 
-%imacro Int64_Store 1
-    uInt64_Store %1
-%endmacro
-
-%imacro Int64_Load 1
-    uInt64_Load %1
-%endmacro
+; -----------------------------------------------------------------------------
+; macro interface calls
 
 %imacro uInt64_StdOutBin 1
     %ifdef SAVE_REGS
         push si
     %endif
-    mov  si, %1
+    %ifnidni %1, si
+   	mov si, %1
+    %endif
     call_proc uInt64_StdOutBin
     %ifdef SAVE_REGS
         pop  si
@@ -155,7 +159,9 @@
     %ifdef SAVE_REGS
         push si
     %endif
-    mov  si, %1
+    %ifnidni %1, si
+   	mov si, %1
+    %endif
     call_proc uInt64_StdOutHex
     %ifdef SAVE_REGS
         pop  si
@@ -166,7 +172,9 @@
     %ifdef SAVE_REGS
         push si
     %endif
-    mov  si, %1
+    %ifnidni %1, si
+   	mov si, %1
+    %endif
     call_proc uInt64_StdOutInt
     %ifdef SAVE_REGS
         pop  si
@@ -177,7 +185,9 @@
     %ifdef SAVE_REGS
         push di
     %endif
-    mov  di, %1
+    %ifnidni %1, di
+   	mov di, %1
+    %endif
     call_proc uInt64_Zero
     %ifdef SAVE_REGS
         pop  di
@@ -225,8 +235,17 @@
         push di
         push si
     %endif
-    mov  di, %1
-    mov  si, %2
+    %ifidni %2, di
+	    mov  si, %2
+	    mov	 di, %1
+    %else
+	    %ifnidni %1, di
+	    	mov	 di, %1
+	    %endif
+	    %ifnidni %2, si
+		mov  si, %2
+	    %endif
+    %endif
     call_proc uInt64_MOV
     %ifdef SAVE_REGS
         pop  si
@@ -238,7 +257,9 @@
     %ifdef SAVE_REGS
         push di
     %endif
-    mov  di, %1
+    %ifnidni %1, di
+   	mov di, %1
+    %endif
     call_proc uInt64_RCR
     %ifdef SAVE_REGS
         pop  di
@@ -249,7 +270,9 @@
     %ifdef SAVE_REGS
         push di
     %endif
-    mov  di, %1
+    %ifnidni %1, di
+   	mov di, %1
+    %endif
     call_proc uInt64_RCL
     %ifdef SAVE_REGS
         pop  di
@@ -261,8 +284,17 @@
         push di
         push cx
     %endif
-    mov  di, %1
-    mov  cx, %2
+    %ifidni %2, di
+	    mov  cx, %2
+	    mov	 di, %1
+    %else
+	    %ifnidni %1, di
+	    	mov	 di, %1
+	    %endif
+	    %ifnidni %2, cx
+		mov  cx, %2
+	    %endif
+    %endif
     call_proc uInt64_ROR
     %ifdef SAVE_REGS
         pop  cx
@@ -275,8 +307,17 @@
         push di
         push cx
     %endif
-    mov  di, %1
-    mov  cx, %2
+    %ifidni %2, di
+	    mov  cx, %2
+	    mov	 di, %1
+    %else
+	    %ifnidni %1, di
+	    	mov	 di, %1
+	    %endif
+	    %ifnidni %2, cx
+		mov  cx, %2
+	    %endif
+    %endif
     call_proc uInt64_ROL
     %ifdef SAVE_REGS
         pop  cx
@@ -289,8 +330,17 @@
         push di
         push cx
     %endif
-    mov  di, %1
-    mov  cx, %2
+    %ifidni %2, di
+	    mov  cx, %2
+	    mov	 di, %1
+    %else
+	    %ifnidni %1, di
+	    	mov	 di, %1
+	    %endif
+	    %ifnidni %2, cx
+		mov  cx, %2
+	    %endif
+    %endif
     call_proc uInt64_SHR
     %ifdef SAVE_REGS
         pop  cx
@@ -303,8 +353,17 @@
         push di
         push cx
     %endif
-    mov  di, %1
-    mov  cx, %2
+    %ifidni %2, di
+	    mov  cx, %2
+	    mov	 di, %1
+    %else
+	    %ifnidni %1, di
+	    	mov	 di, %1
+	    %endif
+	    %ifnidni %2, cx
+		mov  cx, %2
+	    %endif
+    %endif
     call_proc uInt64_SHL
     %ifdef SAVE_REGS
         pop  cx
@@ -317,8 +376,17 @@
         push di
         push si
     %endif
-    mov  di, %1
-    mov  si, %2
+    %ifidni %2, di
+	    mov  si, %2
+	    mov	 di, %1
+    %else
+	    %ifnidni %1, di
+	    	mov	 di, %1
+	    %endif
+	    %ifnidni %2, si
+		mov  si, %2
+	    %endif
+    %endif
     call_proc uInt64_AND
     %ifdef SAVE_REGS
         pop  si
@@ -331,8 +399,17 @@
         push di
         push si
     %endif
-    mov  di, %1
-    mov  si, %2
+    %ifidni %2, di
+	    mov  si, %2
+	    mov	 di, %1
+    %else
+	    %ifnidni %1, di
+	    	mov	 di, %1
+	    %endif
+	    %ifnidni %2, si
+		mov  si, %2
+	    %endif
+    %endif
     call_proc uInt64_XOR
     %ifdef SAVE_REGS
         pop  si
@@ -345,8 +422,17 @@
         push di
         push si
     %endif
-    mov  di, %1
-    mov  si, %2
+    %ifidni %2, di
+	    mov  si, %2
+	    mov	 di, %1
+    %else
+	    %ifnidni %1, di
+	    	mov	 di, %1
+	    %endif
+	    %ifnidni %2, si
+		mov  si, %2
+	    %endif
+    %endif
     call_proc uInt64_OR
     %ifdef SAVE_REGS
         pop  si
@@ -360,8 +446,17 @@
         push di
         push si
     %endif
-    mov  di, %1
-    mov  si, %2
+    %ifidni %2, di
+	    mov  si, %2
+	    mov	 di, %1
+    %else
+	    %ifnidni %1, di
+	    	mov	 di, %1
+	    %endif
+	    %ifnidni %2, si
+		mov  si, %2
+	    %endif
+    %endif
     call_proc uInt64_CMP
     %ifdef SAVE_REGS
         pop  si
@@ -374,8 +469,17 @@
         push di
         push si
     %endif
-    mov  di, %1
-    mov  si, %2
+    %ifidni %2, di
+	    mov  si, %2
+	    mov	 di, %1
+    %else
+	    %ifnidni %1, di
+	    	mov	 di, %1
+	    %endif
+	    %ifnidni %2, si
+		mov  si, %2
+	    %endif
+    %endif
     call_proc uInt64_ADD
     %ifdef SAVE_REGS
         pop  si
@@ -388,8 +492,17 @@
         push di
         push si
     %endif
-    mov  di, %1
-    mov  si, %2
+    %ifidni %2, di
+	    mov  si, %2
+	    mov	 di, %1
+    %else
+	    %ifnidni %1, di
+	    	mov	 di, %1
+	    %endif
+	    %ifnidni %2, si
+		mov  si, %2
+	    %endif
+    %endif
     call_proc uInt64_SUB
     %ifdef SAVE_REGS
         pop  si
@@ -402,8 +515,17 @@
         push di
         push si
     %endif
-    mov  di, %1
-    mov  si, %2
+    %ifidni %2, di
+	    mov  si, %2
+	    mov	 di, %1
+    %else
+	    %ifnidni %1, di
+	    	mov	 di, %1
+	    %endif
+	    %ifnidni %2, si
+		mov  si, %2
+	    %endif
+    %endif
     call_proc sInt64_ADD
     %ifdef SAVE_REGS
         pop  si
@@ -416,8 +538,17 @@
         push di
         push si
     %endif
-    mov  di, %1
-    mov  si, %2
+    %ifidni %2, di
+	    mov  si, %2
+	    mov	 di, %1
+    %else
+	    %ifnidni %1, di
+	    	mov	 di, %1
+	    %endif
+	    %ifnidni %2, si
+		mov  si, %2
+	    %endif
+    %endif
     call_proc sInt64_SUB
     %ifdef SAVE_REGS
         pop  si
@@ -430,8 +561,17 @@
         push di
         push bx
     %endif
-    mov  di, %1
-    mov  bx, %2
+    %ifidni %2, di
+	    mov  bx, %2
+	    mov	 di, %1
+    %else
+	    %ifnidni %1, di
+	    	mov	 di, %1
+	    %endif
+	    %ifnidni %2, bx
+		mov  bx, %2
+	    %endif
+    %endif
     call_proc uInt64_MUL_WORD
     %ifdef SAVE_REGS
         pop  bx
@@ -443,7 +583,9 @@
     %ifdef SAVE_REGS
         push si
     %endif
-    mov  si, %1
+    %ifnidni %1, si
+   	mov si, %1
+    %endif
     call_proc uInt64_INC
     %ifdef SAVE_REGS
         pop  si
@@ -454,7 +596,9 @@
     %ifdef SAVE_REGS
         push si
     %endif
-    mov  si, %1
+    %ifnidni %1, si
+   	mov si, %1
+    %endif
     call_proc uInt64_DEC
     %ifdef SAVE_REGS
         pop  si
@@ -465,7 +609,9 @@
     %ifdef SAVE_REGS
         push si
     %endif
-    mov  si, %1
+    %ifnidni %1, si
+   	mov si, %1
+    %endif
     call_proc sInt64_INC
     %ifdef SAVE_REGS
         pop  si
@@ -476,7 +622,9 @@
     %ifdef SAVE_REGS
         push si
     %endif
-    mov  si, %1
+    %ifnidni %1, si
+   	mov si, %1
+    %endif
     call_proc sInt64_DEC
     %ifdef SAVE_REGS
         pop  si
@@ -487,7 +635,9 @@
     %ifdef SAVE_REGS
         push si
     %endif
-    mov  si, %1
+    %ifnidni %1, si
+   	mov si, %1
+    %endif
     call_proc sInt64_ABS
     %ifdef SAVE_REGS
         pop  si
@@ -506,16 +656,15 @@
     %endif
 
     %ifidni %2, di
-    	push	di
-    %endif
-    %ifnidni %1, di
-    	mov	di, %1
-    %endif
-    %ifnidni %2, si
-    	mov	si, %2
-    %endif
-    %ifidni %2, di
-    	pop	si
+	    mov  si, %2
+	    mov	 di, %1
+    %else
+	    %ifnidni %1, di
+	    	mov	 di, %1
+	    %endif
+	    %ifnidni %2, si
+		mov  si, %2
+	    %endif
     %endif
 
     call_proc sInt64_DIV
@@ -543,16 +692,15 @@
     %endif
 
     %ifidni %2, di
-    	push	di
-    %endif
-    %ifnidni %1, di
-    	mov	di, %1
-    %endif
-    %ifnidni %2, si
-    	mov	si, %2
-    %endif
-    %ifidni %2, di
-    	pop	si
+	    mov  si, %2
+	    mov	 di, %1
+    %else
+	    %ifnidni %1, di
+	    	mov	 di, %1
+	    %endif
+	    %ifnidni %2, si
+		mov  si, %2
+	    %endif
     %endif
 
     call_proc sInt64_MUL
@@ -572,7 +720,9 @@
     %ifdef SAVE_REGS
         push si
     %endif
-    mov  si, %1
+    %ifnidni %1, si
+   	mov si, %1
+    %endif
     call_proc sInt64_StdOutInt
     %ifdef SAVE_REGS
         pop  si
@@ -588,8 +738,12 @@
 	    mov  si, %2
 	    mov	 di, %1
     %else
-	    mov	 di, %1
-	    mov  si, %2
+	    %ifnidni %1, di
+	    	mov	 di, %1
+	    %endif
+	    %ifnidni %2, si
+		mov  si, %2
+	    %endif
     %endif
     call_proc	ASCII_sInt64
     %ifdef SAVE_REGS
@@ -607,8 +761,12 @@
 	    mov  si, %2
 	    mov	 di, %1
     %else
-	    mov	 di, %1
-	    mov  si, %2
+	    %ifnidni %1, di
+	    	mov	 di, %1
+	    %endif
+	    %ifnidni %2, si
+		mov  si, %2
+	    %endif
     %endif
     call_proc	ASCII_uInt64
     %ifdef SAVE_REGS
@@ -617,10 +775,10 @@
     %endif
 %endmacro
 
-
 ; Functions and procedures ----------------------------------------------------
 %imacro Int64_procs 0
-%rep 10
+%rep 10	; run through these a bunch of times to have all the interdependencies
+	; work themselves out and all the required code gets included.
 
 %ifdef uInt64_StdOutBin_REQUIRED
 %ifndef uInt64_StdOutBin_DEFINED
