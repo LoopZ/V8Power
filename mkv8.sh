@@ -3,6 +3,19 @@
 # IGNORE=';VVIEW;VREADKEY;VCHKBOX;'
 IGNORE=';;'
 
+if [[ "$(uname)" == "Darwin" ]] ; then
+	DARWIN=yes
+else
+	unset DARWIN
+fi
+function filesize () {
+	if [[ ${DARWIN} ]] ; then
+		stat -f '%z' "${1}" 2>/dev/null || echo 0
+	else
+		stat --format '%s' "${1}" 2>/dev/null || echo 0
+	fi
+}
+
 function assemble () {
 
     [[ ! -d BIN ]] && mkdir -p BIN
@@ -14,7 +27,11 @@ function assemble () {
         echo "${n}, ignored"
         return 0
     fi
-    local z=$(stat -f '%z' BIN/${o}.COM 2>/dev/null || echo 0)
+    if [[ ! -f "BIN/${o}.COM" ]] ; then
+	local z=$(filesize "../../BIN/${o}.COM")
+    else
+	local z=$(filesize "BIN/${o}.COM")
+    fi
     nasm -ISOURCE/ SOURCE/${n}.ASM -fbin -O9 -o BIN/${o}.COM || {
         echo "error assembling ${n}.ASM"
         return 1
@@ -23,7 +40,7 @@ function assemble () {
         echo "missing BIN/${o}.COM"
         return 1
     }
-    local x=$(stat -f '%z' BIN/${o}.COM 2>/dev/null || echo 0)
+    local x=$(filesize "BIN/${o}.COM")
     [[ ${z} -eq ${x} ]] || echo "${n}, ${z} --> ${x}, ${o}"
 
     return 0
