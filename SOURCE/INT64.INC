@@ -96,7 +96,7 @@
 ; sInt64_StdOutInt	address
 ; sInt64_INC		address, (CF if overflow)
 ; sInt64_DEC		address, (CF if underflow)
-; sInt64_ABS   		address, (CF if number was not positive)
+; sInt64_ABS   		address, (CF on overflow)
 ; sInt64_NEG   		address, (CF if number was positive)
 
 ; -----------------------------------------------------------------------------
@@ -1307,11 +1307,17 @@ proc_sInt64_ADD:
     xchg	di, si
     call_proc   sInt64_MOV	; si -> di
     sInt64_POP  si
-    clc		; it's ok if we rolled over.
+.NoOverflow:
+    clc
     ret
 
 .NoNeedToFix:
-    jmp_proc	uInt64_ADD
+    call_proc	uInt64_ADD
+    test	[di+7], byte 0x80
+    jz		.NoOverflow
+    stc
+    ret
+
 %endif
 %endif
 
@@ -1371,11 +1377,17 @@ proc_sInt64_SUB:
     xchg	di, si		; swap si, di
     call_proc   sInt64_ABS	; abs si
     call_proc	sInt64_ADD	; sub di by si
+    jc		.Underflow
     xchg	di, si
     call_proc	sInt64_NEG	; flip the sign.
     call_proc   sInt64_MOV	; si -> di
     sInt64_POP  si
-    clc		; it's ok if we rolled over.
+    clc
+    ret
+
+.Underflow:
+    sInt64_POP  si
+    stc
     ret
 
 .NoNeedToFix:
@@ -1571,26 +1583,36 @@ proc_sInt64_DEC:
 %endif
 %endif
 
-%ifdef sInt64_ABS_REQUIRED
-%ifndef sInt64_ABS_DEFINED
-%define sInt64_ABS_DEFINED
-proc_sInt64_ABS:
-    ; si address destination/source Int64
-    push	ax
-    mov		ax, [si+6]
-    test	ax, 0x8000
-    jz		.Positive
+%ifdef sInt64_FlipSign_REQUIRED
+%ifndef sInt64_FlipSign_DEFINED
+%define sInt64_FlipSign_DEFINED
+proc_sInt64_FlipSign:
     not		word [si+6]
     not		word [si+4]
     not		word [si+2]
     not		word [si]
     call_proc	uInt64_INC
+ret
+
+%endif
+%endif
+
+
+%ifdef sInt64_ABS_REQUIRED
+%ifndef sInt64_ABS_DEFINED
+%define sInt64_ABS_DEFINED
+proc_sInt64_ABS:
+    ; si address destination/source Int64
+    test	[si+7], byte 0x80
+    jz		.Positive
+    call_proc	sInt64_FlipSign
+    test	[si+7], byte 0x80
+    jz		.Positive
     stc
     jmp		.Done
 .Positive:
     clc
 .Done:
-    pop		ax
     ret
 
 %endif
@@ -1602,14 +1624,10 @@ proc_sInt64_ABS:
 proc_sInt64_NEG:
     ; si address destination/source Int64
     push	ax
-    mov		ax, [si+6]
-    test	ax, 0x8000
+    mov		ax, [si+7]
+    test	ax, 0x80
     jnz		.Negative
-    not		word [si+6]
-    not		word [si+4]
-    not		word [si+2]
-    not		word [si]
-    call_proc	uInt64_INC	; maybe DEC instead, need to test more
+    call_proc	sInt64_FlipSign
     stc
     jmp		.Done
 .Negative:
@@ -1955,8 +1973,11 @@ proc_sInt64_StdOutInt:
     mov  	di, sp
     call_proc	uInt64_MOV
     mov		si, di
+    test	[si+7],byte 0x80
+    pushf
     call_proc	sInt64_ABS
-    jnc		.NotNegative
+    popf
+    jz		.NotNegative
     StdOutChar  '-'
 .NotNegative:
     call_proc	uInt64_StdOutInt
