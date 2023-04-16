@@ -10,21 +10,65 @@
 
     call        ReadMode
     mov         [ModeFirst], ax
+    mov         [FontFirst], bx
 
     CommandLineParser       ; insert code for command line parsing
 
 GoodBye:
-    mov     ax, [ModeCurrent]
-    mov     bx, [ModeFirst]
-    cmp     ax, bx
+    mov     ax, [FontCurrent]
+    cmp     ax, [FontFirst]
     jne     .SetNewMode
+    mov     ax, [ModeCurrent]
+    cmp     ax, [ModeFirst]
+    jne     .SetNewMode
+    cmp	    [HadOpts], byte 0
+    jne	    .Finished
+    mov     si, BW40Msg
+    test    ax, ax
+    jz      .PrintMode
+    mov     si, CO40Msg
+    cmp     ax, 0x01
+    je      .PrintMode
+    mov     si, CO80Msg
+    cmp     ax, 0x03
+    je      .PrintMode
+    mov     si, BW80Msg
+    jb      .PrintMode
+    mov     si, MonoMsg
+    cmp     ax, 0x07
+    je      .PrintMode
     StdOutHexWord
+    jmp     .ROMFontSize
+.PrintMode:
+    StdOutStr si
+
+.ROMFontSize:
+    mov	    ax, [FontCurrent]
+    cmp     al, 0x08
+    je      .PrintFont
+    cmp     al, 0x0e
+    je      .PrintFont
+    cmp     al, 0x10
+    je      .PrintFont
+    jmp     .NoROMFont
+.PrintFont:
+    push    ax
+    StdOutStr PlusFontMsg
+    pop     ax
+    StdOutIntWord ax
+.NoROMFont:
     StdOutCRLF
     jmp     .Done
 .SetNewMode:
     call    WriteMode
+.Finished:
+    xor     al, al
 .Done:
-    Terminate 0
+    Terminate al
+
+InvalidMode:
+    mov     al, 100
+    jmp     GoodBye.Done
 
 ReadMode:
     %ifdef SuperVGA
@@ -44,45 +88,49 @@ ReadMode:
     mov         bx, 0x0040
     push        bx
     pop         es
-    mov         bl, [es:0x0085]
+    mov         bh, [es:0x0085]
     pop         es
-    mov         bh, 0x10
-    cmp         bl, 0x08
+    cmp         bh, 0x08
     je          .KnownFont
-    mov         bh, 0x20
-    cmp         bl, 0x0e
+    cmp         bh, 0x0e
     je          .KnownFont
-    mov         bh, 0x30
-    cmp         bl, 0x10
+    cmp         bh, 0x10
     je          .KnownFont
-    mov         bh, 0x00
+    xor         bh, bh
 .KnownFont:
-    or          al, bh
+    xchg	bh, bl
 .Done:
+    xor         bh, bh
     mov         [ModeCurrent], ax
+    mov         [FontCurrent], bx
     ret
 
 WriteMode:
     mov     ax, [ModeCurrent]
     cmp     ax, 0xffff
-    je      .Invalid
+    je      InvalidMode
     cmp     ax, 0x0100
-    jge     .NotStandard
-    and     al, 00001111b
+    jb      .StandardMode
+    %ifdef SuperVGA
+        jmp    WriteModeSVGA
+    %else
+    	jmp    InvalidMode
+    %endif
+.StandardMode:
     mov     ah, 0x00
     int     0x10
-    mov     ax, [ModeCurrent]
-    and     al, 0xf0
-    cmp     al, 0x10
-    jl      .Done
+    ; ret
+
+WriteFont:
+    mov     ax, [FontCurrent]
     mov     bl, 0x12
-    cmp     al, 0x10
+    cmp     al, 0x08
     je      .LoadROMFont
     mov     bl, 0x11
-    cmp     al, 0x20
+    cmp     al, 0x0e
     je      .LoadROMFont
     mov     bl, 0x14
-    cmp     al, 0x30
+    cmp     al, 0x10
     jne     .Done
 .LoadROMFont:
     mov     al, bl
@@ -99,14 +147,6 @@ WriteMode:
     int     0x10
     pop     cx
     int     0x10
-    jmp     .Done
-.NotStandard:
-    %ifdef SuperVGA
-        call    WriteModeSVGA
-        jmp     .Done
-    %endif
-.Invalid:
-    Terminate 100
 .Done:
     ret
 
@@ -186,13 +226,22 @@ OptVesa:
     mov     dx, [SVGABuffer + 2]
     cmp     dx, 'SA'
     jne     .NoVesa
+
+;    xor     ax, ax
+;.LowModes:
+;    push    ax
+;    call    VesaModeInfo
+;    pop	    ax
+;    inc     ax
+;    cmp     ax, 0x100
+;    jb      .LowModes
+
     les     si, [SVGABuffer + 0x0e]
 .Looping:
     mov     ax, [es:si]
     cmp     ax, 0xffff
     je      .Done
-    StdOutHexWord
-    StdOutCRLF
+    call    VesaModeInfo
     add     si, 2
     jmp     .Looping
 .NoVesa:
@@ -203,8 +252,39 @@ OptVesa:
     pop     di
     pop     si
     pop     es
-    Terminate 0
-;    ret
+    jmp	    GoodBye.Finished
+
+VesaModeInfo:
+    push    es
+    push    cs
+    pop     es
+    mov     di, SVGAMode
+    push    ax
+    push    di
+    mov     cx, 0x0080
+    xor	    ax, ax
+    cld
+    rep     stosw
+    pop     di
+    pop     cx
+    mov	    ax, 0x4f01
+    int     0x10
+    cmp     ax, 0x004f
+    jne     .Done
+    mov			ax, cx
+    StdOutHexWord 	ax
+    StdOutStr	  	ModeSepMsg
+    mov			ax, [SVGAMode+0x12]
+    StdOutIntWord 	ax
+    StdOutChar		'x'
+    mov			ax, [SVGAMode+0x14]
+    StdOutIntWord 	ax
+    StdOutCRLF
+.Done:
+    pop   es
+
+OptIngore:
+    ret
 
 OptBW40:
     mov     ax, 0x0000
@@ -224,25 +304,26 @@ OptColor80:
 
 OptMono80:
     mov     ax, 0x0007
-    jmp     SetModeCurrent
+
+SetModeCurrent:
+    mov         [ModeCurrent], ax
+    ret
 
 OptFont8:
-    and     bx, 0x000f
-    mov     ax, 0x0010
-    or      ax, bx
-    jmp     SetModeCurrent
+    mov     al, 0x08
+    jmp     SetFontCurrent
 
 OptFont14:
-    and     bx, 0x000f
-    mov     ax, 0x0020
-    or      ax, bx
-    jmp     SetModeCurrent
+    mov     al, 0x0e
+    jmp     SetFontCurrent
 
 OptFont16:
-    and     bx, 0x000f
-    mov     ax, 0x0030
-    or      ax, bx
-    jmp     SetModeCurrent
+    mov     al, 0x10
+
+SetFontCurrent:
+    xor     ah, ah
+    mov     [FontCurrent], ax
+    ret
 
 SwitchF:
     mov     ax, 0xffff
@@ -250,6 +331,7 @@ SwitchF:
     ret
 
 NoSwitch:
+    or		[HadOpts], byte 1
     LookupParam OptionsTable
     cmp         ax, 0xffff
     je          .NotOption
@@ -258,9 +340,7 @@ NoSwitch:
 
 .NotOption:
     NumberParam
-SetModeCurrent:
-    mov         [ModeCurrent], ax
-    ret
+    jnc		SetModeCurrent
 
 .InvalidOption:
     WriteStr    CommandLineErrorMsg
@@ -293,17 +373,53 @@ OptionsTable:
     TableData 'F14',    OptFont14
     TableData 'F16',    OptFont16
     TableData 'VESA',   OptVesa
+    TableData '+',      OptIngore
     TableEnd
+
+PlusFontMsg:
+    DB ' + Font',0
+BW40Msg:
+    DB 'BW40',0
+BW80Msg:
+    DB 'BW80',0
+CO40Msg:
+    DB 'CO40',0
+CO80Msg:
+    DB 'CO80',0
+MonoMsg:
+    DB 'MONO',0
 
 %ifdef SuperVGA
 FailVesaMsg:
-    DB 'Bad Vesa Mode.',CRLF,0
+    DB 'Bad VESA mode.',CRLF,0
 NoVesaMsg:
-    DB 'No Vesa Support Present.',CRLF,0
-SVGABuffer:
-    times 0x100 db 0
+    DB 'No VESA support.',CRLF,0
+ModeSepMsg:
+    DB ' - ',0
+GraphicsModeMsg:
+    DB ' Graphics',0
+TextModeMsg:
+    DB ' Text',0
 %endif
+
+HadOpts:
+    db      0
+
 ModeCurrent:
     dw      0
 ModeFirst:
     dw      0
+FontCurrent:
+    dw      0
+FontFirst:
+    dw      0
+
+%ifdef SuperVGA
+section .bss
+
+SVGABuffer:
+    resb 0x100
+SVGAMode:
+    resb 0x100
+
+%endif
