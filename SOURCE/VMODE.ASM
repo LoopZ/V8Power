@@ -272,7 +272,7 @@ VesaModeInfo:
     cmp     ax, 0x004f
     jne     .Done
     mov			ax, cx
-    StdOutHexWord 	ax
+    StdOutHexWord 	0x
     StdOutStr	  	ModeSepMsg
     mov			ax, [SVGAMode+0x12]
     StdOutIntWord 	ax
