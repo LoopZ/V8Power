@@ -214,6 +214,8 @@ OptVesa:
     push    es
     push    si
     push    di
+    mov     [SVGABuffer], word 'VB'
+    mov     [SVGABuffer+2], word 'E2'
     mov     ax, 0x4f00
     mov     di, SVGABuffer
     int     0x10
@@ -226,16 +228,6 @@ OptVesa:
     mov     dx, [SVGABuffer + 2]
     cmp     dx, 'SA'
     jne     .NoVesa
-
-;    xor     ax, ax
-;.LowModes:
-;    push    ax
-;    call    VesaModeInfo
-;    pop	    ax
-;    inc     ax
-;    cmp     ax, 0x100
-;    jb      .LowModes
-
     les     si, [SVGABuffer + 0x0e]
 .Looping:
     mov     ax, [es:si]
@@ -272,6 +264,10 @@ VesaModeInfo:
     cmp     ax, 0x004f
     jne     .Done
     mov			ax, cx
+    mov			cx, [SVGAMode+0x12]
+    or			cx, [SVGAMode+0x14]
+    test		cx, cx
+    jz			.Done
     StdOutHexWord 	0x
     StdOutStr	  	ModeSepMsg
     mov			ax, [SVGAMode+0x12]
