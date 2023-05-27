@@ -5,6 +5,17 @@
 
 ; New Command Line and String Parser
 
+; %define FLEX_QUOTES	; Enable to support Flexible Quotes where text can be
+			; encapsulated in one of the three quotation marks to
+			; be passed as single parameter. The quotation
+			; characters not used to wrap the text may be used
+			; inside the quoted text.
+			; Leave this disabled to treat all quotation characters
+			; as normal text. This will cause text with spaces or
+			; SWITCH characters to be sent as individual pieces.
+			; Which could use // to escape the switch character.
+
+
 %macro INTERNAL_StringParser 0
 ; AX, BX, CX, DX, SI, DI registers are either used or destroyed by this macro!
 ;
@@ -64,6 +75,7 @@ PROC_StringParser:
 	cmp	al, 0x20
 	je	%%SkipSpaces
 ; %%SkipDone:
+%ifdef FLEX_QUOTES
 	xor	ah, ah
 	call	%%CheckQuote
 	jnc	%%NotQuoted
@@ -77,6 +89,7 @@ PROC_StringParser:
 	cmp	al, ah
 	jne	%%QuotedLoop
 	jmp	%%QuoteEnd
+%endif
 %%NotQuoted:
 	lodsb
 	call	%%CheckEnd
@@ -111,9 +124,11 @@ PROC_StringParser:
 %%NotQuotedEnd:
 	mov	cx, si
 	dec	si
+%ifdef FLEX_QUOTES
 	jmp 	%%NoBackUp
 %%QuoteEnd:
 	mov	cx, si
+%endif
 %%NoBackUp:
 	sub	cx, bx
 	dec	cx
@@ -126,8 +141,10 @@ PROC_StringParser:
 	mov	al, SWITCH_CHAR		; Define could be memory address
 	cmp	[bx], al
 	jne	%%AsString		; Not Starting with /
+%ifdef FLEX_QUOTES
 	test	ah, ah
 	jnz	%%AsString		; Was not Quoted
+%endif
 ; Look up Option Switch:
 	inc	bx			; Drop Switch Character
 	dec	cx

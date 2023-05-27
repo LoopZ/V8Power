@@ -10,14 +10,56 @@
 %include "COMMON.INC"
 %include "INT64.INC"
 
+; -----------------------------------------------------------------------------
+; Operation and processing state flags
+
+; STATUS - Low Byte
+%idefine sfNone		00000000b ; Initial startup state
+%idefine sfReqFile	00000001b ; File name required
+%idefine sfReqDir	00000010b ; Directory path required
+%idefine sfReqFileOrDir 00000011b ; File name or Directory path required
+%idefine sfReqString	00000100b ; String required
+%idefine sfReqNumber	00001000b ; Number required
+%idefine sfReqValue	00001100b ; String or Number required
+%idefine sfReqExp	00010000b ; Expression required
+
+; STATUS - High Byte
+%idefine sfHaveString	00000001b ; String is pending
+%idefine sfHaveNumber	00000010b ; String can be processed as a number
+
+%idefine sfCmdLnOpts	10000000b ; Any option or text processed
+
+
+; -----------------------------------------------------------------------------
+
 Main:
 	ParseOptions 	Options
-;	jnc		.Done
+	jc		.Done
+	xor		[EXIT_CODE], byte 1
+	%ifdef DEBUG
+		mov	dx, .TrueStr
+		test	[EXIT_CODE], byte 1
+		jz	.PrintResult
+		mov	dx, .FalseStr
+		jmp	.PrintResult
+	.TrueStr:
+		db 	'TRUE',0x0d,0x0a,'$'
+	.FalseStr:
+		db 	'TRUE',0x0d,0x0a,'$'
+	.PrintResult:
+		mov	ah, 0x09
+		int	0x21
+	%endif
 .Done:
-
+	%ifdef DEBUG
+		StdOutHexByte   [EXIT_CODE]
+		StdOutCRLF
+	%endif
 	Terminate 	[EXIT_CODE]
 
 	Int64_Procs
+
+; -----------------------------------------------------------------------------
 
 Options:
 	OptTable 	OnText, OnInvalid
@@ -41,6 +83,7 @@ Options:
 	OptSwitch 	'NOT',	OnNOT
 	OptTableEnd
 
+; -----------------------------------------------------------------------------
 HelpSwitchHandler 'vtest'
 
 ; -----------------------------------------------------------------------------
@@ -100,7 +143,12 @@ OnAND:
 OnOR:
 
 OnNOT:
-	clc	; continue processing
+
+; -----------------------------------------------------------------------------
+OptionDone:
+	or		[STATUS+1], byte sfCmdLnOpts 	; something happened
+	clc 						; continue processing
 	ret
 ; -----------------------------------------------------------------------------
 EXIT_CODE:	db 0
+STATUS:		db 0
