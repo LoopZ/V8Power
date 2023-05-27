@@ -226,12 +226,6 @@ IdleCPUHandlerProc:
 	%undef TextOutput
 %endif
 
-%imacro DebugWrite 1
-    pushall
-    StdOutChar %1
-    popall
-%endmacro
-
 ; %1 is Offset of Search String, returns DS:SI points to data
 ; if not found then carry flag is set
 %imacro SearchEnv 1
@@ -558,21 +552,6 @@ endstruc
 %imacro WriteStr 1
     mov         si, %1
     call        WriteStrProc
-%endmacro
-
-; Macro for Placeholder "dummy" programs not yet developed
-%imacro PlaceHolder 0
-    push        cs
-    pop         ds
-    mov         dx, %%Message
-    mov         ah, 0x09
-    int         0x21
-    jmp         %%Done
-%%Message:
-    DB "This program is only a placeholder executable. "
-    DB "It will be replaced by a program",0x0d,0x0a
-    DB "that actually does something at a later time.$"
-%%Done:
 %endmacro
 
 ; Write Word in AX
@@ -1344,7 +1323,7 @@ AdvancedStdIn:
 ; first is no switch, last is 0,0,0
 ; on call dl is switch character, cx is data length, di is start of data,
 ; si is end of data.
-%imacro CommandLineParser 0
+%imacro CommandLineParser 0-1
     cld
     xor         bx, bx
     mov         di, si
@@ -1461,10 +1440,18 @@ AdvancedStdIn:
     add         bx, 4
     mov         cx, [bx]
     cmp         cl, 0
-    je          SwitchError
+    %if %0 = 1
+    	jne	%%Continue
+    	mov	dx, %1
+	jmp	%%MatchOther
+    %%Continue:
+    %else
+	je      SwitchError
+    %endif
     cmp         cl, al
     jne         %%Lookup
     mov         dx, [bx + 2]
+%%MatchOther:
     mov         bx, dx
     cmp         ch, 0
     jne         %%NeedsParam
@@ -1759,45 +1746,55 @@ SwitchError:
 	call	FrameBounds_Proc
 %endmacro
 
- ; macro that shows command line switch and data, mostly for debuging the
-; command line parser
-%imacro DebugCmdLn 0
-    push        cx
-    push        dx
-    mov         al, ' '
-    WriteChar
-    pop         dx
-    cmp         dl, 0
-    je          %%NoSwitch
-    push        dx
-    mov         al, SwitchChar
-    WriteChar
-    pop         dx
-    mov         al, dl
-    WriteChar
-    pop         cx
-    push        cx
-    cmp         cx, 0
-    jne         %%NoSwitch
-    pop         cx
-    ret
-%%NoSwitch:
-    mov         al, '('
-    WriteChar
-    pop         cx
-    cmp         cx, 0
-    je          %%NoText
-%%Repeat:
-    push        cx
-    mov         al, [di]
-    WriteChar
-    pop         cx
-    inc         di
-    loop        %%Repeat
-%%NoText:
-    mov         al, ')'
-    WriteChar
-    ret
+%imacro Debug_Char 1
+	%if %0 = 1
+		pushf
+		push	ax
+		push	dx
+		mov	dl, %1
+		cmp	dl, 0x20
+		jb	%%NoPrint
+		mov	ah, 0x02
+		int 	0x21
+		%%NoPrint:
+		pop	dx
+		pop	ax
+		popf
+	%endif
+%endmacro
+
+%imacro Debug_CRLF 0
+	pushf
+	push	ax
+	push	dx
+	mov	ah, 0x02
+	mov	dl, 0x0d
+	int	0x21
+	mov	dl, 0x0a
+	int	0x21
+	pop	dx
+	pop	ax
+	popf
+%endmacro
+
+%imacro Debug_Text 1
+	pushf
+	push	ax
+	push	dx
+	push	ds
+	mov	ax, cs
+	mov 	ds, ax
+	mov	ah, 0x09
+	mov	dx, %%Msg
+	int	0x21
+	pop	ds
+	pop	dx
+	pop	ax
+	popf
+	jmp	%%Over
+%%Msg:
+	db %1,'$'
+%%Over:
 %endmacro
 
 %imacro AllocMem 1
@@ -2197,3 +2194,7 @@ BasicInitialize:
     ; DX is Cursor Position
     ; BX is Screen Max
     ; SI is Pointed to Command Line
+
+
+; new command line and string parser
+%include "PARSER.INC"

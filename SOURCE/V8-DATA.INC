@@ -9,7 +9,7 @@ DATA_SEGMENT
 
 %ifdef Require_PlaceHolderApplication
 Message_PlaceHolderApplication:
-    DB "This program is only a placeholder executable. ",0x0d,0x0a
-    DB "Eventually, it will be replaced by a program",0x0d,0x0a
-    DB "that actually does something at a later time.$"
+    DB "This program is only a placeholder for an executable. Eventually, it will be",0x0d,0x0a
+    DB "replaced by a functional program that actually does something useful. But, that",0x0d,0x0a
+    DB "will not be until some time in the future. Hopefully.$"
 %endif
