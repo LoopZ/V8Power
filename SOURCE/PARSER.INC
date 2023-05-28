@@ -37,7 +37,10 @@
 ; 	OptEndTable
 
 ; When this macro calls a switch function, these registers are passed to the
-; function.
+; function. The macro will always call at least one sub-function. When the
+; option string is empty, a single call to OnText will be performed with a
+; null string. If there is a requirement to know if the option string is null,
+; it may be desirable to test it before calling this macro.
 
 ; BX=Address of sub-function, (used for the actual call)
 ; CX=Param Length

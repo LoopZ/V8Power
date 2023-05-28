@@ -27,32 +27,68 @@
 %idefine sfHaveString	00000001b ; String is pending
 %idefine sfHaveNumber	00000010b ; String can be processed as a number
 
-%idefine sfCmdLnOpts	10000000b ; Any option or text processed
-
+; Internal TRUE/FALSE
+%idefine TRUE  1
+%idefine FALSE 0
 
 ; -----------------------------------------------------------------------------
 
+%define MAX_LEN	256	; really only needs to be 126.
+
+struc TVALUE
+	.FLAGS:		resw 1		; Value Status Flags
+	.NUMBER:	resq 1		; 64-bit value when it is a number
+	.ASCII:		resb MAX_LEN +1 ; String as ASCIIZ
+endstruc
+
+; -----------------------------------------------------------------------------
+; Under DOS, assume at startup
+; MOV 	DS, CS
+; MOV	ES, CS
+; MOV   SS, CS
+; MOV   SP, 0xfffe	(0x0000 is on stack for RET to exit call in PSP)
+; CLD
+
 Main:
+	; Initialize BSS Data
+	mov	cx, (BSS_END - BSS_START + 1) / 2
+	mov	di, BSS_START
+	xor	ax, ax
+	rep	stosw
+
 	ParseOptions 	Options
 	jc		.Done
-	xor		[EXIT_CODE], byte 1
+	; no error processing, check if all requirements are satisfied
+
+	; check for missing requirement
+	cmp		[STATUS], byte 0
+	jz		.Satisfied
+
+.Satisfied:
 	%ifdef DEBUG
-		mov	dx, .TrueStr
+		mov	dx, .FalseStr
 		test	[EXIT_CODE], byte 1
 		jz	.PrintResult
-		mov	dx, .FalseStr
+		mov	dx, .TrueStr
 		jmp	.PrintResult
 	.TrueStr:
 		db 	'TRUE',0x0d,0x0a,'$'
 	.FalseStr:
-		db 	'TRUE',0x0d,0x0a,'$'
+		db 	'FALSE',0x0d,0x0a,'$'
 	.PrintResult:
 		mov	ah, 0x09
 		int	0x21
 	%endif
+	; Exit Code 0=True, 1=False. Opposite of internal TRUE/FALSE
+	xor		[EXIT_CODE], byte TRUE
 .Done:
 	%ifdef DEBUG
-		StdOutHexByte   [EXIT_CODE]
+		mov		ax, [STATUS]
+		StdOutHexWord   ax
+		mov		al, ','
+		StdOutChar	al
+		mov		al, [EXIT_CODE]
+		StdOutHexByte   al
 		StdOutCRLF
 	%endif
 	Terminate 	[EXIT_CODE]
@@ -84,9 +120,11 @@ Options:
 	OptTableEnd
 
 ; -----------------------------------------------------------------------------
+
 HelpSwitchHandler 'vtest'
 
 ; -----------------------------------------------------------------------------
+
 OnInvalid:	; not a valid switch
 	mov		ah, 0x09
 	mov		dx, .Message1
@@ -107,48 +145,151 @@ OnInvalid:	; not a valid switch
 	db	'Invalid option ',0x22,SWITCH_CHAR,'$'
 .Message2:
 	db	0x22,'.',0x0d,0x0a,'$'
+
 ; -----------------------------------------------------------------------------
+; Parser calls these sub-functions with the following registers set.
+;
+; BX=Address of sub-function, (used for the actual call)
+; CX=Param Length
+; SI=Param Start
+; DI=Next Param
+;
+; On return to the parser. DS must be preserved and Direction flag must be
+; clear. DI will be used as a "continue from" starting point. Other registers
+; may be destroyed. If Carry Flag is set, the parser will abort.
+; -----------------------------------------------------------------------------
+
 OnText:
-
-OnF:
-
-OnD:
-
-OnE:
-
-OnEQ:
-
-OnNE:
-
-OnGE:
-
-OnLE:
-
-OnGT:
-
-OnLT:
-
-OnN:
-
-OnZ:
-
-OnV:
-
-OnC:
-
-OnI:
-
-OnAND:
-
-OnOR:
-
-OnNOT:
-
+	; Set BX to offset of Active value string buffer
+	mov		ax, [VALUES.INDEX]
+	call		VALUE_CLEAR
+	mov		di, bx
+	add		di, TVALUE.ASCII
+	call		COPY_STRING
 ; -----------------------------------------------------------------------------
-OptionDone:
-	or		[STATUS+1], byte sfCmdLnOpts 	; something happened
+
+OnDoneText:
 	clc 						; continue processing
 	ret
+
 ; -----------------------------------------------------------------------------
-EXIT_CODE:	db 0
-STATUS:		db 0
+
+OnDoneSwitch:
+	clc 						; continue processing
+	ret
+
+; -----------------------------------------------------------------------------
+
+OnF:
+OnD:
+OnE:
+OnEQ:
+OnNE:
+OnGE:
+OnLE:
+OnGT:
+OnLT:
+OnN:
+OnZ:
+OnV:
+OnC:
+OnI:
+OnAND:
+OnOR:
+OnNOT:
+	Debug_Char 	'['
+	Debug_Char 	'/'
+.PrintSwitch:
+	lodsb
+	Debug_Char	 al
+	loop		.PrintSwitch
+	Debug_Char 	']'
+	Debug_CRLF
+	jmp		OnDoneSwitch
+
+; -----------------------------------------------------------------------------
+
+VALUE_OFFSET:
+; Returns offset address of a VALUE buffer
+; IN:  AX=Value Buffer Index
+; OUT: BX=Value Buffer offset
+	push		ax
+	mov		bx, TVALUE_size
+	mul		bx
+	add		ax, VALUES.ARRAY
+	mov		bx, ax
+	pop		ax
+	ret
+
+; -----------------------------------------------------------------------------
+
+VALUE_CLEAR:
+; Zeros a VALUE buffer
+; IN:  AX=Value Buffer Index
+; OUT: BX=Value Buffer offset
+	push		ax
+	push		cx
+	push		di
+	call		VALUE_OFFSET
+	mov		cx, TVALUE_size
+	mov		di, bx
+	xor		al, al
+	; rep		stosb
+	pop		di
+	pop		cx
+	pop		ax
+	ret
+
+; -----------------------------------------------------------------------------
+
+COPY_STRING:
+; copy string from SI to DI. Single / or < space terminates copy. Double / is
+; copied as single /. on return: SI & DI updated to new next position.
+	test		cx, cx
+	jz		.CopyDone
+.Copy:
+	lodsb
+	cmp		al, 0x20
+	jb		.CopyDone
+	cmp		al, SWITCH_CHAR
+	jne		.NotSwitch
+	lodsb
+	cmp		al, SWITCH_CHAR
+	je		.NotSwitch	  ; is // so "escaped /"
+	dec		si
+	jmp		.CopyDone
+.NotSwitch:
+	stosb
+	Debug_Char	al
+	jmp		.Copy
+.CopyDone:
+	xor		al, al
+	stosb
+	dec		si	; back up one
+	Debug_CRLF
+	mov		di, si
+	ret
+
+; -----------------------------------------------------------------------------
+
+section .data
+
+; -----------------------------------------------------------------------------
+
+STATUS:		dw sfReqExp
+
+EXIT_CODE:	db FALSE
+
+; -----------------------------------------------------------------------------
+
+section .bss
+
+; -----------------------------------------------------------------------------
+BSS_START:
+
+VALUES:
+	.INDEX:	resw 1
+	.ARRAY:	resb TVALUE_size * 2
+
+BSS_END:
+	resw 1
