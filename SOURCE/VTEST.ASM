@@ -24,8 +24,8 @@
 %idefine sfReqExp	00010000b ; Expression required
 
 ; STATUS - High Byte
-%idefine sfHaveString	00000001b ; String is pending
-%idefine sfHaveNumber	00000010b ; String can be processed as a number
+%idefine sfHaveStrA	00000001b ; String is pending
+%idefine sfHaveStrB	00000010b ; String can be processed as a number
 
 ; Internal TRUE/FALSE
 %idefine TRUE  1
@@ -36,9 +36,9 @@
 %define MAX_LEN	256	; really only needs to be 126.
 
 struc TVALUE
+	.ASCII:		resb MAX_LEN + 1 ; String as ASCIIZ
 	.FLAGS:		resw 1		; Value Status Flags
 	.NUMBER:	resq 1		; 64-bit value when it is a number
-	.ASCII:		resb MAX_LEN +1 ; String as ASCIIZ
 endstruc
 
 ; -----------------------------------------------------------------------------
@@ -129,12 +129,15 @@ OnInvalid:	; not a valid switch
 	mov		ah, 0x09
 	mov		dx, .Message1
 	int		0x21
+	test		cx, cx
+	jz		.PrintDone
 	mov		ah, 0x02
 .Printing:
 	lodsb
 	mov		dl, al
 	int		0x21
 	loop		.Printing
+.PrintDone:
 	mov		ah, 0x09
 	mov		dx, .Message2
 	int		0x21
@@ -164,8 +167,8 @@ OnText:
 	mov		ax, [VALUES.INDEX]
 	call		VALUE_CLEAR
 	mov		di, bx
-	add		di, TVALUE.ASCII
 	call		COPY_STRING
+
 ; -----------------------------------------------------------------------------
 
 OnDoneText:
