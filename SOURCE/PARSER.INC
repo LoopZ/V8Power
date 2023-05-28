@@ -10,10 +10,12 @@
 			; be passed as single parameter. The quotation
 			; characters not used to wrap the text may be used
 			; inside the quoted text.
+			;
 			; Leave this disabled to treat all quotation characters
 			; as normal text. This will cause text with spaces or
 			; SWITCH characters to be sent as individual pieces.
-			; Which could use // to escape the switch character.
+			; Note: Double switch characters will separate options.
+			; However, it will be sent as //TEXT and not as switch.
 
 
 %macro INTERNAL_StringParser 0
@@ -102,8 +104,16 @@ PROC_StringParser:
 	cmp	al, 0x20
 	jbe	%%CheckYes
 %%CheckSlash:
+%ifndef FLEX_QUOTES
+	test	ah, ah
+	je	%%SkipSwitch
+%endif
 	cmp	al, SWITCH_CHAR
 	je	%%CheckYes
+%ifndef FLEX_QUOTES
+%%SkipSwitch:
+	mov	ah, 1
+%endif
 
 	; It can break params on other characters here, next param will be text
 	; start with this character. Example:
@@ -147,6 +157,9 @@ PROC_StringParser:
 %ifdef FLEX_QUOTES
 	test	ah, ah
 	jnz	%%AsString		; Was not Quoted
+%else
+	cmp	[bx+1], al
+	je	%%AsString
 %endif
 ; Look up Option Switch:
 	inc	bx			; Drop Switch Character

@@ -117,6 +117,7 @@ Options:
 	OptSwitch 	'AND',	OnAND
 	OptSwitch 	'OR',	OnOR
 	OptSwitch 	'NOT',	OnNOT
+	OptSwitch 	SWITCH_CHAR, OnDoubleSwitch
 	OptTableEnd
 
 ; -----------------------------------------------------------------------------
@@ -182,6 +183,11 @@ OnDoneSwitch:
 	ret
 
 ; -----------------------------------------------------------------------------
+
+OnDoubleSwitch:
+	; backup one and handle as text
+	dec	si
+	jmp	OnText
 
 OnF:
 OnD:
