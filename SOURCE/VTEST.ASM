@@ -27,8 +27,8 @@
 %idefine sfReqExp	00010000b ; Expression required
 
 ; STATUS - High Byte
-%idefine sfHaveStrA	00000001b ; String is pending
-%idefine sfHaveStrB	00000010b ; String can be processed as a number
+%idefine sfCanExp	00000001b ; Can start expression
+%idefine sfCanCompare	00000010b ; Can compare values
 
 ; Internal TRUE/FALSE
 %idefine TRUE  1
@@ -63,27 +63,64 @@ Main:
 	jc		.Done
 	; no error processing, check if all requirements are satisfied
 
-	; check for missing requirement
-	cmp		[STATUS], byte 0
+	; check LOW STATUS byte for any missing requirement
+	mov		al, [STATUS]
+	test		al, al
 	jz		.Satisfied
 
+	mov		ah, 0x09
+	mov		dx, MESSAGE.REQUIRED
+	int		0x21
+
+	mov		dx, MESSAGE.REQFILEDIR
+	mov		bl, al
+	and		bl, sfReqFileOrDir
+	cmp		bl, sfReqFileOrDir
+	je		.MissingMessage
+	mov		dx, MESSAGE.REQVALUE
+	mov		bl, al
+	and		bl, sfReqValue
+	cmp		bl, sfReqValue
+	je		.MissingMessage
+	mov		dx, MESSAGE.REQFILE
+	test		al, sfReqFile
+	jnz		.MissingMessage
+	mov		dx, MESSAGE.REQDIR
+	test		al, sfReqDir
+	jnz		.MissingMessage
+	mov		dx, MESSAGE.REQSTR
+	test		al, sfReqString
+	jnz		.MissingMessage
+	mov		dx, MESSAGE.REQNUM
+	test		al, sfReqNumber
+	jnz		.MissingMessage
+	mov		dx, MESSAGE.REQEXP
+	test		al, sfReqExp
+	jnz		.MissingMessage
+	mov		dx, MESSAGE.REQOTHER
+.MissingMessage:
+	int		0x21
+	mov		dx, MESSAGE.MISSING
+	jmp		.ExitMessage
 .Satisfied:
-	%ifdef DEBUG
-		mov	dx, .FalseStr
-		test	[EXIT_CODE], byte 1
-		jz	.PrintResult
-		mov	dx, .TrueStr
-		jmp	.PrintResult
-	.TrueStr:
-		db 	'TRUE',0x0d,0x0a,'$'
-	.FalseStr:
-		db 	'FALSE',0x0d,0x0a,'$'
-	.PrintResult:
-		mov	ah, 0x09
-		int	0x21
-	%endif
 	; Exit Code 0=True, 1=False. Opposite of internal TRUE/FALSE
 	xor		[EXIT_CODE], byte TRUE
+	cmp		[SHOW_RESULT], byte 0
+	jz		.Done
+	mov		dx, MESSAGE.FALSE
+	test		[EXIT_CODE], byte 1
+	jnz		.ExitMessage
+	mov		dx, MESSAGE.TRUE
+.ExitMessage:
+	test		dx, dx
+	jz		.Done
+	mov		ah, 0x09
+	int		0x21
+	mov		ah, 0x02
+	mov		dl, 0x0d
+	int		0x21
+	mov		dl, 0x0a
+	int		0x21
 .Done:
 	%ifdef DEBUG
 		mov		ax, [STATUS]
@@ -129,7 +166,7 @@ HelpSwitchHandler 'vtest'
 
 OnInvalid:	; not a valid switch
 	mov		ah, 0x09
-	mov		dx, .Message1
+	mov		dx, MESSAGE.INVALID
 	int		0x21
 	test		cx, cx
 	jz		.PrintDone
@@ -141,15 +178,11 @@ OnInvalid:	; not a valid switch
 	loop		.Printing
 .PrintDone:
 	mov		ah, 0x09
-	mov		dx, .Message2
+	mov		dx, MESSAGE.ENDQUOTE
 	int		0x21
 	mov		[EXIT_CODE], byte 100
 	stc		; abort processing
 	ret
-.Message1:
-	db	'Invalid option ',0x22,SWITCH_CHAR,'$'
-.Message2:
-	db	0x22,'.',0x0d,0x0a,'$'
 
 ; -----------------------------------------------------------------------------
 ; Parser calls these sub-functions with the following registers set.
@@ -214,9 +247,12 @@ OnCompare:
 	lodsb
 	Debug_Char	 al
 	loop		.PrintSwitch
+	cmp		dx, 6
+	ja		.NotOperator
 	Debug_Char 	':'
 	mov		ax, dx
 	StdOutHexWord 	ax
+.NotOperator:
 	Debug_Char 	']'
 	Debug_CRLF
 	jmp		OnDoneSwitch
@@ -330,9 +366,27 @@ section .data
 
 ; -----------------------------------------------------------------------------
 
-STATUS:		dw sfReqExp
+STATUS:		db sfReqExp,sfCanExp
 
 EXIT_CODE:	db FALSE
+
+SHOW_RESULT:	db TRUE
+
+MESSAGE:
+	.TRUE:		db 	'TRUE$'
+	.FALSE:		db 	'FALSE$'
+	.ENDQUOTE:	db	0x22,'.$'
+	.INVALID:	db	'Invalid option ',0x22,SWITCH_CHAR,'$'
+	.REQUIRED:	db 	'Required $'
+	.MISSING:	db	' is missing.$'
+	.REQFILE:	db	'file name$'
+	.REQDIR:	db	'directory name$'
+	.REQFILEDIR:	db	'file or directory name$'
+	.REQSTR:	db	'text string$'
+	.REQNUM:	db	'numeric value$'
+	.REQVALUE:	db	'text or number$'
+	.REQEXP:	db	'expression$'
+	.REQOTHER:	db 	'item$'
 
 ; -----------------------------------------------------------------------------
 

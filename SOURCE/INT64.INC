@@ -2018,6 +2018,10 @@ proc_ASCII_sInt64:
 
     xor		dx, dx
     mov		ax, [si]
+%ifdef INT64_STRICT_ASCII
+	test	al, al
+	jz	.MathError
+%endif
     cmp		al, '-'
     jne		.NotNeg
     or 		dl, 1 		; negative flag
