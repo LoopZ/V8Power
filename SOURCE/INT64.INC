@@ -2093,10 +2093,12 @@ proc_ASCII_sInt64:
 .BadAscii:
     cmp		al, 0
     je		.EndNumber
+%ifndef INT64_STRICT_ASCII
     cmp		al, 32
     je		.EndNumber
     cmp		al, 13
     je		.EndNumber
+%endif
     jmp		.MathError
 .EndNumber:
     test	dl, 1

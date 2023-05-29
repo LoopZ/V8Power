@@ -7,6 +7,9 @@
 
 %idefine DEBUG
 
+%define INT64_STRICT_ASCII	; non-valid number chars (like SPACE) generate
+				; a conversion error.
+
 %include "COMMON.INC"
 %include "INT64.INC"
 
@@ -93,31 +96,29 @@ Main:
 	%endif
 	Terminate 	[EXIT_CODE]
 
-	Int64_Procs
-
 ; -----------------------------------------------------------------------------
 
 Options:
 	OptTable 	OnText, OnInvalid
+	OptSwitch 	'EQ',	OnCompare	; switch index 1
+	OptSwitch 	'NE',	OnCompare	; switch index 2
+	OptSwitch 	'GE',	OnCompare	; switch index 3
+	OptSwitch 	'LE',	OnCompare	; switch index 4
+	OptSwitch 	'GT',	OnCompare	; switch index 5
+	OptSwitch 	'LT',	OnCompare	; switch index 6
 	OptSwitch 	'H',	SwitchHelp
-	OptSwitch	'F',	OnF
-	OptSwitch 	'D',	OnD
-	OptSwitch 	'E',	OnE
-	OptSwitch 	'EQ',	OnEQ
-	OptSwitch 	'NE',	OnNE
-	OptSwitch 	'GE',	OnGE
-	OptSwitch 	'LE',	OnLE
-	OptSwitch 	'GT',	OnGT
-	OptSwitch 	'LT',	OnLT
-	OptSwitch 	'N',	OnN
-	OptSwitch 	'Z',	OnZ
-	OptSwitch 	'V',	OnV
-	OptSwitch 	'C',	OnC
-	OptSwitch 	'I',	OnI
-	OptSwitch 	'AND',	OnAND
-	OptSwitch 	'OR',	OnOR
-	OptSwitch 	'NOT',	OnNOT
-	OptSwitch 	SWITCH_CHAR, OnDoubleSwitch
+	OptSwitch	'F',	OnFileExist
+	OptSwitch 	'D',	OnDirExist
+	OptSwitch 	'E',	OnExists
+	OptSwitch 	'N',	OnIsString
+	OptSwitch 	'Z',	OnNullString
+	OptSwitch 	'V',	OnIsNumber
+	OptSwitch 	'C',	OnCaseSpecific
+	OptSwitch 	'I',	OnIgnoreCase
+	OptSwitch 	'AND',	OnExpressionAND
+	OptSwitch 	'OR',	OnExpressionOR
+	OptSwitch 	'NOT',	OnExpressionNOT
+	; OptSwitch 	SWITCH_CHAR, OnDoubleSwitch
 	OptTableEnd
 
 ; -----------------------------------------------------------------------------
@@ -157,6 +158,7 @@ OnInvalid:	; not a valid switch
 ; CX=Param Length
 ; SI=Param Start
 ; DI=Next Param
+; DX=1+ index of switch in table
 ;
 ; On return to the parser. DS must be preserved and Direction flag must be
 ; clear. DI will be used as a "continue from" starting point. Other registers
@@ -164,22 +166,27 @@ OnInvalid:	; not a valid switch
 ; -----------------------------------------------------------------------------
 
 OnText:
-	; Set BX to offset of Active value string buffer
 	mov		ax, [VALUES.INDEX]
 	call		VALUE_CLEAR
 	mov		di, bx
-	call		COPY_STRING
+	call		STORE_STRING	; copies SI->DI, updates DI
+	%ifdef DEBUG
+		Debug_Char	'"'
+		Debug_AsciiZ	bx
+		Debug_Char	'"'
+	%endif
+	call		NUMBER_VALUE	; convert record at BX to number
 
 ; -----------------------------------------------------------------------------
 
 OnDoneText:
-	clc 						; continue processing
+	clc 				; continue processing
 	ret
 
 ; -----------------------------------------------------------------------------
 
 OnDoneSwitch:
-	clc 						; continue processing
+	clc 				; continue processing
 	ret
 
 ; -----------------------------------------------------------------------------
@@ -189,29 +196,27 @@ OnDoubleSwitch:
 	dec	si
 	jmp	OnText
 
-OnF:
-OnD:
-OnE:
-OnEQ:
-OnNE:
-OnGE:
-OnLE:
-OnGT:
-OnLT:
-OnN:
-OnZ:
-OnV:
-OnC:
-OnI:
-OnAND:
-OnOR:
-OnNOT:
+OnFileExist:
+OnDirExist:
+OnExists:
+OnIsString:
+OnNullString:
+OnIsNumber:
+OnCaseSpecific:
+OnIgnoreCase:
+OnExpressionAND:
+OnExpressionOR:
+OnExpressionNOT:
+OnCompare:
 	Debug_Char 	'['
 	Debug_Char 	'/'
 .PrintSwitch:
 	lodsb
 	Debug_Char	 al
 	loop		.PrintSwitch
+	Debug_Char 	':'
+	mov		ax, dx
+	StdOutHexWord 	ax
 	Debug_Char 	']'
 	Debug_CRLF
 	jmp		OnDoneSwitch
@@ -251,33 +256,73 @@ VALUE_CLEAR:
 
 ; -----------------------------------------------------------------------------
 
-COPY_STRING:
+STORE_STRING:
 ; copy string from SI to DI. Single / or < space terminates copy. Double / is
-; copied as single /. on return: SI & DI updated to new next position.
-	test		cx, cx
-	jz		.CopyDone
+; copied as single /. On return: DI updated to new next position. SI is end of
+; saved string. CX is new length
+	jcxz		.CopyDone
+	xor		cx, cx
 .Copy:
 	lodsb
 	cmp		al, 0x20
-	jb		.CopyDone
+	jb		.Trim
 	cmp		al, SWITCH_CHAR
 	jne		.NotSwitch
 	lodsb
 	cmp		al, SWITCH_CHAR
-	je		.NotSwitch	  ; is // so "escaped /"
-	dec		si
-	jmp		.CopyDone
+	je		.NotSwitch	; is // so "escaped /"
+	dec		si		; back up one char
+	jmp		.Trim
 .NotSwitch:
 	stosb
-	Debug_Char	al
+	inc		cx
 	jmp		.Copy
+.Trim:
+	jcxz		.CopyDone
+	cmp		[di-1], byte 0x20
+	jne		.CopyDone
+	dec		di
+	dec		cx
+	jmp		.Trim
 .CopyDone:
 	xor		al, al
 	stosb
-	dec		si	; back up one
-	Debug_CRLF
-	mov		di, si
+	dec		si	; back up to termination character
+	xchg		di, si
 	ret
+
+; -----------------------------------------------------------------------------
+
+NUMBER_VALUE:
+	push		di
+	mov		si, bx
+	mov		di, bx
+	add		di, TVALUE.NUMBER
+	ASCII_sInt64	di, si
+	jc		.Done
+.Success:
+	mov		[bx+TVALUE.FLAGS], byte 1
+	%ifdef DEBUG
+		Debug_Char 	':'
+		mov		ax, [bx+TVALUE.NUMBER+6]
+		StdOutHexWord 	ax
+		mov		ax, [bx+TVALUE.NUMBER+4]
+		StdOutHexWord 	ax
+		mov		ax, [bx+TVALUE.NUMBER+2]
+		StdOutHexWord 	ax
+		mov		ax, [bx+TVALUE.NUMBER+0]
+		StdOutHexWord 	ax
+	%endif
+.Done:
+	%ifdef DEBUG
+		Debug_CRLF
+	%endif
+	pop		di
+	ret
+
+; -----------------------------------------------------------------------------
+
+	Int64_Procs
 
 ; -----------------------------------------------------------------------------
 

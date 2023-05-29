@@ -48,6 +48,7 @@
 ; CX=Param Length
 ; SI=Param Start
 ; DI=Next Param
+; DX=1+ index of switch in table, 0=not applicable
 
 ; When calling a Switch Function, the switch character is excluded.
 
@@ -168,6 +169,7 @@ PROC_StringParser:
 %%LookupOpt:
 	push	di
 	add	di, 4
+	xor	dx, dx
 	call	%%CompareOpt
 	pop	di
 	test	ax, ax
@@ -185,7 +187,8 @@ PROC_StringParser:
 	mov 	si, bx
 	mov	bx, ax
 
-	; BX=Function Call, CX=Param Length, SI=Param Start, DI=Next Param
+	; BX=Function Call, CX=Param Length, SI=Param Start, DI=Next Param,
+	; DX=1+option index
 	clc
 	call	bx
 
@@ -207,11 +210,13 @@ PROC_StringParser:
 %%NullString:
 %%AsString:
 	mov	ax, [di]
+	xor	dx, dx
 	jmp	%%MakeCall
 
 %%CompareOpt:
 	push	bx
 	push	cx
+	inc	dx
 %%Comparing:
 	mov	al, [di]
 	inc	di
@@ -257,6 +262,7 @@ PROC_StringParser:
 	pop	bx
 	test	ax, ax
 	jnz	%%CompareOpt
+	xor	dx, dx
 	ret
 %endmacro
 

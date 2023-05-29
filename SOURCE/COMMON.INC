@@ -1797,6 +1797,33 @@ SwitchError:
 %%Over:
 %endmacro
 
+%imacro Debug_AsciiZ 1
+	pushf
+	cld
+	push	si
+	push	ax
+	push	dx
+	push	ds
+	mov	ax, cs
+	mov 	ds, ax
+	mov	ah, 0x02
+	mov	si, %1
+%%Loop:
+	lodsb
+	test	al, al
+	jz	%%Done
+	mov	dl, al
+	int	0x21
+	jmp %%Loop
+%%Done:
+	pop	ds
+	pop	dx
+	pop	ax
+	pop	si
+	popf
+%endmacro
+
+
 %imacro AllocMem 1
 	%ifnidni %1, bx
 		mov		bx, %1
