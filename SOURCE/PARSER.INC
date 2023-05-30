@@ -17,6 +17,9 @@
 			; Note: Double switch characters will separate options.
 			; However, it will be sent as //TEXT and not as switch.
 
+; %define INDEXED_OPTIONS ; Enable to automatically create index defines for
+			; options based on there text.
+
 
 %macro INTERNAL_StringParser 0
 ; AX, BX, CX, DX, SI, DI registers are either used or destroyed by this macro!
@@ -282,15 +285,37 @@ PROC_StringParser:
 	call	PROC_StringParser
 %endmacro
 
-%imacro OptTable 2
+%imacro OptTable 2-3
+	%ifndef INDEXED_OPTIONS
+		%if %0 = $3
+			%fatal Indexes not enabled for option tables.
+		%endif
+	%else
+		%assign OPT_SWITCH_INDEX_COUNTER 0
+		%if %0 = 3
+			%define OPT_SWITCH_ID %3
+		%else
+			%undef OPT_SWITCH_ID
+		%endif
+	%endif
 	dw %1,%2	; %1=Text call address, %2=Invalid Switch call address
 %endmacro
 
 %imacro OptEndTable 0
+	%ifdef INDEXED_OPTIONS
+		%undef OPT_SWITCH_INDEX_COUNTER
+		%undef OPT_SWITCH_ID
+	%endif
 	db 0,0,0	; Terminate Option Table Data
 %endmacro
 
 %idefine OptTableEnd OptEndTable
+
+%ifdef INDEXED_OPTIONS
+	%macro SETOPTIONINDEX 2
+		%xdefine %1 %2
+	%endmacro
+%endif
 
 %imacro OptSwitch   2	; Standard Switch
 			; So both UPPER/LOWER case can be used for a switch.
@@ -299,11 +324,27 @@ PROC_StringParser:
 			; If caseless, only use UPPER.
 	db %1,0x00	; %1 Switch text, % function call address
 	dw %2
+%ifdef INDEXED_OPTIONS
+	%assign OPT_SWITCH_INDEX_COUNTER OPT_SWITCH_INDEX_COUNTER + 1
+	%ifdef OPT_SWITCH_ID
+		SETOPTIONINDEX OPT_SWITCH_ID %+ _OPTION_ %+ %tok(%1), OPT_SWITCH_INDEX_COUNTER
+	%else
+		SETOPTIONINDEX OPTION_ %+ %tok(%1), OPT_SWITCH_INDEX_COUNTER
+	%endif
+%endif
 %endmacro
 
 %imacro OptWild   2	; Wildcard Switch. Only the first part of an option
 			; needs to match the switch.
 	db %1,0x01	; %1 Switch text, % function call address
 	dw %2
+%ifdef INDEXED_OPTIONS
+	%assign OPT_SWITCH_INDEX_COUNTER OPT_SWITCH_INDEX_COUNTER + 1
+	%ifdef OPT_SWITCH_ID
+		SETOPTIONINDEX OPT_SWITCH_ID %+ _OPTION_ %+ %tok(%1), OPT_SWITCH_INDEX_COUNTER
+	%else
+		SETOPTIONINDEX OPTION_ %+ %tok(%1), OPT_SWITCH_INDEX_COUNTER
+	%endif
+%endif
 %endmacro
 

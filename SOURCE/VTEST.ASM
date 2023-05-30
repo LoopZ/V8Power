@@ -10,6 +10,9 @@
 %define INT64_STRICT_ASCII	; non-valid number chars (like SPACE) generate
 				; a conversion error.
 
+%define INDEXED_OPTIONS		; automatically created define indexes for
+				; parser option switches.
+
 %include "COMMON.INC"
 %include "INT64.INC"
 
@@ -18,17 +21,24 @@
 
 ; STATUS - Low Byte
 %idefine sfNone		00000000b ; Initial startup state
-%idefine sfReqFile	00000001b ; File name required
-%idefine sfReqDir	00000010b ; Directory path required
-%idefine sfReqFileOrDir 00000011b ; File name or Directory path required
-%idefine sfReqString	00000100b ; String required
-%idefine sfReqNumber	00001000b ; Number required
-%idefine sfReqValue	00001100b ; String or Number required
-%idefine sfReqExp	00010000b ; Expression required
+%idefine sfReqFile	00000010b ; File name required
+%idefine sfReqDir	00000100b ; Directory path required
+%idefine sfReqFileOrDir 00000110b ; File name or Directory path required
+%idefine sfReqString	00001000b ; String required
+%idefine sfReqNumber	00010000b ; Number required
+%idefine sfReqValue	00011000b ; String or Number required
+%idefine sfReqExp	00100000b ; Expression required
 
 ; STATUS - High Byte
 %idefine sfCanExp	00000001b ; Can start expression
 %idefine sfCanCompare	00000010b ; Can compare values
+
+; String data type
+%idefine stText		00000000b ; Text String
+%idefine stNumber	00000001b ; Text/Number
+%idefine stFile		00000010b ; File name
+%idefine stDir		00000100b ; Directory Name
+%idefine stFileOrDir	00000110b ; FIle or Directory name
 
 ; Internal TRUE/FALSE
 %idefine TRUE  1
@@ -40,12 +50,12 @@
 
 struc TVALUE
 	.ASCII:		resb MAX_LEN + 1 ; String as ASCIIZ
-	.FLAGS:		resw 1		; Value Status Flags
+	.DTYPE:		resw 1		; String data type
 	.NUMBER:	resq 1		; 64-bit value when it is a number
 endstruc
 
 ; -----------------------------------------------------------------------------
-; Under DOS, assume at startup
+; Under DOS at startup, assume:
 ; MOV 	DS, CS
 ; MOV	ES, CS
 ; MOV   SS, CS
@@ -60,13 +70,19 @@ Main:
 	rep	stosw
 
 	ParseOptions 	Options
-	jc		.Done
+	jc		.ExitError
 	; no error processing, check if all requirements are satisfied
+
+	; If no command line options were processed return FALSE
+	cmp		[ANY_OPTS], byte FALSE
+	je		.Satisfied
 
 	; check LOW STATUS byte for any missing requirement
 	mov		al, [STATUS]
 	test		al, al
 	jz		.Satisfied
+
+	mov		[EXIT_RESULT], byte 100
 
 	mov		ah, 0x09
 	mov		dx, MESSAGE.REQUIRED
@@ -82,6 +98,7 @@ Main:
 	and		bl, sfReqValue
 	cmp		bl, sfReqValue
 	je		.MissingMessage
+
 	mov		dx, MESSAGE.REQFILE
 	test		al, sfReqFile
 	jnz		.MissingMessage
@@ -101,49 +118,59 @@ Main:
 .MissingMessage:
 	int		0x21
 	mov		dx, MESSAGE.MISSING
-	jmp		.ExitMessage
+	int		0x21
+	call		NewLine
+	jmp		.ExitError
 .Satisfied:
 	; Exit Code 0=True, 1=False. Opposite of internal TRUE/FALSE
-	xor		[EXIT_CODE], byte TRUE
+	xor		[EXIT_RESULT], byte TRUE
+.ExitError:
 	cmp		[SHOW_RESULT], byte 0
-	jz		.Done
+	je		.Done
 	mov		dx, MESSAGE.FALSE
-	test		[EXIT_CODE], byte 1
-	jnz		.ExitMessage
+	cmp		[EXIT_RESULT], byte 1
+	je		.ExitMessage
 	mov		dx, MESSAGE.TRUE
+	jb		.ExitMessage
+	mov		dx, MESSAGE.ERROR
 .ExitMessage:
 	test		dx, dx
 	jz		.Done
 	mov		ah, 0x09
 	int		0x21
-	mov		ah, 0x02
-	mov		dl, 0x0d
-	int		0x21
-	mov		dl, 0x0a
-	int		0x21
+	call		NewLine
 .Done:
 	%ifdef DEBUG
 		mov		ax, [STATUS]
 		StdOutHexWord   ax
 		mov		al, ','
 		StdOutChar	al
-		mov		al, [EXIT_CODE]
+		mov		al, [EXIT_RESULT]
 		StdOutHexByte   al
 		StdOutCRLF
 	%endif
-	Terminate 	[EXIT_CODE]
+	Terminate 	[EXIT_RESULT]
+
+; -----------------------------------------------------------------------------
+
+NewLine:
+	mov		ah, 0x02
+	mov		dl, 0x0d
+	int		0x21
+	mov		dl, 0x0a
+	int		0x21
+	ret
 
 ; -----------------------------------------------------------------------------
 
 Options:
-	OptTable 	OnText, OnInvalid
+	OptTable 	OnText, OnInvalid, MAIN
 	OptSwitch 	'EQ',	OnCompare	; switch index 1
 	OptSwitch 	'NE',	OnCompare	; switch index 2
 	OptSwitch 	'GE',	OnCompare	; switch index 3
 	OptSwitch 	'LE',	OnCompare	; switch index 4
 	OptSwitch 	'GT',	OnCompare	; switch index 5
 	OptSwitch 	'LT',	OnCompare	; switch index 6
-	OptSwitch 	'H',	SwitchHelp
 	OptSwitch	'F',	OnFileExist
 	OptSwitch 	'D',	OnDirExist
 	OptSwitch 	'E',	OnExists
@@ -155,7 +182,8 @@ Options:
 	OptSwitch 	'AND',	OnExpressionAND
 	OptSwitch 	'OR',	OnExpressionOR
 	OptSwitch 	'NOT',	OnExpressionNOT
-	; OptSwitch 	SWITCH_CHAR, OnDoubleSwitch
+	OptSwitch 	'H',	SwitchHelp
+	OptSwitch 	'TF',	OnTrueFalse
 	OptTableEnd
 
 ; -----------------------------------------------------------------------------
@@ -180,7 +208,8 @@ OnInvalid:	; not a valid switch
 	mov		ah, 0x09
 	mov		dx, MESSAGE.ENDQUOTE
 	int		0x21
-	mov		[EXIT_CODE], byte 100
+	mov		[EXIT_RESULT], byte 100
+	call		NewLine
 	stc		; abort processing
 	ret
 
@@ -203,6 +232,10 @@ OnText:
 	call		VALUE_CLEAR
 	mov		di, bx
 	call		STORE_STRING	; copies SI->DI, updates DI
+	test		cx, cx
+	jz		.StringResult
+	mov		[THIS_RESULT], byte TRUE
+.StringResult:
 	%ifdef DEBUG
 		Debug_Char	'"'
 		Debug_AsciiZ	bx
@@ -212,27 +245,29 @@ OnText:
 
 ; -----------------------------------------------------------------------------
 
-OnDoneText:
-	clc 				; continue processing
-	ret
+; OnDoneText:
+;	clc
+;	ret
 
 ; -----------------------------------------------------------------------------
 
 OnDoneSwitch:
-	clc 				; continue processing
+	mov		[ANY_OPTS], byte TRUE
+	clc
 	ret
 
 ; -----------------------------------------------------------------------------
 
-OnDoubleSwitch:
-	; backup one and handle as text
-	dec	si
-	jmp	OnText
+OnTrueFalse:
+	; does not set ANY_OPTS
+	mov	[SHOW_RESULT], byte TRUE
+	ret
 
 OnFileExist:
 OnDirExist:
 OnExists:
 OnIsString:
+
 OnNullString:
 OnIsNumber:
 OnCaseSpecific:
@@ -240,9 +275,15 @@ OnIgnoreCase:
 OnExpressionAND:
 OnExpressionOR:
 OnExpressionNOT:
+
 OnCompare:
+	mov		[LAST_OPT], dx
+
 	Debug_Char 	'['
 	Debug_Char 	'/'
+	cmp		dx, MAIN_OPTION_F
+	jne		.PrintSwitch
+	Debug_Char	'!'
 .PrintSwitch:
 	lodsb
 	Debug_Char	 al
@@ -284,7 +325,7 @@ VALUE_CLEAR:
 	mov		cx, TVALUE_size
 	mov		di, bx
 	xor		al, al
-	; rep		stosb
+	rep		stosb
 	pop		di
 	pop		cx
 	pop		ax
@@ -337,7 +378,7 @@ NUMBER_VALUE:
 	ASCII_sInt64	di, si
 	jc		.Done
 .Success:
-	mov		[bx+TVALUE.FLAGS], byte 1
+	mov		[bx+TVALUE.DTYPE], byte stNumber
 	%ifdef DEBUG
 		Debug_Char 	':'
 		mov		ax, [bx+TVALUE.NUMBER+6]
@@ -366,15 +407,25 @@ section .data
 
 ; -----------------------------------------------------------------------------
 
+LAST_OPT:	dw 0
+
+ANY_RESULT:	db FALSE
+
+ANY_OPTS:	db FALSE		; True once any command line options
+					; are processed.
+
 STATUS:		db sfReqExp,sfCanExp
 
-EXIT_CODE:	db FALSE
+EXIT_RESULT:	db FALSE
 
-SHOW_RESULT:	db TRUE
+THIS_RESULT:	db FALSE
+
+SHOW_RESULT:	db FALSE
 
 MESSAGE:
 	.TRUE:		db 	'TRUE$'
 	.FALSE:		db 	'FALSE$'
+	.ERROR:		db	'ERROR$'
 	.ENDQUOTE:	db	0x22,'.$'
 	.INVALID:	db	'Invalid option ',0x22,SWITCH_CHAR,'$'
 	.REQUIRED:	db 	'Required $'
