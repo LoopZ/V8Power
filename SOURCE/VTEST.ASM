@@ -19,19 +19,11 @@
 ; -----------------------------------------------------------------------------
 ; Operation and processing state flags
 
-; STATUS - Low Byte
-%idefine sfNone		00000000b ; Initial startup state
-%idefine sfReqFile	00000010b ; File name required
-%idefine sfReqDir	00000100b ; Directory path required
-%idefine sfReqFileOrDir 00000110b ; File name or Directory path required
-%idefine sfReqString	00001000b ; String required
-%idefine sfReqNumber	00010000b ; Number required
-%idefine sfReqValue	00011000b ; String or Number required
-%idefine sfReqExp	00100000b ; Expression required
-
-; STATUS - High Byte
-%idefine sfCanExp	00000001b ; Can start expression
-%idefine sfCanCompare	00000010b ; Can compare values
+; STATUS - Flags
+%idefine sfExpNOT	00000010b
+%idefine sfExpOR	00000100b
+%idefine sfExpAND	00001000b
+%idefine sfExpCMP	00010000b
 
 ; String data type
 %idefine stText		00000000b ; Text String
@@ -71,56 +63,13 @@ Main:
 
 	ParseOptions 	Options
 	jc		.ExitError
+
 	; no error processing, check if all requirements are satisfied
-
-	; If no command line options were processed return FALSE
-	cmp		[ANY_OPTS], byte FALSE
+	cmp		[LAST_OPT], word 0
 	je		.Satisfied
+	mov		[THIS_RESULT], byte FALSE
+	call		ProcessOpt
 
-	; check LOW STATUS byte for any missing requirement
-	mov		al, [STATUS]
-	test		al, al
-	jz		.Satisfied
-
-	mov		[EXIT_RESULT], byte 100
-
-	mov		ah, 0x09
-	mov		dx, MESSAGE.REQUIRED
-	int		0x21
-
-	mov		dx, MESSAGE.REQFILEDIR
-	mov		bl, al
-	and		bl, sfReqFileOrDir
-	cmp		bl, sfReqFileOrDir
-	je		.MissingMessage
-	mov		dx, MESSAGE.REQVALUE
-	mov		bl, al
-	and		bl, sfReqValue
-	cmp		bl, sfReqValue
-	je		.MissingMessage
-
-	mov		dx, MESSAGE.REQFILE
-	test		al, sfReqFile
-	jnz		.MissingMessage
-	mov		dx, MESSAGE.REQDIR
-	test		al, sfReqDir
-	jnz		.MissingMessage
-	mov		dx, MESSAGE.REQSTR
-	test		al, sfReqString
-	jnz		.MissingMessage
-	mov		dx, MESSAGE.REQNUM
-	test		al, sfReqNumber
-	jnz		.MissingMessage
-	mov		dx, MESSAGE.REQEXP
-	test		al, sfReqExp
-	jnz		.MissingMessage
-	mov		dx, MESSAGE.REQOTHER
-.MissingMessage:
-	int		0x21
-	mov		dx, MESSAGE.MISSING
-	int		0x21
-	call		NewLine
-	jmp		.ExitError
 .Satisfied:
 	; Exit Code 0=True, 1=False. Opposite of internal TRUE/FALSE
 	xor		[EXIT_RESULT], byte TRUE
@@ -171,17 +120,17 @@ Options:
 	OptSwitch 	'LE',	OnCompare	; switch index 4
 	OptSwitch 	'GT',	OnCompare	; switch index 5
 	OptSwitch 	'LT',	OnCompare	; switch index 6
-	OptSwitch	'F',	OnFileExist
-	OptSwitch 	'D',	OnDirExist
-	OptSwitch 	'E',	OnExists
-	OptSwitch 	'N',	OnIsString
-	OptSwitch 	'Z',	OnNullString
-	OptSwitch 	'V',	OnIsNumber
-	OptSwitch 	'C',	OnCaseSpecific
-	OptSwitch 	'I',	OnIgnoreCase
-	OptSwitch 	'AND',	OnExpressionAND
-	OptSwitch 	'OR',	OnExpressionOR
-	OptSwitch 	'NOT',	OnExpressionNOT
+	OptSwitch	'F',	OnTest
+	OptSwitch 	'D',	OnTest
+	OptSwitch 	'E',	OnTest
+	OptSwitch 	'N',	OnTest
+	OptSwitch 	'Z',	OnTest
+	OptSwitch 	'V',	OnTest
+	OptSwitch 	'C',	OnExpMod
+	OptSwitch 	'I',	OnExpMod
+	OptSwitch 	'NOT',	OnExpMod
+	OptSwitch 	'AND',	OnExpEval
+	OptSwitch 	'OR',	OnExpEval
 	OptSwitch 	'H',	SwitchHelp
 	OptSwitch 	'TF',	OnTrueFalse
 	OptTableEnd
@@ -229,13 +178,34 @@ OnInvalid:	; not a valid switch
 
 OnText:
 	mov		ax, [VALUES.INDEX]
+	push		di
 	call		VALUE_CLEAR
 	mov		di, bx
 	call		STORE_STRING	; copies SI->DI, updates DI
+	pop		ax		; was di
+	; if waiting on string, assume null string
+	; do something here
+	; if string was null and ends at command line end, ignore blank spaces.
 	test		cx, cx
-	jz		.StringResult
-	mov		[THIS_RESULT], byte TRUE
-.StringResult:
+	jnz		.NotNullString
+	xchg		ax, di
+	Debug_Char	[di]
+	cmp		[di], byte 0x20
+	xchg		ax, di
+	jae		.IsNullString
+	cmp		[LAST_OPT], word 0
+	jne		.IsNullString
+	; ignore null string
+	clc
+	ret
+.IsNullString:
+	mov		al, FALSE
+	jmp		.Convert
+.NotNullString:
+	mov		al, TRUE
+
+.Convert:
+	mov	[THIS_RESULT], al
 	%ifdef DEBUG
 		Debug_Char	'"'
 		Debug_AsciiZ	bx
@@ -243,15 +213,24 @@ OnText:
 	%endif
 	call		NUMBER_VALUE	; convert record at BX to number
 
+ProcessOpt:
+
 ; -----------------------------------------------------------------------------
 
-; OnDoneText:
-;	clc
-;	ret
+OnDoneText:
+	mov		al, [THIS_RESULT]
+	cmp		[ANY_OPTS], byte TRUE
+	je		.PreviousTests
+	mov		[EXIT_RESULT], al
+	jmp		.Done
+.PreviousTests:
+.Done:
+	xor		dx, dx
 
 ; -----------------------------------------------------------------------------
 
 OnDoneSwitch:
+	mov		[LAST_OPT], dx
 	mov		[ANY_OPTS], byte TRUE
 	clc
 	ret
@@ -263,21 +242,12 @@ OnTrueFalse:
 	mov	[SHOW_RESULT], byte TRUE
 	ret
 
-OnFileExist:
-OnDirExist:
-OnExists:
-OnIsString:
+; -----------------------------------------------------------------------------
 
-OnNullString:
-OnIsNumber:
-OnCaseSpecific:
-OnIgnoreCase:
-OnExpressionAND:
-OnExpressionOR:
-OnExpressionNOT:
-
+OnTest:
+OnExpMod:
+OnExpEval:
 OnCompare:
-	mov		[LAST_OPT], dx
 
 	Debug_Char 	'['
 	Debug_Char 	'/'
@@ -414,7 +384,7 @@ ANY_RESULT:	db FALSE
 ANY_OPTS:	db FALSE		; True once any command line options
 					; are processed.
 
-STATUS:		db sfReqExp,sfCanExp
+STATUS:		dw sfExpOR
 
 EXIT_RESULT:	db FALSE
 
@@ -428,16 +398,6 @@ MESSAGE:
 	.ERROR:		db	'ERROR$'
 	.ENDQUOTE:	db	0x22,'.$'
 	.INVALID:	db	'Invalid option ',0x22,SWITCH_CHAR,'$'
-	.REQUIRED:	db 	'Required $'
-	.MISSING:	db	' is missing.$'
-	.REQFILE:	db	'file name$'
-	.REQDIR:	db	'directory name$'
-	.REQFILEDIR:	db	'file or directory name$'
-	.REQSTR:	db	'text string$'
-	.REQNUM:	db	'numeric value$'
-	.REQVALUE:	db	'text or number$'
-	.REQEXP:	db	'expression$'
-	.REQOTHER:	db 	'item$'
 
 ; -----------------------------------------------------------------------------
 
