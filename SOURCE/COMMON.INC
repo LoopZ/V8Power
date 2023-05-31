@@ -1823,6 +1823,17 @@ SwitchError:
 	popf
 %endmacro
 
+%imacro Debug_Word 1
+	pushf
+	push	ax
+	push	dx
+	mov	ax, %1
+	StdOutHexWord ax
+	pop	dx
+	pop	ax
+	popf
+%endmacro
+
 
 %imacro AllocMem 1
 	%ifnidni %1, bx

@@ -20,17 +20,22 @@
 ; Operation and processing state flags
 
 ; STATUS - Flags
-%idefine sfExpNOT	00000010b
-%idefine sfExpOR	00000100b
-%idefine sfExpAND	00001000b
-%idefine sfExpCMP	00010000b
+%idefine sfExpStart	00000001b
+
+%idefine sfExpOR	00000010b
+%idefine sfExpAND	00000100b
+%idefine sfExpCMP	00001000b
+
+%idefine sfCaseSpecific 00010000b
+%idefine sfCaseLess 	00100000b
+%idefine sfNOT		10000000b
 
 ; String data type
-%idefine stText		00000000b ; Text String
-%idefine stNumber	00000001b ; Text/Number
-%idefine stFile		00000010b ; File name
-%idefine stDir		00000100b ; Directory Name
-%idefine stFileOrDir	00000110b ; FIle or Directory name
+%idefine stText		00000001b ; Text String
+%idefine stNumber	00000010b ; Text/Number
+%idefine stFile		00000100b ; File name
+%idefine stDir		00001000b ; Directory Name
+%idefine stFileOrDir	00001100b ; FIle or Directory name
 
 ; Internal TRUE/FALSE
 %idefine TRUE  1
@@ -65,19 +70,22 @@ Main:
 	jc		.ExitError
 
 	; no error processing, check if all requirements are satisfied
+	cmp		[STATUS], word 0
+	jne		.Unhappy
 	cmp		[LAST_OPT], word 0
 	je		.Satisfied
-	mov		[THIS_RESULT], byte FALSE
+.Unhappy:
+	mov		[RESULT.PENDING], byte FALSE
 	call		ProcessOpt
 
 .Satisfied:
 	; Exit Code 0=True, 1=False. Opposite of internal TRUE/FALSE
-	xor		[EXIT_RESULT], byte TRUE
+	xor		[RESULT.FINAL], byte TRUE
 .ExitError:
 	cmp		[SHOW_RESULT], byte 0
 	je		.Done
 	mov		dx, MESSAGE.FALSE
-	cmp		[EXIT_RESULT], byte 1
+	cmp		[RESULT.FINAL], byte 1
 	je		.ExitMessage
 	mov		dx, MESSAGE.TRUE
 	jb		.ExitMessage
@@ -94,11 +102,11 @@ Main:
 		StdOutHexWord   ax
 		mov		al, ','
 		StdOutChar	al
-		mov		al, [EXIT_RESULT]
+		mov		al, [RESULT.FINAL]
 		StdOutHexByte   al
 		StdOutCRLF
 	%endif
-	Terminate 	[EXIT_RESULT]
+	Terminate 	[RESULT.FINAL]
 
 ; -----------------------------------------------------------------------------
 
@@ -126,14 +134,29 @@ Options:
 	OptSwitch 	'N',	OnTest
 	OptSwitch 	'Z',	OnTest
 	OptSwitch 	'V',	OnTest
+	OptSwitch 	'AND',	OnExpEval
+	OptSwitch 	'OR',	OnExpEval
 	OptSwitch 	'C',	OnExpMod
 	OptSwitch 	'I',	OnExpMod
 	OptSwitch 	'NOT',	OnExpMod
-	OptSwitch 	'AND',	OnExpEval
-	OptSwitch 	'OR',	OnExpEval
 	OptSwitch 	'H',	SwitchHelp
 	OptSwitch 	'TF',	OnTrueFalse
 	OptTableEnd
+
+Functions:
+	; must maintain index order
+	dw DoOptFn_EQ
+	dw DoOptFn_NE
+	dw DoOptFn_GE
+	dw DoOptFn_LE
+	dw DoOptFn_GT
+	dw DoOptFn_LT
+	dw DoOptFn_F
+	dw DoOptFn_D
+	dw DoOptFn_E
+	dw DoOptFn_N
+	dw DoOptFn_Z
+	dw DoOptFn_V
 
 ; -----------------------------------------------------------------------------
 
@@ -142,8 +165,10 @@ HelpSwitchHandler 'vtest'
 ; -----------------------------------------------------------------------------
 
 OnInvalid:	; not a valid switch
-	mov		ah, 0x09
 	mov		dx, MESSAGE.INVALID
+
+OnError:
+	mov		ah, 0x09
 	int		0x21
 	test		cx, cx
 	jz		.PrintDone
@@ -157,7 +182,7 @@ OnInvalid:	; not a valid switch
 	mov		ah, 0x09
 	mov		dx, MESSAGE.ENDQUOTE
 	int		0x21
-	mov		[EXIT_RESULT], byte 100
+	mov		[RESULT.FINAL], byte 100
 	call		NewLine
 	stc		; abort processing
 	ret
@@ -177,7 +202,7 @@ OnInvalid:	; not a valid switch
 ; -----------------------------------------------------------------------------
 
 OnText:
-	mov		ax, [VALUES.INDEX]
+	mov		ax, 0	; String 0
 	push		di
 	call		VALUE_CLEAR
 	mov		di, bx
@@ -189,7 +214,9 @@ OnText:
 	test		cx, cx
 	jnz		.NotNullString
 	xchg		ax, di
-	Debug_Char	[di]
+	%ifdef DEBUG
+		Debug_Char	'~'
+	%endif
 	cmp		[di], byte 0x20
 	xchg		ax, di
 	jae		.IsNullString
@@ -205,7 +232,7 @@ OnText:
 	mov		al, TRUE
 
 .Convert:
-	mov	[THIS_RESULT], al
+	mov	[RESULT.PENDING], al
 	%ifdef DEBUG
 		Debug_Char	'"'
 		Debug_AsciiZ	bx
@@ -214,18 +241,49 @@ OnText:
 	call		NUMBER_VALUE	; convert record at BX to number
 
 ProcessOpt:
+	%ifdef DEBUG
+		Debug_Char '?'
+	%endif
+	cmp		[LAST_OPT], word 0
+	je		OnDoneText
+	%ifdef DEBUG
+		Debug_Char '*'
+		Debug_Word [LAST_OPT]
+	%endif
 
 ; -----------------------------------------------------------------------------
 
 OnDoneText:
-	mov		al, [THIS_RESULT]
+	mov		al, [RESULT.PENDING]
 	cmp		[ANY_OPTS], byte TRUE
 	je		.PreviousTests
-	mov		[EXIT_RESULT], al
+	mov		[RESULT.FINAL], al
 	jmp		.Done
 .PreviousTests:
 .Done:
 	xor		dx, dx
+	%ifdef DEBUG
+		Debug_Char 	'['
+		jmp		SetLastOpt.PrintDone
+	%endif
+
+; -----------------------------------------------------------------------------
+
+SetLastOpt:
+%ifdef DEBUG
+	Debug_Char 	'['
+	Debug_Char 	'/'
+.PrintSwitch:
+	lodsb
+	Debug_Char	 al
+	loop		.PrintSwitch
+.PrintDone:
+	Debug_Char 	':'
+	Debug_Word	dx
+.NotOperator:
+	Debug_Char 	']'
+	Debug_CRLF
+%endif
 
 ; -----------------------------------------------------------------------------
 
@@ -234,7 +292,6 @@ OnDoneSwitch:
 	mov		[ANY_OPTS], byte TRUE
 	clc
 	ret
-
 ; -----------------------------------------------------------------------------
 
 OnTrueFalse:
@@ -245,28 +302,59 @@ OnTrueFalse:
 ; -----------------------------------------------------------------------------
 
 OnTest:
-OnExpMod:
-OnExpEval:
-OnCompare:
+	jmp	SetLastOpt
 
-	Debug_Char 	'['
-	Debug_Char 	'/'
-	cmp		dx, MAIN_OPTION_F
-	jne		.PrintSwitch
-	Debug_Char	'!'
-.PrintSwitch:
-	lodsb
-	Debug_Char	 al
-	loop		.PrintSwitch
-	cmp		dx, 6
-	ja		.NotOperator
-	Debug_Char 	':'
-	mov		ax, dx
-	StdOutHexWord 	ax
-.NotOperator:
-	Debug_Char 	']'
-	Debug_CRLF
-	jmp		OnDoneSwitch
+; -----------------------------------------------------------------------------
+
+OnExpMod:
+	test	[STATUS], byte sfExpStart
+	jz	.Error
+	mov	al, sfCaseSpecific
+	cmp	dx, MAIN_OPTION_C
+	je	.SetMod
+	mov	al, sfCaseLess
+	cmp	dx, MAIN_OPTION_I
+	je	.SetMod
+	mov	al, sfNOT
+	%ifdef DEBUG
+		cmp	dx, MAIN_OPTION_NOT
+		je	.SetMod
+		jmp	OnInvalid
+	%endif
+.SetMod:
+	or	[STATUS], al
+;	xor	dx, dx
+	jmp	OnDoneSwitch
+.Error:
+	mov	dx, MESSAGE.SYNTAX
+	jmp	OnError
+
+; -----------------------------------------------------------------------------
+
+OnExpEval:
+	jmp	SetLastOpt
+
+; -----------------------------------------------------------------------------
+
+OnCompare:
+	jmp	SetLastOpt
+
+
+; -----------------------------------------------------------------------------
+
+DoOptFn_EQ:
+DoOptFn_NE:
+DoOptFn_GE:
+DoOptFn_LE:
+DoOptFn_GT:
+DoOptFn_LT:
+DoOptFn_F:
+DoOptFn_D:
+DoOptFn_E:
+DoOptFn_N:
+DoOptFn_Z:
+DoOptFn_V:
+	ret
 
 ; -----------------------------------------------------------------------------
 
@@ -377,20 +465,19 @@ section .data
 
 ; -----------------------------------------------------------------------------
 
-LAST_OPT:	dw 0
+LAST_OPT:		dw 0
 
-ANY_RESULT:	db FALSE
-
-ANY_OPTS:	db FALSE		; True once any command line options
+ANY_OPTS:		db FALSE	; True once any command line options
 					; are processed.
 
-STATUS:		dw sfExpOR
+STATUS:			dw sfExpStart + sfExpOR
 
-EXIT_RESULT:	db FALSE
+RESULT:
+	.FINAL:		db FALSE
+	.PENDING:	db FALSE
+	.WAITING:	db FALSE
 
-THIS_RESULT:	db FALSE
-
-SHOW_RESULT:	db FALSE
+SHOW_RESULT:		db TRUE	; FALSE
 
 MESSAGE:
 	.TRUE:		db 	'TRUE$'
@@ -398,6 +485,7 @@ MESSAGE:
 	.ERROR:		db	'ERROR$'
 	.ENDQUOTE:	db	0x22,'.$'
 	.INVALID:	db	'Invalid option ',0x22,SWITCH_CHAR,'$'
+	.SYNTAX:	db	'Syntax error ',0x22,SWITCH_CHAR,'$'
 
 ; -----------------------------------------------------------------------------
 
@@ -407,7 +495,6 @@ section .bss
 BSS_START:
 
 VALUES:
-	.INDEX:	resw 1
 	.ARRAY:	resb TVALUE_size * 2
 
 BSS_END:
