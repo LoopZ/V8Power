@@ -53,83 +53,83 @@ VersionID:
 
 %imacro IdleCPUHandler 0
 IdleCPUHandlerProc:
-    pushf
-    push    ax
-    mov     al, [%%IdleCPUData]
-    cmp     al, 1
-    ja      %%NoIdle
-    je      %%Alternate
-    ; DOS 5.00+, Windows 3+ -- Release current VM time slice.
-    mov     ax, 0x1680
-    int     0x2f
-    cmp     al, 0x00
-    je      %%Done
-    mov     al, 1
-    mov     [%%IdleCPUData], al
+	pushf
+	push    ax
+	mov     al, [%%IdleCPUData]
+	cmp     al, 1
+	ja      %%NoIdle
+	je      %%Alternate
+	; DOS 5.00+, Windows 3+ -- Release current VM time slice.
+	mov     ax, 0x1680
+	int     0x2f
+	cmp     al, 0x00
+	je      %%Done
+	mov     al, 1
+	mov     [%%IdleCPUData], al
 %%Alternate:
-    hlt
+	hlt
 %%NoIdle:
 
 %%Done:
-    pop     ax
-    popf
-    ret
+	pop     ax
+	popf
+	ret
 %%IdleCPUData:
-    db 0
+	db 0
 %endmacro
 
 
 %imacro IdleCPU 0
-    call  IdleCPUHandlerProc
+	call  IdleCPUHandlerProc
 %endmacro
 
 %imacro retz 0
         jnz     %%Skip
         ret
-    %%Skip:
+%%Skip:
 %endmacro
 
 %imacro retnz 0
         jz      %%Skip
         ret
-    %%Skip:
+%%Skip:
 %endmacro
 
 %imacro rete 0
         jne     %%Skip
         ret
-    %%Skip:
+%%Skip:
 %endmacro
 
 %imacro retc 0
         jnc     %%Skip
         ret
-    %%Skip:
+%%Skip:
 %endmacro
 
 %imacro pushall 0
 	pushf
-	push	    ax
-	push 	    bx
-	push	    cx
-	push	    dx
-	push	    si
-	push	    di
-	push	    es
-	push	    ds
-	push        bp
+	push		ax
+	push		bx
+	push		cx
+	push		dx
+	push		si
+	push		di
+	push		es
+	push		ds
+	push		bp
 %endmacro
 
 %imacro popall 0
-    pop         bp
-	pop 	    ds
-	pop		    es
-	pop		    di
-	pop		    si
-	pop		    dx
-	pop		    cx
-	pop		    bx
-	pop		    ax
+	pop		bp
+	pop		ds
+	pop		es
+	pop		di
+	pop		si
+	pop		dx
+	pop		cx
+	pop		bx
+	pop		ax
 	popf
 %endmacro
 
@@ -1777,7 +1777,7 @@ SwitchError:
 	popf
 %endmacro
 
-%imacro Debug_Text 1
+%imacro Debug_Text 1+
 	pushf
 	push	ax
 	push	dx
@@ -1829,6 +1829,17 @@ SwitchError:
 	push	dx
 	mov	ax, %1
 	StdOutHexWord ax
+	pop	dx
+	pop	ax
+	popf
+%endmacro
+
+%imacro Debug_Byte 1
+	pushf
+	push	ax
+	push	dx
+	mov	al, %1
+	StdOutHexByte ax
 	pop	dx
 	pop	ax
 	popf

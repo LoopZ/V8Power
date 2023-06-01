@@ -20,15 +20,18 @@
 ; Operation and processing state flags
 
 ; STATUS - Flags
-%idefine sfExpStart	00000001b
+%idefine sfExpFirst	0000000000000001b ; 0x0001
+%idefine sfExpSecond	0000000000000010b ; 0x0002
 
-%idefine sfExpOR	00000010b
-%idefine sfExpAND	00000100b
-%idefine sfExpCMP	00001000b
+%idefine sfExpOR	0000000000000100b ; 0x0004
+%idefine sfExpAND	0000000000001000b ; 0x0008
+%idefine sfExpCMP	0000000000010000b ; 0x0010
 
-%idefine sfCaseSpecific 00010000b
-%idefine sfCaseLess 	00100000b
-%idefine sfNOT		10000000b
+%idefine sfCaseSpecific 0000000000100000b ; 0x0020
+%idefine sfCaseLess 	0000000001000000b ; 0x0040
+%idefine sfNOT		0000000010000000b ; 0x0080
+
+%idefine sfPending	0000000100000000b ; 0x0100
 
 ; String data type
 %idefine stText		00000001b ; Text String
@@ -76,7 +79,7 @@ Main:
 	je		.Satisfied
 .Unhappy:
 	mov		[RESULT.PENDING], byte FALSE
-	call		ProcessOpt
+	; call		ProcessOpt
 
 .Satisfied:
 	; Exit Code 0=True, 1=False. Opposite of internal TRUE/FALSE
@@ -98,13 +101,11 @@ Main:
 	call		NewLine
 .Done:
 	%ifdef DEBUG
-		mov		ax, [STATUS]
-		StdOutHexWord   ax
-		mov		al, ','
-		StdOutChar	al
-		mov		al, [RESULT.FINAL]
-		StdOutHexByte   al
-		StdOutCRLF
+		Debug_Text	'EXIT:'
+		Debug_Word	[STATUS]
+		Debug_Char	','
+		Debug_Byte	[RESULT.FINAL]
+		Debug_CRLF
 	%endif
 	Terminate 	[RESULT.FINAL]
 
@@ -122,6 +123,7 @@ NewLine:
 
 Options:
 	OptTable 	OnText, OnInvalid, MAIN
+	; options that can call "DoFuntions"
 	OptSwitch 	'EQ',	OnCompare	; switch index 1
 	OptSwitch 	'NE',	OnCompare	; switch index 2
 	OptSwitch 	'GE',	OnCompare	; switch index 3
@@ -134,17 +136,19 @@ Options:
 	OptSwitch 	'N',	OnTest
 	OptSwitch 	'Z',	OnTest
 	OptSwitch 	'V',	OnTest
+	; Options without "DoFunctions"
 	OptSwitch 	'AND',	OnExpEval
 	OptSwitch 	'OR',	OnExpEval
-	OptSwitch 	'C',	OnExpMod
-	OptSwitch 	'I',	OnExpMod
-	OptSwitch 	'NOT',	OnExpMod
+	OptSwitch 	'C',	OnExpCase
+	OptSwitch 	'I',	OnExpIgnore
+	OptSwitch 	'NOT',	OnExpNOT
 	OptSwitch 	'H',	SwitchHelp
 	OptSwitch 	'TF',	OnTrueFalse
 	OptTableEnd
 
-Functions:
-	; must maintain index order
+DoFunctions:
+	; must maintain option index order, position and count of subfunctions
+	; in OptionTable that may call these "Do Compare" functions.
 	dw DoOptFn_EQ
 	dw DoOptFn_NE
 	dw DoOptFn_GE
@@ -159,8 +163,146 @@ Functions:
 	dw DoOptFn_V
 
 ; -----------------------------------------------------------------------------
+; Debug stuff to be removed later
 
-HelpSwitchHandler 'vtest'
+%imacro	Debug_Status 0
+%ifdef DEBUG
+	pushf
+	Debug_Char '{'
+	Debug_Char ' '
+
+	test	[STATUS], byte sfExpFirst
+	jz	%%NotExpFirst
+	Debug_Text 'sfExpFirst '
+%%NotExpFirst:
+	test	[STATUS], byte sfExpSecond
+	jz	%%NotExpSecond
+	Debug_Text 'sfExpSecond '
+%%NotExpSecond:
+
+	test	[STATUS], byte sfExpOR
+	jz	%%NotExpOR
+	Debug_Text 'sfExpOR '
+%%NotExpOR:
+	test	[STATUS], byte sfExpAND
+	jz	%%NotExpAND
+	Debug_Text 'sfExpAND '
+%%NotExpAND:
+	test	[STATUS], byte sfExpCMP
+	jz	%%NotExpCMP
+	Debug_Text 'sfExpCMP '
+%%NotExpCMP:
+
+	test	[STATUS], byte sfCaseSpecific
+	jz	%%NotCaseSpecific
+	Debug_Text 'CaseSpecific '
+%%NotCaseSpecific:
+	test	[STATUS], byte sfCaseLess
+	jz	%%NotCaseLess
+	Debug_Text 'CaseLess '
+%%NotCaseLess:
+
+	test	[STATUS], byte sfNOT
+	jz	%%NotNOT
+	Debug_Text 'NOT '
+%%NotNOT:
+
+	Debug_Char '}'
+	Debug_CRLF
+	popf
+%endif
+%endmacro
+
+%imacro Debug_Strings 0
+%ifdef DEBUG
+	pushf
+	push		dx
+	push		bx
+	push		ax
+	push		cx
+	xor		cx, cx
+	call		%%Show
+	call		%%Show
+	jmp		%%Done
+
+%%Show:
+	mov		ax, cx
+	call		VALUE_OFFSET
+	mov		ax, [bx+TVALUE.DTYPE]
+	test		ax, ax
+	je		%%DoneShow
+
+	Debug_Text 	'{ '
+	test		ax, stDir
+	jz		%%NotDir
+	Debug_Text 	'Dir, '
+%%NotDir:
+	test		ax, stFile
+	jz		%%NotFile
+	Debug_Text 	'File, '
+%%NotFile:
+	test		ax, stNumber
+	jz		%%NotNumber
+	Debug_Text 	'Value:0x'
+	Debug_Word 	[bx+TVALUE.NUMBER+6]
+	Debug_Word 	[bx+TVALUE.NUMBER+4]
+	Debug_Word 	[bx+TVALUE.NUMBER+2]
+	Debug_Word 	[bx+TVALUE.NUMBER+0]
+	Debug_Text	', '
+%%NotNumber:
+	Debug_Text 	'String:"'
+	Debug_ASCIIZ	bx
+	Debug_Text	'" }', 0x0d,0x0a
+%%DoneShow:
+	inc		cx
+	ret
+
+%%Done:
+	pop		cx
+	pop		ax
+	pop		bx
+	pop		dx
+	popf
+%endif
+%endmacro
+
+; -----------------------------------------------------------------------------
+; Parser calls these sub-functions with the following registers set.
+;
+; BX=Address of sub-function, (used for the actual call)
+; CX=Param Length
+; SI=Param Start
+; DI=Next Param
+; DX=1+ index of switch in table
+;
+; On return to the parser. DS must be preserved and Direction flag must be
+; clear. DI will be used as a "continue from" starting point. Other registers
+; may be destroyed. If Carry Flag is set, the parser will abort.
+; -----------------------------------------------------------------------------
+
+OnText:
+	Debug_Status
+	mov		ax, 0	; String 0
+
+	call		VALUE_CLEAR	; IN: AX=String number, out BX=Offset
+	call		STORE_STRING	; copies SI->BX, updates DI for Parser
+	test		cx, cx		; Char Count updated by STORE_STRING
+	jz		.NoValue
+	call		NUMBER_VALUE
+
+.NoValue:
+	Debug_Strings
+
+; -----------------------------------------------------------------------------
+
+; -----------------------------------------------------------------------------
+
+; -----------------------------------------------------------------------------
+
+OnDoneSwitch:
+	mov		[LAST_OPT], dx
+	clc
+	ret
 
 ; -----------------------------------------------------------------------------
 
@@ -188,111 +330,6 @@ OnError:
 	ret
 
 ; -----------------------------------------------------------------------------
-; Parser calls these sub-functions with the following registers set.
-;
-; BX=Address of sub-function, (used for the actual call)
-; CX=Param Length
-; SI=Param Start
-; DI=Next Param
-; DX=1+ index of switch in table
-;
-; On return to the parser. DS must be preserved and Direction flag must be
-; clear. DI will be used as a "continue from" starting point. Other registers
-; may be destroyed. If Carry Flag is set, the parser will abort.
-; -----------------------------------------------------------------------------
-
-OnText:
-	mov		ax, 0	; String 0
-	push		di
-	call		VALUE_CLEAR
-	mov		di, bx
-	call		STORE_STRING	; copies SI->DI, updates DI
-	pop		ax		; was di
-	; if waiting on string, assume null string
-	; do something here
-	; if string was null and ends at command line end, ignore blank spaces.
-	test		cx, cx
-	jnz		.NotNullString
-	xchg		ax, di
-	%ifdef DEBUG
-		Debug_Char	'~'
-	%endif
-	cmp		[di], byte 0x20
-	xchg		ax, di
-	jae		.IsNullString
-	cmp		[LAST_OPT], word 0
-	jne		.IsNullString
-	; ignore null string
-	clc
-	ret
-.IsNullString:
-	mov		al, FALSE
-	jmp		.Convert
-.NotNullString:
-	mov		al, TRUE
-
-.Convert:
-	mov	[RESULT.PENDING], al
-	%ifdef DEBUG
-		Debug_Char	'"'
-		Debug_AsciiZ	bx
-		Debug_Char	'"'
-	%endif
-	call		NUMBER_VALUE	; convert record at BX to number
-
-ProcessOpt:
-	%ifdef DEBUG
-		Debug_Char '?'
-	%endif
-	cmp		[LAST_OPT], word 0
-	je		OnDoneText
-	%ifdef DEBUG
-		Debug_Char '*'
-		Debug_Word [LAST_OPT]
-	%endif
-
-; -----------------------------------------------------------------------------
-
-OnDoneText:
-	mov		al, [RESULT.PENDING]
-	cmp		[ANY_OPTS], byte TRUE
-	je		.PreviousTests
-	mov		[RESULT.FINAL], al
-	jmp		.Done
-.PreviousTests:
-.Done:
-	xor		dx, dx
-	%ifdef DEBUG
-		Debug_Char 	'['
-		jmp		SetLastOpt.PrintDone
-	%endif
-
-; -----------------------------------------------------------------------------
-
-SetLastOpt:
-%ifdef DEBUG
-	Debug_Char 	'['
-	Debug_Char 	'/'
-.PrintSwitch:
-	lodsb
-	Debug_Char	 al
-	loop		.PrintSwitch
-.PrintDone:
-	Debug_Char 	':'
-	Debug_Word	dx
-.NotOperator:
-	Debug_Char 	']'
-	Debug_CRLF
-%endif
-
-; -----------------------------------------------------------------------------
-
-OnDoneSwitch:
-	mov		[LAST_OPT], dx
-	mov		[ANY_OPTS], byte TRUE
-	clc
-	ret
-; -----------------------------------------------------------------------------
 
 OnTrueFalse:
 	; does not set ANY_OPTS
@@ -302,42 +339,49 @@ OnTrueFalse:
 ; -----------------------------------------------------------------------------
 
 OnTest:
-	jmp	SetLastOpt
+	jmp	OnDoneSwitch
 
 ; -----------------------------------------------------------------------------
 
-OnExpMod:
-	test	[STATUS], byte sfExpStart
-	jz	.Error
-	mov	al, sfCaseSpecific
-	cmp	dx, MAIN_OPTION_C
-	je	.SetMod
-	mov	al, sfCaseLess
-	cmp	dx, MAIN_OPTION_I
-	je	.SetMod
-	mov	al, sfNOT
-	%ifdef DEBUG
-		cmp	dx, MAIN_OPTION_NOT
-		je	.SetMod
-		jmp	OnInvalid
-	%endif
-.SetMod:
-	or	[STATUS], al
-;	xor	dx, dx
+OnExpCase:
+	test	[STATUS], byte sfExpFirst + sfExpSecond
+	jz	OnExpModError
+	test	[STATUS], byte sfCaseLess
+	jnz	OnExpModError
+	or	[STATUS], byte sfCaseSpecific
+	xor	dx, dx
 	jmp	OnDoneSwitch
-.Error:
+
+OnExpIgnore:
+	test	[STATUS], byte sfExpFirst + sfExpSecond
+	jz	OnExpModError
+	test	[STATUS], byte sfCaseSpecific
+	jnz	OnExpModError
+
+	or	[STATUS], byte sfCaseless
+	xor	dx, dx
+	jmp	OnDoneSwitch
+
+OnExpNOT:
+	test	[STATUS], byte sfExpFirst + sfExpSecond
+	jz	OnExpModError
+	xor	[STATUS], byte sfNOT
+	xor	dx, dx
+	jmp	OnDoneSwitch
+
+OnExpModError:
 	mov	dx, MESSAGE.SYNTAX
 	jmp	OnError
 
 ; -----------------------------------------------------------------------------
 
 OnExpEval:
-	jmp	SetLastOpt
+	jmp	OnDoneSwitch
 
 ; -----------------------------------------------------------------------------
 
 OnCompare:
-	jmp	SetLastOpt
+	jmp	OnDoneSwitch
 
 
 ; -----------------------------------------------------------------------------
@@ -363,10 +407,12 @@ VALUE_OFFSET:
 ; IN:  AX=Value Buffer Index
 ; OUT: BX=Value Buffer offset
 	push		ax
+	push		dx
 	mov		bx, TVALUE_size
 	mul		bx
-	add		ax, VALUES.ARRAY
+	add		ax, VALUES
 	mov		bx, ax
+	pop		dx
 	pop		ax
 	ret
 
@@ -392,9 +438,11 @@ VALUE_CLEAR:
 ; -----------------------------------------------------------------------------
 
 STORE_STRING:
-; copy string from SI to DI. Single / or < space terminates copy. Double / is
-; copied as single /. On return: DI updated to new next position. SI is end of
-; saved string. CX is new length
+; copy string from SI to BX. Single / or < space terminates copy. Double / is
+; copied as single /. On return: DI updated to new next position for parser. SI
+; is end of saved string. CX is new length
+	mov		di, bx
+	mov		[di+TVALUE.DTYPE], byte stText
 	jcxz		.CopyDone
 	xor		cx, cx
 .Copy:
@@ -437,27 +485,14 @@ NUMBER_VALUE:
 	jc		.Done
 .Success:
 	mov		[bx+TVALUE.DTYPE], byte stNumber
-	%ifdef DEBUG
-		Debug_Char 	':'
-		mov		ax, [bx+TVALUE.NUMBER+6]
-		StdOutHexWord 	ax
-		mov		ax, [bx+TVALUE.NUMBER+4]
-		StdOutHexWord 	ax
-		mov		ax, [bx+TVALUE.NUMBER+2]
-		StdOutHexWord 	ax
-		mov		ax, [bx+TVALUE.NUMBER+0]
-		StdOutHexWord 	ax
-	%endif
 .Done:
-	%ifdef DEBUG
-		Debug_CRLF
-	%endif
 	pop		di
 	ret
 
 ; -----------------------------------------------------------------------------
 
 	Int64_Procs
+	HelpSwitchHandler 'vtest'
 
 ; -----------------------------------------------------------------------------
 
@@ -467,15 +502,11 @@ section .data
 
 LAST_OPT:		dw 0
 
-ANY_OPTS:		db FALSE	; True once any command line options
-					; are processed.
-
-STATUS:			dw sfExpStart + sfExpOR
+STATUS:			dw sfExpOR + sfExpFirst
 
 RESULT:
 	.FINAL:		db FALSE
 	.PENDING:	db FALSE
-	.WAITING:	db FALSE
 
 SHOW_RESULT:		db TRUE	; FALSE
 
@@ -495,7 +526,8 @@ section .bss
 BSS_START:
 
 VALUES:
-	.ARRAY:	resb TVALUE_size * 2
+	.ITEM0:		resb TVALUE_size
+	.ITEM1:		resb TVALUE_size
 
 BSS_END:
 	resw 1
