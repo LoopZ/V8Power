@@ -165,116 +165,144 @@ DoFunctions:
 ; -----------------------------------------------------------------------------
 ; Debug stuff to be removed later
 
-%imacro	Debug_Status 0
 %ifdef DEBUG
+
+%macro DBGIDXOPT 2
+	cmp		[LAST_OPT], word %1
+	jne		%%NotThis
+	Debug_Text	%2
+	jmp		.EndLast
+%%NotThis:
+%endmacro
+
+DEBUG_STATUS_PROC:
 	pushf
 	Debug_Text '{ LAST='
 	Debug_Word [LAST_OPT]
 	Debug_Text 	' ('
 
-	cmp		[LAST_OPT], word 00
-	jne		%%NotNull
-	Debug_Text	'null'
-	jmp		%%EndLast
+	DBGIDXOPT	00, 'null'
+	DBGIDXOPT	MAIN_OPTION_EQ, 'EQ'
+	DBGIDXOPT	MAIN_OPTION_NE, 'NE'
+	DBGIDXOPT	MAIN_OPTION_GE, 'GT'
+	DBGIDXOPT	MAIN_OPTION_LE, 'LE'
+	DBGIDXOPT	MAIN_OPTION_GT, 'GT'
+	DBGIDXOPT	MAIN_OPTION_LT, 'LT'
+	DBGIDXOPT	MAIN_OPTION_F,  'F'
+	DBGIDXOPT	MAIN_OPTION_D,  'D'
+	DBGIDXOPT	MAIN_OPTION_E,  'E'
+	DBGIDXOPT	MAIN_OPTION_N,  'N'
+	DBGIDXOPT	MAIN_OPTION_Z,  'Z'
+	DBGIDXOPT	MAIN_OPTION_V,  'V'
+	Debug_Text	'ERROR'
 
-	Debug_Text	'?'
-
-%%EndLast:
+.EndLast:
 	Debug_Text 	'); '
 
 	test	[STATUS], byte sfExpFirst
-	jz	%%NotExpFirst
+	jz	.NotExpFirst
 	Debug_Text 'sfExpFirst '
-%%NotExpFirst:
+.NotExpFirst:
 	test	[STATUS], byte sfExpSecond
-	jz	%%NotExpSecond
+	jz	.NotExpSecond
 	Debug_Text 'sfExpSecond '
-%%NotExpSecond:
+.NotExpSecond:
 
 	test	[STATUS], byte sfExpOR
-	jz	%%NotExpOR
+	jz	.NotExpOR
 	Debug_Text 'sfExpOR '
-%%NotExpOR:
+.NotExpOR:
 	test	[STATUS], byte sfExpAND
-	jz	%%NotExpAND
+	jz	.NotExpAND
 	Debug_Text 'sfExpAND '
-%%NotExpAND:
+.NotExpAND:
 	test	[STATUS], byte sfExpCMP
-	jz	%%NotExpCMP
+	jz	.NotExpCMP
 	Debug_Text 'sfExpCMP '
-%%NotExpCMP:
+.NotExpCMP:
 
 	test	[STATUS], byte sfCaseSpecific
-	jz	%%NotCaseSpecific
+	jz	.NotCaseSpecific
 	Debug_Text 'CaseSpecific '
-%%NotCaseSpecific:
+.NotCaseSpecific:
 	test	[STATUS], byte sfCaseLess
-	jz	%%NotCaseLess
+	jz	.NotCaseLess
 	Debug_Text 'CaseLess '
-%%NotCaseLess:
+.NotCaseLess:
 
 	test	[STATUS], byte sfNOT
-	jz	%%NotNOT
+	jz	.NotNOT
 	Debug_Text 'NOT '
-%%NotNOT:
+.NotNOT:
 
 	Debug_Char '}'
 	Debug_CRLF
 	popf
-%endif
-%endmacro
+	ret
 
-%imacro Debug_Strings 0
-%ifdef DEBUG
+DEBUG_STRINGS_PROC:
 	pushf
 	push		dx
 	push		bx
 	push		ax
 	push		cx
 	xor		cx, cx
-	call		%%Show
-	call		%%Show
-	jmp		%%Done
+	call		.Show
+	call		.Show
+	jmp		.Done
 
-%%Show:
+.Show:
 	mov		ax, cx
 	call		VALUE_OFFSET
 	mov		ax, [bx+TVALUE.DTYPE]
 	test		ax, ax
-	je		%%DoneShow
+	je		.DoneShow
 
 	Debug_Text 	'{ '
 	test		ax, stDir
-	jz		%%NotDir
+	jz		.NotDir
 	Debug_Text 	'Dir, '
-%%NotDir:
+.NotDir:
 	test		ax, stFile
-	jz		%%NotFile
+	jz		.NotFile
 	Debug_Text 	'File, '
-%%NotFile:
+.NotFile:
 	test		ax, stNumber
-	jz		%%NotNumber
+	jz		.NotNumber
 	Debug_Text 	'Value:0x'
 	Debug_Word 	[bx+TVALUE.NUMBER+6]
 	Debug_Word 	[bx+TVALUE.NUMBER+4]
 	Debug_Word 	[bx+TVALUE.NUMBER+2]
 	Debug_Word 	[bx+TVALUE.NUMBER+0]
 	Debug_Text	', '
-%%NotNumber:
+.NotNumber:
 	Debug_Text 	'String:"'
 	Debug_ASCIIZ	bx
 	Debug_Text	'" }', 0x0d,0x0a
-%%DoneShow:
+.DoneShow:
 	inc		cx
 	ret
 
-%%Done:
+.Done:
 	pop		cx
 	pop		ax
 	pop		bx
 	pop		dx
 	popf
+	ret
 %endif
+
+%imacro	Debug_Status 0
+	%ifdef DEBUG
+		call DEBUG_STATUS_PROC
+	%endif
+%endmacro
+
+%imacro Debug_Strings 0
+	%ifdef DEBUG
+		call DEBUG_STRINGS_PROC
+	%endif
+
 %endmacro
 
 ; -----------------------------------------------------------------------------
@@ -292,21 +320,33 @@ DoFunctions:
 ; -----------------------------------------------------------------------------
 
 OnText:
-	Debug_Status
-	mov		ax, 0	; String 0
+	mov		ax, 0		; String 1
+	test		ax, word sfExpFirst
+	je		.StringSelected
+	mov		ax, 1		; String 2
 
+.StringSelected:
 	call		VALUE_CLEAR	; IN: AX=String number, out BX=Offset
 	call		STORE_STRING	; copies SI->BX, updates DI for Parser
 	test		cx, cx		; Char Count updated by STORE_STRING
 	jz		.NoValue
 	call		NUMBER_VALUE
-
 .NoValue:
+
+	mov		bx, [LAST_OPT]
+	test		bx, bx
+	jnz		.Evaluate
+	mov		bx, MAIN_OPTION_N	; string not null
+
+.Evaluate:
 	Debug_Strings
+	Debug_Status
 
 ; -----------------------------------------------------------------------------
 
-; -----------------------------------------------------------------------------
+OnDoneText:
+
+	xor		dx, dx
 
 ; -----------------------------------------------------------------------------
 

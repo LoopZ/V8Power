@@ -1747,23 +1747,26 @@ SwitchError:
 %endmacro
 
 %imacro Debug_Char 1
-	%if %0 = 1
-		pushf
-		push	ax
-		push	dx
-		mov	dl, %1
-		cmp	dl, 0x20
-		jb	%%NoPrint
-		mov	ah, 0x02
-		int 	0x21
-		%%NoPrint:
-		pop	dx
-		pop	ax
-		popf
-	%endif
+%ifdef DEBUG
+	pushf
+	push	ax
+	push	dx
+	mov	dl, %1
+	cmp	dl, 0x20
+	jae	%%Print
+	mov	dl, 0xf9
+%%Print:
+	mov	ah, 0x02
+	int 	0x21
+%%NoPrint:
+	pop	dx
+	pop	ax
+	popf
+%endif
 %endmacro
 
 %imacro Debug_CRLF 0
+%ifdef DEBUG
 	pushf
 	push	ax
 	push	dx
@@ -1775,9 +1778,11 @@ SwitchError:
 	pop	dx
 	pop	ax
 	popf
+%endif
 %endmacro
 
 %imacro Debug_Text 1+
+%ifdef DEBUG
 	pushf
 	push	ax
 	push	dx
@@ -1795,9 +1800,11 @@ SwitchError:
 %%Msg:
 	db %1,'$'
 %%Over:
+%endif
 %endmacro
 
 %imacro Debug_AsciiZ 1
+%ifdef DEBUG
 	pushf
 	cld
 	push	si
@@ -1821,9 +1828,11 @@ SwitchError:
 	pop	ax
 	pop	si
 	popf
+%endif
 %endmacro
 
 %imacro Debug_Word 1
+%ifdef DEBUG
 	pushf
 	push	ax
 	push	cx
@@ -1834,9 +1843,11 @@ SwitchError:
 	pop	cx
 	pop	ax
 	popf
+%endif
 %endmacro
 
 %imacro Debug_Byte 1
+%ifdef DEBUG
 	pushf
 	push	ax
 	push	cx
@@ -1847,8 +1858,8 @@ SwitchError:
 	pop	cx
 	pop	ax
 	popf
+%endif
 %endmacro
-
 
 %imacro AllocMem 1
 	%ifnidni %1, bx
