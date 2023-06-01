@@ -804,7 +804,7 @@ StdOutStr_Proc:
         mov		dl, '0'
         int		0x21
         mov		dl, 'x'
-        int 	0x21
+        int 		0x21
         pop		ax
 	%endif
 	mov		cx, 4
@@ -1826,10 +1826,12 @@ SwitchError:
 %imacro Debug_Word 1
 	pushf
 	push	ax
+	push	cx
 	push	dx
 	mov	ax, %1
 	StdOutHexWord ax
 	pop	dx
+	pop	cx
 	pop	ax
 	popf
 %endmacro
@@ -1837,10 +1839,12 @@ SwitchError:
 %imacro Debug_Byte 1
 	pushf
 	push	ax
+	push	cx
 	push	dx
 	mov	al, %1
 	StdOutHexByte ax
 	pop	dx
+	pop	cx
 	pop	ax
 	popf
 %endmacro
