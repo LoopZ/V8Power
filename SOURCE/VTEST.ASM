@@ -168,8 +168,9 @@ DoFunctions:
 %imacro	Debug_Status 0
 %ifdef DEBUG
 	pushf
-	Debug_Char '{'
-	Debug_Char ' '
+	Debug_Text '{ LAST='
+	Debug_Word [LAST_OPT]
+	Debug_Text '; '
 
 	test	[STATUS], byte sfExpFirst
 	jz	%%NotExpFirst
