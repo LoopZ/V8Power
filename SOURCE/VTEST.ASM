@@ -170,7 +170,17 @@ DoFunctions:
 	pushf
 	Debug_Text '{ LAST='
 	Debug_Word [LAST_OPT]
-	Debug_Text '; '
+	Debug_Text 	' ('
+
+	cmp		[LAST_OPT], word 00
+	jne		%%NotNull
+	Debug_Text	'null'
+	jmp		%%EndLast
+
+	Debug_Text	'?'
+
+%%EndLast:
+	Debug_Text 	'); '
 
 	test	[STATUS], byte sfExpFirst
 	jz	%%NotExpFirst
