@@ -1803,6 +1803,28 @@ SwitchError:
 %endif
 %endmacro
 
+%imacro Debug_TextLn 1+
+%ifdef DEBUG
+	pushf
+	push	ax
+	push	dx
+	push	ds
+	mov	ax, cs
+	mov 	ds, ax
+	mov	ah, 0x09
+	mov	dx, %%Msg
+	int	0x21
+	pop	ds
+	pop	dx
+	pop	ax
+	popf
+	jmp	%%Over
+%%Msg:
+	db %1,0x0d,0x0a,'$'
+%%Over:
+%endif
+%endmacro
+
 %imacro Debug_AsciiZ 1
 %ifdef DEBUG
 	pushf

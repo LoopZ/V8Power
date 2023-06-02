@@ -5,7 +5,7 @@
 
 %idefine NoVideoOutput
 
-%idefine DEBUG
+%define DEBUG
 
 %define INT64_STRICT_ASCII	; non-valid number chars (like SPACE) generate
 				; a conversion error.
@@ -70,6 +70,8 @@ Main:
 	rep	stosw
 
 	ParseOptions 	Options
+	Debug_TextLn	'END'
+
 	jc		.ExitError
 
 	; no error processing, check if all requirements are satisfied
@@ -101,11 +103,7 @@ Main:
 	call		NewLine
 .Done:
 	%ifdef DEBUG
-		Debug_Text	'EXIT:'
-		Debug_Word	[STATUS]
-		Debug_Char	','
-		Debug_Byte	[RESULT.FINAL]
-		Debug_CRLF
+		call	EXIT_STATUS_PROC
 	%endif
 	Terminate 	[RESULT.FINAL]
 
@@ -137,8 +135,8 @@ Options:
 	OptSwitch 	'Z',	OnTest
 	OptSwitch 	'V',	OnTest
 	; Options without "DoFunctions"
-	OptSwitch 	'AND',	OnExpEval
-	OptSwitch 	'OR',	OnExpEval
+	OptSwitch 	'AND',	OnExpAND
+	OptSwitch 	'OR',	OnExpOR
 	OptSwitch 	'C',	OnExpCase
 	OptSwitch 	'I',	OnExpIgnore
 	OptSwitch 	'NOT',	OnExpNOT
@@ -147,7 +145,7 @@ Options:
 	OptTableEnd
 
 DoFunctions:
-	; must maintain option index order, position and count of subfunctions
+	; must maintain option index order, position and count of sub-functions
 	; in OptionTable that may call these "Do Compare" functions.
 	dw DoOptFn_EQ
 	dw DoOptFn_NE
@@ -177,7 +175,7 @@ DoFunctions:
 
 DEBUG_STATUS_PROC:
 	pushf
-	Debug_Text '{ LAST='
+	Debug_Text '  { LAST=0x'
 	Debug_Word [LAST_OPT]
 	Debug_Text 	' ('
 
@@ -235,8 +233,7 @@ DEBUG_STATUS_PROC:
 	Debug_Text 'NOT '
 .NotNOT:
 
-	Debug_Char '}'
-	Debug_CRLF
+	Debug_TextLn '}'
 	popf
 	ret
 
@@ -258,7 +255,7 @@ DEBUG_STRINGS_PROC:
 	test		ax, ax
 	je		.DoneShow
 
-	Debug_Text 	'{ '
+	Debug_Text 	'  { '
 	test		ax, stDir
 	jz		.NotDir
 	Debug_Text 	'Dir, '
@@ -278,7 +275,7 @@ DEBUG_STRINGS_PROC:
 .NotNumber:
 	Debug_Text 	'String:"'
 	Debug_ASCIIZ	bx
-	Debug_Text	'" }', 0x0d,0x0a
+	Debug_TextLn	'" }'
 .DoneShow:
 	inc		cx
 	ret
@@ -289,6 +286,14 @@ DEBUG_STRINGS_PROC:
 	pop		bx
 	pop		dx
 	popf
+	ret
+
+EXIT_STATUS_PROC:
+	Debug_Text 'EXIT: 0x'
+	Debug_Byte [RESULT.FINAL]
+	Debug_CRLF
+	call DEBUG_STRINGS_PROC
+	call DEBUG_STATUS_PROC
 	ret
 %endif
 
@@ -320,6 +325,8 @@ DEBUG_STRINGS_PROC:
 ; -----------------------------------------------------------------------------
 
 OnText:
+	Debug_TextLn	'OnText: '
+
 	mov		ax, 0		; String 1
 	test		ax, word sfExpFirst
 	je		.StringSelected
@@ -333,19 +340,31 @@ OnText:
 	call		NUMBER_VALUE
 .NoValue:
 
-	mov		bx, [LAST_OPT]
-	test		bx, bx
-	jnz		.Evaluate
-	mov		bx, MAIN_OPTION_N	; string not null
+	cmp		[LAST_OPT], word 0
+	jne		OnEvaluate
+	mov		[LAST_OPT], word MAIN_OPTION_N	; string not null
 
-.Evaluate:
+OnEvaluate:
 	Debug_Strings
 	Debug_Status
+	Debug_TextLn	'OnEvaluate: '
+	mov		bx, [LAST_OPT]
+	test		bx, bx
+	jz		OnDoneText
+	%ifdef DEBUG
+		cmp 	bx, MAIN_OPTION_AND
+		jb	.OkSubFn
+		Debug_TextLn 'ERROR: Sub function value too high!'
+		Terminate 101
+	.OkSubFn:
+	%endif
+	add		bx, bx
+	mov		bx, [DoFunctions+bx-2]
+	call		bx
 
 ; -----------------------------------------------------------------------------
 
 OnDoneText:
-
 	xor		dx, dx
 
 ; -----------------------------------------------------------------------------
@@ -353,11 +372,14 @@ OnDoneText:
 OnDoneSwitch:
 	mov		[LAST_OPT], dx
 	clc
+;	Debug_Strings
+	Debug_Status
 	ret
 
 ; -----------------------------------------------------------------------------
 
 OnInvalid:	; not a valid switch
+	Debug_TextLn	'OnInvalid:'
 	mov		dx, MESSAGE.INVALID
 
 OnError:
@@ -383,72 +405,108 @@ OnError:
 ; -----------------------------------------------------------------------------
 
 OnTrueFalse:
+	Debug_TextLn	'OnTrueFalse:'
 	; does not set ANY_OPTS
-	mov	[SHOW_RESULT], byte TRUE
+	mov		[SHOW_RESULT], byte TRUE
 	ret
 
 ; -----------------------------------------------------------------------------
 
 OnTest:
-	jmp	OnDoneSwitch
+	Debug_TextLn	'OnTest:'
+	jmp		OnDoneSwitch
 
 ; -----------------------------------------------------------------------------
 
 OnExpCase:
-	test	[STATUS], byte sfExpFirst + sfExpSecond
-	jz	OnExpModError
-	test	[STATUS], byte sfCaseLess
-	jnz	OnExpModError
-	or	[STATUS], byte sfCaseSpecific
-	xor	dx, dx
-	jmp	OnDoneSwitch
+	Debug_TextLn	'OnCaseSpecific:'
+	test		[STATUS], byte sfExpFirst + sfExpSecond
+	jz		OnExpModError
+	test		[STATUS], byte sfCaseLess
+	jnz		OnExpModError
+	or		[STATUS], byte sfCaseSpecific
+	xor		dx, dx
+	jmp		OnDoneSwitch
 
 OnExpIgnore:
-	test	[STATUS], byte sfExpFirst + sfExpSecond
-	jz	OnExpModError
-	test	[STATUS], byte sfCaseSpecific
-	jnz	OnExpModError
+	Debug_TextLn	'OnCaseIgnore:'
+	test		[STATUS], byte sfExpFirst + sfExpSecond
+	jz		OnExpModError
+	test		[STATUS], byte sfCaseSpecific
+	jnz		OnExpModError
 
-	or	[STATUS], byte sfCaseless
-	xor	dx, dx
-	jmp	OnDoneSwitch
+	or		[STATUS], byte sfCaseless
+	xor		dx, dx
+	jmp		OnDoneSwitch
 
 OnExpNOT:
-	test	[STATUS], byte sfExpFirst + sfExpSecond
-	jz	OnExpModError
-	xor	[STATUS], byte sfNOT
-	xor	dx, dx
-	jmp	OnDoneSwitch
+	Debug_TextLn	'OnNOT:'
+	test		[STATUS], byte sfExpFirst + sfExpSecond
+	jz		OnExpModError
+	xor		[STATUS], byte sfNOT
+	xor		dx, dx
+	jmp		OnDoneSwitch
 
 OnExpModError:
-	mov	dx, MESSAGE.SYNTAX
-	jmp	OnError
+	mov		dx, MESSAGE.SYNTAX
+	jmp		OnError
 
 ; -----------------------------------------------------------------------------
 
-OnExpEval:
-	jmp	OnDoneSwitch
+OnExpAND:
+	Debug_TextLn	'OnAND:'
+	xor		dx, dx
+	jmp		OnDoneSwitch
+
+OnExpOR:
+	Debug_TextLn	'OnOR:'
+	xor		dx, dx
+	jmp		OnDoneSwitch
 
 ; -----------------------------------------------------------------------------
 
 OnCompare:
-	jmp	OnDoneSwitch
+	Debug_TextLn	'OnCompare:'
+	jmp		OnDoneSwitch
 
 
 ; -----------------------------------------------------------------------------
 
 DoOptFn_EQ:
+	Debug_TextLn	'DoFn_EQ:'
+	ret
 DoOptFn_NE:
+	Debug_TextLn	'DoFn_NE:'
+	ret
 DoOptFn_GE:
+	Debug_TextLn	'DoFN_GE:'
+	ret
 DoOptFn_LE:
+	Debug_TextLn	'DoFn_LE:'
+	ret
 DoOptFn_GT:
+	Debug_TextLn	'DoFn_GT:'
+	ret
 DoOptFn_LT:
+	Debug_TextLn	'DoFn_LT:'
+	ret
 DoOptFn_F:
+	Debug_TextLn	'DoFn_F:'
+	ret
 DoOptFn_D:
+	Debug_TextLn	'DoFn_D:'
+	ret
 DoOptFn_E:
+	Debug_TextLn	'DoFn_E:'
+	ret
 DoOptFn_N:
+	Debug_TextLn	'DoFn_N:'
+	ret
 DoOptFn_Z:
+	Debug_TextLn	'DoFn_Z:'
+	ret
 DoOptFn_V:
+	Debug_TextLn	'DoFn_V:'
 	ret
 
 ; -----------------------------------------------------------------------------
@@ -559,7 +617,7 @@ RESULT:
 	.FINAL:		db FALSE
 	.PENDING:	db FALSE
 
-SHOW_RESULT:		db TRUE	; FALSE
+SHOW_RESULT:		db FALSE
 
 MESSAGE:
 	.TRUE:		db 	'TRUE$'
