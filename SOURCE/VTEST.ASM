@@ -20,18 +20,15 @@
 ; Operation and processing state flags
 
 ; STATUS - Flags
-%idefine sfExpFirst	0000000000000001b ; 0x0001
-%idefine sfExpSecond	0000000000000010b ; 0x0002
+%idefine sfExpOR	00000100b ; 0x0004
+%idefine sfExpAND	00001000b ; 0x0008
+%idefine sfExpCMP	00010000b ; 0x0010
 
-%idefine sfExpOR	0000000000000100b ; 0x0004
-%idefine sfExpAND	0000000000001000b ; 0x0008
-%idefine sfExpCMP	0000000000010000b ; 0x0010
+%idefine sfCaseSpecific 00100000b ; 0x0020
+%idefine sfCaseLess 	01000000b ; 0x0040
+%idefine sfNOT		10000000b ; 0x0080
 
-%idefine sfCaseSpecific 0000000000100000b ; 0x0020
-%idefine sfCaseLess 	0000000001000000b ; 0x0040
-%idefine sfNOT		0000000010000000b ; 0x0080
-
-%idefine sfPending	0000000100000000b ; 0x0100
+; %idefine sfPending	00000001b ; 0x0001
 
 ; String data type
 %idefine stText		00000001b ; Text String
@@ -197,15 +194,6 @@ DEBUG_STATUS_PROC:
 .EndLast:
 	Debug_Text 	'); '
 
-	test	[STATUS], byte sfExpFirst
-	jz	.NotExpFirst
-	Debug_Text 'sfExpFirst '
-.NotExpFirst:
-	test	[STATUS], byte sfExpSecond
-	jz	.NotExpSecond
-	Debug_Text 'sfExpSecond '
-.NotExpSecond:
-
 	test	[STATUS], byte sfExpOR
 	jz	.NotExpOR
 	Debug_Text 'sfExpOR '
@@ -327,10 +315,6 @@ EXIT_STATUS_PROC:
 OnText:
 	Debug_TextLn	'OnText: '
 
-	mov		ax, 0		; String 1
-	test		ax, word sfExpFirst
-	je		.StringSelected
-	mov		ax, 1		; String 2
 
 .StringSelected:
 	call		VALUE_CLEAR	; IN: AX=String number, out BX=Offset
@@ -420,8 +404,8 @@ OnTest:
 
 OnExpCase:
 	Debug_TextLn	'OnCaseSpecific:'
-	test		[STATUS], byte sfExpFirst + sfExpSecond
-	jz		OnExpModError
+	cmp		[LAST_OPT], byte 0
+	jnz		OnExpModError
 	test		[STATUS], byte sfCaseLess
 	jnz		OnExpModError
 	or		[STATUS], byte sfCaseSpecific
@@ -430,19 +414,18 @@ OnExpCase:
 
 OnExpIgnore:
 	Debug_TextLn	'OnCaseIgnore:'
-	test		[STATUS], byte sfExpFirst + sfExpSecond
-	jz		OnExpModError
+	cmp		[LAST_OPT], byte 0
+	jnz		OnExpModError
 	test		[STATUS], byte sfCaseSpecific
 	jnz		OnExpModError
-
 	or		[STATUS], byte sfCaseless
 	xor		dx, dx
 	jmp		OnDoneSwitch
 
 OnExpNOT:
 	Debug_TextLn	'OnNOT:'
-	test		[STATUS], byte sfExpFirst + sfExpSecond
-	jz		OnExpModError
+	cmp		[LAST_OPT], byte 0
+	jnz		OnExpModError
 	xor		[STATUS], byte sfNOT
 	xor		dx, dx
 	jmp		OnDoneSwitch
@@ -455,11 +438,15 @@ OnExpModError:
 
 OnExpAND:
 	Debug_TextLn	'OnAND:'
+	and		[STATUS], byte ~sfExpOR
+	or		[STATUS], byte sfExpAND
 	xor		dx, dx
 	jmp		OnDoneSwitch
 
 OnExpOR:
 	Debug_TextLn	'OnOR:'
+	and		[STATUS], byte ~sfExpAND
+	or		[STATUS], byte sfExpOR
 	xor		dx, dx
 	jmp		OnDoneSwitch
 
@@ -611,7 +598,7 @@ section .data
 
 LAST_OPT:		dw 0
 
-STATUS:			dw sfExpOR + sfExpFirst
+STATUS:			dw sfExpOR
 
 RESULT:
 	.FINAL:		db FALSE
