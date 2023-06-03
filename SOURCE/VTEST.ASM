@@ -20,15 +20,13 @@
 ; Operation and processing state flags
 
 ; STATUS - Flags
-%idefine sfExpOR	00000100b ; 0x0004
-%idefine sfExpAND	00001000b ; 0x0008
-%idefine sfExpCMP	00010000b ; 0x0010
+%idefine sfNeedCMP	00000001b ; 0x0001 ; AND,OR or string compare required
+%idefine sfExpOR	00000010b ; 0x0002 ; OR expression results
+%idefine sfExpAND	00000100b ; 0x0004 ; AND expression results
 
-%idefine sfCaseSpecific 00100000b ; 0x0020
-%idefine sfCaseLess 	01000000b ; 0x0040
-%idefine sfNOT		10000000b ; 0x0080
-
-; %idefine sfPending	00000001b ; 0x0001
+%idefine sfCaseSpecific 00100000b ; 0x0020 ; string case sensitive compare
+%idefine sfCaseLess 	01000000b ; 0x0040 ; string ignore case compare
+%idefine sfNOT		10000000b ; 0x0080 ; invert expression result
 
 ; String data type
 %idefine stText		00000001b ; Text String
@@ -68,21 +66,14 @@ Main:
 
 	ParseOptions 	Options
 	Debug_TextLn	'END'
-
 	jc		.ExitError
 
-	; no error processing, check if all requirements are satisfied
-	cmp		[STATUS], word 0
-	jne		.Unhappy
-	cmp		[LAST_OPT], word 0
-	je		.Satisfied
-.Unhappy:
-	mov		[RESULT.PENDING], byte FALSE
-	; call		ProcessOpt
-
-.Satisfied:
+	; process pending last command line test, comparison, etc.
+	call		OnEvaluate
+	call		DoFn_AND_OR
 	; Exit Code 0=True, 1=False. Opposite of internal TRUE/FALSE
 	xor		[RESULT.FINAL], byte TRUE
+
 .ExitError:
 	cmp		[SHOW_RESULT], byte 0
 	je		.Done
@@ -194,6 +185,11 @@ DEBUG_STATUS_PROC:
 .EndLast:
 	Debug_Text 	'); '
 
+	test	[STATUS], byte sfNeedCMP
+	jz	.NotNeedCMP
+	Debug_Text 'sfNeedCMP '
+.NotNeedCMP:
+
 	test	[STATUS], byte sfExpOR
 	jz	.NotExpOR
 	Debug_Text 'sfExpOR '
@@ -202,10 +198,6 @@ DEBUG_STATUS_PROC:
 	jz	.NotExpAND
 	Debug_Text 'sfExpAND '
 .NotExpAND:
-	test	[STATUS], byte sfExpCMP
-	jz	.NotExpCMP
-	Debug_Text 'sfExpCMP '
-.NotExpCMP:
 
 	test	[STATUS], byte sfCaseSpecific
 	jz	.NotCaseSpecific
@@ -279,7 +271,17 @@ DEBUG_STRINGS_PROC:
 EXIT_STATUS_PROC:
 	Debug_Text 'EXIT: 0x'
 	Debug_Byte [RESULT.FINAL]
-	Debug_CRLF
+	Debug_Text ' ('
+	%ifdef DEBUG
+		cmp	[RESULT.FINAL], byte 0
+		jz	.PrintTrue
+		Debug_Text 'false'
+		jmp	.Printed
+	.PrintTrue:
+		Debug_Text 'true'
+	.Printed:
+	%endif
+	Debug_TextLn ')'
 	call DEBUG_STRINGS_PROC
 	call DEBUG_STATUS_PROC
 	ret
@@ -362,8 +364,11 @@ OnDoneSwitch:
 
 ; -----------------------------------------------------------------------------
 
-OnInvalid:	; not a valid switch
-	Debug_TextLn	'OnInvalid:'
+OnSyntaxError:
+	mov		dx, MESSAGE.SYNTAX
+	jmp		OnError
+
+OnInvalid:		; not a valid switch
 	mov		dx, MESSAGE.INVALID
 
 OnError:
@@ -390,7 +395,8 @@ OnError:
 
 OnTrueFalse:
 	Debug_TextLn	'OnTrueFalse:'
-	; does not set ANY_OPTS
+	; can be used at any point in the command line to enable display
+	; of TRUE/FALSE result
 	mov		[SHOW_RESULT], byte TRUE
 	ret
 
@@ -398,48 +404,44 @@ OnTrueFalse:
 
 OnTest:
 	Debug_TextLn	'OnTest:'
+	or		[STATUS], byte sfNeedCMP
 	jmp		OnDoneSwitch
 
 ; -----------------------------------------------------------------------------
 
 OnExpCase:
 	Debug_TextLn	'OnCaseSpecific:'
-	cmp		[LAST_OPT], byte 0
-	jnz		OnExpModError
+	test		[STATUS], byte sfNeedCMP
+	jnz		OnSyntaxError
 	test		[STATUS], byte sfCaseLess
-	jnz		OnExpModError
+	jnz		OnSyntaxError
 	or		[STATUS], byte sfCaseSpecific
 	xor		dx, dx
 	jmp		OnDoneSwitch
 
 OnExpIgnore:
 	Debug_TextLn	'OnCaseIgnore:'
-	cmp		[LAST_OPT], byte 0
-	jnz		OnExpModError
+	test		[STATUS], byte sfNeedCMP
+	jnz		OnSyntaxError
 	test		[STATUS], byte sfCaseSpecific
-	jnz		OnExpModError
+	jnz		OnSyntaxError
 	or		[STATUS], byte sfCaseless
 	xor		dx, dx
 	jmp		OnDoneSwitch
 
 OnExpNOT:
 	Debug_TextLn	'OnNOT:'
-	cmp		[LAST_OPT], byte 0
-	jnz		OnExpModError
+	test		[STATUS], byte sfNeedCMP
+	jnz		OnSyntaxError
 	xor		[STATUS], byte sfNOT
 	xor		dx, dx
 	jmp		OnDoneSwitch
-
-OnExpModError:
-	mov		dx, MESSAGE.SYNTAX
-	jmp		OnError
 
 ; -----------------------------------------------------------------------------
 
 OnExpAND:
 	Debug_TextLn	'OnAND:'
 	call		DoFn_AND_OR	; Handle previous AND/OR
-	and		[STATUS], byte ~sfExpOR
 	or		[STATUS], byte sfExpAND
 	xor		dx, dx
 	jmp		OnDoneSwitch
@@ -447,7 +449,6 @@ OnExpAND:
 OnExpOR:
 	Debug_TextLn	'OnOR:'
 	call		DoFn_AND_OR	; Handle previous AND/OR
-	and		[STATUS], byte ~sfExpAND
 	or		[STATUS], byte sfExpOR
 	xor		dx, dx
 	jmp		OnDoneSwitch
@@ -456,8 +457,8 @@ OnExpOR:
 
 OnCompare:
 	Debug_TextLn	'OnCompare:'
+	and 		[STATUS], byte ~sfNeedCMP
 	jmp		OnDoneSwitch
-
 
 ; -----------------------------------------------------------------------------
 
@@ -501,21 +502,34 @@ DoOptFn_V:
 ; -----------------------------------------------------------------------------
 
 DoFn_AND_OR:
+	Debug_Text	'  { PREVIOUS: '
+	Debug_Byte	[RESULT.FINAL]
+	Debug_Text	', PENDING: '
+	Debug_Byte	[RESULT.PENDING]
+
+	mov		al, [RESULT.PENDING]
+	test		[STATUS], byte sfNOT
+	jz		.NotInverted
+	Debug_Text	', INVERT'
+	xor		al, TRUE
+.NotInverted:
 	test		[STATUS], byte sfExpAND
-	jz		DoFn_OR
+	jz		.DoFn_OR
 
-DoFn_AND:
-	Debug_TextLn	'DoFn_AND:'
-	mov		al, [RESULT.PENDING]
+.DoFn_AND:
+	Debug_Text	', AND'
 	and		[RESULT.FINAL], al
-	jmp		Done_AND_OR
+	jmp		.Done_AND_OR
 
-DoFn_OR:
-	Debug_TextLn	'DoFn_OR:'
-	mov		al, [RESULT.PENDING]
+.DoFn_OR:
+	Debug_Text	', OR'
 	or		[RESULT.FINAL], al
 
-Done_AND_OR:
+.Done_AND_OR:
+	Debug_Text 	', RESULT: '
+	Debug_Byte	[RESULT.FINAL]
+	Debug_TextLn	' }'
+	and		[STATUS], byte ~(sfExpOR + sfExpAND + sfNOT + sfNeedCMP)
 	mov		[RESULT.PENDING], byte FALSE
 	xor		ax, ax
 	call		VALUE_CLEAR
