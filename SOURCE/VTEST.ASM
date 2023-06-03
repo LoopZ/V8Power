@@ -35,7 +35,6 @@
 %idefine stFile		00000100b ; File name
 %idefine stDir		00001000b ; Directory Name
 %idefine stFileOrDir	00001100b ; File or Directory name
-%idefine stTrue		10000000b ; Evaluated result for string is true
 
 ; Internal TRUE/FALSE
 %idefine TRUE  1
@@ -58,13 +57,19 @@ endstruc
 ; MOV   SS, CS
 ; MOV   SP, 0xfffe	(0x0000 is on stack for RET to exit call in PSP)
 ; CLD
+; DTA -> PSP:0080
 
 Main:
 	; Initialize BSS Data
-	mov	cx, (BSS_END - BSS_START + 1) / 2
-	mov	di, BSS_START
-	xor	ax, ax
-	rep	stosw
+	mov		cx, (BSS_END - BSS_START + 1) / 2
+	mov		di, BSS_START
+	xor		ax, ax
+	rep		stosw
+
+	; Adjust DOS DTA
+	mov		dx, DTA_SEARCH
+	mov		ah, 0x1a
+	int		0x21
 
 	ParseOptions 	Options
 	Debug_TextLn	'END COMMAND LINE'
@@ -95,6 +100,12 @@ Main:
 	%ifdef DEBUG
 		call	EXIT_STATUS_PROC
 	%endif
+
+	; should not need to restore DTA to PSP:0080, but...
+	mov		dx, 0x0080
+	mov		ah, 0x1a
+	int		0x21
+
 	Terminate 	[RESULT.FINAL]
 
 ; -----------------------------------------------------------------------------
@@ -338,7 +349,7 @@ OnText:
 OnEvaluate:
 	Debug_Strings
 	Debug_Status
-	Debug_TextLn	'OnEvaluate: '
+	Debug_Text	'Evaluate: '
 	mov		bx, [LAST_OPT]
 	test		bx, bx
 	jz		OnDoneText
@@ -346,7 +357,9 @@ OnEvaluate:
 		cmp 	bx, MAIN_OPTION_AND
 		jb	.OkSubFn
 		Debug_TextLn 'ERROR: Sub function value too high!'
-		Terminate 101
+		mov 	[RESULT.FINAL], byte 101
+		stc
+		ret
 	.OkSubFn:
 	%endif
 	add		bx, bx
@@ -502,6 +515,7 @@ DoOptFn_GT:
 DoOptFn_LT:
 	Debug_TextLn	'DoFn_LT:'
 	ret
+
 DoOptFn_F:
 	Debug_TextLn	'DoFn_F:'
 	ret
@@ -674,6 +688,72 @@ STORE_VALUE:
 
 ; -----------------------------------------------------------------------------
 
+FILE_EXIST:
+
+	ret
+
+; -----------------------------------------------------------------------------
+
+LFN_CALL:
+	cmp	[LFN_SUPPORTED], byte 1
+	ja	.Unsupported
+	je	.Supported
+	; Probe for LFN support
+	push	ax
+	push	dx
+	mov	ax, 0x713b		; change to current directory
+	mov	dx, LFN_PROBE_DATA 	; Change to directory '.' current.
+	stc
+	int	0x21
+	pop	dx
+	pop	ax
+	jc	.NotDetected
+	mov	[LFN_SUPPORTED], byte 1
+	jmp	.Supported
+.NotDetected:
+	mov	[LFN_SUPPORTED], byte 2
+.Unsupported:
+	xchg	al, ah
+	jmp	.MakeCall
+.Supported:
+	mov	ah, 0x71
+.MakeCall:
+	stc
+	int	0x21
+	ret
+
+; -----------------------------------------------------------------------------
+
+FIND_FIRST:
+	mov	ax, 0x004e		; LFN fn 0x714e, DOS 0x4e00
+	mov	dx, VALUES.ITEM0	; ds:dx->ASCIIZ Filespec
+	call	.SEARCH
+	mov	[SEARCH_HANDLE], ax	; CF, then error code
+	ret
+.SEARCH:
+	mov	di, DTA_SEARCH		; es:di->Search record (LFN)
+	push	si
+	mov	si, 0x0001		; LFN MS-DOS timestamps
+	call	LFN_CALL
+	pop	si
+	ret
+
+FIND_NEXT:
+	mov	ax, 0x004f
+	mov	bx, [SEARCH_HANDLE]
+	jmp	FIND_FIRST.SEARCH
+
+FIND_CLOSE:
+	cmp	[LFN_SUPPORTED], byte 2
+	jne	.DONE
+	mov	ax, 0x71a1
+	mov	bx, [SEARCH_HANDLE]
+	int	0x21
+.DONE:
+	ret
+
+; -----------------------------------------------------------------------------
+
 	Int64_Procs
 	HelpSwitchHandler 'vtest'
 
@@ -701,6 +781,11 @@ MESSAGE:
 	.INVALID:	db	'Invalid option ',0x22,SWITCH_CHAR,'$'
 	.SYNTAX:	db	'Syntax error ',0x22,SWITCH_CHAR,'$'
 
+LFN_PROBE_DATA:
+	db 	'.'	; AsciiZ for LFN probe only valid until Probed.
+LFN_SUPPORTED:
+	db	0 	; 0=unknown test for it, 1=true, 2=false
+
 ; -----------------------------------------------------------------------------
 
 section .bss
@@ -711,6 +796,9 @@ BSS_START:
 VALUES:
 	.ITEM0:		resb TVALUE_size
 	.ITEM1:		resb TVALUE_size
+
+SEARCH_HANDLE:	resw 	1
+DTA_SEARCH:	resb	512	; requires 318 for LFN, 43 for 8.3 filenames
 
 BSS_END:
 	resw 1
