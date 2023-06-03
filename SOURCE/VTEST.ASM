@@ -21,8 +21,9 @@
 
 ; STATUS - Flags
 %idefine sfNeedCMP	00000001b ; 0x0001 ; AND,OR or string compare required
-%idefine sfExpOR	00000010b ; 0x0002 ; OR expression results
-%idefine sfExpAND	00000100b ; 0x0004 ; AND expression results
+
+%idefine sfExpOR	00000100b ; 0x0004 ; OR expression results
+%idefine sfExpAND	00001000b ; 0x0008 ; AND expression results
 
 %idefine sfCaseSpecific 00100000b ; 0x0020 ; string case sensitive compare
 %idefine sfCaseLess 	01000000b ; 0x0040 ; string ignore case compare
@@ -33,7 +34,8 @@
 %idefine stNumber	00000010b ; Text/Number
 %idefine stFile		00000100b ; File name
 %idefine stDir		00001000b ; Directory Name
-%idefine stFileOrDir	00001100b ; FIle or Directory name
+%idefine stFileOrDir	00001100b ; File or Directory name
+%idefine stTrue		10000000b ; Evaluated result for string is true
 
 ; Internal TRUE/FALSE
 %idefine TRUE  1
@@ -230,7 +232,11 @@ DEBUG_STRINGS_PROC:
 
 .Show:
 	mov		ax, cx
-	call		VALUE_OFFSET
+	mov		bx, VALUES.ITEM0
+	test		ax, ax
+	jz		.BXisSet
+	mov		bx, VALUES.ITEM1
+.BXisSet:
 	mov		ax, [bx+TVALUE.DTYPE]
 	test		ax, ax
 	je		.DoneShow
@@ -253,7 +259,9 @@ DEBUG_STRINGS_PROC:
 	Debug_Word 	[bx+TVALUE.NUMBER+0]
 	Debug_Text	', '
 .NotNumber:
-	Debug_Text 	'String:"'
+	Debug_Text 	'String.'
+	Debug_Byte	cl
+	Debug_Text	':"'
 	Debug_ASCIIZ	bx
 	Debug_TextLn	'" }'
 .DoneShow:
@@ -314,17 +322,14 @@ EXIT_STATUS_PROC:
 ; may be destroyed. If Carry Flag is set, the parser will abort.
 ; -----------------------------------------------------------------------------
 
+
 OnText:
 	Debug_TextLn	'OnText: '
 
 
 .StringSelected:
-	call		VALUE_CLEAR	; IN: AX=String number, out BX=Offset
-	call		STORE_STRING	; copies SI->BX, updates DI for Parser
-	test		cx, cx		; Char Count updated by STORE_STRING
-	jz		.NoValue
-	call		NUMBER_VALUE
-.NoValue:
+	call		SHOVE_VALUE	; ITEM0->ITEM1, ITEM0 Cleared
+	call		STORE_VALUE	; copies SI->ITEM0, updates DI for Parser
 
 	cmp		[LAST_OPT], word 0
 	jne		OnEvaluate
@@ -346,8 +351,10 @@ OnEvaluate:
 	%endif
 	add		bx, bx
 	mov		bx, [DoFunctions+bx-2]
+	xor		dl, dl
+	mov		si, VALUES.ITEM0
 	call		bx
-
+	mov		[RESULT.PENDING], dl
 ; -----------------------------------------------------------------------------
 
 OnDoneText:
@@ -358,8 +365,20 @@ OnDoneText:
 OnDoneSwitch:
 	mov		[LAST_OPT], dx
 	clc
-;	Debug_Strings
 	Debug_Status
+	ret
+
+; -----------------------------------------------------------------------------
+
+CheckMissingText:
+	cmp		[LAST_OPT], word 0x00
+	jnz		.IsMissing
+	ret
+.IsMissing:
+	Debug_Text	'Assume NULL text:'
+	call		SHOVE_VALUE
+	mov		[VALUES.ITEM0 + TVALUE.DTYPE], byte stText
+	call		OnEvaluate
 	ret
 
 ; -----------------------------------------------------------------------------
@@ -440,6 +459,7 @@ OnExpNOT:
 ; -----------------------------------------------------------------------------
 
 OnExpAND:
+	call		CheckMissingText
 	Debug_TextLn	'OnAND:'
 	call		DoFn_AND_OR	; Handle previous AND/OR
 	or		[STATUS], byte sfExpAND
@@ -447,6 +467,7 @@ OnExpAND:
 	jmp		OnDoneSwitch
 
 OnExpOR:
+	call		CheckMissingText
 	Debug_TextLn	'OnOR:'
 	call		DoFn_AND_OR	; Handle previous AND/OR
 	or		[STATUS], byte sfExpOR
@@ -456,12 +477,13 @@ OnExpOR:
 ; -----------------------------------------------------------------------------
 
 OnCompare:
+	call		CheckMissingText
 	Debug_TextLn	'OnCompare:'
 	and 		[STATUS], byte ~sfNeedCMP
 	jmp		OnDoneSwitch
 
 ; -----------------------------------------------------------------------------
-
+; IN: dl=0, OUT: dl=RESULT.PENDING, SI->VALUES.ITEMS0
 DoOptFn_EQ:
 	Debug_TextLn	'DoFn_EQ:'
 	ret
@@ -489,14 +511,38 @@ DoOptFn_D:
 DoOptFn_E:
 	Debug_TextLn	'DoFn_E:'
 	ret
-DoOptFn_N:
+
+; -----------------------------------------------------------------------------
+
+DoOptFn_N:	; string is not null
 	Debug_TextLn	'DoFn_N:'
+	cmp		[si], byte 0
+	jne		.NotNull
 	ret
-DoOptFn_Z:
+.NotNull:
+	inc		dl
+	ret
+
+; -----------------------------------------------------------------------------
+
+DoOptFn_Z:	; string is null
 	Debug_TextLn	'DoFn_Z:'
+	cmp		[si], byte 0
+	je		.IsNull
 	ret
-DoOptFn_V:
+.IsNull:
+	inc		dl
+	ret
+
+; -----------------------------------------------------------------------------
+
+DoOptFn_V: ; string has number value
 	Debug_TextLn	'DoFn_V:'
+	test		[si+TVALUE.DTYPE], byte stNumber
+	jnz		.IsNumber
+	ret
+.IsNumber:
+	inc		dl
 	ret
 
 ; -----------------------------------------------------------------------------
@@ -531,42 +577,19 @@ DoFn_AND_OR:
 	Debug_TextLn	' }'
 	and		[STATUS], byte ~(sfExpOR + sfExpAND + sfNOT + sfNeedCMP)
 	mov		[RESULT.PENDING], byte FALSE
-	xor		ax, ax
-	call		VALUE_CLEAR
-	inc		ax
-	call		VALUE_CLEAR
-	ret
+;	call		CLEAR_VALUES
+;	ret
 
 ; -----------------------------------------------------------------------------
 
-VALUE_OFFSET:
-; Returns offset address of a VALUE buffer
-; IN:  AX=Value Buffer Index
-; OUT: BX=Value Buffer offset
-	push		ax
-	push		dx
-	mov		bx, TVALUE_size
-	mul		bx
-	add		ax, VALUES
-	mov		bx, ax
-	pop		dx
-	pop		ax
-	ret
-
-; -----------------------------------------------------------------------------
-
-VALUE_CLEAR:
-; Zeros a VALUE buffer
-; IN:  AX=Value Buffer Index
-; OUT: BX=Value Buffer offset
+CLEAR_VALUES:
 	push		ax
 	push		cx
 	push		di
-	call		VALUE_OFFSET
+	mov		di, VALUES.ITEM0
 	mov		cx, TVALUE_size
-	mov		di, bx
-	xor		al, al
-	rep		stosb
+	xor		ax, ax
+	rep		stosw		; TVALUE_size * 2 bytes
 	pop		di
 	pop		cx
 	pop		ax
@@ -574,11 +597,35 @@ VALUE_CLEAR:
 
 ; -----------------------------------------------------------------------------
 
-STORE_STRING:
-; copy string from SI to BX. Single / or < space terminates copy. Double / is
-; copied as single /. On return: DI updated to new next position for parser. SI
-; is end of saved string. CX is new length
-	mov		di, bx
+SHOVE_VALUE:
+	; ITEM0 to ITEM1, clear ITEM 0
+	push		ax
+	push		cx
+	push		si
+	push		di
+	mov		si, VALUES.ITEM0
+	mov		di, VALUES.ITEM1
+	mov		cx, TVALUE_size
+	push		si
+	push		cx
+	rep		movsb		; TVALUE_size bytes
+	pop		cx
+	pop		di
+	xor		ax, ax
+	rep		stosb		; TVALUE_size bytes
+	pop		di
+	pop		si
+	pop		cx
+	pop		ax
+	ret
+
+; -----------------------------------------------------------------------------
+
+STORE_VALUE:
+; copy string from SI. Single / or < space terminates copy. Double / is
+; copied as single /. On return: DI updated to new next position for parser.
+; CX is new length
+	mov		di, VALUES.ITEM0
 	mov		[di+TVALUE.DTYPE], byte stText
 	jcxz		.CopyDone
 	xor		cx, cx
@@ -608,20 +655,18 @@ STORE_STRING:
 	xor		al, al
 	stosb
 	dec		si	; back up to termination character
-	xchg		di, si
-	ret
+	mov		di, si
 
-; -----------------------------------------------------------------------------
-
-NUMBER_VALUE:
 	push		di
-	mov		si, bx
-	mov		di, bx
+	test		cx, cx
+	jz		.Done
+	mov		si, VALUES.ITEM0
+	mov		di, si
 	add		di, TVALUE.NUMBER
 	ASCII_sInt64	di, si
 	jc		.Done
 .Success:
-	mov		[bx+TVALUE.DTYPE], byte stNumber
+	mov		[si+TVALUE.DTYPE], byte stNumber
 .Done:
 	pop		di
 	ret
