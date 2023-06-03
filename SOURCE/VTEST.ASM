@@ -438,6 +438,7 @@ OnExpModError:
 
 OnExpAND:
 	Debug_TextLn	'OnAND:'
+	call		DoFn_AND_OR	; Handle previous AND/OR
 	and		[STATUS], byte ~sfExpOR
 	or		[STATUS], byte sfExpAND
 	xor		dx, dx
@@ -445,6 +446,7 @@ OnExpAND:
 
 OnExpOR:
 	Debug_TextLn	'OnOR:'
+	call		DoFn_AND_OR	; Handle previous AND/OR
 	and		[STATUS], byte ~sfExpAND
 	or		[STATUS], byte sfExpOR
 	xor		dx, dx
@@ -494,6 +496,31 @@ DoOptFn_Z:
 	ret
 DoOptFn_V:
 	Debug_TextLn	'DoFn_V:'
+	ret
+
+; -----------------------------------------------------------------------------
+
+DoFn_AND_OR:
+	test		[STATUS], byte sfExpAND
+	jz		DoFn_OR
+
+DoFn_AND:
+	Debug_TextLn	'DoFn_AND:'
+	mov		al, [RESULT.PENDING]
+	and		[RESULT.FINAL], al
+	jmp		Done_AND_OR
+
+DoFn_OR:
+	Debug_TextLn	'DoFn_OR:'
+	mov		al, [RESULT.PENDING]
+	or		[RESULT.FINAL], al
+
+Done_AND_OR:
+	mov		[RESULT.PENDING], byte FALSE
+	xor		ax, ax
+	call		VALUE_CLEAR
+	inc		ax
+	call		VALUE_CLEAR
 	ret
 
 ; -----------------------------------------------------------------------------
