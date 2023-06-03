@@ -67,7 +67,7 @@ Main:
 	rep	stosw
 
 	ParseOptions 	Options
-	Debug_TextLn	'END'
+	Debug_TextLn	'END COMMAND LINE'
 	jc		.ExitError
 
 	; process pending last command line test, comparison, etc.
@@ -657,6 +657,7 @@ STORE_VALUE:
 	dec		si	; back up to termination character
 	mov		di, si
 
+	; convert to number if possible
 	push		di
 	test		cx, cx
 	jz		.Done
