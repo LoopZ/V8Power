@@ -7,6 +7,18 @@
 
 %define DEBUG
 
+%define MATCH_SYSTEM		; When enabled /F and /D will match system
+				; files and dirs. /E always matches any existing
+				; file system entry.
+
+%define MATCH_HIDDEN		; When enabled /F and /D will match hidden
+				; files and dirs. /E always matches any existing
+				; file system entry.
+
+%define DOS_WILDCARDS		; MS-DOS compatible wildcard matching for
+				; /F, /D and /E options. For now, required.
+				; Maybe later include "smart" wildcards.
+
 %define INT64_STRICT_ASCII	; non-valid number chars (like SPACE) generate
 				; a conversion error.
 
@@ -516,14 +528,26 @@ DoOptFn_LT:
 	Debug_TextLn	'DoFn_LT:'
 	ret
 
+; -----------------------------------------------------------------------------
+
 DoOptFn_F:
 	Debug_TextLn	'DoFn_F:'
-	ret
+	and		[VALUES.ITEM0 + TVALUE.DTYPE], byte ~stDir
+	or		[VALUES.ITEM0 + TVALUE.DTYPE], byte stFile
+	jmp		DoOptFn_F_D_E
+
 DoOptFn_D:
 	Debug_TextLn	'DoFn_D:'
-	ret
+	and		[VALUES.ITEM0 + TVALUE.DTYPE], byte ~stFile
+	or		[VALUES.ITEM0 + TVALUE.DTYPE], byte stDir
+	jmp		DoOptFn_F_D_E
 DoOptFn_E:
 	Debug_TextLn	'DoFn_E:'
+	or		[VALUES.ITEM0 + TVALUE.DTYPE], byte stFileOrDir
+
+DoOptFn_F_D_E:
+	call		FILE_EXIST
+	Debug_CarryFlag
 	ret
 
 ; -----------------------------------------------------------------------------
@@ -689,66 +713,160 @@ STORE_VALUE:
 ; -----------------------------------------------------------------------------
 
 FILE_EXIST:
+	call		FIND_FIRST
+.CHECK:
+	jc		.DONE
+	call		FILE_COMPARE_ATTRIB
+	jc		.NEXT
+	call		FILE_COMPARE_NAME
+	jnc		.DONE
+.NEXT:
+	call		FIND_NEXT
+	jmp		.CHECK
+.DONE:
+	%ifdef DEBUG
+		jnc	.found
+		Debug_TextLn	'{ no matching files/dirs }'
+		jmp	.cleanup
+	.found:
+		Debug_Text	'{ file/dir match: '
+		Debug_AsciiZ	si
+		Debug_TextLn	' }'
+	.cleanup:
 
+	%endif
+	pushf
+	call		FIND_CLOSE
+	xor		dl, dl
+	popf
+	jc		.NOTFOUND
+	inc		dl
+.NOTFOUND:
 	ret
+
+FILE_COMPARE_ATTRIB:
+	mov		cx, [VALUES.ITEM0 + TVALUE.DTYPE]
+	and		cx, stFileOrDir
+	mov		al, [DTA_SEARCH + 0x15]	; DOS 8.3 File Attribute Offset (BYTE)
+	cmp		[LFN_SUPPORTED], byte 1
+	jne		.COMPARE
+	mov		al, [DTA_SEARCH + 0x00]	; Long File Attribute Offset (DWORD)
+.COMPARE:
+	; set attribute bits we care about. Never care about Sharable, Archive,
+	; Read-Only or unused bits. ei 11100001b
+	%ifdef MATCH_SYSTEM
+		%ifdef MATCH_HIDDEN
+			; Allow SYSTEM + HIDDEN
+			and 	al, 00011000b	; test dir & volume label
+		%else
+			; Allow SYSTEM ONLY
+			and 	al, 00011010b	; test hidden, dir, volume label
+		%endif
+	%else
+		%ifdef MATCH_HIDDEN
+			; Allow HIDDEN ONLY
+			and 	al, 00011100b	; test system, dir, volume label
+		%else
+			; Do not allow SYSTEM or HIDDEN
+			and 	al, 00011110b	; test system, hidden, dir, volume label
+		%endif
+	%endif
+	cmp		cx, stFile
+	je		.FILE_ONLY
+	cmp		cx, stDir
+	je		.DIR_ONLY
+.ANY_EXISTS:
+	clc		; something matched search. so return true.
+	ret
+.FILE_ONLY:
+	test		al, al
+	jnz		.NOT_MATCHED	; DIR or other special bit is set
+	clc
+	ret
+.DIR_ONLY:
+	test		al, 00010000b
+	jz		.NOT_MATCHED	; DIR bit is not set
+	test		al, 11101111b
+	jnz		.NOT_MATCHED	; Special bit is set
+	clc
+	ret
+.NOT_MATCHED:
+	stc
+	ret
+
+FILE_COMPARE_NAME:
+	%ifndef DOS_WILDCARDS
+		%fatal SMART_WILDCARDS not implemented. DOS_WILDCARDS is required.
+	%endif
+	mov		si, DTA_SEARCH + 0x1e	; DOS 8.3 File Name Offset (13 chars)
+	cmp		[LFN_SUPPORTED], byte 1
+	jne		.COMPARE
+	mov		si, DTA_SEARCH + 0x2c	; Long File Name Offset (260 chars)
+.COMPARE:
+	clc
+	ret
+
 
 ; -----------------------------------------------------------------------------
 
 LFN_CALL:
-	cmp	[LFN_SUPPORTED], byte 1
-	ja	.Unsupported
-	je	.Supported
+	cmp		[LFN_SUPPORTED], byte 1
+	ja		.Unsupported
+	je		.Supported
 	; Probe for LFN support
-	push	ax
-	push	dx
-	mov	ax, 0x713b		; change to current directory
-	mov	dx, LFN_PROBE_DATA 	; Change to directory '.' current.
+	push		ax
+	push		dx
+	mov		ax, 0x713b		; change to current directory
+	mov		dx, LFN_PROBE_DATA 	; Change to directory '.'
 	stc
-	int	0x21
-	pop	dx
-	pop	ax
-	jc	.NotDetected
-	mov	[LFN_SUPPORTED], byte 1
-	jmp	.Supported
+	int		0x21
+	pop		dx
+	pop		ax
+	jc		.NotDetected
+	mov		[LFN_SUPPORTED], byte 1
+	jmp		.Supported
 .NotDetected:
-	mov	[LFN_SUPPORTED], byte 2
+	mov		[LFN_SUPPORTED], byte 2
 .Unsupported:
-	xchg	al, ah
-	jmp	.MakeCall
+	xchg		al, ah
+	jmp		.MakeCall
 .Supported:
-	mov	ah, 0x71
+	mov		ah, 0x71
 .MakeCall:
 	stc
-	int	0x21
+	int		0x21
 	ret
 
 ; -----------------------------------------------------------------------------
 
 FIND_FIRST:
-	mov	ax, 0x004e		; LFN fn 0x714e, DOS 0x4e00
-	mov	dx, VALUES.ITEM0	; ds:dx->ASCIIZ Filespec
-	call	.SEARCH
-	mov	[SEARCH_HANDLE], ax	; CF, then error code
+	mov		ax, 0x004e		; LFN fn 0x714e, DOS 0x4e00
+	mov		dx, VALUES.ITEM0	; ds:dx->ASCIIZ Filespec
+	mov		cx, 0x00ff		; any file
+	call		.SEARCH
+	mov		[SEARCH_HANDLE], ax	; CF, then error code
 	ret
 .SEARCH:
-	mov	di, DTA_SEARCH		; es:di->Search record (LFN)
-	push	si
-	mov	si, 0x0001		; LFN MS-DOS timestamps
-	call	LFN_CALL
-	pop	si
+	push		di
+	mov		di, DTA_SEARCH		; es:di->Search record (LFN)
+	push		si
+	mov		si, 0x0001		; LFN MS-DOS timestamps
+	call		LFN_CALL
+	pop		si
+	pop		di
 	ret
 
 FIND_NEXT:
-	mov	ax, 0x004f
-	mov	bx, [SEARCH_HANDLE]
-	jmp	FIND_FIRST.SEARCH
+	mov		ax, 0x004f
+	mov		bx, [SEARCH_HANDLE]
+	jmp		FIND_FIRST.SEARCH
 
 FIND_CLOSE:
-	cmp	[LFN_SUPPORTED], byte 2
-	jne	.DONE
-	mov	ax, 0x71a1
-	mov	bx, [SEARCH_HANDLE]
-	int	0x21
+	cmp		[LFN_SUPPORTED], byte 2
+	jne		.DONE
+	mov		ax, 0x71a1
+	mov		bx, [SEARCH_HANDLE]
+	int		0x21
 .DONE:
 	ret
 
@@ -785,6 +903,11 @@ LFN_PROBE_DATA:
 	db 	'.'	; AsciiZ for LFN probe only valid until Probed.
 LFN_SUPPORTED:
 	db	0 	; 0=unknown test for it, 1=true, 2=false
+
+%ifndef DOS_WILDCARDS
+SEARCH_STRING:
+	db	'*.*',0
+%endif
 
 ; -----------------------------------------------------------------------------
 

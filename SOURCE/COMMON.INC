@@ -1883,6 +1883,19 @@ SwitchError:
 %endif
 %endmacro
 
+%imacro Debug_CarryFlag 0
+%ifdef DEBUG
+	pushf
+	jc	%%Carry
+	Debug_TextLn	'Carry Flag Clear'
+	jmp	%%Done
+%%Carry:
+	Debug_TextLn	'Carry Flag Set'
+%%Done:
+	popf
+%endif
+%endmacro
+
 %imacro AllocMem 1
 	%ifnidni %1, bx
 		mov		bx, %1
