@@ -1,4 +1,4 @@
-; Copyright (C) 2017-2022 Jerome Shidel
+; Copyright (C) 2023 Jerome Shidel
 ; Open source see License file
 
 ; NASM 2.14rc0 for DOS
@@ -150,7 +150,7 @@ PROC_StringParser:
 	sub	cx, bx
 	dec	cx
 
-; Params has been split
+; Params have been split
 ; BX->Parameter of CX bytes length, SI->Next Paramemter, DI->Option Table
 
 	test	cx, cx
