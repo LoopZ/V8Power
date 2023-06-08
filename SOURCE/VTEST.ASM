@@ -38,7 +38,7 @@
 %idefine sfExpAND	00001000b ; 0x0008 ; AND expression results
 
 %idefine sfCaseSpecific 00100000b ; 0x0020 ; string case sensitive compare
-%idefine sfCaseLess 	01000000b ; 0x0040 ; string ignore case compare
+%idefine sfCaseless 	01000000b ; 0x0040 ; string ignore case compare
 %idefine sfNOT		10000000b ; 0x0080 ; invert expression result
 
 ; String data type
@@ -54,7 +54,8 @@
 
 ; -----------------------------------------------------------------------------
 
-%define MAX_LEN	256	; really only needs to be 126.
+%define MAX_LEN	512	; normally only needs to be 126. But LFN's can be up to
+			; 260 characters.
 
 struc TVALUE
 	.ASCII:		resb MAX_LEN + 1 ; String as ASCIIZ
@@ -730,7 +731,7 @@ FILE_EXIST:
 		jmp	.cleanup
 	.found:
 		Debug_Text	'{ file/dir match: '
-		Debug_AsciiZ	si
+		Debug_AsciiZ	VALUES.ITEM0
 		Debug_TextLn	' }'
 	.cleanup:
 
@@ -803,6 +804,54 @@ FILE_COMPARE_NAME:
 	jne		.COMPARE
 	mov		si, DTA_SEARCH + 0x2c	; Long File Name Offset (260 chars)
 .COMPARE:
+	push		di
+	push		si
+	mov		di, VALUES.ITEM0
+	xchg		si, di
+	test		[STATUS], byte sfCaseSpecific
+	jz		.MATCHED
+.CMPLOOP:
+	lodsb
+	mov		ah, [di]
+	inc		di
+	test		al, al
+	jz		.CMPEND
+	cmp		al, 0x2a	; *
+	jne		.NOTSTAR
+.SKIPB:
+	test		ah, ah
+	jz		.SKIPBDONE
+	cmp		ah, 0x2e	; .
+	je		.SKIPBDONE
+	mov		ah, [di]
+	inc		di
+	jmp		.SKIPB
+.SKIPBDONE:
+	lodsb
+	test		al, al
+	jz		.CMPEND
+	cmp		al, 0x2e
+	jne		.SKIPBDONE
+.NOTSTAR:
+	cmp		al, 0x3f	; ?
+	je		.CMPLOOP
+	cmp		al, ah
+	jne		.NOMATCH
+	jmp		.CMPLOOP
+.CMPEND:
+	test		ah, ah
+	jz		.MATCHED
+.NOMATCH:
+	pop		si
+	pop		di
+	stc
+	ret
+.MATCHED:
+	pop		si
+	mov		di, VALUES.ITEM0
+	mov		cx, MAX_LEN
+	rep		movsb
+	pop		di
 	clc
 	ret
 
