@@ -614,7 +614,8 @@ DoFn_AND_OR:
 	Debug_Text 	', RESULT: '
 	Debug_Byte	[RESULT.FINAL]
 	Debug_TextLn	' }'
-	and		[STATUS], byte ~(sfExpOR + sfExpAND + sfNOT + sfNeedCMP)
+	and		[STATUS], byte ~(sfExpOR + sfExpAND + sfNOT + \
+			sfNeedCMP + sfCaseSpecific + sfCaseless)
 	mov		[RESULT.PENDING], byte FALSE
 ;	call		CLEAR_VALUES
 ;	ret
@@ -696,6 +697,7 @@ STORE_VALUE:
 	dec		si	; back up to termination character
 	mov		di, si
 
+MAKE_NUMBER:
 	; convert to number if possible
 	push		di
 	test		cx, cx
@@ -706,7 +708,7 @@ STORE_VALUE:
 	ASCII_sInt64	di, si
 	jc		.Done
 .Success:
-	mov		[si+TVALUE.DTYPE], byte stNumber
+	or		[si+TVALUE.DTYPE], byte stNumber
 .Done:
 	pop		di
 	ret
@@ -852,6 +854,8 @@ FILE_COMPARE_NAME:
 	mov		cx, MAX_LEN
 	rep		movsb
 	pop		di
+	inc		cx		; CX != 0, attempt convert to number
+	call		MAKE_NUMBER
 	clc
 	ret
 
