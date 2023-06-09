@@ -744,7 +744,9 @@ FILE_EXIST:
 	popf
 	jc		.NOTFOUND
 	inc		dl
+	ret
 .NOTFOUND:
+	mov		[VALUES.ITEM0], byte 0	; make string null
 	ret
 
 FILE_COMPARE_ATTRIB:
@@ -858,7 +860,6 @@ FILE_COMPARE_NAME:
 	call		MAKE_NUMBER
 	clc
 	ret
-
 
 ; -----------------------------------------------------------------------------
 
