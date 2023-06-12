@@ -360,6 +360,7 @@ OnText:
 	mov		[LAST_OPT], word MAIN_OPTION_N	; string not null
 
 OnEvaluate:
+	or		[STATUS], byte sfNeedCMP
 	Debug_Strings
 	Debug_Status
 	Debug_Text	'Evaluate: '
@@ -375,10 +376,12 @@ OnEvaluate:
 		ret
 	.OkSubFn:
 	%endif
+	call		DoCompare
 	add		bx, bx
 	mov		bx, [DoFunctions+bx-2]
 	xor		dl, dl
 	mov		si, VALUES.ITEM0
+	cmp		[STRCMP], byte 1	; set flags for comparisons
 	call		bx
 	mov		[RESULT.PENDING], dl
 ; -----------------------------------------------------------------------------
@@ -448,6 +451,8 @@ OnTrueFalse:
 ; -----------------------------------------------------------------------------
 
 OnTest:
+	test 		[STATUS], byte sfNeedCMP
+	jnz		OnSyntaxError
 	Debug_TextLn	'OnTest:'
 	or		[STATUS], byte sfNeedCMP
 	jmp		OnDoneSwitch
@@ -505,28 +510,90 @@ OnExpOR:
 OnCompare:
 	call		CheckMissingText
 	Debug_TextLn	'OnCompare:'
-	and 		[STATUS], byte ~sfNeedCMP
+	; and 		[STATUS], byte ~sfNeedCMP
 	jmp		OnDoneSwitch
 
 ; -----------------------------------------------------------------------------
-; IN: dl=0, OUT: dl=RESULT.PENDING, SI->VALUES.ITEMS0
+
+DoCompare:
+	push		si
+	push		di
+	test 		[STATUS], byte sfCaseSpecific + sfCaseless
+	jz		.AsStrings
+	test		[VALUES.ITEM0 + TVALUE.DTYPE], byte stNumber
+	jz		.AsStrings
+	test		[VALUES.ITEM1 + TVALUE.DTYPE], byte stNumber
+	jz		.AsStrings
+.AsNumbers:
+	Debug_Text	'Compare as Numbers:'
+	jmp		.HaveResult
+.UpcaseChar:
+	test 		[STATUS], byte sfCaseSpecific
+	jnz		.UpcaseDone
+	cmp		al, 0x61
+	jb		.UpcaseDone
+	cmp		al, 0x7a
+	ja		.UpcaseDone
+	sub		al, 0x20
+.UpcaseDone:
+	ret
+.AsStrings:
+	Debug_Text	'Compare as Strings:'
+	mov		si, VALUES.ITEM1
+	mov		di, VALUES.ITEM0
+.StrLoop:
+	mov		al, [di]
+	inc		di
+	call		.UpcaseChar
+	mov		ah, al
+	lodsb
+	call		.UpcaseChar
+	cmp		al, ah
+	jne		.HaveResult
+	test		al, al
+	jnz		.StrLoop
+
+.HaveResult:
+	mov		al, 1
+	je		.SaveResult
+	mov		al, 2
+	ja		.SaveResult
+.Equal:
+	xor		al, al
+.SaveResult:
+	mov		[STRCMP], al
+	Debug_Byte	al
+	Debug_CRLF
+	pop		di
+	pop		si
+.Done:
+	ret
+
+; -----------------------------------------------------------------------------
+; IN: dl=0, Flags=comparison; OUT: dl=RESULT.PENDING, SI->VALUES.ITEMS0
 DoOptFn_EQ:
 	Debug_TextLn	'DoFn_EQ:'
+	je		RetTrue
 	ret
 DoOptFn_NE:
 	Debug_TextLn	'DoFn_NE:'
+	jne		RetTrue
 	ret
 DoOptFn_GE:
 	Debug_TextLn	'DoFN_GE:'
+	jae		RetTrue
 	ret
 DoOptFn_LE:
 	Debug_TextLn	'DoFn_LE:'
+	jbe		RetTrue
 	ret
 DoOptFn_GT:
 	Debug_TextLn	'DoFn_GT:'
+	ja		RetTrue
 	ret
 DoOptFn_LT:
 	Debug_TextLn	'DoFn_LT:'
+	jb		RetTrue
 	ret
 
 ; -----------------------------------------------------------------------------
@@ -556,10 +623,7 @@ DoOptFn_F_D_E:
 DoOptFn_N:	; string is not null
 	Debug_TextLn	'DoFn_N:'
 	cmp		[si], byte 0
-	jne		.NotNull
-	ret
-.NotNull:
-	inc		dl
+	jne		RetTrue
 	ret
 
 ; -----------------------------------------------------------------------------
@@ -567,10 +631,7 @@ DoOptFn_N:	; string is not null
 DoOptFn_Z:	; string is null
 	Debug_TextLn	'DoFn_Z:'
 	cmp		[si], byte 0
-	je		.IsNull
-	ret
-.IsNull:
-	inc		dl
+	je		RetTrue
 	ret
 
 ; -----------------------------------------------------------------------------
@@ -578,9 +639,12 @@ DoOptFn_Z:	; string is null
 DoOptFn_V: ; string has number value
 	Debug_TextLn	'DoFn_V:'
 	test		[si+TVALUE.DTYPE], byte stNumber
-	jnz		.IsNumber
+	jnz		RetTrue
 	ret
-.IsNumber:
+
+; -----------------------------------------------------------------------------
+
+RetTrue:
 	inc		dl
 	ret
 
@@ -973,6 +1037,9 @@ BSS_START:
 VALUES:
 	.ITEM0:		resb TVALUE_size
 	.ITEM1:		resb TVALUE_size
+
+STRCMP:		resb	1	; 0 = STR2 < STR1, 1 = Equal, 2 = STR2 > STR1
+
 
 SEARCH_HANDLE:	resw 	1
 DTA_SEARCH:	resb	512	; requires 318 for LFN, 43 for 8.3 filenames
