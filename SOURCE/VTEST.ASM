@@ -526,6 +526,12 @@ DoCompare:
 	jz		.AsStrings
 .AsNumbers:
 	Debug_Text	'Compare as Numbers:'
+	mov		si, VALUES.ITEM1 + TVALUE.NUMBER + 7 ; highest byte
+	mov		di, VALUES.ITEM0 + TVALUE.NUMBER + 7 ; highest byte
+	test		[si], byte 0x80
+	jnz		.HaveResult
+	Debug_Text	'Neg'
+
 	jmp		.HaveResult
 .UpcaseChar:
 	test 		[STATUS], byte sfCaseSpecific
