@@ -5,7 +5,7 @@
 
 %idefine NoVideoOutput
 
-%define DEBUG
+; %define DEBUG
 
 %define MATCH_SYSTEM		; When enabled /F and /D will match system
 				; files and dirs. /E always matches any existing
