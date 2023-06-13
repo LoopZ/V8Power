@@ -142,18 +142,19 @@ Options:
 	OptSwitch 	'LE',	OnCompare	; switch index 4
 	OptSwitch 	'GT',	OnCompare	; switch index 5
 	OptSwitch 	'LT',	OnCompare	; switch index 6
-	OptSwitch	'F',	OnTest
-	OptSwitch 	'D',	OnTest
-	OptSwitch 	'E',	OnTest
-	OptSwitch 	'N',	OnTest
-	OptSwitch 	'Z',	OnTest
-	OptSwitch 	'V',	OnTest
-	; Options without "DoFunctions"
+	OptSwitch	'F',	OnTest		; switch index 7
+	OptSwitch 	'D',	OnTest		; switch index 8
+	OptSwitch 	'E',	OnTest		; switch index 9
+	OptSwitch 	'N',	OnTest		; switch index 10
+	OptSwitch 	'Z',	OnTest		; switch index 11
+	OptSwitch 	'V',	OnTest		; switch index 12
+	; options without "DoFunctions"
 	OptSwitch 	'AND',	OnExpAND
 	OptSwitch 	'OR',	OnExpOR
 	OptSwitch 	'C',	OnExpCase
 	OptSwitch 	'I',	OnExpIgnore
 	OptSwitch 	'NOT',	OnExpNOT
+	; basic non-operator options
 	OptSwitch 	'H',	SwitchHelp
 	OptSwitch 	'?',	SwitchHelp
 	OptSwitch 	'TF',	OnTrueFalse
@@ -176,7 +177,7 @@ DoFunctions:
 	dw DoOptFn_V
 
 ; -----------------------------------------------------------------------------
-; Debug stuff to be removed later
+; Debug stuff probably will be removed later
 
 %ifdef DEBUG
 
@@ -347,12 +348,9 @@ EXIT_STATUS_PROC:
 ; may be destroyed. If Carry Flag is set, the parser will abort.
 ; -----------------------------------------------------------------------------
 
-
 OnText:
 	Debug_TextLn	'OnText: '
 
-
-.StringSelected:
 	call		SHOVE_VALUE	; ITEM0->ITEM1, ITEM0 Cleared
 	call		STORE_VALUE	; copies SI->ITEM0, updates DI for Parser
 
@@ -385,6 +383,7 @@ OnEvaluate:
 	cmp		[STRCMP], byte 1	; set flags for comparisons
 	call		bx
 	mov		[RESULT.PENDING], dl
+
 ; -----------------------------------------------------------------------------
 
 OnDoneText:

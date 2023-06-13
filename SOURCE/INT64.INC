@@ -2028,6 +2028,11 @@ proc_ASCII_sInt64:
     inc		si
     mov 	ax, [si]
 .NotNeg:
+    cmp		al, '+'
+    jne		.NotPos
+    inc		si
+    mov 	ax, [si]
+.NotPos:
     cmp		al, '0'
     jne		.NotHex
     cmp		ah, 'x'
