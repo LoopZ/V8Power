@@ -155,6 +155,7 @@ Options:
 	OptSwitch 	'I',	OnExpIgnore
 	OptSwitch 	'NOT',	OnExpNOT
 	OptSwitch 	'H',	SwitchHelp
+	OptSwitch 	'?',	SwitchHelp
 	OptSwitch 	'TF',	OnTrueFalse
 	OptTableEnd
 
