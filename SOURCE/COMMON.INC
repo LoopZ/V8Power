@@ -40,6 +40,8 @@
 ; command line, ends in 0x0d
 %idefine PSP_CMDLN      0x81
 
+%idefine DIRECTORY_SEPARATOR '\'
+
 use16
 
 cpu 8086

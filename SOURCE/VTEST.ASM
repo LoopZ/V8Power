@@ -646,6 +646,21 @@ DoOptFn_E:
 	or		[VALUES.ITEM0 + TVALUE.DTYPE], byte stFileOrDir
 
 DoOptFn_F_D_E:
+	xor		ah, ah
+	mov		si, VALUES.ITEM0
+.LastChar:
+	lodsb
+	test		al, al
+	jz		.LastCharDone
+	mov		ah, al
+	jmp		.LastChar
+.LastCharDone:
+	cmp		ah, DIRECTORY_SEPARATOR
+	jne		.Search
+	dec		si
+	mov		[si], word 0x2e2a	; '*', '.'
+	mov		[si+2], word 0x002a	; '*', 0
+.Search:
 	call		FILE_EXIST
 	Debug_CarryFlag
 	ret
