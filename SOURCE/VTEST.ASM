@@ -519,20 +519,28 @@ DoCompare:
 	push		si
 	push		di
 	test 		[STATUS], byte sfCaseSpecific + sfCaseless
-	jz		.AsStrings
+	jnz		.AsStrings
 	test		[VALUES.ITEM0 + TVALUE.DTYPE], byte stNumber
 	jz		.AsStrings
 	test		[VALUES.ITEM1 + TVALUE.DTYPE], byte stNumber
 	jz		.AsStrings
 .AsNumbers:
 	Debug_Text	'Compare as Numbers:'
-	mov		si, VALUES.ITEM1 + TVALUE.NUMBER + 7 ; highest byte
-	mov		di, VALUES.ITEM0 + TVALUE.NUMBER + 7 ; highest byte
-	test		[si], byte 0x80
-	jnz		.HaveResult
-	Debug_Text	'Neg'
-
-	jmp		.HaveResult
+	mov		di, VALUES.ITEM1 + TVALUE.NUMBER ; highest byte
+	; ok to destroy 64-bit number at DI
+	sInt64_Sub	di, VALUES.ITEM0 + TVALUE.NUMBER
+	xor		ax, ax
+	test		[di+7], byte 0x80	; if negative, is less than
+	jnz		.SaveResult
+	mov		cx, 8
+.CheckEqual:
+	or		ah, [di]
+	inc		di
+	loop		.CheckEqual
+	test		ah, ah
+	jz		.Equal			; no bits set, then are equal
+	mov		al, 2			; otherwise, it is positive
+	jmp		.SaveResult
 .UpcaseChar:
 	test 		[STATUS], byte sfCaseSpecific
 	jnz		.UpcaseDone
@@ -568,8 +576,26 @@ DoCompare:
 	xor		al, al
 .SaveResult:
 	mov		[STRCMP], al
-	Debug_Byte	al
-	Debug_CRLF
+	%ifdef DEBUG
+		pushf
+		Debug_Text	' comparison is '
+		cmp	al, 1
+		je		.MsgEqual
+		jb		.MsgLess
+		Debug_Text	'Greater Than >'
+		jmp		.MsgDone
+	.MsgLess:
+		Debug_Text	'Less Than <'
+		jmp		.MsgDone
+	.MsgEqual:
+		Debug_Text	'Equal To ='
+		jmp		.MsgDone
+	.MsgDone:
+		Debug_Text	' (AL='
+		Debug_Byte	al
+		Debug_TextLn	')'
+		popf
+	%endif
 	pop		di
 	pop		si
 .Done:
