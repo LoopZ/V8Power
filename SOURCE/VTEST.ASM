@@ -3,6 +3,8 @@
 
 ; NASM for DOS
 
+; Known limitations:
+
 %idefine NoVideoOutput
 
 ; %define DEBUG
@@ -83,6 +85,8 @@ Main:
 	mov		dx, DTA_SEARCH
 	mov		ah, 0x1a
 	int		0x21
+
+	mov		[INT24+2], cs
 
 	ParseOptions 	Options
 	Debug_TextLn	'END COMMAND LINE'
@@ -529,6 +533,7 @@ DoCompare:
 	mov		di, VALUES.ITEM1 + TVALUE.NUMBER ; highest byte
 	; ok to destroy 64-bit number at DI
 	sInt64_Sub	di, VALUES.ITEM0 + TVALUE.NUMBER
+	jc		.SubtractionError
 	xor		ax, ax
 	test		[di+7], byte 0x80	; if negative, is less than
 	jnz		.SaveResult
@@ -551,6 +556,12 @@ DoCompare:
 	sub		al, 0x20
 .UpcaseDone:
 	ret
+.SubtractionError:
+	Debug_Text	'Subtraction Error! '
+	pop		di
+	pop		si
+	push		si
+	push		di
 .AsStrings:
 	Debug_Text	'Compare as Strings:'
 	mov		si, VALUES.ITEM1
@@ -1005,6 +1016,7 @@ LFN_CALL:
 ; -----------------------------------------------------------------------------
 
 FIND_FIRST:
+	call		SWAP_INTS
 	mov		ax, 0x004e		; LFN fn 0x714e, DOS 0x4e00
 	mov		dx, VALUES.ITEM0	; ds:dx->ASCIIZ Filespec
 	mov		cx, 0x00ff		; any file
@@ -1033,6 +1045,37 @@ FIND_CLOSE:
 	mov		bx, [SEARCH_HANDLE]
 	int		0x21
 .DONE:
+	call		SWAP_INTS
+	ret
+
+; -----------------------------------------------------------------------------
+
+INT24_HANDLER:
+	mov		al, 0x03	; fail system call
+	iret
+
+; -----------------------------------------------------------------------------
+
+SWAP_INTS:
+	pushf
+	cli
+	push		es
+	push		ds
+	mov		dx, [INT24]
+	mov		ax, [INT24+2]
+	push		dx
+	push		ax
+	mov		ax, 0x3524
+	int		0x21
+	mov		[INT24], bx
+	mov		[INT24+2], es
+	mov		ax, 0x2524
+	pop		ds
+	pop		dx
+	int		0x21
+	pop		ds
+	pop		es
+	popf
 	ret
 
 ; -----------------------------------------------------------------------------
@@ -1045,6 +1088,8 @@ FIND_CLOSE:
 section .data
 
 ; -----------------------------------------------------------------------------
+
+INT24:			dw INT24_HANDLER, 0
 
 LAST_OPT:		dw 0
 
