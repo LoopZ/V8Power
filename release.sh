@@ -10,7 +10,7 @@ if [[ ! -d "${FDNLS}" ]] ; then
     exit 1
 fi
 
-ls ${FDNLS}
+# ls ${FDNLS}
 
 # PRERELEASE='.pre'
 
@@ -55,9 +55,9 @@ fi;
 
 CURDIR="$PWD"
 cd "${HOME}/${DESTINATION}"
-if [[ "$FORMAT" == "zip" ]] ; then
-	zip -9 -r "${ARCHIVE}" "${PROJECT}/"*
-fi;
+# if [[ "$FORMAT" == "zip" ]] ; then
+#	zip -9 -r "${ARCHIVE}" "${PROJECT}/"*
+# fi;
 cd "${CURDIR}"
 
 rm -rf "${HOME}/${DESTINATION}/${PROJECT}"
@@ -70,7 +70,6 @@ cat SOURCE/APPINFO.LSM | sed 's/\$VERSION\$/'${RNAME}/g | sed 's/\$DATE\$/'${TOD
 
 mkdir -p "${HOME}/${DESTINATION}/${PROJECT}/BIN"
 cp -r BIN/* "${HOME}/${DESTINATION}/${PROJECT}/BIN"
-[[ -e "${HOME}/${DESTINATION}/${PROJECT}/BIN/LICENSE" ]] && rm "${HOME}/${DESTINATION}/${PROJECT}/BIN/LICENSE"
 mkdir -p "${HOME}/${DESTINATION}/${PROJECT}/DOC/${PROJECT}"
 cp -r *.txt   "${HOME}/${DESTINATION}/${PROJECT}/DOC/${PROJECT}"
 cp -r LICENSE "${HOME}/${DESTINATION}/${PROJECT}/DOC/${PROJECT}"
@@ -92,6 +91,15 @@ fi;
 mkdir -p "${HOME}/${DESTINATION}/${PROJECT}/SOURCE/${PROJECT}/SOURCE"
 cp -r SOURCE/* "${HOME}/${DESTINATION}/${PROJECT}/SOURCE/${PROJECT}/SOURCE"
 
+pushd "${HOME}/${DESTINATION}/${PROJECT}"
+[[ -e "BIN/DEMOPARS.COM" ]] && rm "BIN/DEMOPARS.COM"
+[[ -e "BIN/LICENSE" ]] && rm "BIN/LICENSE"
+rm -f BIN/*.TXT
+mv -f BIN/*.MD DOC/V8Power/
+rm -f HELP/*UTF-8
+cp SOURCE/V8Power/LICENSE.* DOC/V8Power/
+popd
+
 lcase=$(echo "${PROJECT}" | tr '[:upper:]' '[:lower:]')
 cd "${HOME}/${DESTINATION}"
 [[ -f "${lcase}.zip" ]] && rm "${lcase}.zip"
@@ -102,5 +110,5 @@ cd "${CURDIR}"
 
 rm -rf "${HOME}/${DESTINATION}/${PROJECT}"
 
-echo "${HOME}/${DESTINATION}/${ARCHIVE}"
-echo "${HOME}/${DESTINATION}/${PROJECT}.zip"
+# echo "${HOME}/${DESTINATION}/${ARCHIVE}"
+# echo "${HOME}/${DESTINATION}/${PROJECT}.zip"
