@@ -92,9 +92,18 @@ Main:
 	Debug_TextLn	'END COMMAND LINE'
 	jc		.ExitError
 
+	; check for dangling comparison
+	cmp		[LAST_OPT], word 0
+	je		.NotDangling
+	Debug_TextLn	'Dangling comparison!'
+	call		SHOVE_VALUE	; ITEM0->ITEM1, ITEM0 Cleared
+
+.NotDangling:
+
 	; process pending last command line test, comparison, etc.
 	call		OnEvaluate
 	call		DoFn_AND_OR
+
 	; Exit Code 0=True, 1=False. Opposite of internal TRUE/FALSE
 	xor		[RESULT.FINAL], byte TRUE
 
