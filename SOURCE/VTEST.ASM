@@ -552,8 +552,11 @@ DoCompare:
 	inc		di
 	loop		.CheckEqual
 	test		ah, ah
-	jz		.Equal			; no bits set, then are equal
+	jz		.IsEqual		; no bits set, then are equal
 	mov		al, 2			; otherwise, it is positive
+	jmp		.SaveResult
+.IsEqual:
+	mov		al, 1
 	jmp		.SaveResult
 .UpcaseChar:
 	test 		[STATUS], byte sfCaseSpecific
@@ -592,7 +595,6 @@ DoCompare:
 	je		.SaveResult
 	mov		al, 2
 	ja		.SaveResult
-.Equal:
 	xor		al, al
 .SaveResult:
 	mov		[STRCMP], al
