@@ -35,7 +35,7 @@
 
 ; STATUS - Flags
 %idefine sfNeedCMP	00000001b ; 0x0001 ; AND,OR or string compare required
-
+%idefine sfExpStart	00000010b ; 0x0002 ; First part of an Expression
 %idefine sfExpOR	00000100b ; 0x0004 ; OR expression results
 %idefine sfExpAND	00001000b ; 0x0008 ; AND expression results
 
@@ -231,6 +231,11 @@ DEBUG_STATUS_PROC:
 	Debug_Text 'sfNeedCMP '
 .NotNeedCMP:
 
+	test	[STATUS], byte sfExpStart
+	jz	.NotExpStart
+	Debug_Text 'sfExpStart '
+.NotExpStart:
+
 	test	[STATUS], byte sfExpOR
 	jz	.NotExpOR
 	Debug_Text 'sfExpOR '
@@ -395,7 +400,14 @@ OnEvaluate:
 	mov		si, VALUES.ITEM0
 	cmp		[STRCMP], byte 1	; set flags for comparisons
 	call		bx
+	test		[STATUS], byte sfExpStart
+	jz		.NotExpStart
 	mov		[RESULT.PENDING], dl
+	jmp		.PendingSet
+.NotExpStart:
+	and		[RESULT.PENDING], dl
+.PendingSet:
+	and		[STATUS], byte ~sfExpStart
 
 ; -----------------------------------------------------------------------------
 
@@ -749,6 +761,7 @@ DoFn_AND_OR:
 	Debug_TextLn	' }'
 	and		[STATUS], byte ~(sfExpOR + sfExpAND + sfNOT + \
 			sfNeedCMP + sfCaseSpecific + sfCaseless)
+	or		[STATUS], byte sfExpStart
 	mov		[RESULT.PENDING], byte FALSE
 ;	call		CLEAR_VALUES
 ;	ret
@@ -1104,7 +1117,7 @@ INT24:			dw INT24_HANDLER, 0
 
 LAST_OPT:		dw 0
 
-STATUS:			dw sfExpOR
+STATUS:			dw sfExpOR + sfExpStart
 
 RESULT:
 	.FINAL:		db FALSE
