@@ -20,6 +20,7 @@ FORMAT='zip'
 PROJECT=$(echo ${PWD##*/})
 TODAY=$(date +'%Y-%m-%d')
 VERSION=$(date +'%y.%m.%d')
+CHANGES="${@//!/.}"
 
 
 [[ -d "${HOME}/${DESTINATION}/${PROJECT}" ]] && rm -rf "${HOME}/${DESTINATION}/${PROJECT}"
@@ -66,7 +67,10 @@ rm -rf "${HOME}/${DESTINATION}/${PROJECT}"
 mkdir -p "${HOME}/${DESTINATION}/${PROJECT}"
 mkdir -p "${HOME}/${DESTINATION}/${PROJECT}/APPINFO"
 [[ ${RELEASE} == 0 ]] && RNAME=${VERSION} || RNAME=${VERSION}-${RELEASE}
-cat SOURCE/APPINFO.LSM | sed 's/\$VERSION\$/'${RNAME}/g | sed 's/\$DATE\$/'${TODAY}/g > "${HOME}/${DESTINATION}/${PROJECT}/APPINFO/${PROJECT}.LSM"
+cat SOURCE/APPINFO.LSM | sed 's/\$VERSION\$/'${RNAME}/g | \
+	sed 's/\$DATE\$/'${TODAY}/g | \
+	sed 's!\$NOTES\$!'"${CHANGES}"!g > \
+	"${HOME}/${DESTINATION}/${PROJECT}/APPINFO/${PROJECT}.LSM"
 
 mkdir -p "${HOME}/${DESTINATION}/${PROJECT}/BIN"
 cp -r BIN/* "${HOME}/${DESTINATION}/${PROJECT}/BIN"

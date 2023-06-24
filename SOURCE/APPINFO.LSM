@@ -4,7 +4,7 @@ Version:        $VERSION$
 Entered-date:   $DATE$
 Description:    a set of batch file enhancement utilities for DOS that can provide text UI and other processing functions (UPX'd)
 Keywords:       dos 16 bit batch vask vchoice vecho vpause vframe vmath vline vprogres
-Changes:
+Changes:	$NOTES$
 Author:         Jerome Shidel <jerome _AT_ shidel.net>
 Maintained-by:  Jerome Shidel <jerome _AT_ shidel.net>
 Primary-site:   https://github.com/LoopZ/V8Power
