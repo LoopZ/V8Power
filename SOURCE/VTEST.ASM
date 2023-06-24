@@ -92,6 +92,8 @@ Main:
 	Debug_TextLn	'END COMMAND LINE'
 	jc		.ExitError
 
+.WrapUp:
+	; Debug_TextLn	'WRAP-UP'
 	; check for dangling comparison
 	cmp		[LAST_OPT], word 0
 	je		.NotDangling
@@ -103,6 +105,9 @@ Main:
 	; process pending last command line test, comparison, etc.
 	call		OnEvaluate
 	call		DoFn_AND_OR
+
+	cmp		[LAST_OPT], word 0
+	jne		.WrapUp
 
 	; Exit Code 0=True, 1=False. Opposite of internal TRUE/FALSE
 	xor		[RESULT.FINAL], byte TRUE
@@ -204,8 +209,11 @@ DoFunctions:
 
 DEBUG_STATUS_PROC:
 	pushf
+;	Debug_Text '  { PREV=0x'
+;	Debug_Word [PREV_OPT]
 	Debug_Text '  { LAST=0x'
 	Debug_Word [LAST_OPT]
+
 	Debug_Text 	' ('
 
 	DBGIDXOPT	00, 'null'
@@ -476,6 +484,8 @@ OnTrueFalse:
 ; -----------------------------------------------------------------------------
 
 OnTest:
+	test		[STATUS], byte sfExpStart
+	jz		OnSyntaxError
 	test 		[STATUS], byte sfNeedCMP
 	jnz		OnSyntaxError
 	Debug_TextLn	'OnTest:'
@@ -491,8 +501,7 @@ OnExpCase:
 	test		[STATUS], byte sfCaseLess
 	jnz		OnSyntaxError
 	or		[STATUS], byte sfCaseSpecific
-	xor		dx, dx
-	jmp		OnDoneSwitch
+	jmp		OnDoneText
 
 OnExpIgnore:
 	Debug_TextLn	'OnCaseIgnore:'
@@ -501,16 +510,14 @@ OnExpIgnore:
 	test		[STATUS], byte sfCaseSpecific
 	jnz		OnSyntaxError
 	or		[STATUS], byte sfCaseless
-	xor		dx, dx
-	jmp		OnDoneSwitch
+	jmp		OnDoneText
 
 OnExpNOT:
 	Debug_TextLn	'OnNOT:'
 	test		[STATUS], byte sfNeedCMP
 	jnz		OnSyntaxError
 	xor		[STATUS], byte sfNOT
-	xor		dx, dx
-	jmp		OnDoneSwitch
+	jmp		OnDoneText
 
 ; -----------------------------------------------------------------------------
 
@@ -519,23 +526,22 @@ OnExpAND:
 	Debug_TextLn	'OnAND:'
 	call		DoFn_AND_OR	; Handle previous AND/OR
 	or		[STATUS], byte sfExpAND
-	xor		dx, dx
-	jmp		OnDoneSwitch
+	jmp		OnExpOR.Done
 
 OnExpOR:
 	call		CheckMissingText
 	Debug_TextLn	'OnOR:'
 	call		DoFn_AND_OR	; Handle previous AND/OR
 	or		[STATUS], byte sfExpOR
-	xor		dx, dx
-	jmp		OnDoneSwitch
+.Done:
+	jmp		OnDoneText
 
 ; -----------------------------------------------------------------------------
 
 OnCompare:
 	call		CheckMissingText
+	and		[STATUS], byte ~sfExpStart
 	Debug_TextLn	'OnCompare:'
-	; and 		[STATUS], byte ~sfNeedCMP
 	jmp		OnDoneSwitch
 
 ; -----------------------------------------------------------------------------
