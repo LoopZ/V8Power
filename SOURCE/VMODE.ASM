@@ -326,6 +326,16 @@ SwitchF:
     mov     [ModeFirst], ax
     ret
 
+SwitchP:
+    or		[HadOpts], byte 1
+    NumberParam
+    jc		NoSwitch.InvalidOption
+    test	ah, ah
+    jnz		NoSwitch.InvalidOption
+    mov		ah, 0x05
+    int		0x10
+    ret
+
 NoSwitch:
     or		[HadOpts], byte 1
     LookupParam OptionsTable
@@ -347,6 +357,7 @@ NoSwitch:
 CommandLineSwitches:
     SwitchData  0,  0, NoSwitch
     SwitchData 'F', 0, SwitchF
+    SwitchData 'P', 1, SwitchP
     HelpSwitchData
     SwitchData  0,  0, 0
 
