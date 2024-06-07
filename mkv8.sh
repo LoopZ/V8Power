@@ -49,6 +49,7 @@ function assemble () {
 
 if [[ "${*}" == '' ]] ; then
     for i in SOURCE/*.ASM ; do
+    	[[ "${i}" == "SOURCE/DEMOPARS.ASM" ]] && continue
         assemble "${i}" || exit 1
     done
 else

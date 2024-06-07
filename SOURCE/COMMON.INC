@@ -219,6 +219,11 @@ IdleCPUHandlerProc:
 %idefine VideoOutput
 %idefine TextOutput
 
+%ifdef StdOutOnly
+	%undef VideoOutput
+	%undef TextOutput	
+%endif
+
 %ifdef NoVideoOutput
 	%undef VideoOutput
 %endif
@@ -2000,6 +2005,22 @@ CopyFromTempVideo:
 
 %include "SWITCHES.INC"
 %include "TABLES.INC"
+
+%ifdef StdOutOnly
+WriteStrProc:
+	cld
+.NextChar:
+	lodsb
+	test		al, al
+	jz			.Done
+	mov			dl, al
+	mov			ah, 0x02
+	int			0x21
+	jmp			.NextChar
+.Done:
+	
+	ret
+%endif
 
 %ifdef TextOutput
 ; Write a single character
