@@ -23,7 +23,7 @@ Compiling V8Power Tools
         8086 or better cpu.
         EGA or better video adapter.
         FreeDOS(TM) 1.1 (http://www.freedos.org) or higher
-        NASM for DOS version 2.14.02 (http://wwww.nasm.us) or newer
+        NASM for DOS version 2.16.01 (http://wwww.nasm.us) or newer
 
     Compiling:
 

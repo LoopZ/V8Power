@@ -66,20 +66,20 @@ DetectCPU:
     mov         ax, 0x0001
     shr         ax, cl
     cmp         ax, 0x0000
-    jne         .186OrBetter
+    jne         .186orBetter
     xor         al, al
     jmp         .Done
-.186OrBetter:
+.186orBetter:
     ; At least a 80186
     ; Pre-286 updates the Stack Pointer before push
     mov         ax, sp
     push        sp
     pop         bx
     cmp         ax, bx
-    je          .286OrBetter
+    je          .286orBetter
     mov         ax, 1
     jmp         .Done
-.286OrBetter:
+.286orBetter:
     ; At least a 286
     ; Check push/pop of upper flag bits for 386 or better
 cpu 286
@@ -93,10 +93,10 @@ cpu 286
     popf
     and         ah, 0x70
     cmp         ah, 0x70
-    je          .386OrBetter
+    je          .386orBetter
     mov         al, 2
     jmp         .Done
-.386OrBetter:
+.386orBetter:
     ; At least a 386
     ; Test setting AC Flag
 cpu 386
@@ -117,11 +117,11 @@ cpu 386
 
     test        eax, 0x40000
 
-    jnz         .486OrBetter
+    jnz         .486orBetter
 
     mov         al, 3
     jmp         .Done32
-.486OrBetter:
+.486orBetter:
 
 cpu 486
     ; At least a 486
@@ -141,7 +141,7 @@ cpu 486
     and         ebx, ecx
     cmp         eax, ebx
     jne         .UseCPUid
-    mov         al, 1
+    mov         al, 4
     jmp         .Done32
 
 .UseCPUid:
@@ -178,9 +178,9 @@ cpu 8086
 ;    pop         ax
     jmp         %%DetectDone
 
-VirtualMachine:
-    mov         ax, 200
-    jmp         %%DetectDone
+;VirtualMachine:
+;    mov         ax, 200
+;    jmp         %%DetectDone
 
 SearchString:
     cld
@@ -204,7 +204,7 @@ SearchString:
 .NotMatch:
     xor         bx, bx
     inc         di
-    loop         .Looping
+    loop        .Looping
     clc
     ret
 .Found:
