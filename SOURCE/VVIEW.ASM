@@ -93,7 +93,10 @@ ViewFile:
 
 .Waiting:
     DumpKeystrokes
-
+    cmp     [FileError], word 0
+    je      .WaitLoop
+    call    ShowError
+    
 .WaitLoop:
     IdleCPU
     mov         ah, 0x01
@@ -107,6 +110,8 @@ ViewFile:
     je          .Key_Escape
     cmp         [FileHandle], word 0xffff
     je          .Waiting
+    cmp         [FileError], word 0
+    jne         .Waiting
     cmp         ah, 0x48
     je          .Key_Up
     cmp         ah, 0x50
@@ -123,8 +128,6 @@ ViewFile:
     je          .Key_PgUp
     cmp         ah, 0x51
     je          .Key_PgDn
-    ;StdOutHexWord
-    ;StdOutCRLF
     jmp         .Waiting
     
 .Key_Up:
@@ -219,7 +222,6 @@ Redraw:
     mov     [LineMax], cx
     mov     cl, [Limit.Y]
     mov     [Draw.Y], byte 0
-    
 .Lines:
     
     push        cx
@@ -235,6 +237,9 @@ Redraw:
     ret
     
 DrawLine:
+    cmp         [FileError], word 0
+    jne         .Done
+    xor         bx, bx
     xor         dx, dx
     mov        [Draw.X], dl
 .NextChar:
@@ -243,21 +248,44 @@ DrawLine:
     mov         al, 0x0a
     jmp         .EOL
 .Not_EOF:
+    test         bx, bx
+    jnz         .TabExpansion
     call        ReadFile
+    jc          .Done
     cmp         al, 0x0d
     je          .EOL_CR
     cmp         al, 0x0a
     je          .EOL
-    
+    jmp         .CheckVisible
+.TabExpansion:
+    mov         al, SPACE_CHAR
+    dec         bx
+.CheckVisible:    
+    cmp         al, 0x09
+    jne         .NotTab
+    push        ax
+    push        dx
+    mov         ax, dx
+    xor         dx, dx
+    mov         bx, 8
+    div         bx
+    sub         bx, dx
+    pop         dx
+    pop         ax
+    jmp         .Not_EOF
+.NotTab:
     cmp         dx, [Offset.X]
     jb          .NoDisplay
     call        PutChar
 .NoDisplay:
     inc         dx
+    test        bx, bx
+    jnz         .Not_EOF
     jmp         .NextChar
 
 .EOL_CR:
     call        ReadFile
+    jc          .Done
     cmp         al, 0x0a
     je          .EOL
     sub         [FilePos], word 1
@@ -268,6 +296,7 @@ DrawLine:
     mov         [LineMax], dx
 .NoNewMax:
     call        ClearEOL
+.Done:
     ret
     
 ClearEOL:  
@@ -284,6 +313,7 @@ PutChar:
     mov         ah, [Draw.X]
     cmp         ah, [Limit.X]
     jae         .Done
+    push        bx
     push        dx
     push        ax
     mov         dx, [Draw.XY]
@@ -296,6 +326,7 @@ PutChar:
     mov         cx, 0x0001
     int         0x10
     pop         dx
+    pop         bx
 .Done:
     ret
     
@@ -335,12 +366,14 @@ GoDown:
     mov         [FilePos+2], ax
 .NextChar:
     call        ReadFile
+    jc          .Done
     cmp         al, 0x0a
     je          .EOL    
     cmp         al, 0x0d
     jne         .NextChar
 .EOL_CR:
     call        ReadFile
+    jc          .Done
     cmp         al, 0x0a
     je          .EOL
     sub         [FilePos], word 1
@@ -393,7 +426,6 @@ GoUp:
     mov         [Offset.Start+2], ax
     clc
     ret        
-
     
 .GetPrev:
     mov         ax, [FilePos]
@@ -405,6 +437,7 @@ GoUp:
     sub         [FilePos], word 1
     sbb         [FilePos+2], word 0
     call        ReadFile
+    jc          .NoUp
     sub         [FilePos], word 1
     sbb         [FilePos+2], word 0
     clc
@@ -498,7 +531,7 @@ ReadFile:   ; Later might add cached buffer reading
     ; move to new file position
     inc     word [FilePos]
     adc     word [FilePos + 2], 0
-      
+    clc
 .Done:
     pop     ax
     mov     al, bl
@@ -506,6 +539,82 @@ ReadFile:   ; Later might add cached buffer reading
     pop     cx
     pop     bx
     ret
+    
+ShowError:
+    xor             dx, dx
+    mov             [Draw.XY], dx
+    mov             si, MSG_ERROR
+    call            PutStr
+    
+    mov             ax, [FileError]
+	mov		        cx, 4
+.Loopy:
+	push	        cx
+	push	        ax
+	dec		        cx
+	mov		        ax, 4
+	mul		        cx
+	mov		        cx, ax
+	pop		        ax
+	push	        ax
+	shr		        ax, cl
+	and		        ax, 0x0f
+	cmp		        al, 9
+	jle		        .Digit
+	add		        al, 0x57
+	jmp		        .Show
+.Digit:
+	add	        	al, 0x30
+.Show:
+    call            PutChar
+	pop		        ax
+	pop		        cx
+	loop	        .Loopy
+    
+
+    call            PutStr
+    push            si
+    mov             si, FileName
+    call            PutStr
+    pop             si
+    call            PutStr
+    cmp             [FileError], word 2
+    jne             .NotError2
+    mov             si, MSG_ER2
+    call            PutStr
+.NotError2:
+    cmp             [FileError], word 3
+    jne             .NotError3
+    mov             si, MSG_ER3
+    call            PutStr
+.NotError3:
+    xor             ch, ch
+    mov             cl, [Limit.Y]
+.ClearAll:
+    push            cx
+    call            ClearEOL
+    pop             cx
+    mov             [Draw.X], byte 0
+    inc             byte [Draw.Y]
+    loop            .ClearAll
+    ret    
+    
+PutStr:
+    lodsb
+    test        al, al
+    jnz         .Draw
+    ret
+.Draw:
+    call        PutChar
+    jmp         PutStr
+    
+section .data
+
+MSG_ERROR:      db "Error 0x",0
+                db " with file '",0
+                db "'",0
+MSG_ER2:        db ': File not found',0
+MSG_ER3:        db ': Path not found',0
            
 section .bss
 
@@ -521,6 +630,7 @@ Offset.Start:   resd    1
 Offset.End:     resd    1
 LineMax:        resw    1
 
+FileName:       resb    128
 FileHandle:     resw    1
 FileError:      resw    1
 FileSize:       resd    1
@@ -528,4 +638,3 @@ FilePos:        resd    1
 BufferCount:    resw    1
 BufferPos:      resd    1
 BufferData:     resb    BufferSize
-FileName:       resb    128
