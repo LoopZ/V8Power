@@ -3,6 +3,7 @@
 
 ; NASM for DOS
 
+%undef DEBUG
 %idefine NoVideoOutput
 %idefine StdOutAllChars
 

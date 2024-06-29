@@ -3,11 +3,12 @@
 
 ; NASM for DOS
 
-%include "COMMON.INC"
-
 %undef DEBUG
 
+%include "COMMON.INC"
+
 ProgramMain:
+
     SetMaxSize
 
 MainParsing:
@@ -439,7 +440,7 @@ BoxText:
 BoxPad:
     db  0
 BoxOpt:
-    db 0
+    db  0
 
 BoxStyleTable:
     TableData "SHADOW",         BoxShadow

@@ -318,31 +318,31 @@ IdleCPUHandlerProc:
 SECTION _DATA
 
 %ifdef CommandLineParseAbort
-    CommandLineParseAbortFlag:  DB 0
+    CommandLineParseAbortFlag:  db 0
 %endif
 
 %ifdef TextOutput
-	VideoMode:      DB 0
-	VideoPage:      DB 0
-	CursorShape:    DW 0
-	TextAttr:       DB 0x07
-	UseBoundsChar:  DB 0
-	BoundsChar:     DB 0
+	VideoMode:      db 0
+	VideoPage:      db 0
+	CursorShape:    dw 0
+	TextAttr:       db 0x07
+	UseBoundsChar:  db 0
+	BoundsChar:     db 0
 	ScreenMax:
-		ScreenMaxX:	DB 0
-		ScreenMaxY	DB 0
+		ScreenMaxX:	db 0
+		ScreenMaxY	db 0
 	WindMin:
-		WindMinX:	DB 0
-		WindMinY	DB 0
+		WindMinX:	db 0
+		WindMinY	db 0
 	WindMax:
-		WindMaxX:	DB 0
-		WindMaxY	DB 0
+		WindMaxX:	db 0
+		WindMaxY	db 0
 %endif
 
 CommandLineSI:
     dw 0
 CommandLineErrorMsg:
-    DB          "Parameter Error",0
+    db          "Parameter Error",0
 
 CRLFString:
     db          0xd,0xa,0x0
@@ -1228,7 +1228,7 @@ AdvancedStdIn:
 	clc
 	jmp			%%Done
 %%DelayData:
-	DB			0
+	db			0
 %%Error:
     stc
 %%Done:
@@ -1299,7 +1299,7 @@ AdvancedStdIn:
 	clc
 	jmp			%%Done
 %%DelayData:
-	DB			0
+	db			0
 %%Error:
     stc
 %%Done:
@@ -1320,7 +1320,7 @@ AdvancedStdIn:
 	jmp			%%NoDelay
 %%Delay286:
 	DelayTimer	dx
-	jc          Delay8086
+	jc          %%Delay8086
 %%NoDelay:
 %endmacro
 

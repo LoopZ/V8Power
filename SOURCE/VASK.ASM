@@ -3,6 +3,8 @@
 
 ; NASM for DOS
 
+%undef DEBUG
+
 %include "COMMON.INC"
 
     FrameBounds

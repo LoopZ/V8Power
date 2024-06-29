@@ -132,7 +132,7 @@ NoSwitch:
 
 InvalidOption:
     WriteStr    CommandLineErrorMsg
-    Terminate   100
+    Terminate   255
     
 section .data
 
