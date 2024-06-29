@@ -11,6 +11,8 @@
 %define opSilent    0x0200
 %define opPurge     0x1000
 
+%idefine SPACE_CHAR 0x20
+
     FrameBounds
     call            SwitchG ; default global mode
     
@@ -100,9 +102,17 @@ IntToPtr:
     pop     bx
     pop     dx
     ret
-
     
 ViewFile:
+    mov     al, [WindMaxX]
+    sub     al, [WindMinX]
+    inc     al
+    mov     [Limit.X], al
+    mov     al, [WindMaxY]
+    sub     al, [WindMinY]
+    inc     al
+    mov     [Limit.Y], al
+    
     mov     [FileHandle], word 0xffff
     mov     [FileError], word 0x0000
     mov     dx, FileName
@@ -128,11 +138,8 @@ ViewFile:
     mov     [FileError], ax
 
 .FileDisplay:
-
-    mov         cx, [WindMin]
-    mov         dx, [WindMax]
-
     call        HomePage
+
 .Waiting:
     IdleCPU
     mov         ah, 0x01
@@ -169,7 +176,19 @@ ViewFile:
 .Key_Up:
 .Key_Down:
 .Key_Left:
+    cmp     [Offset.X], word 0
+    je      .Waiting
+    dec     word [Offset.X]
+    jmp     .Refresh
 .Key_Right:
+    mov     ax, [LineMax]
+    sub     al, [Limit.X]
+    sbb     ah, 0
+    
+    cmp     [Offset.X], ax
+    jae     .Waiting
+    inc     word [Offset.X]
+    jmp     .Refresh
 .Key_Home:
 .Key_End:
 .Key_PgUp:
@@ -185,13 +204,18 @@ ViewFile:
 .DoNotClose:
     ret
     
+.Refresh:
+    call        Redraw
+    jmp         .Waiting
+    
 DrawError:
     ret
     
 HomePage:
     xor         ax, ax
-    mov         [Lines], ax
-    mov         [Lines+2], ax
+    mov         [Offset.X], ax
+    mov         [Offset.Start], ax
+    mov         [Offset.Start+2], ax
     call        Redraw
     ret
     
@@ -200,24 +224,101 @@ Redraw:
     jne     DrawError
     
     ; file home
-    mov     ax, [Lines]
+    mov     ax, [Offset.Start]
     mov     [FilePos], ax
-    mov     ax, [Lines+2]
+    mov     ax, [Offset.Start+2]
     mov     [FilePos+2], ax
        
-    mov     cx, 1000
-.Printing:
-    call        ReadFile
+    xor     cx, cx
+    mov     [LineMax], cx
+    mov     cl, [Limit.Y]
+    mov     [Draw.Y], byte 0
+    
+.Lines:
+    
     push        cx
-    WriteChar
+    call        DrawLine    
     pop         cx
-    loop        .Printing
+    inc         byte [Draw.Y]
+    loop        .Lines
     
     ret
     
-%idefine BufferSize 512 ; must be a power of 2
+DrawLine:
+    xor         dx, dx
+    mov        [Draw.X], dl
+.NextChar:
+    mov         ax, [FileSize+2]
+    cmp         [FilePos+2], ax
+    jne         .CheckAbove
+    mov         ax, [FileSize]
+    cmp         [FilePos], ax
+.CheckAbove:
+    jb          .Not_EOF    
+    mov         al, 0x0a
+    jmp         .EOL
+.Not_EOF:
+    call        ReadFile
+    cmp         al, 0x0d
+    je          .EOL_CR
+    cmp         al, 0x0a
+    je          .EOL
     
-ReadFile:   ; Later Will Add Cached Buffered Reading
+    cmp         dx, [Offset.X]
+    jb          .NoDisplay
+    call        PutChar
+.NoDisplay:
+    inc         dx
+    jmp         .NextChar
+    
+
+.EOL_CR:
+    call        ReadFile
+    cmp         al, 0x0a
+    je          .EOL
+    sub         [FilePos], word 1
+    sbb         [FilePos+2], word 0
+.EOL:
+    call        ClearEOL
+    cmp         dx, [LineMax]
+    jbe         .NoNewMax
+    mov         [LineMax], dx
+.NoNewMax:
+    ret
+    
+ClearEOL:  
+    mov         al, [Draw.X]
+    cmp         al, [Limit.X]
+    jae         .Done
+    mov         al, SPACE_CHAR
+    call        PutChar
+    jmp         ClearEOL
+.Done:
+    ret    
+    
+PutChar:
+    mov         ah, [Draw.X]
+    cmp         ah, [Limit.X]
+    jae         .Done
+    push        dx
+    push        ax
+    mov         dx, [Draw.XY]
+    call        GotoXYProc
+    inc         byte [Draw.X]
+    pop         ax   
+    mov         ah, 0x09
+    mov         bh, [VideoPage]
+    mov         bl, [TextAttr]
+    mov         cx, 0x0001
+    int         0x10
+    pop         dx
+.Done:
+    ret
+    
+    
+%idefine BufferSize 1024 ; must be a power of 2
+    
+ReadFile:   ; Later might add cached buffer reading
     ; returns al
     push    bx
     push    cx
@@ -297,12 +398,20 @@ ReadFile:   ; Later Will Add Cached Buffered Reading
     pop     cx
     pop     bx
     ret
-    
-section .data
-
-LineMax:        dw      1024
-       
+           
 section .bss
+
+Limit.XY:
+Limit.X:        resb    1
+Limit.Y:        resb    1
+Draw.XY:        
+Draw.X:         resb    1
+Draw.Y:         resb    1
+
+Offset.X:       resw    1
+Offset.Start:   resw    1
+Offset.End:     resw    1
+LineMax:        resw    1
 
 FileHandle:     resw    1
 FileError:      resw    1
@@ -312,5 +421,3 @@ BufferCount:    resw    1
 BufferPos:      resd    1
 BufferData:     resb    BufferSize
 FileName:       resb    128
-Lines:          resd    100
-Widths:         resw    100
