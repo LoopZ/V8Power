@@ -3,7 +3,7 @@
 
 ; NASM for DOS
 
-%idefine DEBUG
+; %idefine DEBUG
 
 %include "COMMON.INC"
 
@@ -54,55 +54,6 @@ NoSwitch:
     popall
     ret
     
-PtrToInt:
-    ; remaps ES:DI from a seg:ofs pointer to flat 32-bit integer
-    push    dx
-    push    bx
-    push    cx
-    mov     dx, es
-    mov     bx, dx
-    push    cx
-    mov     cl, 12
-    shr     dx, cl
-    mov     cl, 4
-    shl     bx, cl
-    pop     cx
-    add     di, bx
-    adc     dx, 0
-    mov     es, dx
-    pop     cx
-    pop     bx
-    pop     dx
-    ret
-    
-IntToPtr:
-    ; remaps ES:DI from a flat 32-bit integer to a seg:ofs pointer
-    push    dx
-    push    bx
-    push    cx
-    mov     dx, es
-    test    dx, 0xfff0
-    jnz     PointerError
-    mov     bx, di
-    
-    push    cx
-    mov     cl, 4
-    shr     bx, cl
-    mov     cl, 12
-    shl     dx, cl
-    pop     cx
-    
-    mov     cx, di
-    and     cx, 0x000f
-    add     dx, bx
-    jc      PointerError
-    mov     di, cx
-    mov     es, dx
-    pop     cx
-    pop     bx
-    pop     dx
-    ret
-    
 ViewFile:
     mov     al, [WindMaxX]
     sub     al, [WindMinX]
@@ -138,13 +89,16 @@ ViewFile:
     mov     [FileError], ax
 
 .FileDisplay:
-    call        HomePage
+    call        GoHome
 
 .Waiting:
+    DumpKeystrokes
+
+.WaitLoop:
     IdleCPU
     mov         ah, 0x01
     int         0x16
-    jnz         .Keypress
+    jz         .WaitLoop
     
 .Keypress:
     mov         ah, 0x00
@@ -174,25 +128,65 @@ ViewFile:
     jmp         .Waiting
     
 .Key_Up:
+    call        GoUp
+    jmp         .Refresh
+
 .Key_Down:
+    call    GoDown
+    jc      .Waiting
+    jmp     .Refresh
+    
 .Key_Left:
     cmp     [Offset.X], word 0
     je      .Waiting
     dec     word [Offset.X]
     jmp     .Refresh
-.Key_Right:
-    mov     ax, [LineMax]
-    sub     al, [Limit.X]
-    sbb     ah, 0
     
-    cmp     [Offset.X], ax
-    jae     .Waiting
+.Key_Right:
+    mov     ax, [Offset.X]
+    add     al, [Limit.X]
+    adc     ah, 0
+    
+    cmp     ax, [LineMax]
+    ja      .Waiting
     inc     word [Offset.X]
     jmp     .Refresh
+    
 .Key_Home:
+    mov         ax, [Offset.X]
+    or          ax, [Offset.X+2]
+    jz          .Waiting
+    call        GoHome
+    jmp         .Waiting
+    
 .Key_End:
+    call        GoEnd
+    jmp         .Refresh
+    
 .Key_PgUp:
+    xor         ch, ch
+    mov         cl, [Limit.Y]
+.GoingUp:
+    push        cx
+    call        GoUp
+    jc          .NoUp
+    call        Redraw
+.NoUp:
+    pop         cx
+    loop        .GoingUp
+    jmp         .Waiting
+    
 .Key_PgDn:
+    xor         ch, ch
+    mov         cl, [Limit.Y]
+.GoingDn:
+    push        cx
+    call        GoDown
+    jc          .NoDn
+    call        Redraw
+.NoDn:
+    pop         cx
+    loop        .GoingDn
     jmp         .Waiting
     
 .Key_Escape: 
@@ -210,15 +204,7 @@ ViewFile:
     
 DrawError:
     ret
-    
-HomePage:
-    xor         ax, ax
-    mov         [Offset.X], ax
-    mov         [Offset.Start], ax
-    mov         [Offset.Start+2], ax
-    call        Redraw
-    ret
-    
+        
 Redraw:
     cmp     [FileError], word 0
     jne     DrawError
@@ -241,19 +227,18 @@ Redraw:
     pop         cx
     inc         byte [Draw.Y]
     loop        .Lines
-    
+
+    mov         ax, [FilePos]
+    mov         [Offset.End], ax
+    mov         ax, [FilePos+2]
+    mov         [Offset.End+2], ax
     ret
     
 DrawLine:
     xor         dx, dx
     mov        [Draw.X], dl
 .NextChar:
-    mov         ax, [FileSize+2]
-    cmp         [FilePos+2], ax
-    jne         .CheckAbove
-    mov         ax, [FileSize]
-    cmp         [FilePos], ax
-.CheckAbove:
+    call        CompareEOF
     jb          .Not_EOF    
     mov         al, 0x0a
     jmp         .EOL
@@ -270,7 +255,6 @@ DrawLine:
 .NoDisplay:
     inc         dx
     jmp         .NextChar
-    
 
 .EOL_CR:
     call        ReadFile
@@ -279,11 +263,11 @@ DrawLine:
     sub         [FilePos], word 1
     sbb         [FilePos+2], word 0
 .EOL:
-    call        ClearEOL
     cmp         dx, [LineMax]
     jbe         .NoNewMax
     mov         [LineMax], dx
 .NoNewMax:
+    call        ClearEOL
     ret
     
 ClearEOL:  
@@ -315,6 +299,130 @@ PutChar:
 .Done:
     ret
     
+CompareEOF:
+    mov         ax, [FileSize+2]
+    cmp         [FilePos+2], ax
+    jne         .Done
+    mov         ax, [FileSize]
+    cmp         [FilePos], ax
+.Done:
+    ret
+    
+AtEOF:
+    mov         ax, [FileSize+2]
+    cmp         [Offset.End+2], ax
+    jne         .Done
+    mov         ax, [FileSize]
+    cmp         [Offset.End], ax
+.Done:
+    ret
+
+
+GoHome:
+    xor         ax, ax
+    mov         [Offset.X], ax
+    mov         [Offset.Start], ax
+    mov         [Offset.Start+2], ax
+    call        Redraw
+    ret
+
+GoDown:
+    call        AtEOF
+    jae         .EOF
+    mov         ax, [Offset.Start]
+    mov         [FilePos], ax
+    mov         ax, [Offset.Start+2]
+    mov         [FilePos+2], ax
+.NextChar:
+    call        ReadFile
+    cmp         al, 0x0a
+    je          .EOL    
+    cmp         al, 0x0d
+    jne         .NextChar
+.EOL_CR:
+    call        ReadFile
+    cmp         al, 0x0a
+    je          .EOL
+    sub         [FilePos], word 1
+    sbb         [FilePos+2], word 0
+.EOL:
+    mov         ax, [FilePos]
+    mov         [Offset.Start], ax
+    mov         ax, [FilePos+2]
+    mov         [Offset.Start+2], ax
+    clc
+    jmp         .Done
+.EOF:
+    stc
+.Done:    
+    ret
+    
+GoUp:
+    mov         ax, [Offset.Start]
+    mov         [FilePos], ax
+    mov         ax, [Offset.Start+2]
+    mov         [FilePos+2], ax
+    call         .GetPrev
+    jc          .NoUp
+    cmp         al, 0x0a
+    jne         .CheckCR
+    call         .GetPrev
+    jc          .NoUp
+.CheckCR:
+    cmp         al, 0x0d
+    jne         .TestStop
+    call         .GetPrev
+    jc          GoDown.EOL
+.TestStop:
+    cmp         al, 0x0a
+    je          .Stop
+    cmp         al, 0x0d
+    je          .Stop
+    call         .GetPrev
+    jc          GoDown.EOL    
+    jmp         .TestStop
+.NoUp:
+    stc
+    ret
+.Stop:
+    add         [FilePos], word 1
+    adc         [FilePos+2], word 0
+    mov         ax, [FilePos]
+    mov         [Offset.Start], ax
+    mov         ax, [FilePos+2]
+    mov         [Offset.Start+2], ax
+    clc
+    ret        
+
+    
+.GetPrev:
+    mov         ax, [FilePos]
+    or          ax, [FilePos+2]
+    jnz         .Fetch
+    stc
+    ret
+.Fetch:
+    sub         [FilePos], word 1
+    sbb         [FilePos+2], word 0
+    call        ReadFile
+    sub         [FilePos], word 1
+    sbb         [FilePos+2], word 0
+    clc
+    ret    
+    
+GoEnd:
+    mov         ax, [FileSize]
+    mov         dx, [FileSize + 2]
+    mov         [Offset.Start], ax
+    mov         [Offset.Start+2], dx
+    xor         cx, cx
+    mov         cl, [Limit.Y]
+.GoingEnd:
+    push        cx
+    call        GoUp
+    pop         cx
+    loop        .GoingEnd
+    ret
     
 %idefine BufferSize 1024 ; must be a power of 2
     
@@ -409,8 +517,8 @@ Draw.X:         resb    1
 Draw.Y:         resb    1
 
 Offset.X:       resw    1
-Offset.Start:   resw    1
-Offset.End:     resw    1
+Offset.Start:   resd    1
+Offset.End:     resd    1
 LineMax:        resw    1
 
 FileHandle:     resw    1
