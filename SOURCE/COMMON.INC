@@ -330,13 +330,13 @@ SECTION _DATA
 	BoundsChar:     db 0
 	ScreenMax:
 		ScreenMaxX:	db 0
-		ScreenMaxY	db 0
+		ScreenMaxY:	db 0
 	WindMin:
 		WindMinX:	db 0
-		WindMinY	db 0
+		WindMinY:	db 0
 	WindMax:
 		WindMaxX:	db 0
-		WindMaxY	db 0
+		WindMaxY:	db 0
 %endif
 
 CommandLineSI:

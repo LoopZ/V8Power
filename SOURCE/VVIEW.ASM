@@ -5,6 +5,10 @@
 
 ; %idefine DEBUG
 
+%idefine UseDirectVideo
+
+; %idefine PageScroll
+
 %include "COMMON.INC"
 
 %define opTimeOut   0x0100
@@ -12,6 +16,34 @@
 %define opPurge     0x1000
 
 %idefine SPACE_CHAR 0x20
+
+%ifdef UseDirectVideo
+SetDirectVideo:
+    push        es
+    mov         ax, 0x0040
+    mov         es, ax
+    mov         al, [es:0x0049]
+    cmp         al, 0x07
+    je          .CheckPort
+    cmp         al, 0x03
+    ja          .Failed    
+.CheckPort:
+    mov         ax, 0xb800
+    cmp         [es:0x0063], word 0x03d4
+    je          .SetPtrData
+    mov         ax, 0xb000
+    cmp         [es:0x0063], word 0x03b4
+    jne          .Failed
+.SetPtrData:
+    mov         [VSEG], ax
+    mov         ax, [es:0x004e] ; page offset
+    mov         [VOFS], ax
+    mov         ax, [es:0x004a] ; columns
+    add         ax, ax
+    mov         [VBPR], ax
+.Failed:
+    pop         es
+%endif
 
     FrameBounds
     call            SwitchG ; default global mode
@@ -51,6 +83,9 @@ NoSwitch:
     stosb
     pushall
     call        ViewFile
+    %ifdef UseDirectVideo
+        GotoXY      [WindMax]
+    %endif
     popall
     ret
     
@@ -173,10 +208,15 @@ ViewFile:
     push        cx
     call        GoUp
     jc          .NoUp
-    call        Redraw
+    %ifdef PageScroll
+        call        Redraw
+    %endif    
 .NoUp:
     pop         cx
     loop        .GoingUp
+    %ifndef PageScroll
+        call        Redraw
+    %endif    
     jmp         .Waiting
     
 .Key_PgDn:
@@ -186,10 +226,15 @@ ViewFile:
     push        cx
     call        GoDown
     jc          .NoDn
-    call        Redraw
+    %ifdef PageScroll
+        call        Redraw
+    %endif    
 .NoDn:
     pop         cx
     loop        .GoingDn
+    %ifndef PageScroll
+        call        Redraw
+    %endif    
     jmp         .Waiting
     
 .Key_Escape: 
@@ -308,11 +353,37 @@ ClearEOL:
     jmp         ClearEOL
 .Done:
     ret    
-    
+
 PutChar:
     mov         ah, [Draw.X]
     cmp         ah, [Limit.X]
     jae         .Done
+%ifdef UseDirectVideo
+    cmp         [VSEG], word 0
+    je          .UseBIOS
+    push        dx
+    push        es
+    push        di
+    mov         ah, [TextAttr]
+    push        ax
+    les         di, [VPTR]    
+    mov         al, [Draw.Y]
+    mov         dh, [VBPR]
+    mul         dh
+    add         di, ax
+    xor         dh, dh
+    mov         dl, [Draw.X]
+    add         di, dx
+    add         di, dx    
+    pop         ax
+    stosw
+    pop         di
+    pop         es
+    pop         dx
+    inc         byte [Draw.X]
+    jmp         .Done
+%endif
+.UseBIOS:
     push        bx
     push        dx
     push        ax
@@ -329,7 +400,7 @@ PutChar:
     pop         bx
 .Done:
     ret
-    
+
 CompareEOF:
     mov         ax, [FileSize+2]
     cmp         [FilePos+2], ax
@@ -360,10 +431,28 @@ GoHome:
 GoDown:
     call        AtEOF
     jae         .EOF
+    %ifndef PageScroll
+        mov         ax, [Offset.End]
+        mov         dx, [Offset.End+2]    
+        call        ScanEOL
+        jc          .EOF
+        mov         [Offset.End], ax
+        mov         [Offset.End+2], dx    
+    %endif
     mov         ax, [Offset.Start]
+    mov         dx, [Offset.Start+2]    
     mov         [FilePos], ax
-    mov         ax, [Offset.Start+2]
-    mov         [FilePos+2], ax
+    mov         [FilePos+2], dx
+    call        ScanEOL
+    mov         [Offset.Start], ax
+    mov         [Offset.Start+2], dx
+    jmp         .Done
+.EOF:
+    stc
+.Done:    
+    ret
+    
+ScanEOL:
 .NextChar:
     call        ReadFile
     jc          .Done
@@ -380,21 +469,16 @@ GoDown:
     sbb         [FilePos+2], word 0
 .EOL:
     mov         ax, [FilePos]
-    mov         [Offset.Start], ax
-    mov         ax, [FilePos+2]
-    mov         [Offset.Start+2], ax
+    mov         dx, [FilePos+2]
     clc
-    jmp         .Done
-.EOF:
-    stc
-.Done:    
+.Done:
     ret
     
 GoUp:
     mov         ax, [Offset.Start]
     mov         [FilePos], ax
-    mov         ax, [Offset.Start+2]
-    mov         [FilePos+2], ax
+    mov         dx, [Offset.Start+2]
+    mov         [FilePos+2], dx
     call         .GetPrev
     jc          .NoUp
     cmp         al, 0x0a
@@ -405,25 +489,31 @@ GoUp:
     cmp         al, 0x0d
     jne         .TestStop
     call         .GetPrev
-    jc          GoDown.EOL
+    jc          ScanEOL.EOL
 .TestStop:
+    mov         bx, [FilePos]
+    or          bx, [FilePos]
+    jz          .NoUp
     cmp         al, 0x0a
     je          .Stop
     cmp         al, 0x0d
     je          .Stop
     call         .GetPrev
-    jc          GoDown.EOL    
+    jc          ScanEOL.EOL    
     jmp         .TestStop
 .NoUp:
-    stc
+    xor         ax, ax
+    mov         [Offset.Start], ax
+    mov         [Offset.Start+2], dx
+    ;  stc
     ret
 .Stop:
     add         [FilePos], word 1
     adc         [FilePos+2], word 0
     mov         ax, [FilePos]
     mov         [Offset.Start], ax
-    mov         ax, [FilePos+2]
-    mov         [Offset.Start+2], ax
+    mov         dx, [FilePos+2]
+    mov         [Offset.Start+2], dx
     clc
     ret        
     
@@ -615,6 +705,13 @@ MSG_ERROR:      db "Error 0x",0
                 db "'",0
 MSG_ER2:        db ': File not found',0
 MSG_ER3:        db ': Path not found',0
+
+%ifdef UseDirectVideo
+VPTR:
+VOFS:           dw      0x0000
+VSEG:           dw      0x0000
+VBPR:           dw      0x0000
+%endif
            
 section .bss
 
