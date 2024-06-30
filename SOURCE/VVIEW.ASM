@@ -368,11 +368,13 @@ PutChar:
     push        ax
     les         di, [VPTR]    
     mov         al, [Draw.Y]
+    add         al, [WindMinY]
     mov         dh, [VBPR]
     mul         dh
     add         di, ax
     xor         dh, dh
     mov         dl, [Draw.X]
+    add         dl, [WindMinX]
     add         di, dx
     add         di, dx    
     pop         ax
