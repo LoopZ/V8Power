@@ -436,6 +436,8 @@ GoDown:
     %ifndef PageScroll
         mov         ax, [Offset.End]
         mov         dx, [Offset.End+2]    
+        mov         [FilePos], ax
+        mov         [FilePos+2], dx
         call        ScanEOL
         jc          .EOF
         mov         [Offset.End], ax
