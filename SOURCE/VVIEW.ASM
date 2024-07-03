@@ -3,9 +3,10 @@
 
 ; NASM for DOS
 
-; %idefine DEBUG
+%idefine DEBUG
 
 %idefine UseDirectVideo
+%idefine Buffered
 
 ; %idefine PageScroll
 
@@ -551,88 +552,91 @@ GoEnd:
     loop        .GoingEnd
     ret
     
-%idefine BufferSize 1024 ; must be a power of 2
-    
+%idefine BufferSize 1024 ; must be power of 2
+
+%ifdef Buffered    
 ReadFile:   ; Later might add cached buffer reading
     ; returns al
     push    bx
     push    cx
     push    dx
-
-    push    ax    
-    mov     dx, [FilePos]
-    mov     cx, [FilePos+2]
+    push    ax
+    mov     ax, [FilePos]
+    mov     dx, [FilePos+2]
+    and     ax, (0x10000 - BufferSize)    
     cmp     [BufferCount], word 0
-    je      .NeedBuff
-    mov     ax, [BufferPos]
-    mov     bx, [BufferPos + 2]
-    ; Is NewPos Bellow Buffer?
-    cmp     cx, bx
-    jb      .NeedBuff
-    cmp     dx, ax
-    jb      .NeedBuff
-    ; Is NewPos Above Buffer?
-    add     ax, BufferSize
-    adc     bx, 0
-    cmp     cx, bx
-    ja      .NeedBuff
-    cmp     dx, ax
-    jb      .InBuffer
-.NeedBuff:
-    ; Move Buffer
-    mov     bx, [FileHandle]
-    and     dx, (0x10000 - BufferSize)
-    ; Seek for buffer read
-    mov     ax, 0x4200    
-    int     0x21
-    jnc     .SeekOkay
-.FileError:
-    mov     [FileError], ax
-    jmp     .Done
-.SeekOkay:
+    je      .FetchBuff
+    cmp     ax, [BufferPos]
+    jne     .FetchBuff
+    cmp     dx, [BufferPos+2]
+    je     .GetData
+.FetchBuff:
     mov     [BufferPos], ax
     mov     [BufferPos+2], dx
-    ; Load new buffer data
+    mov     ax,0x4200
+    mov     bx, [FileHandle]
+    mov     cx, [BufferPos+2]    
+    mov     dx, [BufferPos]
+    int     0x21
+    jc      .Error
     mov     ah, 0x3f
     mov     cx, BufferSize
     mov     dx, BufferData
     int     0x21
-    jc      .FileError
+    jc      .Error
     mov     [BufferCount], ax
-    ; For now... clear rest of buffer
-    push    es
-    push    di
-    mov     cx, BufferCount
-    sub     cx, ax
-    jz      .Cleared
-    push    cs
-    pop     es
-    mov     di, BufferData
-    add     di, ax
-    ; xor     al, al
-    mov     al, 0xfe
-    rep     stosb    
-.Cleared:
-    pop     di
-    pop     es
-.InBuffer:
-    ; Since BufferSize is less than 0x10000 bytes, the High word of 
-    ; FilePos and BufferPos must always be the same and no point in 
-    ; subtracting them. So we will ignore them.
+.GetData:
     mov     bx, [FilePos]
     sub     bx, [BufferPos]
-    mov     bl, [BufferData + bx]
-    ; move to new file position
-    inc     word [FilePos]
-    adc     word [FilePos + 2], 0
+    mov     bl, [BufferData+bx]
+    add     [FilePos], word 1
+    adc     [FilePos+2], word 0
     clc
-.Done:
+    jmp     .Done
+.Error:
+    mov     bl, 0
+    mov     [FileError], ax
+.Done:    
     pop     ax
     mov     al, bl
     pop     dx
     pop     cx
     pop     bx
     ret
+
+%else ; not buffered
+ReadFile:
+    push    bx
+    push    cx
+    push    dx
+    push    ax
+    mov     ax,0x4200
+    mov     bx, [FileHandle]
+    mov     cx, [FilePos+2]    
+    mov     dx, [FilePos]
+    int     0x21
+    jc      .Error
+    mov     ah, 0x3f
+    mov     cx, 1
+    mov     dx, BufferData
+    int     0x21
+    jc      .Error
+    add     [FilePos], word 1
+    adc     [FilePos+2], word 0
+    mov     bl, [BufferData]
+    clc
+    jmp     .Done
+.Error:
+    mov     bl, 0
+    mov     [FileError], ax
+.Done:    
+    pop     ax
+    mov     al, bl
+    pop     dx
+    pop     cx
+    pop     bx
+    ret
+%endif
     
 ShowError:
     xor             dx, dx
