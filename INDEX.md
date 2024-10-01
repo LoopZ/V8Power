@@ -2,8 +2,8 @@
 
 # V8Power Tools
 #### Putting the power of an 8-cylinder engine under the hood of DOS batch files. ######
-Copyright 2015-2021 Jerome Shidel.<br>
-Released under the GPL v2.0 License.<br>
+Copyright 2015-2024 Jerome Shidel.<br>
+Open source, see License file.<br>
 
 * * *
 

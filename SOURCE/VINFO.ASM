@@ -234,14 +234,46 @@ ShowWord:
     ret
 
 ShowRAMline:
-    cld
+    push    bx
+    cmp     ax, 0xffff
+    je      .NoSkip
+    test    dx, dx
+    jnz     .NoSkip
+    mov     si, bx
+    mov     cx, 0x08
+    mov     bx, 0xffff
+.Skippy:
+    lodsw
+    and     bx, ax
+    or      dx, ax
+    loop    .Skippy
+    jz      .CanSkip
+    cmp     bx, 0xffff
+    jne     .NoSkip
+.CanSkip:
+    cmp     [cs:Skipper], byte 1
+    jb      .SkipBlank
+    ja      .NoSkip
+    jmp     .SkipRet
+.SkipBlank:
+    mov     [cs:Skipper], byte 1
+    call    .CRLF
+.SkipRet:
+    pop     bx
+    ret
+    
+.NoSkip:
+    pop     bx
+    mov     [cs:Skipper], byte 0
     mov     ax, ds
     call    ShowWord
     StdOutChar ':'
-    StdOutChar '0'
+    xchg    ax, bx
+    call    ShowWord
+    xchg    ax, bx
     StdOutChar ' '
     StdOutChar ' '
-    xor     si, si
+    mov     si, bx
     mov     cx, 0x10
 .HexBytes:
     lodsb
@@ -250,7 +282,7 @@ ShowRAMline:
     loop    .HexBytes
     StdOutChar ' '
     StdOutChar ' '
-    xor     si, si
+    mov     si, bx
     mov     cx, 0x10
 .CharBytes:
     lodsb
@@ -272,24 +304,46 @@ ShowRAMline:
     je        .Hidden
 
     StdOutChar al
-    jmp        .Shown;
+    jmp        .Shown
 .Hidden:
     StdOutChar '.'
 .Shown:
     loop     .CharBytes
-    StdOutChar 10
+.CRLF:
     StdOutChar 13
+    StdOutChar 10
     ret
+    
+ShowURAM:
+    mov     ax, 0xa000
+    xor     dx,dx
+    jmp     ShowRAM.Prepare
 
 ShowRAM:
+    mov     dl, 1
+    xor     ax, ax
+.Prepare:    
+    mov     [cs:Skipper], byte 2
     push    ds
-    mov     ax, ds
-    mov     cx, 0
+    mov     cx, ax
+    xor     bx, bx
 .cycle:
+    cld
     push    cx
     push    ax
+    test    dl, dl
+    jnz      .All
+    cmp     ax, 0xb800
+    jb      .All
+    cmp     ax, 0xbfff
+    ja      .All
+    jmp     .NotDisplay
+.All:
+    push    dx
     mov     ds, ax
     call    ShowRAMline
+    pop     dx
+.NotDisplay:
     pop     ax
     pop     cx
     inc     ax
@@ -363,8 +417,8 @@ SearchRAM:
     StdOutChar ':'
     mov     ax, di
     call    ShowWord
-    StdOutChar 10
     StdOutChar 13
+    StdOutChar 10
 
     push    es
     push    ds
@@ -372,12 +426,15 @@ SearchRAM:
     push    es
     pop     ds
 
+    push    bx
+    xor     bx, bx
     call    ShowRAMline
     mov     ax, ds
     inc     ax
     mov     ds, ax
     call    ShowRAMline
-
+    pop     bx
+    
     pop     ds
     pop     es
 .Diff:
@@ -547,6 +604,7 @@ OptionsTable:
 %ifdef ASCII_Table
     TableData "ASCII", ShowAscii
     TableData "RAM", ShowRAM
+    TableData "URAM", ShowURAM
 %endif
     TableEnd
 
@@ -564,6 +622,9 @@ Drive:
     db 0
 DRIVE_ID:
     db 0
+Skipper:
+    db 0
+    
 EndOfCode:
 
 Buffer:

@@ -28,16 +28,26 @@ NotDOSBox:
     jmp         %%DetectDone
 
 NotQEMUBox:
-    mov         si, VBOXString
+    mov         si, VBOXString1
     mov         bx, 0xffe0
     mov         es, bx
     mov         cx, 0x0200
     call        SearchString
-    jnc         NotVBOX
+    jnc         NotVBOX1
     mov         ax, 103
     jmp         %%DetectDone
 
-NotVBOX:
+NotVBOX1:
+    mov         si, VBOXString2
+    mov         bx, 0xffe0
+    mov         es, bx
+    mov         cx, 0x0200
+    call        SearchString
+    jnc         NotVBOX2
+    mov         ax, 103
+    jmp         %%DetectDone
+
+NotVBOX2:
     mov         si, VMString
     mov         bx, 0xf000
     mov         es, bx
@@ -215,11 +225,12 @@ DOSBOXString:
     db 'THE DOSBOX TEAM', 0
 QEMUString:
     db 'QEMU',0
-VBOXString:
+VBOXString1:
     db 'ORACLE VM VIRTUALBOX',0
+VBOXString2:
+    db 'ORACLE VIRTUALBOX',0
 VMString:
     db 'VMWARE VIRTUAL PLATFORM',0
-
 
 %%DetectDone:
 
