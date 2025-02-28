@@ -151,6 +151,7 @@ cpu 486
     and         ebx, ecx
     cmp         eax, ebx
     jne         .UseCPUid
+.IsAtleast486:
     mov         al, 4
     jmp         .Done32
 
@@ -168,6 +169,8 @@ cpu 586
     cpuid
     shr         ax, 0x08
     and         ax, 0x0f
+    cmp			ax, 0x04
+    jb			.IsAtleast486
 
 .Done32:
 
@@ -271,7 +274,7 @@ VMString:
     db 102, 'QEMU', 0
     db 103, 'VirtualBox', 0
     db 104, 'VMware',0
-    db 200, 'Emulation',0
+;    db 200, 'Emulation',0
     db   0, '8086',0
 %%Done:
 
