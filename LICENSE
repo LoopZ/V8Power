@@ -1,5 +1,5 @@
 V8Power Tools for DOS is an open source project.
-Copyright 2016-2024 Jerome Shidel
+Copyright 2016-2025 Jerome Shidel
 
 The entire work is released under multiple open source licenses simultaneously.
 It may be distributed and modified in accordance with any single or multiple
@@ -11,8 +11,8 @@ the licenses for which V8Power Tools for DOS is released.
 
 The current licenses for which V8Power Tools for DOS is released include:
 
-	GNU General Public Library (Any version)
-	BSD 3-Clause License
+	GNU General Public License (Any version)
+	BSD 2-Clause License
 	MIT License
 
 If an additional open source license is required for compatibility, it will be
