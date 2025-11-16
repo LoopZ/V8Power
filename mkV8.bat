@@ -41,6 +41,7 @@ goto DoMessage
 if "%2" == "VECHO.ASM" goto VeryEnd
 if "%2" == "VFDUTIL.ASM" goto VeryEnd
 if "%2" == "VEACH.ASM" goto VeryEnd
+if "%2" == "DEMOPARS.ASM" goto VeryEnd
 set /e MKV8_STAGE=BIN\VFDUTIL.COM /n %2
 if "%MKV8_STAGE" == "" goto SubCompile
 set MKV8_CODE=%2

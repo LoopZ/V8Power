@@ -221,7 +221,7 @@ IdleCPUHandlerProc:
 
 %ifdef StdOutOnly
 	%undef VideoOutput
-	%undef TextOutput	
+	%undef TextOutput
 %endif
 
 %ifdef NoVideoOutput
@@ -2018,7 +2018,7 @@ WriteStrProc:
 	int			0x21
 	jmp			.NextChar
 .Done:
-	
+
 	ret
 %endif
 
@@ -2146,6 +2146,13 @@ BasicInitialize:
     dec         bx
     mov         bh, bl
     mov         bl, [es:0x0084]
+    cmp			bl, 14
+    jb			.Crazy
+    cmp 		bl, 60
+    jna			.NotInsane
+.Crazy:
+	mov			bl, 24 ; 25 rows - 1
+.NotInsane:
     xchg        bl, bh
     mov         [ScreenMax], bx
     mov         [WindMax], bx
