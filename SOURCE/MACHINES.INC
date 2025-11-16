@@ -59,6 +59,18 @@ NotVBOX2:
 
 NotVMware:
 
+; Thanks to Frank H. for providing Bochs Identification.
+   mov         si, BOCHSString
+   mov         bx, 0xf000
+   mov         es, bx
+   mov         cx, 0xf000
+   call        SearchString
+   jnc         NotBochs
+   mov         ax, 105
+   jmp         %%DetectDone
+
+NotBochs:
+
 ;OtherEmulation:
 ;    cld
 ;    mov         al, 0x90
@@ -234,6 +246,8 @@ VBOXString2:
     db 'ORACLE VIRTUALBOX',0
 VMString:
     db 'VMWARE VIRTUAL PLATFORM',0
+BOCHSString:
+   db 'BOCHS',0
 
 %%DetectDone:
 
@@ -274,6 +288,7 @@ VMString:
     db 102, 'QEMU', 0
     db 103, 'VirtualBox', 0
     db 104, 'VMware',0
+    db 105, 'BOCHS',0
 ;    db 200, 'Emulation',0
     db   0, '8086',0
 %%Done:
