@@ -1,7 +1,12 @@
-; Copyright (C) 2016-2022 Jerome Shidel
+; Copyright (C) 2016-2025 Jerome Shidel
 ; Open source see License file
 
 ; NASM for DOS
+
+; Enable support for Generic Emulation Detection.
+; It is very limited in the ability to detect any hardware virtualization.
+; Adds roughly 30 bytes of compiled code.
+%idefine GenericEMU
 
 %imacro DetectMachine 0
 
@@ -71,16 +76,17 @@ NotVMware:
 
 NotBochs:
 
-;OtherEmulation:
-;    cld
-;    mov         al, 0x90
-;    mov         cx, 0x0008
-;    mov         di, $
-;    rep         stosb
-;    jmp         VirtualMachine
-;    nop
-;    nop
-
+%ifdef GenericEMU
+OtherEmulation:
+    cld
+    mov         al, 0x90
+    mov         cx, 0x0008
+    mov         di, $
+    rep         stosb
+    jmp         VirtualMachine
+    nop
+    nop
+%endif
 
 DetectCPU:
     ; Test Pre-186, CL is AND with 0x0f prior to/during shr
@@ -203,9 +209,11 @@ cpu 8086
 ;    pop         ax
     jmp         %%DetectDone
 
-;VirtualMachine:
-;    mov         ax, 200
-;    jmp         %%DetectDone
+%ifdef GenericEMU
+VirtualMachine:
+    mov         ax, 200
+    jmp         %%DetectDone
+%endif
 
 SearchString:
     cld
@@ -289,7 +297,9 @@ BOCHSString:
     db 103, 'VirtualBox', 0
     db 104, 'VMware',0
     db 105, 'BOCHS',0
-;    db 200, 'Emulation',0
+%ifdef GenericEMU
+    db 200, 'Emulation',0
+%endif
     db   0, '8086',0
 %%Done:
 
