@@ -1,0 +1,35 @@
+vchoice [se‡enekler]
+
+Bir se‡enek se‡in.
+
+Yaplan se‡imin girdi saysna dayal bir hata dzeyi d”ndrr. Bu,
+se‡imin says/harfi de§ildir. ™rne§in, ikinci ”ge se‡ilirse, 2 de§erinde
+hata dzeyi d”ndrlr. ™nekler (C, 1, R, vs. gibi) dikkate alnmaz.
+Ayrca, bir harf veya rakamla ”nekledi§iniz tm se‡enekler i‡in otomatik
+kullanmanz tavsiye ederim.
+
+    [boŸ]       Tamamen otomatik ”ntanml ayarlar kullanarak iŸle.<td></tr>
+    /A n        Se‡ili unsur i‡in metin ”zniteli§ini n olarak ayarla.
+    /B renk     Se‡ili unsur i‡in arka plan metin ”zniteli§ini renk (veya de§er)
+                olarak ayarla.
+    /F renk     Se‡ili unsur i‡in ”n plan metin ”zniteli§ini renk (veya de§er)
+                olarak ayarla.
+    /D n        Varsaylan se‡enek olarak n ”ge numarasn ”nceden se‡.
+    type        Do§rudan d§meye baslmas durumunda se‡im tr.
+                    off     Sadece ok d§meleri ile se‡.
+                    auto    Do§rudan atlama karakterlerini algla (”ntanml).
+                    alpha   Se‡ilenlere A-Z kullanarak ge‡.
+                    digit   Se‡ilenlere 1-9 (+0) kullanarak ge‡.
+    /Q          Sonucu sorgula. Se‡im ile metin STDOUT'a g”nderilecektir.
+    /T saniye   ™ntanml ”genin otomatik olarak se‡ilmesinden ”nce
+                beklenilecek sre (0-3600). Kullanc farkl bir ”geye gitse
+                bile, ”ntanml ”genin zaman aŸm ger‡ekleŸti§inde
+                se‡ilece§ini unutmayn.
+    /P n        Yoklama kipini kullan ve n sayl ”geyi gncel se‡im olarak
+                imle. Se‡imin herhangi bir de§iŸimi vchoice'in ‡kmasna
+                ve 100+ gncel se‡im saysn geri g”ndermesine neden olacaktr.
+    /K n        Snrlar alglamak i‡in ‡er‡eve karakteri yerine n kullan.
+    CTRL-C      Belirtildi§inde ve Control-C'ye basld§nda, 200 hata dzeyi
+                ile ‡kacaktr.
+
+             (Henz geliŸtirilme aŸamasndadr, daha fazla bilgi eklenecektir.)

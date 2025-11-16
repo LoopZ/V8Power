@@ -1,0 +1,27 @@
+vstr [options]
+
+Utilitaire simple de traitement de chaŒnes. Envoie le r‚sultat sur STDOUT.
+
+    /N          Ne pas ‚crire un CRLF (retour chariot, nouvelle ligne) … la fin.
+    /U          Filtre d'entr‚e : convertir en majuscules.
+    /D          Filtre d'entr‚e : convertir en minuscules.
+    /B          Filtre d'entr‚e : ignorer les lignes vides.
+    /I          Filtre d'entr‚e : ignorer l'indentation.
+    /C code     crire un code de caractŠre ASCII.
+    /R fois     R‚p‚ter l'‚criture suivante plusieurs fois. (1-65535)
+    /L ligne    Renvoyer seulement cette ligne … partir de l'entr‚e standard.
+                (0-65535) (Remarque : vline /L TOTAL renverra le nombre total
+                des lignes.) De plus, ajouter :n produira n lignes.
+    /S s1 s2    Rechercher et remplacer toutes les occurrences de s1 par s2.
+    /F s1 s2    D‚finir le d‚limiteur sur s1 et ne retourner que la position ou
+                la plage de s2.
+    /A code s2  Renvoyer la position ou la plage s2 d‚limit‚ par le code.
+                (tab=0x09)
+    /P s1       Afficher le texte s1.
+    /T fich ID  Rechercher l'ID dans le fichier et le traiter comme des options
+                de ligne de commande. Toute option suppl‚mentaire qui suivrait
+                ce commutateur sera utilis‚e pour remplir les variables %1-%9
+                dans la chaŒne de texte.
+
+                (Toujours en d‚veloppement, plus … venir)
+

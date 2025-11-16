@@ -1,0 +1,12 @@
+vdelete [Optionen]
+
+L”sche Zeile an der aktuellen Position.
+
+  [keine]     L”sche Zeile.
+  n           L”sche n Zeilen.
+  /A n        Setze Textattribut auf n.
+  /B color    Setze das Hintergrundtextattribut auf Farbe (oder Wert) fest.
+  /F color    Setze das Vordergrundtextattribut auf Farbe (oder Wert) fest.
+  /G          Globales L”schen.
+  /L          Lokales L”schen. (Standard)
+  /K n        Verwende n anstelle des Rahmenzeichens, um Grenzen anzuzeigen.

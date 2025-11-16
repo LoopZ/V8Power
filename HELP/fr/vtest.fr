@@ -1,0 +1,97 @@
+vtest [options]
+
+Un testeur d'‚tat. Il peut effectuer diverses v‚rifications qui peuvent
+ˆtre r‚sum‚es en VRAI ou FAUX. Le r‚sultat est transmis en tant que niveau
+d'erreur ERRORLEVEL. Lorsque la r‚ponse est VRAIE un z‚ro est retourn‚. Si la
+r‚ponse est FAUSSE, un 1 est transmis. L'utilisation d'une syntaxe erron‚e ou
+bien d'autres erreurs similaires retourneront 100.
+
+Tests:
+
+	/f fichier 	 	le fichier existe
+	/d r‚pertoire	le chemin existe
+	/e fich ou r‚p	le fichier ou le chemin de r‚pertoire existe
+	val1 /eq val2	les valeurs sont ‚gales
+	val1 /ne val2	les valeurs ne sont pas ‚gales
+	val1 /ge val2	val1 est sup‚rieure ou ‚gale … val2
+	val1 /le val2	val1 est inf‚rieure ou ‚gale … val2
+	val1 /gt val2	val1 est sup‚rieure … val2
+	val1 /lt val2	val1 est inf‚rieure … val2
+	chaŒne		    la chaŒne n'est pas vide
+	/n chaŒne	    la chaŒne n'est pas vide
+	/z string	    la chaŒne est vide
+	/v chiffre	    le chiffre est valide
+	/f fichier  	le fichier existe
+	/d r‚pertoire 	le chemin existe
+	/e fich ou r‚p	tout type d'‚l‚ment de r‚pertoire
+
+Op‚rateurs d'expression :
+
+	/c expression	Forcer une valeur … ˆtre trait‚e en tant que chaŒne et
+			effectuer une comparaison sp‚cifique … la casse.
+	/i expression	Forcer une valeur … ˆtre trait‚e en tant que chaŒne et
+			effectuer une comparaison insensible … la casse.
+	exp1 /and exp2  Les deux expressions doivent ˆtre VRAIES.
+	exp1 /or /exp2  L'un ou l'autre expression peut ˆtre VRAIE.
+	/not expression Inverser le r‚sultat d'une expression.
+
+Autres options :
+
+	/tf		Afficher TRUE ou FALSE une fois termin‚.
+
+Par d‚faut, la comparaison des valeurs est fond‚e sur leur type. Si les deux
+valeurs sont un nombre (repr‚sent‚s en d‚cimal ou hexad‚cimal), la comparaison
+sera faite math‚matiquement. Sinon, une comparaison alphab‚tique insensible …
+la casse sera effectu‚e. L'utilisation de soit l'une ou l'autre des options /c
+ou /i forcera une comparaison fond‚e sur le texte sans prendre en compte le
+type de donn‚e de la valeur. Une VALEUR vide n'a pas de valeur num‚rique
+et forcera les deux ‚l‚ments … ˆtre compar‚s comme des chaŒnes.
+
+Exemples de base :
+
+Un fichier nomm‚ TEST.TXT existe :		  vtest /f TEST.TXT
+Un fichier nomm‚ TEST.TXT n'existe pas :  vtest /not /f TEST.TXT
+Soit le fichier A.TXT soit B.TXT existe : vtest /f A.TXT /or /f B.TXT
+Ni le fichier A.TXT ni B.TXT n'existent : vtest /not /f A.TXT /and /not /f B.TXT
+%1 est un nombre :          				vtest /v %1
+%1 est un nombre de 1 … 10 :	           	vtest /v %1 /and 1 /le %1 /le 10
+
+Alors que les options /f, /d et /e testent les ‚l‚ments de fichier ou de
+r‚pertoires, ils peuvent utiliser des modificateurs d'expression tels que /not,
+/c et /i et peuvent ‚galement prendre en charge les jokers. Une fois qu'un
+systŠme de fichiers … ‚t‚ test‚ pour l'existence d'une entr‚e correspondante,
+ils deviennent la valeur du premier ‚l‚ment de systŠme de fichiers correspondant
+et peuvent ˆtre trait‚s comme des valeurs. Si aucune entr‚e correspondante
+n'est trouv‚e, la valeur devient nulle et r‚sultera trŠs probablement dans
+l'‚valuation de l'expression en tant que fausse (false).
+
+Lors de la comparaison de deux valeurs, si chaque valeur contient un chiffre
+valide (d‚cimal or hexad‚cimal) la comparaison sera effectu‚e num‚riquement.
+Si l'une des valeur n'est pas un chiffre, elle sera effectu‚e alphab‚tiquement.
+Bien qu'il soit possible de m‚langer les types de donn‚es dans une s‚rie de
+comparaisons, le r‚sultat peut ˆtre difficile … pr‚voir et ce n'est g‚n‚ralement
+pas conseill‚.
+
+Les guillemets NE sont PAS utilis‚s pour les chaŒnes avec des espaces. Les
+guillemets sont toujours trait‚s comme des caractŠres de texte normaux.
+L'analyseur de la ligne de commande n'essayera de s‚parer les chaŒnes que
+lorsqu'un SWITCH_CHAT (normalement /) est d‚tect‚. Ceci est un exemple
+acceptable :
+
+vtest a, b et c /lt d, e et f /and 6 /gt 5 /lt 7
+
+L'utilisation de guillemets pour simplement envelopper les chaŒnes produira
+des r‚sultats erron‚s. L'exemple suivant aura TOUJOURS pour r‚sultat TRUE
+(vrai) ind‚pendamment de la valeur de %1 :
+
+vtest /n "%1"
+
+De plus, si une chaŒne contient le SWITCH_CHAR, la partie suivant le SWITCH_CHAR
+sera interpr‚t‚e comme une option de programme sauf si elle est ‚chapp‚e par
+l'insertion d'un SWITCH_CHAR suppl‚mentaire. Par exemple, "O/N" serait
+interpr‚t‚ comme la chaŒne "O" puis l'option "/N". Pour interpr‚ter les deux
+en tant que chaŒnes il faudrait utiliser "O//N".
+Par exemple :
+
+vtest /n o//n
+

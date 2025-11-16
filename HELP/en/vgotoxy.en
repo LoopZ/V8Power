@@ -1,0 +1,24 @@
+vgotoxy [options]
+
+Move or query cursor position.
+
+    [none]      Preforms no action.
+    /Q x or y   Queries the current X or Y position of the cursor and outputs
+                it to STDOUT.
+    /X column   Move cursor to column.
+    /Y row      Move cursor to row.
+    /G          Move cursor based on entire screen. (default)
+    /L          Move cursor based on its surroundings.
+    /K n        Use n instead of frame character to detect bounds.
+    direction   Move cursor up, down, left or right one space.
+    shift       Move cursor to the previous or next position and change
+                rows if needed.
+    position    Move cursor to the
+                    SOP (Start of Page),
+                    EOP (End of Page),
+                    SOR (Start of Row),
+                    EOR (End of Row),
+                    SOL (Start of Text on Line),
+                    EOL (End of Text on Line),
+                    SOT (Start of All Text) or
+                    EOT (End of All Text) position.

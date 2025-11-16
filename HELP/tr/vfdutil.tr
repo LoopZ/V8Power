@@ -1,0 +1,34 @@
+vfdutil [seáenekler]
+
+Dosya ve dizin izlencesi.
+
+    [boü]       Hiábir üey yapmaz.
+    /D dosya    Dosya sÅrÅcÅ harfini hesapla ve STDOUT'a áçktçla.
+    /P dosya    Dosya yolunu hesapla ve STDOUT'a áçktçla.
+    /C          SÅrÅcÅ veya yolu metin girdisi olmadan deßiütirmek iáin /D
+                veya /P încesinde kullançn.
+    /X          SÅrÅcÅ harfinin 1-26 hata dÅzeyini dîndÅrmesi iáin /D veya /
+                încesinde  kullançn.
+    /F dosya    Tam dosya adçnç hesapla ve STDOUT'a áçktçla.
+    /B dosya    Uzantçyla birlikte dosya adçnç hesapla ve STDOUT'a áçktçla.
+    /N dosya    Uzantçsçz dosya adçnç hesapla ve STDOUT'a áçktçla.
+    /E dosya    Dosya uzantçsçnç hesapla ve STDOUT'a áçktçla.
+    /U üablon   Dosya/dizin adçnç üablona dayalç hesapla ve STDOUT'a áçktçla.
+                SÅrÅcÅ ve yolun mevcut olmasç gerekir.
+                ôrneßin: "vfdutil /u C:\TEMP\TEST????.$$$"
+    /S dsyablrt PATH deßerini verilen dosya belirtecinde ara ve tÅm eüleüen
+                dosyalarç STDOUT'a yaz. GÅncel dizinde arama yapçlmaz. Eßer
+                yolda hiábir dosya belirteci bulunamazsa, 1 hata dÅzeyi ile
+                áçkar.
+    /T dsyablrt Tçpkç /S gibi, ancak sadece hata dÅzeyi dîndÅrÅr.
+    /M konum    Konumdaki boü disk alançnçn áçktçsçnç ver.
+    /R gerekli  Gerekli alançn mevcut olup olmadçßçnç test etmek iáin /M ile
+                Birlikte kullançn. Gerekli 65535 ile sçnçrlçdçr. Fakat ona B,
+                K, M, vs. eklenebilir. Yeterli boü alan olmadçßçnda 1 hata
+                dÅzeyi dîndÅrÅlÅr.
+    /A yol      Bir yolda dosya veya dizin mecvut olup olmadçßçnç dene, 0=dizin
+    			mevcut ve boü deßil, dißer deßerler denemeden gelen DOS hata
+                kodlarçdçr.
+
+             (HenÅz geliütirilme aüamasçndadçr, daha fazla bilgi eklenecektir.)
+

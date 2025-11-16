@@ -1,0 +1,21 @@
+veach [Optionen]
+
+Tun Sie fr jedes Element in einer Liste etwas.
+
+  /S          Aktivieren Sie die Listensortierung.
+  /L          Zeige Listeninhalte an.
+  /F file     Fge Elemente aus der Datei der Liste hinzu.
+  /I          Fge Elemente vom Standardeingabeger„t der Liste hinzu.
+  /D spec     Fge der Liste Dateinamen hinzu, die der Spezifikation
+              entsprechen.
+  /A +/-      ndert /d-Schalter, um alle Dateien und Verzeichnisse zu
+              erm”glichen.
+  /C          Wenn der Schalter /x verwendet wird, erm”glicht es das
+              Fortfahren trotz eines Unterprozessfehlers.
+  /X [cmdln]  Fhren Sie das Element mit der Befehlszeile aus und allen
+              nachfolgenden Schalter werden an den Unterprozess bergeben.
+              * wird zum Element erweitert, # ist die Anzahl der Elemente
+              und @ ist der Index des Elements. Wenn dem /x Schalter keine
+              Kommandozeilendaten folgen, wird  * angenommen.
+
+  tba         (Noch in der Entwicklung, mehr wird noch bekanntgegeben).

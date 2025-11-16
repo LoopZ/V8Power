@@ -1,0 +1,13 @@
+vpcspkr [hz:][ms]
+
+Erzeugt einen Ton mit dem eingebauten Lautsprecher.
+
+  [keine]    Keine Ausgabe.
+  hz:ms      Verwendet den PC-Lautsprecher um einen Frequenzton
+             in Hz zu erzeugen. ms fr Verz”gerung in Millisekunden
+             (Frequenz 0 schaltet den Lautsprecher aus. Keine Angabe=0).
+  /D         Erkennungsmethode fr Zeitmessung (inkompatibel mit VirtualBox)
+  /S         Verwendet sicheren Allzwecktimer. (Standard).
+  /I         Verwendet hochpr„zisen Interrupt-Timer (inkompatibel mit
+             VirtualBox.
+  tba        (Noch in der Entwicklung, mehr wird noch bekanntgegeben).

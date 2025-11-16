@@ -1,0 +1,19 @@
+vmode [options]
+
+Set and query current video text modes.
+
+    [none]      Outputs current video mode and font to STDOUT.
+    VESA        Outputs a list of VESA modes to STDOUT.
+    mode        Set current video mode. (0-0xffff) or a mode label with
+                optional font setting.
+
+                Modes:  BW40    Black and White 40 Column (also B40).
+                        BW80    Black and White 80 Column (also B80, BW).
+                        CO40    Color 40 Column (also C40).
+                        CO80    Color 80 Column (also C80, COLOR).
+                        MONO    Mono 80 Column.
+
+                Fonts:  Font8   Select 8x8 ROM font. (also F8)
+                        Font14  Select 8x14 EGA ROM font. (also F14)
+                        Font16  Select 8x16 VGA ROM font. (also F16)
+

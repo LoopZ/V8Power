@@ -1,0 +1,23 @@
+veach [options]
+
+Effectuer une op‚ration pour chaque ‚l‚ments d'une liste.
+
+    /S          Activer le tri de la liste.
+    /L          Afficher le contenu de la liste.
+    /F fichier  Ajouter des ‚l‚ments … la liste … partir du fichier.
+    /I          Ajouter des ‚l‚ments … la liste … partir du p‚riph‚rique
+                d'entr‚e standard.
+    /D spec     Ajouter les noms de fichiers correspondants aux sp‚cifications
+                … la liste.
+    /A +/-      Modifier le commutateur /d pour activer tous les fichiers et
+                r‚pertoires.
+    /C          Lorsque le commutateur /x est utilis‚, permet de continuer
+                malgr‚ une erreur de sous-processus.
+    /X [cmdln]  Ex‚cuter l'‚l‚ment avec la ligne de commande et transmettre
+                tous les commutateurs suivants au sous-processus. * est ‚tendu
+                … l'‚l‚ment, # est le nombre d'‚l‚ments et @ et l'indexe de
+                l'‚l‚ment. Si aucune donn‚e de ligne de commande ne suit le
+                commutateur /x, * est suppos‚.
+
+               (Toujours en d‚veloppement, plus … venir)
+

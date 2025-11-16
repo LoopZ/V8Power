@@ -1,0 +1,60 @@
+vinfo [se‡enekler]
+
+Genel sistem bilgisi izlencesi.
+
+    [boŸ]       Hi‡bir Ÿey yapmaz.
+    /V          Ayrntl kip.
+    /D a        Src durumunu sna.
+                u hata kodlarn d”ndrr:
+                    15 - Mevcut de§il
+                     5 - Bi‡imlendirilmemiŸ (DOS i‡in)
+                     4 - A§ srcs (denenmemiŸtir)
+                     3 - CD/DVD-ROM (sadece MSCDEX, ‡o§u 15 hatasn verir)
+                     2 - €karlabilir ortam (disket gibi)
+                     1 - (AyrlmŸ)
+                     0 - ™zel koŸul yok
+    /M          Makine trn d”ndr (ileride de§iŸebilir)
+                u ‡kŸ kodlarn d”ndrr:
+                    0 - Bilinmeyen, normal veya do§rudan 8086 donanm.
+                    1 - 80186
+                    2 - 80286
+                    3 - 80386
+                    4 - 80486
+                    5 - 80586
+                    6 - 80686 veya daha iyisi
+                  101 - DOSBox.
+                  102 - QEMU.
+                  103 - VirtualBox.
+                  104 - VMware.
+                  105 - Bochs.
+                  200 - Genel, baŸka bir ”yknc tespit edildi.
+    /P          /M anahtar ile ayndr. Ancak sonu‡lar dŸlar ve sanal makine
+                sonu‡lar i‡in test etmez.
+
+    /E n        Fiziki sabit disk #n (1, 2, vs.)'yi MBR (Ana ™nykleme Kayd)
+                durumu i‡in incele
+                    0  - MBR tamamen boŸ
+                    5  - MBR sadece b”lm verileri i‡eriyor
+                    10 - MBR ”n baŸlatma kodu i‡eriyor
+                    101 - Hata meydana geldi
+
+Bilhassa programclar ve Ar-Ge i‡in faydal olan daha fazla se‡enekleri aŸa§da
+bulabilirsiniz. Bu se‡enekler bir sredir mevcut, ancak resmi olarak V8 Power
+Tools API'nn bir par‡as de§ildirler ve ileride kaldrlabilir veya de§iŸtiri-
+lebilir. Bu ara‡larn bazlarn kulland§mdan belki ileride ayr bir izlence
+olarak yaymlanabilirler.
+
+    ASCII       Tm ASCII tablosunu g”rntle
+    RAM         Tm geleneksel belle§i STDOUT'a d”k.
+
+    /C *        Komut satrnn geri kalan i‡in ASCII de§erleri ‡ktla
+    /R dize     Tm geleneksel bellekte dizeyi ara
+    /U dize     Bellekte (a000:0000 ve zeri) BšYšK/k‡k harf fark g”zetmeden
+                dizeyi ara
+
+    /J pos *    Komut satrnn kalannda pos konumundaki karakterin ASCII
+    			de§erini hata seviyesi olarak geri g”nder. ayet konum
+    			bulunamadysa 0 geri g”nderilir.
+    /K pos *	/J ile ayndr fakat ”nce byk harf olarak de§iŸtirilir.
+
+             (Henz geliŸtirilme aŸamasndadr, daha fazla bilgi eklenecektir.)

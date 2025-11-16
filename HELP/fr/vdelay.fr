@@ -1,0 +1,11 @@
+vdelay [ms]
+
+D‚lai simple en millisecondes.
+
+    [aucun]     La valeur par d‚faut est un d‚lai de 1000 ms (1 seconde).
+    ms          D‚lai de ms millisecondes. (0-65535, 0x0000-0xffff)
+    /D          D‚tecter la m‚thode utilis‚e pour le chronom‚trage.
+                (Incompatible avec VirtualBox)
+    /S          Utiliser une minuterie … usage g‚n‚ral. (Valeur par d‚faut)
+    /I          Utiliser une minuterie d'interruption de haute pr‚cision.
+                (Incompatible avec VirtualBox)

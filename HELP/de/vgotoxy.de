@@ -1,0 +1,24 @@
+vgotoxy [Optionen]
+
+Cursorposition verschieben oder abfragen.
+  [keine]      FÅhrt keine Aktion aus.
+  /Q x oder y  Fragt die aktuelle X- oder Y-Position des Cursors ab
+               und gibt sie auf STDOUT aus.
+  /X Spalte    Bewegt Cursor zu Spalte.
+  /Y Zeile     Bewegt Cursor zu Zeile.
+  /G           Bewegt Cursor bezogen auf den ganzen Bildschirm (Standard).
+  /L           Bewegt Cursor bezogen auf seine Umgebung.
+  /K n         Verwendet n anstelle des Rahmenzeichens, um Grenzen
+               anzuzeigen.
+  Direction    Bewegt Cursor um eine Stelle nach oben/unten/links/rechts.
+  Shift        Bewegt Cursor zur vorigen oder nÑchsten Position und
+               wechselt notfalls die Zeilen.
+  Position     Bewegt Cursor zum:
+                    SOP (Seitenanfang),
+                    EOP (Seitenende),
+                    SOR (Zeilenanfang),
+                    EOR (Zeilenende),
+                    SOL (Textanfang in Zeile),
+                    EOL (Textende in Zeile),
+                    SOT (Textanfang) oder
+                    EOT -Position (Textende).

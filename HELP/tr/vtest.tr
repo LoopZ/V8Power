@@ -1,0 +1,92 @@
+vtest [se‡enekler]
+
+Durum deneyicisi. DO¦RU veya YANLI olarak ”zetlenebilecek ‡eŸitli testler
+yapar. Netice bir hata seviyesi yani ERRORLEVEL olarak g”nderilir. Sonu‡
+DO¦RU oldu§unda bir sfr geri g”nderilir. ayet sonu‡ YANLI ise, bir 1 geri
+g”nderilir. YanlŸ bir s”z dizimi veya benzer bir hata 100 geri g”nderecektir.
+
+Testler:
+
+	/f dosya 	        dosya mevcut
+	/d dizin 	        yol mevcut
+	/e dosya veya dizin	dosya veya dizin yolu mevcut
+	val1 /eq val2	    de§erler eŸittir
+	val1 /ne val2	    de§erler eŸit de§ildir
+	val1 /ge val2	    val1 val2'den byk veya ona eŸittir
+	val1 /le val2	    val1 val2'den k‡k veya ona eŸittir
+	val1 /gt val2	    val1 val2'den byktr
+	val1 /lt val2	    val1 val2'den k‡ktr
+	dize    		    dize boŸ de§ildir
+	/n dize     	    dize boŸ (null) de§ildir
+	/z dize     	    dize boŸtur (null)
+	/v say     	    say ge‡erlidir
+	/f dosya        	dosya mevcuttur
+	/d dizin	 	    yol mevcuttur
+	/e dosya veya dizin	herhangi bir dizin girdisi tr
+
+Operat”rler:
+
+	/c ifade	Bir de§erin dize olarak iŸlenmesini zorla ve byk k‡k
+			harflere duyarl mukayese yap.
+	/i ifade	Bir de§erin dize olarak iŸlenmesini zorla ve byk k‡k
+			harflere duyarsz bir karŸlaŸtrma yap.
+	exp1 /and exp2  ˜ki ifadenin de DO¦RU olmalar gerekir.
+	exp1 /or /exp2  ˜fadelerden biri DO¦RU olabilir.
+	/not ifade      ˜fadenin sonucunu tersine ‡evir.
+
+Di§er se‡enekler:
+
+	/tf		Bitti§inde TRUE veya FALSE g”rntle.
+
+Varsaylan olarak, de§erler karŸlaŸtrmas trlerine dayaldr. E§er iki
+de§er de bir sayysa (ondalk veya onaltlk), karŸlaŸtrma matematik olarak
+yaplr. Aksi halde byk k‡k harflere duyarsz alfabetik bir karŸlaŸtrma
+yaplr. /c veya /i se‡eneklerinden birinin kullanlmas, de§erin veri trne
+baklmakszn metin temelli bir karŸlaŸtrmay zorlar. BoŸ bir de§erin
+saysal bir de§eri yoktur ve iki unsurun dize olarak karŸlaŸtrlmalarn
+zorlar.
+
+Temel ”rnekler:
+
+TEST.TXT isimli bir dosya mevcut:		vtest /f TEST.TXT
+TEST.TXT isimli bir dosya mevcut de§il:	vtest /not /f TEST.TXT
+Ya A.TXT dosyas ya da B.TXT mevcut:	vtest /f A.TXT /or /f B.TXT
+Ne A.TXT ne de B.TXT mevcut de§il:	    vtest /not /f A.TXT /and /not /f B.TXT
+%1 bir saydr:				            vtest /v %1
+%1 1 ila 10 aras bir saydr:		    vtest /v %1 /and 1 /le %1 /le 10
+
+/f, /d ve /e se‡enekleri dosya veya dizin unsurlarn denerler, /not, /c ve
+/i de§iŸtiricileri ile jokerleri de kullanabilirler. Bir dosya sistemi eŸleŸen
+bir unsur i‡in kontrol edildikten sonra ilk eŸleŸen dosya sistemi unsurunun
+de§eri olurlar ve de§er olarak iŸlem g”rebilirler. ayet hi‡bir eŸleŸen unsur
+bulunamadysa, de§er boŸ olur ve byk ihtimalle bir ifadenin yanlŸ olarak
+de§erlendirilmesine yol a‡ar.
+
+˜ki de§erin karŸlaŸtrmas yapld§nda e§er her bir de§er ge‡erli bir say
+(onluk veya onaltlk) i‡eriyorsa, karŸlaŸtrma saysal olarak yaplr.
+E§er de§erlerden biri saysal de§ilse, alfabetik olarak kaŸlaŸtrlr. Her
+ne kadar veri trlerini karŸlaŸtrma serilerinde karŸtrmak mmkn olsa da
+neticenin ”ng”rlmesi zor olabilir ve bu genel olarak tavsiye edilmez.
+
+Trnak iŸaretleri boŸluklar i‡eren dizeler i‡in KULLANILMAZ. Trnak iŸaretleri
+daima normal metin karakterleri olarak iŸlenir. Komut satr ayrŸtrcs
+dizeleri sadece bir SWITCH_CHAR (normalde /) tespit edildi§inde ayrr. Bu,
+kabul edilebilir bir ”rnektir:
+
+vtest a, b ve c /lt d, e ve f /and 6 /gt 5 /lt 7
+
+Trnak iŸaretlerinin dizeleri sadece toparlamak i‡in kullanlmas hatal
+sonu‡lara yol a‡ar. AŸa§daki ”rnek DA˜MA DO¦RU (TRUE) sonucunu verir, %1
+de§erinden ba§msz olarak:
+
+vtest /n "%1"
+
+Dahas, Ÿayet bir dize SWITCH_CHAR i‡eriyorsa, SWTICH_CHAR'n sonrasndaki
+ksm program se‡ene§i olarak yorumlanacaktr, bunun istisnas ilave bir
+SWITCH_CHAR ile ka‡Ÿ yapmaktr. Mesela "E/H", "E" dizesi ve ardndan "/H"
+se‡ene§i olarak yorumlanr. Her ikisini de dize olarak yorumlamak i‡in "E//H"
+kullanlmaldr.
+Mesela:
+
+vtest /n e//h
+

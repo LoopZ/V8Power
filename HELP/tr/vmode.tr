@@ -1,0 +1,19 @@
+vmode [seáenekler]
+
+Geáerli video metin kiplerini ayarla ve sorgula.
+
+    [boü]       GÅncel video kipini ve yazçtipini STDOUT'a áçktçla.
+    VESA        VESA kiplerinin bir listesini STDOUT'a áçktçla.
+    mod         GÅncel video kipini ayarla. (0-0xffff) veya seáime dayalç
+                yazçtipi ayarçyla birlikte bir kip etiketi.
+
+                Kipler: BW40    Siyah beyaz 40 satçr (aynç zamanda B40).
+                        BW80    Siyah beyaz 80 satçr (aynç zamanda B80, BW).
+                        CO40    Renkli 40 satçr (aynç zamanda C40).
+                        CO80    Renkli 80 satçr (aynç zamanda C80, COLOR).
+                        MONO    Tek renk 80 sÅtun.
+
+           Yazçtipleri: Font8   8x8 ROM yazçtipini seá (aynç zamanda F8).
+                        Font14  8x14 EGA ROM yazçtipini seá (aynç zamanda F14).
+                        Font16  8x16 VGA ROM yazçtipini seá (aynç zamanda F16).
+

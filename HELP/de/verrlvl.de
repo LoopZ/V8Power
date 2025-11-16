@@ -1,0 +1,7 @@
+verrlvl [Optionen]
+
+Legt den aktuellen Errorlevel fest. Hautps„chlich zum Testen der Batchdatei-
+Logik.
+
+  [keine]    Setzt den Errorlevel auf 0.
+  n          Setzt den Errorlevel auf n (0-255).

@@ -1,0 +1,14 @@
+vreadkey [options]
+
+Wait for a keystroke and return it's value as a hexidecimal number through
+the standard output device and a value for the key will be returned as an
+%ERRORLEVEL%. Invalid switches or options will return an %ERRORLEVEL% of 
+255. Special keys (such as arrows) will return an %ERRORLEVEL% above 128.
+
+    /N      Do not output key value to the standard output device.
+    /D n    Timeout and return default code in n seconds (0-3600).
+    /R n    Set the default code returned if a timeout occurs.
+    /P      Purge the input buffer of any waiting keystrokes. 
+
+   tba         (Still under development, more to be announced)
+

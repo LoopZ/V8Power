@@ -1,0 +1,29 @@
+vview [options] fichier
+
+Visionneur de fichier. Prend en charge les fichiers jusqu'… 2 Go avec les
+fins de fichier CRLF, CR ou bien LF. Contrairement … la majorit‚ des
+outils V8Power, cet utilitaire utilise par d‚faut tout l'‚cran.
+Pour utiliser VVIEW dans une boŒte VFRAME, vous devrez sp‚cifier le mode
+d'affichage local.
+
+    /A n        R‚gler l'attribut de texte sur n.
+    /B couleur  D‚finir l'attribut de texte d'arriŠre-plan sur couleur
+                (ou bien une valeur).
+    /F couleur  D‚finir le texte d'avant-plan sur couleur (ou bien sur
+                une valeur).
+    /G          Utiliser tout l'‚cran. (Valeur par d‚faut)
+    /L          Affichage local au sein du VFRAME. D‚tecte son
+                environnement et n'utilise q'une partie de l'affichage.
+                Probablement une boŒte, une ligne ou quelque chose de
+                similaire.
+    /K n        Utiliser n au lieu des caractŠres de cadre pour d‚tecter
+                les limites.
+
+Lors de l'affichage d'un fichier, vous pouvez utiliser les touches Haut,
+Bas, Gauche, Droite, Page pr‚c‚dente, Page suivante, D‚but et Fin afin de
+parcourir le contenu du fichier. Pour arrˆter de visionner un fichier
+appuyez sur la touche d'chappement. Si plusieurs fichiers ont ‚t‚
+sp‚cifi‚s, ils seront affich‚s un fichier … la fois.
+
+               (Toujours en d‚veloppement, plus … venir)
+

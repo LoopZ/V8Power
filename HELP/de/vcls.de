@@ -1,0 +1,23 @@
+vcls [Optionen]
+
+Bildschirm, Bereich oder Zeile (Linie) lîschen.
+
+  [keine]     Lîscht den Bildschirm mit dem aktuellen Textattribut.
+  n           Setzt Textattribut auf n.
+  /A n        Setzt Textattribut auf n.
+  /B color    Setzt Hintergrundtextattribut auf Farbe (oder einen Wert).
+  /F color    Setzt Vordergrundtextattribut auf Farbe (oder einen Wert).
+  /G          Global Bildschirm lîschen (Standard).
+  /L          Lokal Bildschirm lîschen. Erkennt die Umgebung und lîscht
+              nur das. Vermutlich ein KÑstchen oder eine Linie o.Ñ. Diese
+              Option braucht man nicht, es sei denn um das KÑstchen neu zu
+              zeichnen.
+  /K n        Verwendet n anstelle des Rahmenzeichens, um Grenzen anzuzeigen.
+  TEXT        Lîscht nur den Text. LÑ·t alle Farben intakt und ignoriert
+              ihre Farbattribute.
+  EOL         Lîsche nur vom Cursor bis zum Zeilenende.
+  /C code     Lîsche durch AuffÅllen mit einem ASCII-Zeichencode.
+  /X column   Absolute Bildschirmspalte um mit dem Lîschen zu beginnen.
+  /Y row      Absolute Bildschirmzeile um mit dem Lîschen zu beginnen.
+  /W width    Gesamtbreite des zu lîschenden Bereichs.
+  /H height   Gesamthîhe des zu lîschenden Bereichs.

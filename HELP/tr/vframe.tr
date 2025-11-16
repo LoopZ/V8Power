@@ -1,0 +1,24 @@
+vframe [se‡enekler]
+
+Bir pencere kutucu§u ‡iz ve imleci onun i‡inde st sol k”Ÿeye taŸ.
+
+    [boŸ]        Tm ekran i‡eren bir kutu ‡iz.
+    /A n         Metin ”zniteli§ini n olarak ayarla.
+    /B renk      Arka plan metin ”zniteli§ini renk/de§er olarak ayarla.
+    /F renk      ™n plan metin ”zniteli§ini renk/de§er olarak ayarla.
+    /X stun     Kutunun baŸlayaca§ ekran stunu.
+    /Y satr     Kutunun baŸlayaca§ ekran satr.
+    /W geniŸlik  Kutunun toplam geniŸli§i.
+    /H ykseklik Kutunun toplam yksekli§i.
+    /C           Kutuyu yatay ve dikey olarak ortaya hizalar.
+    /T dosya ID  ID'yi dosyada ara ve komut satr se‡ene§i olarak iŸle.
+                 Bu anahtar takip eden tm ek se‡enekler, metin dizesinde
+                 %1-%9 de§iŸkenlerini doldurmak i‡in kullanlr.
+    /P n         Metin ve se‡enek kutular i‡in g”rnmez n dolgu karakteri
+                 ayarla.
+    style        Kutu tarzlar Single, Double, SingleSides, DoubleSides
+                 ve Hidden unsurlarndan oluŸur.
+    shadow       3 boyutlu tarznda bir g”lge ekle.
+    textbox      Dolgu ve kenar boŸluklar olan bir metin kutusu tarz ‡er‡eve
+                 ‡iz.
+    optionbox    €er‡eve i‡indeki se‡imler i‡in gizli stilde se‡enek kutusu ‡iz.

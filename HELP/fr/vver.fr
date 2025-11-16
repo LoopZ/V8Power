@@ -1,0 +1,12 @@
+vver [options]
+
+Programme d'informations sur V8Power.
+
+    [aucun]     Envoie toutes les informations … STDOUT.
+    all         Envoie toutes les informations … STDOUT.
+    title       Envoie le titre complet … STDOUT.
+    copyright   Envoie le message de copyright … STDOUT.
+    version     Envoie les informations de version … STDOUT.
+    license     Envoie les informations de licence … STDOUT.
+    url         Envoie les informations de site Internet … STDOUT.
+    email       Envoie l'adresse e-mail … STDOUT.

@@ -1,0 +1,85 @@
+vtest [options]
+
+A tester of state. It can perform various checks which can be boiled down to
+either TRUE or FALSE. The result is passed as an ERRORLEVEL. When the answer
+is TRUE a zero is returned. If the answer is FALSE, a 1 is returned. Using an
+improper syntax and other such errors will return exit code 100.
+
+Tests:
+
+	val1 /eq val2	values are equal
+	val1 /ne val2	values are not equal
+	val1 /ge val2	val1 is greater than or equal to val2
+	val1 /le val2	val1 is less than or equal to val2
+	val1 /gt val2	val1 is greater than val2
+	val1 /lt val2	val1 is less than val2
+	string		string is not null
+	/n string	string is not null
+	/z string	string is null
+	/v number	number is valid
+	/f file 	file exists
+	/d dir	 	path exists
+	/e file or dir	any type of directory entry
+
+Expression operators:
+
+	/c expression	Force a value to be treated as a string and perform a
+			case-specific comparison.
+	/i expression	Force a value to be treated as a string and perform a
+			caseless comparison.
+	exp1 /and exp2  Both expressions must be TRUE.
+	exp1 /or /exp2  Either expression can be TRUE.
+	/not expression Invert the result of an expression.
+
+Other options:
+
+	/tf		Display TRUE or FALSE when finished.
+
+By default, comparison of values is based on their type. If both values are
+a number (represented in decimal or hexadecimal), the comparison will be made
+mathematically. Otherwise, an non-case specific alphabetical comparison will
+be performed. Using either the /c or /i options will force a text based
+comparison regardless of the value's data type. An empty VALUE does not have
+a numerical value and will force the two items to be compared as strings.
+
+Basic examples:
+
+A file named TEST.TXT exists:		vtest /f TEST.TXT
+A file named TEST.TXT does not exist:	vtest /not /f TEST.TXT
+Either file A.TXT or B.TXT exists:	vtest /f A.TXT /or /f B.TXT
+Neither file A.TXT or B.TXT exist:	vtest /not /f A.TXT /and /not /f B.TXT
+%1 is a number:				vtest /v %1
+%1 is a number from 1 to 10:		vtest /v %1 /and 1 /le %1 /le 10
+
+While options /f, /d and /e test for file or directory entries, they can use
+expression modifiers like /not, /c and /i and also support wildcards. Once a
+the filesystem has been checked for the existence of a matching entry, they
+become the value of the first matching filesystem item and can be treated
+like values. If no matching entry is found, the value becomes null and will
+most likely cause an expression to evaluate as false.
+
+When performing a comparison of two values, if each value contains a valid
+number (decimal or hexadecimal) the comparison will be performed numerically.
+If either value is not a number, it will be compared alphabetically. Although
+it is possible to mix data types in a series of comparisons, the outcome can be
+difficult to predict and it is not generally recommended.
+
+Quotation marks are NOT used for strings with spaces. Quotation characters are
+always treated as normal text characters. The command line parser will only
+separate strings when a SWITCH_CHAR (normally /) is detected. This is an
+acceptable example:
+
+vtest a, b and c /lt d, e and f /and 6 /gt 5 /lt 7
+
+Using a quotation to simply wrap strings will produce erroneous results. The
+following example will ALWAYS result in TRUE regardless of the value of %1:
+
+vtest /n "%1"
+
+Furthermore, if a string contains the SWITCH_CHAR, the portion following the
+SWITCH_CHAR will be interpreted as a program option unless it is is escaped by
+inserting an addition SWITCH_CHAR. For example, "Y/N" would be interpreted as
+String "Y" then option "/N". To interpret both as a string it would be "Y//N".
+For example:
+
+vtest /n y//n

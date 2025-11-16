@@ -1,0 +1,22 @@
+vprogres [options]
+
+Dessiner une barre de progression … l'emplacement actuel sans d‚placer le
+curseur.
+
+    [aucun]     Dessiner une barre de progression … 0%.
+    /A n        D‚finir l'attribut de texte sur n.
+    /B couleur  D‚finir l'attribut du texte d'arriŠre-plan sur la couleur (ou
+                bien sur une valeur).
+    /F couleur  D‚finir l'attribut du texte d'avant-plan sur la couleur (ou
+                bien sur une valeur).
+    /W largeur  Remplace la largeur par d‚faut de la barre. (La valeur par
+                d‚faut est depuis le curseur jusqu'… la fin de la ligne)
+    /K n        Utiliser n au lieu du caractŠre de cadre pour d‚tecter les
+                limites.
+    valeur      D‚finit la valeur en pourcentage de progression.
+    off         Ne pas afficher le nombre de pourcentage.
+    align       Positionner le nombre de pourcentage … gauche (left), au centre
+                (center, valeur par d‚faut) ou … droite (right) de la barre de
+                progression.
+    OF max      Calculer le pourcentage de max. Exemple 5 sur 7.
+

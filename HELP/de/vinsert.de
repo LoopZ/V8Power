@@ -1,0 +1,12 @@
+vinsert [Optionen]
+
+FÅgt an der aktuellen Position eine leere Zeile ein.
+
+  [keine]     FÅgt eine leere Zeile ein.
+  n           FÅgt n leere Zeilen ein.
+  /A n        Setzt das Textattribut auf n.
+  /B color    Setzt das Hintergrundtextattribut auf Farbe (oder einen Wert).
+  /F color    Setzt das Vordergrundtextattribut auf Farbe (oder einen Wert).
+  /G          Globales EinfÅgen.
+  /L          Lokales EinfÅgen. (Standard)
+  /K n        Verwende n anstelle des Rahmenzeichens, um Grenzen anzuzeigen.

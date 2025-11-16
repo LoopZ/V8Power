@@ -1,0 +1,11 @@
+vdelay [ms]
+
+Milisaniye tÅrÅnden basit gecikme.
+
+    [boü]       ôntançmlç deßer: 1000ms (1 saniye).
+    ms          ms milisaniye boyunca bekle. (0-65535, 0x0000-0xffff)
+    /D          Zamanlama iáin kullançlan yîntemi algçla (VirtualBox ile
+                uyumsuzdur).
+    /S          GÅvenli genel amaálç zamanlayçcç kullan (întançmlç).
+    /I          YÅksek hassasiyetli kesinti zamanlayçcç kullan (VirtualBox
+                ile uyumsuz).

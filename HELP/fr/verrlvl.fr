@@ -1,0 +1,8 @@
+verrlvl [options]
+
+D‚finit le niveau d'erreur actuel. Principalement pour tester la logique des
+fichiers batch.
+
+    [aucun]     D‚finir le niveau d'erreur (errorlevel) sur 0
+    n           D‚finir le niveau d'erreur sur n (0-255)
+

@@ -1,0 +1,16 @@
+vdelete [options]
+
+Effacer la ligne … l'emplacement actuel.
+
+    [aucun]     Effacer la ligne.
+    n           Effacer n lignes.
+    /A n        D‚finir l'attribut de texte sur n.
+    /B couleur  D‚finir l'attribut de texte d'arriŠre-plan sur une couleur (ou
+                une valeur).
+    /F couleur  D‚finir l'attribut de texte d'avant-plan sur une couleur (ou
+                une valeur).
+    /G          Effacement global.
+    /L          Effacement local. (Valeur par d‚faut)
+    /K n        Utiliser n au lieu du caractŠre de cadrage pour d‚tecter les
+                limites.
+

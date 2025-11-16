@@ -1,0 +1,38 @@
+vchoice [options]
+
+Choisir une option.
+
+Retourne un niveau d'erreur du choix effectu‚ fond‚ sur son num‚ro d'entr‚e.
+Pas sur la lettre/chiffre du choix. Par exemple, si le second item est choisi,
+retournera un niveau d'erreur de 2. Sans prendre en compte les pr‚fixes (tels
+que C, 1, R, etc). En outre, je recommande d'utiliser auto pour tout jeu de
+choix que vous pr‚fixeriez avec une lettre ou un chiffre.
+    [aucun]     Utiliser tous les r‚glages automatiques par d‚faut.</td></tr>
+    /A n        D‚finir l'attribut texte sur n pour l'item s‚lectionn‚.
+    /B couleur  D‚finir l'attribut de texte d'arriŠre-plan sur couleur (ou une
+                valeur) pour l'‚l‚ment s‚lectionn‚.
+    /F couleur  D‚finir l'attribut de texte d'avant-plan sur couleur (ou une
+                valeur) pour l'‚l‚ment s‚lectionn‚.
+    /D n        Pr‚s‚lectionner l'‚l‚ment num‚ro n comme choix par d‚faut.
+    type        Type de s‚lection par appui direct.
+                    off    S‚lectionner uniquement avec les touches de curseur.
+                    auto   D‚tecter les caractŠres de saut direct. (valeur par
+                           d‚faut)
+                    alpha   Aller aux s‚lections en utilisant A-Z.
+                    chiffre Aller aux s‚lections en utilisant 1-9 (+0).
+    /Q          Requˆte pour le r‚sultat. Lorsque le choix est effectu‚,
+                texte sera envoy‚ vers STDOUT.
+    /T secondes D‚lai en secondes avant que l'‚l‚ment par d‚faut est choisi
+                automatiquement (0-3600). Notez que mˆme si l'utilisateur
+                navigue vers un ‚l‚ment diff‚rent, l'‚l‚ment par d‚faut
+                original sera choisi lorsque le d‚lai d'attente sera d‚pass‚.
+    /P n        Utiliser le mode sondage et pr‚s‚lectionner l'‚l‚ment num‚ro n
+                en tant que choix actuel. Notez que toute modification de la
+                s‚lection quittera vchoice et retournera 100+ le chiffre actuel
+                du choix.
+    /K n        Utiliser n au lieu du caractŠre de cadrage pour d‚tecter les
+                limites.
+    CTRL-C      Lorsqu'elle est sp‚cifi‚e et que Contr“le-C est press‚e,
+                quittera avec un niveau d'erreur de 200.
+
+                (toujours en d‚veloppement, plus … venir)

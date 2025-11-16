@@ -1,0 +1,11 @@
+vfont [options]
+Charger temporairement une police matricielle en mode texte.
+
+    fichier      Charger un fichier de police.
+    /F n fichier Si la police actuelle a n (chiffre, EGA ou VGA) lignes alors
+                 charger le fichier de police. Peut ˆtre enchaŒn‚e pour
+                 diverses r‚solutions.
+    /D           Charger la police par d‚faut pour la r‚solution actuelle.
+
+                (Toujours en d‚veloppement, plus … venir)
+

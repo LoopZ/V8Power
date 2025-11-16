@@ -1,0 +1,18 @@
+vmode [Optionen]
+
+Aktuelle Videotextmodi abfragen und einstellen.
+
+  [keine]     Gibt den aktuellen Videomodus und Schriftart an STDOUT aus.
+  VESA        Gibt eine Liste der VESA-Modi an STDOUT aus.
+  mode        Stellt den aktuellen Videomodus ein. (0-0xffff) oder eine
+              Modusbezeichnung mit optionaler Schriftarteinstellung.
+
+              Modes:  BW40    Schwarzweiá 40 Spalten (auch B40).
+                      BW80    Schwarzweiá 80 Spalten (auch B80, BW).
+                      CO40    Farbe 40 Spalten (auch C40).
+                      CO80    Farbe 80 Spalten (auch C80, COLOR).
+                      MONO    Mono 80 Spalten.
+
+              Fonts:  Font8   W„hle 8x8 ROM Schriftart (auch F8).
+                      Font14  W„hle 8x14 EGA ROM Schriftart (auch F14).
+                      Font16  W„hle 8x16 VGA ROM Schriftart (auch F16).

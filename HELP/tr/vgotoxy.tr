@@ -1,0 +1,24 @@
+vgotoxy [seáenekler]
+
+òmleá konumunu sorgula veya taüç.
+
+    [boü]       Hiábir iülemde bulunmaz.
+    /Q x veya y òmlecin geáerli X veya Y konumunu sorgular ve bunu STDOUT'a
+                áçktçlar.
+    /X sÅtun    òmleci sÅtuna taüç.
+    /Y satçr    òmleci satçra taüç.
+    /G          òmleci tÅm ekrana dayanarak taüç (întançmlç).
+    /L          òmleci áevresine dayanarak taüç.
+    /K n        Sçnçrlarç algçlamak iáin áeráeve karakteri yerine n kullan.
+    yîn         òmleci yukarç, aüaßç, sola veya saßa doßru bir boüluk taüç.
+    shift       òmleci înceki veya sonraki konuma taüç ve gerekirse satçrlarç
+                deßiütir.
+    position    òmleci üu konuma taüç:
+                    SOP (Sayfa baülangçcç),
+                    EOP (Sayfa sonu),
+                    SOR (Satçr baülangçcç),
+                    EOR (Satçr sonu),
+                    SOL (Satçrda metnin baülangçcç),
+                    EOL (Satçrda metnin sonu),
+                    SOT (TÅm metnin baülangçcç) veya
+                    EOT (TÅm metnin sonu).

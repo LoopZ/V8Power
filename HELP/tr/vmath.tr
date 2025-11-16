@@ -1,0 +1,22 @@
+vmath [seáenekler]
+
+Äok basit bir matematik programç. Bir hesap makinesi DE¶òLDòR ve încelik
+kesinlikle soldan saßadçr (bunu deßiütirebilirim). Yardçmcç iülemci
+gerektirmeden 8086 iülemciler ile 64 bit tam sayç matematißini destekler.
+Bilhassa dîngÅler ve ekran ofseti tespiti vs. iáin yararlçdçr.
+
+    +, ADD      Sonraki sayçyç toplama ekle.
+    -, SUB      Sonraki sayçyç toplamdan áçkar.
+    *, MUL      Toplamç sonraki sayçyla áarp.
+    /, DIV      Toplamç sonraki sayçyla bîl.
+    \, MOD      Toplamç sonraki sayçyla bîl ve toplamç kalan olarak ayarla.
+
+    AND         Mantçksal VE.
+    OR          Mantçksal VEYA.
+    XOR         Mantçksal ôZELVEYA.
+    SHR         Saßa bit kaydçr.
+    SHL         Sola bit kaydçr.
+
+    /H          Äçktçyç onaltçlçk olarak ayarla.
+    /D          Äçktçyç ondalçk olarak ayarla.
+    /B		    Äçktçyç ikili olarak ayarla.

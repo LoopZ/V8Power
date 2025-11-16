@@ -1,0 +1,12 @@
+vfont [Optionen]
+
+L„dt tempor„r eine Bitmap-Schriftart im Textmodus.
+
+  file        Lade Schriftart-Datei.
+  /F n file   Wenn die aktuelle Schriftart n (Anzahl, EGA oder VGA) Zeilen
+              hat, dann lade die Schriftartdatei. Kann fr unterschiedliche
+              Aufl”sungen verkettet werden.
+  /D          Lade fr die aktuelle Aufl”sung die Standardschriftart.
+
+  tba         (Noch in der Entwicklung, mehr wird noch bekanntgegeben).
+

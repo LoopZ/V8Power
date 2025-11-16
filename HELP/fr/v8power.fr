@@ -1,0 +1,111 @@
+*******************************************************************************
+V8Power Tools
+Copyright 2015-2024 Jerome Shidel
+PubliÇ sous la licence GPL v2.0.
+*******************************************************************************
+
+Mettre la puissance d'un moteur 8 cylindres sous le capot des fichiers batch
+DOS.
+
+===============================================================================
+
+Le projet V8Power Tools est conáu en coopÇration avec Jim Hall pour le systäme
+d'exploitation FreeDOS(TM) (http://www.freedos.org). Il vise Ö Çtendre les
+fonctionnalitÇs des scripts Çcrits au moyen de fichiers batch et Ö leur fournir
+une interface utilisateur avec un meilleur rendu et des fonctionnalitÇs
+amÇliorÇes.
+
+===============================================================================
+
+Compilation de V8Power Tools
+
+    PrÇrequis :
+
+        Processeur 8086 ou supÇrieur.
+        Adaptateur graphique EGA ou supÇrieur.
+        FreeDOS(TM) 1.1 (http://www.freedos.org) ou plus rÇcent
+        NASM pour DOS version 2.16.01 (http://wwww.nasm.us) ou plus rÇcent
+
+    Compilation :
+
+        Assurez-vous que le rÇpertoire NASM est dans votre spÇcification
+        de chemin.
+        TÇlÇchargez les sources les plus rÇcentes depuis
+        http://github.com/LoopZ/V8Power
+        ExÇcutez le script mkV8.bat.
+        Tous les exÇcutables seront placÇs dans le rÇpertoire BIN nouvellement
+        crÇÇ.
+
+    Pour les gens paresseux comme moi :
+
+        Des versions prÇcompilÇes sont disponibles sur http://up.lod.bz/V8Power
+
+===============================================================================
+
+CompatibilitÇ testÇe de V8Power Tools
+
+    FreeDOS 1.1+
+
+CompatibilitÇ limitÇe des fonctionnalitÇs avancÇes (pas de prise en charge de
+ "set /p") :
+
+    MS-DOS 6.2 et 6.22
+    PC-DOS 7.0, 7.01 et 2000
+    DR-DOS 7.03
+    DOSBox (la redirection d'e/s ou l'interrogation en utilisant stdout NE
+        fonctionnera PAS avec le shell DOSBox. Cependant, cela marchera dans
+        DOSBox lorsqu'un shell compatible tel que FreeCOM est utilisÇ)
+    Shell Windows 3.11
+    Shell et ligne de commande Windows 98
+    Shell Windows XP SP3 (Ö l'exception de vcursor)
+
+===============================================================================
+
+Utilisation de V8Power Tools
+
+Voici quelques informations de base concernant tous les utilitaires et leur
+ fonctionnement.
+
+    Les options, les valeurs et les nombres hexadÇcimaux ne sont pas sensibles
+    Ö la casse, /f white est identique Ö /F wHIte.
+
+    Les nombres hexadÇcimaux peuvent àtre prÇcÇdÇs d'un prÇfixe 0x pour les
+    empàcher d'àtre considÇrÇs comme Çtant de base 10. (Exemple : 10 et 0x10)
+
+    Les espaces sont essentiellement facultatifs. /B7/f0 est identique Ö
+    /B 7 /F 0. Mais pas Ö / B7 / F0.
+
+    Pour utiliser une / ou des espaces dans une valeur, mettez-les entre des
+    guillemets. Par exemple "Jack et/ou Jill".
+
+    Utilisez des guillemets multiples pour utiliser des guillemets. Par exemple
+    "Jack's house" ou '"Comment ?"'.
+
+    Sauf passage outre, la plupart des utilitaires utilisent l'attribut texte
+    Ö l'emplacement actuel du curseur.
+
+===============================================================================
+
+Voici la table des couleurs utilisÇes pour tous les commutateurs **/A**, **/F**
+et **/B** :
+
+    DÇcimal     Hex         êtiquette (insensible Ö la casse)
+
+    0           0x00        Black               (c'est-Ö-dire noir)
+    1           0x01        Blue                (c'est-Ö-dire bleu)
+    2           0x02        Green               (c'est-Ö-dire vert)
+    3           0x03        Cyan
+    4           0x04        Red                 (c'est-Ö-dire rouge)
+    5           0x05        Magenta
+    6           0x06        Brown               (c'est-Ö-dire marron)
+    7           0x07        Gray / Grey         (c'est-Ö-dire gris)
+    8           0x08        DarkGray / DarkGrey (c'est-Ö-dire gris foncÇ)
+    9           0x09        LightBlue           (c'est-Ö-dire bleu clair)
+    10          0x0a        LightGreen          (c'est-Ö-dire vert clair)
+    11          0x0b        LightCyan           (c'est-Ö-dire cyan clair)
+    12          0x0c        LightRed            (c'est-Ö-dire rouge clair)
+    13          0x0d        LightMagenta        (c'est-Ö-dire magenta clair)
+    14          0x0e        Yellow              (c'est-Ö-dire jaune)
+    15          0x0f        White               (c'est-Ö-dire blanc)
+
+

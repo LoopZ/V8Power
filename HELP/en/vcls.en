@@ -1,0 +1,22 @@
+vcls [options]
+
+Clear screen, area or row (line).
+
+    [none]      Clear the screen with the current text attribute.
+    n           Set text attribute to n.
+    /A n        Set text attribute to n.
+    /B color    Set the background text attribute to color (or a value).
+    /F color    Set the foreground text attribute to color (or a value).
+    /G          Global Screen Clear. (Default)
+    /L          Local Screen Clear. Detects its surroundings and only clears
+                that.  Probably, a box or line or something. You don't really
+                need this option. Because, you can just redraw the box, maybe.
+    /K n        Use n instead of frame characters to detect bounds.
+    TEXT        Clear the text only. Leave all colors intact and ignore their
+                color attributes.
+    EOL         Clear from cursor to End of Line only.
+    /C code     Clear by filling with an ASCII character code.
+    /X column   Absolute screen column to start clear.
+    /Y row      Absolute screen row to start clear.
+    /W width    Total width of area to clear.
+    /H height   Total height of area to clear.

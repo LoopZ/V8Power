@@ -1,0 +1,11 @@
+vdelay [ms]
+
+Einfache Verz”gerung in Millisekunden.
+
+  [keine]     Standard ist 1000 ms (1 Sekunde) Verz”gerung.
+  ms          Verz”gerung um ms Millisekunden. (0-65535, 0x0000-0xffff).
+  /D          Erkenne fr Zeitmessung verwendete Methode. (Inkompatibel
+              mit VirtualBox).
+  /S          Verwende sicheren Allzwecktimer (Standard).
+  /I          Verwende hochpr„zisen Interrupt-Timer (Inkompatibel mit
+              VirtualBox).

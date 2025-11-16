@@ -1,0 +1,105 @@
+*******************************************************************************
+V8Power Tools
+Telif hakkç 2015-2024 Jerome Shidel
+GPL v2.0 lisansç kapsamçnda yayçmlanmçütçr.
+*******************************************************************************
+
+DOS toplu iü dosyalarçna 8 silindirli motor gÅcÅ ekler.
+
+===============================================================================
+
+V8Power Araálarç projesi Jim Hall ile iübirlißi iáinde FreeDOS (TM) iületim
+sistemi (http://www.freedos.org) iáin tasarlanmaktadçr. Toplu iü dosyalarç
+üeklinde yazçlan betiklerin iülevsellißini geniületmesi ve onlara
+daha iyi gîrÅnen bir kullançcç arayÅzÅ saßlamak amaálanmçütçr.
+
+===============================================================================
+
+V8Power Tools Derlemesi
+
+    Gereksinimler:
+
+        8086 veya daha iyi bir yonga.
+        EGA veya daha iyi bir video or better video baßdaütçrçcçsç.
+        FreeDOS(TM) 1.1 (http://www.freedos.org) veya daha yeni bir sÅrÅm
+        DOS iáin NASM 2.16.01 sÅrÅmÅ (http://wwww.nasm.us) veya daha yenisi
+
+    Derleme:
+
+        NASM dizininin yolda belirtildißinden emin olun.
+        En yeni kaynak kodu http://github.com/LoopZ/V8Power adresinden indirin
+        mkV8.bat betißini áalçütçrçn.
+        TÅm áalçütçrçlabilir dosyalar yeni oluüturulan BIN dizinine konacaktçr.
+
+    Benim gibi tembel kiüiler iáin:
+
+        ônceden derlenmiü sÅrÅmler http://up.lod.bz/V8Power adresinde mevcuttur.
+
+===============================================================================
+
+V8Power Tools Uyumluluk Durumu
+
+    FreeDOS 1.1+
+
+Geliümiü iülevler iáin sçnçrlç uyumluluk ("set /p" toplu iü desteßi bulunmaz):
+
+    MS-DOS 6.2 ve 6.22
+    PC-DOS 7.0, 7.01 ve 2000
+    DR-DOS 7.03
+    DOSBox (yerleüik DOSBox kabußu ile g/á yeniden yînlendirmesi veya stdout
+        ile sorgulama ÄALIûMAYACAKTIR. Ancak FreeCOM gibi uyumlu bir kabuk
+        kullançldçßçnda áalçüçr)
+    Windows 3.11 kabußu
+    Windows 98 kabußu ve komut satçrç
+    Windows XP SP3 kabußu (vcursor hariá)
+
+===============================================================================
+
+V8Power Tools Kullançmç
+
+Burada tÅm araálar ve nasçl áalçütçklarç hakkçnda bazç temel bilgiler
+bulabilirsiniz.
+
+    Seáenekler, deßerler ve onaltçlçk sayçlar kÅáÅk bÅyÅk harflere
+    duyarsçzdçrlar, /f white /F wHIte ile aynç anlama gelir.
+
+    Onaltçlçk sayçlarçn on tabanç olarak iülem gîrmelerini înlemek iáin 0x
+    înekini alabilir. (Mesela: 10 ve 0x10)
+
+    Boüluklar esasen seáime dayalçdçr. /B7/f0 /B 7 /F 0 ile aynç anlama gelir.
+    Ancak bu, / B7 / F0 iáin geáerli deßildir.
+
+    Bir deßer iáinde bir / veya boüluk kullanmak iáin deßeri tçrnak
+    iüaretleri iáine koyun. Mesela "Leyla ve/veya Mecnun".
+
+    Tçrnak iüaretlerini yazdçrmak iáin áoklu tçrnak iüareti kullançn. Mesela
+    "Mecnun'un evi" veya 'Yeüil "deyin"'.
+
+    Geáersiz kçlçnmadçßç sÅrece, yardçmcç programlarçn áoßu gÅncel imleá
+    konumundaki metin îznitelißini kullançr.
+
+===============================================================================
+
+Burada tÅm **/A**, **/F** ve **/B** seáenekleri iáin renk tablosunu
+bulabilirsiniz:
+
+    Ondalçk     Onaltçlçk   Etiket (BöYöK/kÅáÅk harf duyarsçz)
+
+    0           0x00        Black                   (siyah)
+    1           0x01        Blue                    (mavi)
+    2           0x02        Green                   (yeüil)
+    3           0x03        Cyan                    (camgîbeßi)
+    4           0x04        Red                     (kçrmçzç)
+    5           0x05        Magenta                 (eflatun)
+    6           0x06        Brown                   (kahverengi)
+    7           0x07        Gray / Grey             (gri)
+    8           0x08        DarkGray / DarkGrey     (koyu gri)
+    9           0x09        LightBlue               (aáçk mavi)
+    10          0x0a        LightGreen              (aáçk yeüil)
+    11          0x0b        LightCyan               (aáçk camgîbeßi)
+    12          0x0c        LightRed                (aáçk kçrmçzç)
+    13          0x0d        LightMagenta            (aáçk eflatun)
+    14          0x0e        Yellow                  (sarç)
+    15          0x0f        White                   (beyaz)
+
+

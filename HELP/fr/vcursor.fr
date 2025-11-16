@@ -1,0 +1,17 @@
+vcursor [options]
+
+Demander ou modifier la taille et la forme du curseur.
+
+    [aucun]     Afficher la forme actuelle du curseur sur STDOUT.
+    n           DÇfinir la forme actuelle du curseur en tant que n.
+    HIDE        Cacher le curseur.
+    SMALL       DÇfinit un petit curseur.
+    HALF        DÇfinir la taille du curseur Ö la moitiÇ de la hauteur du
+                texte.
+    FULL        DÇfinir la taille du curseur Ö la taille de la hauteur du
+                texte.
+
+Remarque : Bien que cet utilitaire soit entiärement compatible avec DOSBox, il
+n'y a aucun moyen de stocker la forme actuelle du curseur. Voyez les exemples
+pour contourner ce probläme. Aussi, cet utilitaire n'aura aucun effet sur un
+terminal Windows.

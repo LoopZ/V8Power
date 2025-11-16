@@ -1,0 +1,13 @@
+vdelete [seáenekler]
+
+Geáerli konumdaki satçrç sil.
+
+    [boü]       Satçrç sil.
+    n           n sayçda satçr sil.
+    /A n        Metin îznitelißini n olarak ayarla.
+    /B renk     Arka plan metin îznitelißini renk/deßer olarak ayarla.
+    /F renk     ôn plan metin îznitelißini renk/deßer olarak ayarla.
+    /G          Genelde sil.
+    /L          Yerelde sil (întançmlç).
+    /K n        Sçnçrlarç algçlamak iáin áeráeve karakteri yerine n kullan.
+

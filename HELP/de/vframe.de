@@ -1,0 +1,24 @@
+vframe [Optionen]
+
+Zeichnet eine WindowsÑhnliche Box und bewegt den Cursor an die innere obere
+linke Position.
+  [keine]     Zeichnet eine Box, die den gesamten Bildschirm umschlie·t.
+  /A n        Setzt Textattribut auf n.
+  /B color    Setzt Hintergrundtextattribut auf Farbe (oder einen Wert).
+  /F color    Setzt Vordergrundtextattribut auf Farbe (oder einen Wert).
+  /X column   Bildschirmspalte zum Starten der Box.
+  /Y row      Bildschirmzeile zum Starten der Box.
+  /W width    Gesamtbreite der Box.
+  /H height   Gesamthîhe der Box.
+  /C          Zentriert die Box horizontal und vertikal.
+  /T file ID  Suche die ID in der Datei und verarbeite Sie wie Befehlszei-
+              lenoptionen. Weitere Optionen hinter diesem Schalter werden
+              dazu verwendet, %1-%9 Variablen im Textstring zu fÅllen.
+  /P n        Setzt ein unsichtbares AuffÅllzeichen als n fÅr Text- und
+              Optionsbox.
+  style       Boxstile sind Single (einzeln), Double (doppelt), SingleSides
+              (Einzelseiten), DoubleSides (Doppels.) und Hidden (versteckt).
+  shadow      FÅgt einen Schatten im 3D-Stil hinzu.
+  textbox     Zeichnet einen Textboxstilrahmen mit AuffÅllung und Rand.
+  optionbox   Zeichnet eine versteckte Stiloptionsbox fÅr Wahlmîglichkeiten
+              innerhalb eines Rahmens.

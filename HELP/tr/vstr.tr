@@ -1,0 +1,25 @@
+vstr [se‡enekler]
+
+Sade bir dize iŸleme yardmc program. Sonu‡lar STDOUT'a ‡kt olarak yollar.
+
+    /N          Tamamland§nda CRLF (satr baŸna d”nŸ ve yeni satr) yazma.
+    /U          Girdi szgeci: BšYšK harfe d”nŸtr.
+    /D          Girdi szgeci: k‡k harfe d”nŸtr.
+    /B          Girdi szgeci: BoŸ satrlar g”rmezden gel.
+    /I          Girdi szgeci: Girintileri g”rmezden gel.
+    /C kod      Bir ASCII karakter kodu yaz.
+    /R defa     Sonraki yazma saysn belirtilen defa tekrarla. (1-65535)
+    /L satr    Standart girdiden yalnzca bu satr geri g”nder. (0-65535)
+                (Not: vline /L TOTAL toplam satr saysn geri g”nderecektir.)
+                Ayrca, :n eklemek n sayda satr ‡ktya g”nderecektir.
+    /S s1 s2    Tm s1 unsurlarn ara ve yerine s2 unsurunu koy.
+    /F s1 s2    s1 unsuruna snrlayc koy ve sadece s2 alan konumunu veya
+                alann geri g”nder.
+    /A kod s2   Kodla snrlandrlmŸ s2 konumunu veya alan geri g”nder.
+                (sekme=0x09)
+    /P s1       s1 metnini yaz.
+    /T dosya ID ID'yi dosyada ara ve komut satr se‡enekleri olarak iŸle.
+                Bu anahtar takip eden tm ek se‡enekler, metin dizesinde
+                %1-%9 de§iŸkenlerini doldurmak i‡in kullanlr.
+
+                (Henz geliŸtirilme aŸamasndadr, ileride bilgi eklenecektir.)

@@ -1,0 +1,27 @@
+vview [se‡enekler] dosya
+
+Dosya g”rntleyicisi. 2 GB'ta kadar ve CRLF, CR veya LF satr sonlar
+bulunduran dosyalar destekler. V8Power Ara‡larnn ekseriyetinin aksine
+bu yardmc ara‡ varsaylan de§er olarak tm ekran kullanr. VVIEW'u bir
+VFRAME kutusu i‡inde kullanmak i‡in yerel g”rntleme kipini belirtmeniz
+gerekecektir.
+
+    /A n        Metin ”zniteli§ini n olarak ayarla.
+    /B renk     Zemin metin ”zniteli§ini renk olarak ayarla (veya bir
+                de§er).
+    /F renk     ™n plan metin ”zniteli§ini renk olarak ayarla (veya bir
+                de§er).
+    /G          Btn ekran kullan. (Varsaylan)
+    /L          VFRAME dahilinde yerel g”rntleme. Etrafn alglar ve
+                ekrann sadece bir ksmn kullanr. Muhtemelen bir kutu,
+                ‡izgi veya benzer bir Ÿey.
+    /K n        Snrlar alglamak i‡in ‡er‡eve karakterleri yerine n
+                kullan.
+
+Dosya g”rntlendi§i esnada, Yukar, AŸa§, Sa§, Sol, PgUp, PgDn, Home ve
+End tuŸlarn dosyann i‡eri§inde gezinmek i‡in kullanabilirsiniz. Dosya
+g”rntlemeyi sonlandrmak i‡in Escape tuŸuna basn. ayet birden fazla
+dosya belirtildiyse, birer birer g”rntleneceklerdir.
+
+          (Hƒlƒ geliŸtirme aŸamasndadr, daha fazla bilgi eklenecektir)
+

@@ -1,0 +1,12 @@
+vver [options]
+
+V8Power information program.
+
+    [none]      Outputs all info to STDOUT.
+    all         Outputs all info to STDOUT.
+    title       Outputs full title to STDOUT.
+    copyright   Outputs the copyright message to STDOUT.
+    version     Outputs the version information to STDOUT.
+    license     Outputs license information to STDOUT.
+    url         Outputs the website url information to STDOUT.
+    email       Outputs email address to STDOUT.

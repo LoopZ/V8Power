@@ -1,0 +1,10 @@
+vdelay [ms]
+
+Simple delay in milliseconds.
+
+    [none]      Default is 1000ms (1 second) delay.
+    ms          Delay for ms milliseconds. (0-65535, 0x0000-0xffff)
+    /D          Detect method used for timing. (Not compatible with VirtualBox)
+    /S          Use safe general purpose timer. (Default)
+    /I          Use high precision interrupt timer. (Not compatible with
+                VirtualBox)

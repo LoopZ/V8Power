@@ -1,0 +1,24 @@
+vstr [Optionen]
+
+Einfaches String-Verarbeitungs-Utility. Gibt Ergebnisse an STDOUT aus.
+
+  /N          Schreibe kein CRLF (WagenrÅcklauf+Zeilenvorschub) wenn fertig.
+  /U          Eingabefilter: Konvertiere zu Gro·buchstaben.
+  /D          Eingabefilter: Konvertiere zu Kleinbuchstaben.
+  /B          Eingabefilter: Ignoriere Leerzeilen.
+  /I          Eingabefilter: Ignoriere EinrÅckung.
+  /C code     Schreibe einen ASCII-Zeichencode.
+  /R times    Wiederhole den nÑchsten Schreibvorgang "times" mal (1-65535).
+  /L line     Gibt nur diese Zeile aus der Standardeingabe zurÅck (0-65535).
+              Hinweis: vline /L TOTAL gibt die Gesamtzahl der Zeilen zurÅck.
+              Das HinzufÅgen von :n gibt n Zeilen aus.
+  /S s1 s2    Suche und ersetze alle Vorkommen von s1 durch s2.
+  /F s1 s2    Setzt Trennzeichen auf s1 und gibt nur Feldposition oder
+              Bereich s2 zurÅck.
+  /A code s2  RÅckgabecode-begrenzte Feldposition oder Bereich s2 (Tab=0x09).
+  /P s1       Gib Text s1 aus.
+  /T file ID  Suche die ID in der Datei und verarbeite Sie wie Befehlszei-
+              lenoptionen. Weitere Optionen hinter diesem Schalter werden
+              dazu verwendet, %1-%9 Variablen im Textstring zu fÅllen.
+
+    tba         (Noch in der Entwicklung, mehr wird noch bekanntgegeben).

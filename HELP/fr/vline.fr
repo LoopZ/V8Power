@@ -1,0 +1,14 @@
+vline [options]
+
+Trace une ligne.
+
+    [aucun]     Trace une ligne simple sur la ligne (rang‚e) actuelle.
+    /K n        Utiliser n au lieu du caractŠre de cadrage pour d‚tecter les
+                limites.
+    single      Trace une ligne simple.
+    double      Trace une ligne double.
+    hidden      Trace une ligne invisible.
+    dumb        Trace une ligne sans prendre en compte ce qui existe d‚j….
+
+                (Toujours en d‚veloppement, plus … venir)
+

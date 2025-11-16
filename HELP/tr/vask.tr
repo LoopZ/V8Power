@@ -1,0 +1,24 @@
+vask [se‡enekler]
+
+Metin giriŸi i‡in istem.
+
+    [boŸ]       Alglanan ayarlar girdi i‡in kullan.
+    [metin]     DzenlenmiŸ metni ”nceden ayarlanmŸ olarak kabul et.
+    /A n        Metin ”zniteli§ini n olarak ayarla.
+    /B renk     Arka plan metin ”zniteli§ini renk/de§er olarak ayarla.
+    /F renk     ™n plan metin ”zniteli§ini renk/de§er olarak ayarla.
+    /G          Metni global olarak gir ve tm ‡er‡evelemeyi g”z ard et.
+    /L          Metni yerel olarak gir ve ‡er‡evelemeyi dikkate al (”ntanml).
+    /K n        Snrlar alglamak i‡in ‡er‡eve karakterleri yerine n kullan.
+    /C          Belirtildi§inde ve Control-C'ye basld§nda, 200 hata dzeyi
+                de§eri ile ‡kacak ve ”ntanml de§eri d”ndrecektir.
+    /W geniŸlik €ubu§un ”ntanml geniŸli§inin yerine koy.
+                (”ntanml, imle‡ten satr sonuna kadardr)
+    /T dosya ID Dosyada ID'yi ara ve onu komut satr se‡ene§i olarak iŸle.
+                Bu anahtar takip eden ek se‡enekler, metin dizesindeki %1-%9
+                de§iŸkenlerine de§er atamak i‡in kullanlr.
+    /D saniye   ˜stemin zaman aŸmna u§rayp baŸlang‡taki ”ntanml de§eri
+                d”ndrmesi i‡in beklenecek sre. (1 de§erindeki hata dzeyini
+                d”ndrr)
+
+             (Henz geliŸtirilme aŸamasndadr, daha fazla bilgi eklenecektir.)

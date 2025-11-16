@@ -1,0 +1,14 @@
+vcursor [se‡enekler]
+
+˜mlecin boyutunu ve bi‡imini de§iŸtir veya sorgula.
+
+    [boŸ]       Gncel imle‡ bi‡iminin ‡ktsn STDOUT zerinden verir.
+    n           Gncel imle‡ bi‡imini n olarak ayarlar.
+    HIDE        ˜mleci saklar.
+    SMALL       ˜mleci k‡k yapar.
+    HALF        ˜mleci metin yksekli§inin yars olarak ayarlar.
+    FULL        ˜mleci metin yksekli§inin tamam olarak ayarlar.
+
+Not: Bu ara‡ DOSBox ile tamamen uyumlu olmakla beraber, imlecin gncel bi‡imini
+kaydetme olana§ yoktur. Bu soruna ge‡ici bir ‡”zm bulmak i‡in ”rneklere bakn.
+Ayrca bir Windows u‡biriminde bu aracn hi‡bir etkisi olmayacaktr.

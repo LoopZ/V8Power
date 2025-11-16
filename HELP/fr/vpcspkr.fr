@@ -1,0 +1,16 @@
+vpcspkr [hz:][ms]
+
+G‚n‚rer une tonalit‚ … l'aide du haut-parleur int‚gr‚.
+
+    [aucun]     Aucune sortie.
+    hz:ms       Utiliser le haut-parleur du PC pour g‚n‚rer une tonalit‚ de
+                fr‚quence hz. Puis attendre ms millisecondes. (Remarque : la
+                fr‚quence 0 d‚sactive le haut-parleur. Si aucune fr‚quence
+                n'est fournie, 0 est suppos‚)
+    /D          D‚tecter la m‚thode utilis‚e pour le chronom‚trage.
+                (Incompatible avec VirtualBox)
+    /S          Utiliser une minuterie universelle s–re. (Valeur par d‚faut)
+    /I          Utiliser une minuterie de haute pr‚cision d'interruption.
+                (Incompatible avec VirtualBox)
+
+                (Toujours en d‚veloppement, plus … venir)

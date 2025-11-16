@@ -1,0 +1,31 @@
+vask [options]
+
+Invite pour la saisie de texte.
+
+    [aucun]     Utiliser les paramŠtres d‚tect‚s pour l'entr‚e.
+    [texte]     Pr‚d‚finir le texte ‚dit‚.
+    /A n        D‚finir l'attribut du texte sur n.
+    /B couleur  D‚finir l'attribut de texte d'arriŠre-plan sur la couleur (ou
+                une valeur).
+    /F couleur  D‚finir l'attribut de texte d'avant-plant sur la couleur (ou
+                une valeur).
+    /G          Entrer le texte globalement et ignorer tout cadrage.
+    /L          Entrer le texte localement en prenant en compte le cadrage.
+                (Valeur par d‚faut)
+    /K n        Utiliser n au lieu du caractŠre de cadre pour d‚tecter les
+                limites.
+    /C          Lorsqu'elle est sp‚cifi‚e et que Contr“le-C est press‚,
+                quittera avec le niveau d'erreur de 200 et retournera la valeur
+                par d‚faut.
+    /W largeur  Remplacer la largeur par d‚faut de la barre. (la valeur par
+                d‚faut est depuis le curseur jusqu'… la fin de ligne)
+    /T ID fich  Rechercher l'ID dans le fichier et la traiter comme des options
+                de ligne de commande. Toute option suppl‚mentaire qui suivrait
+                ce commutateur est utilis‚e pour remplir les variables %1-%9
+                dans la chaŒne de texte.
+    /D secondes D‚lai en secondes … attendre avant que l'invite ne connaisse un
+                d‚passement du d‚lai d'attente et revienne … sa valeur par
+                d‚faut du d‚but. (retourne un niveau d'erreur de 1)
+
+                (toujours en d‚veloppement, plus … venir)
+

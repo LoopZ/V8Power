@@ -1,0 +1,24 @@
+vstr [options]
+
+Simple string processing utility. Outputs results to STDOUT.
+
+    /N          Do not write a CRLF when done.
+    /U          Input Filter: Convert to upper case.
+    /D          Input Filter: Convert to lower case.
+    /B          Input Filter: Ignore blank lines.
+    /I          Input Filter: Ignore indentation.
+    /C code     Write an ASCII character code.
+    /R times    Repeat the next write times number of times. (1-65535)
+    /L line     Return only this line from standard input. (0-65535)
+                (Note: vline /L TOTAL will return the total number of lines.)
+                Also, adding :n will output n number of lines.
+    /S s1 s2    Search and replace all occurrences of s1 with s2.
+    /F s1 s2    Set delimiter to s1 and only return field position or range s2.
+    /A code s2  Return code delimited field position or range s2. (tab=0x09)
+    /P s1       Print text s1.
+    /T file ID  Look up ID in file and process it like command line options.
+                Any additional options that follow this switch are used to
+                populate %1-%9 variables in the text string.
+
+    tba         (Still under development, more to be announced)
+

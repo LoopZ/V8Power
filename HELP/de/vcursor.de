@@ -1,0 +1,15 @@
+vcursor [Optionen]
+
+Žndere oder frage die Cursorgr”áe und -form ab.
+
+    [keine]     Gibt die aktuelle Cursorform an STDOUT aus.
+    n           Legt die aktuelle Cursorform als n fest.
+    HIDE        Versteckt den Cursor.
+    SMALL       Setzt einen kleinen Cursor.
+    HALF        Setzt den Cursor auf die H„lfte der Texth”he.
+    FULL        Setzt den Cursor auf die volle Texth”he.
+
+Hinweis: Obwohl dieses Dienstprogramm komplett mit DOSBox kompatibel ist,
+gibt es keine M”glichkeit, die aktuelle Cursorform zu speichern. Beachten
+Sie bitte auch die Beispiele, wie man dieses Problem umgehen kann.
+Auáerdem hat dieses Dienstprogramm in einem Windows-Terminal keine Funktion.

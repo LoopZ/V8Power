@@ -1,0 +1,22 @@
+vmath [options]
+
+Simple math utility. It is NOT a calculator and precedence is strictly from
+left to right (I may change that). It supports 64-bit integer math on an 8086
+and without the need of a co-processor. Mostly, it is good for looping,
+determining screen offsets and etc.
+
+    +, ADD      Add next number to sum.
+    -, SUB      Subtract next number from sum.
+    *, MUL      Multiply sum by next number.
+    /, DIV      Divide sum by next number.
+    \, MOD      Divide sum by next number and set sum to the remainder.
+
+    AND         Logical AND.
+    OR          Logical OR.
+    XOR         Logical XOR.
+    SHR         Bit shift right.
+    SHL         Bit shift left.
+
+    /H          Set output to hexadecimal.
+    /D          Set output to decimal.
+    /B		Set output to binary.

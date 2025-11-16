@@ -1,0 +1,21 @@
+vmath [Optionen]
+
+Supereinfaches Mathe-Dienstprogramm. Es ist KEIN Taschenrechner und
+arbeitet nur mit Zahlen von 0-32767. Gut zum Loopen, Bestimmen von
+Bildschirm-Offsets usw.
+
+  +, ADD      Addiere die n„chste Zahl zur Summe.
+  -, SUB      Subtrahiere die n„chste Zahl von der Summe.
+  *, MUL      Multipliziere die Summe mit der n„chsten Zahl.
+  /, DIV      Dividiere die Summe durch die n„chste Zahl.
+  \, MOD      Dividiere Summe durch die n„chste Zahl und setze
+              Summe auf den Rest.
+  AND         Logisches UND.
+  OR          Logisches ODER.
+  XOR         Logisches XOR.
+  SHR         Bitverschiebung nach rechts.
+  SHL         Bitverschiebung nach links.
+
+  /H          Setze die Ausgabe auf hexadezimal.
+  /D          Setze die Ausgabe auf dezimal.
+  /B          Setze die Ausgabe auf bin„r.

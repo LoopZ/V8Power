@@ -1,0 +1,23 @@
+vcls [se‡enekler]
+
+Ekran, alan veya satr sil.
+
+    [boŸ]        Ekran gncel metin ”zniteli§i ile sil.
+    n            Metin ”zniteli§ini n olarak ayarla.
+    /A n         Metin ”zniteli§ini n olarak ayarla.
+    /B color     Arka plan metin ”zniteli§ini renk (veya de§er) olarak ayarla.
+    /F color     ™n plan metin ”zniteli§ini renk (veya de§er) olarak ayarla.
+    /G           Ekrann tmn sil (™ntanml).
+    /L           Ekrandaki yerel alan sil. Etrafn alglar ve onu siler.
+                 Muhtemelen bir kutu veya bir satr. Bu se‡ene§e pek
+                 gereksiniminiz oldu§unu sanmyorum; ‡nk kutuyu belki yeniden
+                 ‡izebilirsiniz.
+    /K n         Snrlar alglamak i‡in ‡er‡eve karakterleri yerine n kullan.
+    MET˜N        Yalnzca metni sil. Renklere dokunma ve onlarn renk
+                 ”zniteliklerini yok say.
+    EOL          Yalnzca imle‡ten satr sonuna kadar sil.
+    /C kod       Bir ASCII koduyla doldurarak sil.
+    /X stun     Temizlemeye baŸlanacak mutlak ekran stunu.
+    /Y satr     Temizlemeye baŸlanacak mutlak ekran satr.
+    /W geniŸlik  Temizlenecek olan alann toplam geniŸli§i.
+    /H ykseklik Temizlenecek olan alann toplam yksekli§i.

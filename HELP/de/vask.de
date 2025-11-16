@@ -1,0 +1,27 @@
+vask [Optionen]
+
+Aufforderung zur Texteingabe.
+
+  [keine]     Verwendet erkannte Einstellungen für die Eingabe.
+  [text]      Voreingestellter bearbeiteter Text.
+  /S          Bietet eine einfache Auswahl an Zeichenoptionen. Wie die
+              Standardauswahl. Wenn verwendet, gibt vask nur die Fehlerstufe
+              der Auswahl zurück.
+  /A n        Setzt das Textattribut auf n.
+  /B color    Setzt das Hintergrundtextattribut auf Farbe (oder einen Wert).
+  /F color    Setzt das Vordergrundtextattribut auf Farbe (oder einen Wert).
+  /G          Text global eingeben und alle Rahmungen ignorieren.
+  /L          Text lokal in Bezug auf die Rahmung eingeben (STANDARD).
+  /K n        Verwendet n anstelle des Rahmenzeichens, um Grenzen anzuzeigen.
+  /C          Wenn angegeben und STRG-C gedrückt wird, wird mit Errorlevel
+              200 beendet und und der Standardwert zurückgegeben.
+  /W width    Überschreibt die Standardbreite des Balkens. (Standard ist
+              vom Cursor bis zum Zeilenende).
+  /T file ID  Suche die ID in der Datei und verarbeite Sie wie Befehls-
+              zeilenoptionen. Weitere Optionen hinter diesem Schalter werden
+              dazu verwendet, %1-%9 Variablen im Textstring zu füllen.
+  /D seconds  Verzögerung in Sekunden bis zum Zeitablauf der Eingabeauf-
+              forderung und gibt den anfänglichen Standardwert zurück
+              (liefert Errorlevel 1).
+
+  tba         (Noch in der Entwicklung, mehr wird noch bekanntgegeben).

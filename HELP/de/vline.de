@@ -1,0 +1,14 @@
+vline [Optionen]
+
+Zeichnet eine Linie.
+
+  [keine]     Zeichnet eine lokale einzelne dumme Linie in der
+              aktuellen Zeile.
+  /K n        Verwende n anstelle des Rahmenzeichens um Grenzen zu erkennen.
+  single      Zeichnet eine einzelne Linie.
+  double      Zeichnet eine Doppellinie.
+  hidden      Zeichnet eine dumme unsichtbare Linie.
+  dumb        Zeichnet eine dumme Linie ohne RÅcksicht auf bereits
+              Vorhandenes.
+
+  tba         (Noch in der Entwicklung, mehr wird noch bekanntgegeben).

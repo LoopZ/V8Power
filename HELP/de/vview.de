@@ -1,0 +1,27 @@
+vview [Optionen] Datei
+
+Dateibetrachter. Untersttzt Dateien bis zu 2 GB mit CRLF-, CR- oder LF-
+Zeilenendformaten. Im Gegensatz zu den meisten V8Power Tools verwendet
+dieses Dienstprogramm standardm„áig den gesamten Bildschirm.
+Um VVIEW innerhalb einer VFRAME-Box zu verwenden, mssen Sie den
+lokalen Anzeigemodus spezifizieren.
+
+  /A n        Setzt Textattribut auf n.
+  /B Farbe    Setzt das Hintergrundtextattribut auf Farbe (oder einen
+              Wert) fest.
+  /F Farbe    Setzt das Vordergrundtextattribut auf Farbe (oder einen
+              Wert) fest.
+  /G          Verwendet den gesamten Bildschirm. (Standard)
+  /L          Lokale Anzeige innerhalb von VFRAME. Erkennt seine Umgebung
+              und nutzt nur einen Teil des Displays.  Z.B. ein K„stchen
+              oder eine Linie oder so etwas.
+  /K n        Verwende n anstelle von Rahmenzeichen, um Grenzen
+              zu erkennen.
+
+W„hrend des Betrachtens einer Datei k”nnen Sie mit den Tasten Auf, Ab,
+Links, Rechts, PgUp, PgDn, Home und End durch den Inhalt der Datei navi-
+gieren. Zum Beenden drcken Sie die Escape-Taste. Wenn mehrere Dateien
+angegeben wurden, werden diese einzeln angezeigt. 
+
+  tba         (Noch in der Entwicklung, mehr wird noch bekanntgegeben).
+

@@ -1,0 +1,16 @@
+vreadkey [seáenekler]
+
+Bir tuüa basçlmasçnç bekle ve bunun deßerini onaltçlçk bir sayç olarak
+standart áçktç cihazçna gînder, ayrçca tuü iáin bir deßer hata seviyesi
+yani %ERRORLEVEL% olarak gînderilecektir. Geáersiz seáenekler 255
+deßerinde bir %ERRORLEVEL% gînderir. ôzel tuülar (imleá tuülarç gibi)
+128 Åzeri bir %ERRORLEVEL% gînderecektir.
+
+    /N      Standart áçktç cihazçnda tuü deßerini gîrÅntÅleme.
+    /D n    n saniye (0-3600) sonunda zaman aüçmç kabul et ve varsayçlan
+            kodu gînder.
+    /R n    Zaman aüçmç olursa gînderilen varsayçlan kodu ayarla.
+    /P      Girdi tamponunu bekleyen herhangi tuü basçmlarçndan temizle.
+
+          (HÉlÉ geliütirme aüamasçndadçr, daha fazla bilgi eklenecektir)
+

@@ -1,0 +1,16 @@
+vprogres [seáenekler]
+
+òmleci hareket ettirmeden gÅncel konuma bir ilerleme áubußu áiz.
+
+    [boü]       %0 deßerinde bir ilerleme áubußu áiz.
+    /A n        Metin îznitelißini n olarak ayarla.
+    /B renk     Arka plan metin îznitelißini renk/deßer olarak ayarla.
+    /F renk     ôn plan metin nitelißini renk/deßer olarak ayarla.
+    /W geniülik Äubußun întançmlç geniülißinin yerine koy.
+                (întançmlç, imleáten satçr sonuna kadardçr)
+    /K n        Sçnçrlarç algçlamak iáin áeráeve karakteri yerine n kullan.
+    deßer       Deßeri ilerleme yÅzdesi olarak ayarla.
+    off         YÅzde sayçsçnç gîrÅntÅleme.
+    align       YÅzde sayçsçnç áubußun soluna (left), ortasçna (center,
+                întançmlç) veya saßçna (right) konumla.
+    OF max      max deßerinin yÅzdesini hesapla. ôrneßin 7 Åzeri 5 (5 of 7).

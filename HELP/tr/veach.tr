@@ -1,0 +1,18 @@
+veach [se‡enekler]
+
+Listedeki her ”ge i‡in bir Ÿey yap.
+
+    /S          Liste sralamasn a‡.
+    /L          Liste i‡eri§ini g”rntle.
+    /F dosya    Listeye dosyadan ”ge ilave et.
+    /I          Listeye standart girdi aygtndan ”ge ekle.
+    /D ayar     'ayar' ile eŸleŸen dosya adlarn listeye ekle.
+    /A +/-      /d anahtarn tm dosya ve dizinleri etkinleŸtirecek bi‡imde
+    /C          de§iŸtir. /x anahtar kullanld§nda, alt iŸlem hatasna
+                ra§men srdrlmesine izin verir.
+    /X [kmtst]  ™geyi komut satr ile ‡alŸtr ve tm takip eden anahtarlar
+                alt iŸleme aktar. * ”ge olarak geniŸletilir, # ”ge says
+                ve @ ”genin endeksidir. E§er hi‡bir komut satr verisi
+                /x anahtarn takip etmiyorsa * varsaylr.
+
+             (Henz geliŸtirilme aŸamasndadr, daha fazla bilgi eklenecektir.)

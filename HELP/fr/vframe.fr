@@ -1,0 +1,29 @@
+vframe [options]
+
+Dessiner un objet fenàtrÇ et dÇplacer le curseur vers la position en haut Ö
+gauche Ö l'intÇrieur.
+
+    [aucun]     Dessiner une boåte qui comprend la totalitÇ de l'Çcran.
+    /A n        DÇfinir l'attribut de texte sur n.
+    /B couleur  DÇfinir l'attribut de texte d'arriäre-plan sur la couleur (ou
+                une valeur).
+    /F couleur  DÇfinir l'attribut de texte d'avant-plan sur la couleur (ou une
+                valeur).
+    /X colonne  La colonne de l'Çcran oó dÇmarrer la boåte.
+    /Y ligne    La ligne de l'Çcran oó dÇmarrer la boåte.
+    /W largeur  Largeur totale de la boåte.
+    /H hauteur  Hauteur totale de la boåte.
+    /C          Centre la boåte horizontalement et verticalement.
+    /T ID fich  Rechercher l'ID dans le fichier et le traiter comme des options
+                de ligne de commande. Toute option supplÇmentaire qui suivrait
+                ce commutateur sera utilisÇe pour remplir les variables %1-%9
+                dans la chaåne de texte.
+    /P n        DÇfinir un caractäre invisible de remplissage comme n pour la
+                boåte de texte et la boåte d'options.
+    style       Les styles de boåtes sont Single, Double, SingleSides, DoubleSides
+                DoubleSides et Hidden (cachÇ).
+    shadow      Ajouter une ombre de style 3D.
+    textbox     Dessiner un cadre de style boåte de texte avec un peu de
+                remplissage et des marges.
+    optionbox   Dessiner une boåte d'options de style cachÇ pour des choix au
+                sein d'un cadre.

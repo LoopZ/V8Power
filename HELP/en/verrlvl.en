@@ -1,0 +1,7 @@
+verrlvl [options]
+
+Sets current errorlevel. Mostly for testing batch file logic.
+
+    [none]      Sets errorlevel to 0
+    n           Sets errorlevel to n (0-255)
+

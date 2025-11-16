@@ -1,0 +1,29 @@
+vecho [Optionen] [Text]
+
+Gibt Text an das Display aus.
+
+  [keine]     FÅhrt auf Display einen WagenrÅcklauf und Zeilenvorschub
+              (CRLF) aus.
+  text        Schreibt Text in das Display.
+  /A n        Setzt Textattribut auf n.
+  /B color    Setzt Hintergrundtextattribut auf Farbe (oder einen Wert).
+  /F color    Setzt Vordergrundtextattribut auf Farbe (oder einen Wert).
+  /BlinkOn    Aktiviert das Blinken- /IntensitÑtsbit (Starte Blinken).
+  /BlinkOff   Deaktiviert das Blinken- / IntensitÑtsbit (Stoppe Blinken).
+  /N          Schreibt keinen CRLF wenn fertig.
+  /P          FÅhrt jetzt ein CRLF aus.
+  /S +        FÅgt ein Leerzeichen zwischen den Parametern ein (STANDARD).
+  /S -        FÅgt zwischen mehreren Parametern kein Leerzeichen ein.
+  /C code     Schreibt einen ASCII-Zeichencode.
+  /R times    Wiederhole den nÑchsten Schreibvorgang "times" mal (1-65535).
+  /I          Text schreiben, der mîglicherweise vom STDIN-GerÑt wartet.
+  /G          Text global eingeben und alle Rahmungen ignorieren.
+  /L          Text lokal in Bezug auf die Rahmung eingeben (STANDARD).
+  /K n        Verwendet n anstelle des Rahmenzeichens, um Grenzen anzuzeigen
+  /X code     Rest der Zeile mit ASCII-Code lîschen, Cursor nicht bewegen.
+  /E          Identisch mit Verwendung von "/X 0x20" oder "/X32".
+  /T file ID  Suche die ID in der Datei und verarbeite Sie wie Befehls-
+              zeilenoptionen. Weitere Optionen hinter diesem Schalter wer-
+              den dazu verwendet, %1-%9 Variablen im Textstring zu fÅllen.
+
+  tba         (Noch in der Entwicklung, mehr wird noch bekanntgegeben).

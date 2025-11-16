@@ -1,0 +1,17 @@
+vprogres [Optionen]
+
+Zeichne einen Fortschrittsbalken an der aktuellen Position, ohne den Cursor
+zu bewegen.
+
+  [keine]     Zeichne einen Fortschrittsbalken bei 0 %.
+  /A n        Setze Textattribut auf n.
+  /B color    Lege Hintergrundtextattribut auf Farbe (oder Wert) fest. 
+  /F color    Lege Vordergrundtextattribut auf Farbe (oder Wert) fest.
+  /W width    šberschreibe Standardbreite des Balkens
+              (Standard ist vom Cursor bis zum Zeilenende).
+  /K n        Verwende n anstelle des Rahmenzeichens, um Grenzen anzuzeigen.
+  value       Legt den Wert in Prozent des Fortschritts fest.
+  off         Zeige Prozentzahl nicht an.
+  align       Prozentzahl auf der linken, mittleren (Standard) oder rechten
+              Seite des Fortschrittsbalkens.
+  OF max      Berechne den Prozentsatz von max. Beispiel: 5 von 7.

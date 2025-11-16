@@ -1,0 +1,35 @@
+vchoice [Optionen]
+
+W„hle eine Option.
+
+Es gibt einen Errorlevel von choice aus, der von der gew„hlten Eintragsnummer
+abh„ngt. Nicht vom Buchstaben/der Zahl der Auswahl. Wenn z.B. das zweite
+Objekt gew„hlt wird, gibt es den Errorlevel 2 zurck. Unabh„ngig von einem
+Pr„fix (wie C, 1, R usw.). Auáerdem empfehle ich die Verwendung von "auto"
+fr jeden Auswahlsatz, dem Sie einen Buchstaben oder eine Zahl voransetzen.
+
+  [none]      Ausfhrung mit allen automatischen Standardeinstellungen.
+  /A n        Setzt das Textattribut fr das gew„hlte Objekt auf n.
+  /B color    Setzt das Hintergrundtextattribut fr das gew„hlte Objekt auf
+              Farbe (oder einen Wert).
+  /F color    Setzt das Vordergrundtextattribut fr das gew„hlte Objekt auf
+              Farbe (oder einen Wert).
+  /D n        W„hle Objektnummer n als Standardauswahl vor.
+  type        Direktauswahl per Tastendruck.
+                  off     Auswahl nur mit Pfeiltasten.
+                  auto    Erkenne direkte Sprungzeichen. (Standard)
+                  alpha   Mit A-Z zur Auswahl springen.
+                  digit   Mit 1-9 (+0) zur Auswahl springen.
+  /Q          Abfrage des Ergebnisses. Nach der Auswahl wird der Text direkt
+              an STDOUT gesendet.
+  /T seconds  Verz”gerung in Sekunden, bevor das Standardelement automatisch
+              gew„hlt wird (0-3600). Beachten Sie, daá selbst wenn der An-
+              wender noch zu einem anderen Element navigiert, nach dem
+              Timeout die Standardeinstellung gew„hlt wird.
+  /P n        Polling-Modus verwenden und Elementnummer n als aktuelle
+              Auswahl vorw„hlen. Bitte beachten, dass jede nderung der
+              Auswahl vchoice beendet und 100+ der aktuellen Auswahlnummer
+              zurckgibt.
+  /K n        Verwende n anstelle des Rahmenzeichens um Grenzen zu erkennen.
+  CTRL-C      Wenn angegeben und STRG-C gedrckt wird, wird mit Errorlevel
+              200 beendet.

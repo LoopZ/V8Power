@@ -1,0 +1,36 @@
+vchoice [options]
+
+Choose an option.
+
+It returns an errorlevel of choice selected based on its entry number. Not
+the letter/number of the choice. For example, if the second item is chosen,
+it will return an errorlevel of 2. Regardless of any prefix (Like C, 1, R, etc).
+Also, I personally recommend using auto for any set of choices that
+you prefix with a letter or number.
+
+    [none]      Perform using all automatic defaults settings.</td></tr>
+    /A n        Set text attribute to n for selected item.
+    /B color    Set the background text attribute to color (or a value) for
+                selected item.
+    /F color    Set the foreground text attribute to color (or a value) for
+                selected item.
+    /D n        Preselect item number n as the default choice.
+    type        Direct key press selection type.
+                    off     Select with only arrow keys.
+                    auto    Detect direct jump characters. (Default)
+                    alpha   Jump to selections using A-Z.
+                    digit   Jump to selections using 1-9 (+0).
+    /Q		    Query for result. When the choice is made, it's text will be
+                sent to STDOUT.
+    /T seconds  Delay in seconds before the default item is automatically
+                selected (0-3600). Note that even if the user navigates to a
+                different item, the original default item will be selected when
+                the timeout is achieved.
+    /P n        Use polling mode and preselect item number n as the current
+                choice. Note, any change of selection will exit vchoice and
+                return 100+ the current choice number.
+    /K n        Use n instead of frame character to detect bounds.
+    CTRL-C      When specified and Control-C is pressed, will exit with
+                errorlevel of 200.
+
+    tba         (Still under development, more to be announced)

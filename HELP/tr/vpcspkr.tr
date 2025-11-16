@@ -1,0 +1,15 @@
+vpcspkr [hz:][ms]
+
+Yerleüik hoparlîrÅ kullanarak bir ses tonu oluütur.
+
+    [boü]       Hiábir áçktç vermez.
+    hz:ms       PC hoparlîrÅnÅ kullanarak hz frekansçnda bir ses oluütur. Sonra
+                ms milisaniye boyunca sesi áal. (Not: 0 frekansç hoparlîrÅ
+                kapatçr. ûayet hiábir frekans girilmezse 0 varsayçlçr.)
+    /D          Zamanlama iáin kullançlan yîntemi algçla. (VirtualBox ile
+                ile uyumlu deßildir)
+    /S          GÅvenli genel amaálç zamanlayçcçyç kullan. (ôntançmlç)
+    /I          YÅksek hassasiyetli kesinti zamanlayçcçsçnç kullan. (VirtualBox
+                ile uyumlu deßildir)
+
+                (HenÅz geliütirilme aüamasçndadçr, ileride bilgi eklenecektir.)

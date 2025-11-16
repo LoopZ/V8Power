@@ -1,0 +1,10 @@
+vfont [se‡enekler]
+Ge‡ici olarak metin kipi biteŸlem yaztipi ykle.
+
+    dosya       Yaztipi dosyasn ykle.
+    /F n dosya  E§er gncel yaztipinde n (say, EGA veya VGA) satr varsa
+                yaztipi dosyasn ykle. Farkl ‡”znrlkler i‡in zincirleme
+                yaplabilir.
+    /D          Ge‡erli ‡”znrlk i‡in yaztipi dosyasn ykle.
+
+             (Henz geliŸtirilme aŸamasndadr, daha fazla bilgi eklenecektir.)

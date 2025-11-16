@@ -1,0 +1,13 @@
+vinsert [seáenekler]
+
+GÅncel konuma boü bir satçr ekle.
+
+    [boü]       Boü bir satçr ekle.
+    n           n tane boü satçr ekle.
+    /A n        Metin îznitelißini n olarak ayarla.
+    /B renk     Arka plan metin îznitelißini renk/deßer olarak ayarla.
+    /F renk     ôn plan metin îznitelißini renk/deßer olarak ayarla.
+    /G          Genele ekle.
+    /L          Yerele ekle (întançmlç).
+    /K n        Sçnçrlarç algçlamak iáin áeráeve karakteri yerine n kullan.
+

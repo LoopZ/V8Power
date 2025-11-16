@@ -1,0 +1,12 @@
+vpause [se‡enekler]
+
+D§meye basma veya zaman aŸm i‡in basit bekleme.
+
+    [boŸ]       Sonsuza dek bir d§meye baslmasn bekle.
+    (/T)        Kullanmdan kaldrld. Artk /D.
+    /D saniye   Beklemenin zaman aŸmna u§ramasndan ”nce beklenecek sre,
+                saniye olarak (Hata dzeyi olarak 1 d”ndrr).
+    CTRL-C      Belirtildi§inde ve Control-C'ye basld§nda, 200 hata dzeyi
+                ile ‡kacaktr.
+
+                (Henz geliŸtirilme aŸamasndadr, ileride bilgi eklenecektir.)

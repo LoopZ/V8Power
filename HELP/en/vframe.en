@@ -1,0 +1,22 @@
+vframe [options]
+
+Draw a box windowing thingy and move cursor to its inside top left position.
+
+    [none]      Draw a box that encloses the entire screen.
+    /A n        Set text attribute to n.
+    /B color    Set the background text attribute to color (or a value).
+    /F color    Set the foreground text attribute to color (or a value).
+    /X column   Screen column to start the box.
+    /Y row      Screen row to start the box.
+    /W width    Total width of the box.
+    /H height   Total height of the box.
+    /C          Centers the box horizontally and vertically.
+    /T file ID  Look up ID in file and process it like command line options.
+                Any additional options that follow this switch are used to
+                populate %1-%9 variables in the text string.
+    /P n        Set an invisible pad character as n for textbox and optionbox.
+    style       Box styles are Single, Double, SingleSides, DoubleSides
+                and Hidden.
+    shadow      Add a 3D style shadow.
+    textbox     Draw a textbox style frame with a little padding and margins.
+    optionbox   Draw a hidden style optionbox for choices inside a frame.

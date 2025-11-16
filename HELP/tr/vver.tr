@@ -1,0 +1,12 @@
+vver [seáenekler]
+
+V8Power bilgilendirme programç.
+
+    [boü]       TÅm bilgileri STDOUT'a áçktç olarak gînderir.
+    all         TÅm bilgileri STDOUT'a áçktç olarak gînderir.
+    title       Baülçßçn tamamçnç STDOUT'a áçktç olarak gînderir.
+    copyright   Telif haklarç mesajçnç STDOUT'a áçktç olarak gînderir.
+    version     SÅrÅm bilgisini STDOUT'a áçktç olarak gînderir.
+    license     Lisans bilgisini STDOUT'a áçktç olarak gînderir.
+    url         ònternet sitesi bilgisini STDOUT'a áçktç olarak gînderir.
+    email       E-posta adresini STDOUT'a áçktç olarak gînderir.

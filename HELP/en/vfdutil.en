@@ -1,0 +1,30 @@
+vfdutil [options]
+
+File and directory utility.
+
+    [none]      Does nothing.
+    /D file     Calculate and output drive letter of file to STDOUT.
+    /P file     Calculate and output path of file to STDOUT.
+    /C          Use before /D or /P to change drive or path without text output.
+    /X          Use before /D or /P to return errorlevel 1-26 of drive letter.
+    /F file     Calculate and output complete filename to STDOUT.
+    /B file     Calculate and output file's name with extension to STDOUT.
+    /N file     Calculate and output file's name without extension to STDOUT.
+    /E file     Calculate and output file's extension to STDOUT.
+    /U template Calculate and output unique file/dir name based on template to
+                STDOUT. The drive and path must exist.
+                Example: "vfdutil /u C:\TEMP\TEST????.$$$"
+    /S filespec Search the PATH for a given filespec and output all matching
+                files to STDOUT. The current directory is not searched. If a
+                filespec is not found in the path it exits with errorlevel 1.
+    /T filespec Just like /S except only the errorlevel returned.
+    /M location Output amount of disk freespace for location.
+    /R required Use in conjunction with /M to test for amount that the amount
+                of required space is available. Required is limited to 65535.
+                But, it can be appended with B, K, M and etc. It will return
+                an errorlevel of 1 when there is not enough space.
+    /A path     Test if any files or directories exist in a path, 0=dir exists
+    			and is not empty, other values are DOS error codes from test.
+
+    tba         (Still under development, more to be announced)
+

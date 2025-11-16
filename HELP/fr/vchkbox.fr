@@ -1,0 +1,3 @@
+vchkbox [options]
+
+              (toujours en d‚veloppement, plus … venir)

@@ -1,0 +1,14 @@
+vpcspkr [hz:][ms]
+
+Generate a tone using the built in speaker.
+
+    [none]      No output.
+    hz:ms       Use the PC Speaker to generate a hz frequency tone. Then, delay
+                for ms milliseconds. (Note: 0 frequency turns off speaker.
+                If no frequency is provided then 0 is assumed)
+    /D          Detect method used for timing. (Not compatible with VirtualBox)
+    /S          Use safe general purpose timer. (Default)
+    /I          Use high precision interrupt timer. (Not compatible with
+                VirtualBox)
+
+    tba         (Still under development, more to be announced)

@@ -1,0 +1,13 @@
+vdelete [options]
+
+Delete row (line) at the current location.
+
+    [none]      Delete line.
+    n           Delete n lines.
+    /A n        Set text attribute to n.
+    /B color    Set the background text attribute to color (or a value).
+    /F color    Set the foreground text attribute to color (or a value).
+    /G          Global Delete.
+    /L          Local Delete. (Default)
+    /K n        Use n instead of frame character to detect bounds.
+

@@ -1,0 +1,38 @@
+vfdutil [options]
+
+Utilitaire de fichiers et de r‚pertoires.
+
+    [aucun]     Ne rien faire.
+    /D fichier  Calculer et afficher la lettre du lecteur du fichier sur STDOUT.
+    /P fichier  Calculer et afficher le chemin du fichier sur STDOUT.
+    /C          Utiliser avant /D ou /P pour modifier le lecteur ou le chemin
+                sans sortie de texte.
+    /X          Utiliser avant /D ou /P pour retourner un niveau d'erreur 1-26
+                de la lettre de lecteur.
+    /F fichier  Calculer et afficher le nom de fichier complet sur STDOUT.
+    /B fichier  Calculer et afficher le nom de fichier avec l'extension sur
+                STDOUT.
+    /N fichier  Calculer et afficher le nom du fichier sans l'extension sur
+                STDOUT.
+    /E fichier  Calculer et afficher l'extension du fichier sur STDOUT.
+    /U modŠle   Calculer et afficher le nom du fichier/dossier fond‚ sur le
+                modŠle sur STDOUT. Le lecteur et le chemin doivent exister.
+                Exemple : "vfdutil /u C:\TEMP\TEST????.$$$"
+    /S specfich Rechercher le CHEMIN pour la sp‚cification de fichier donn‚e et
+                afficher tous les fichiers correspondants sur STDOUT. Aucune
+                recherche ne sera effectu‚e dans le r‚pertoire actuel. Si la
+                sp‚cification de fichier n'est pas trouv‚e sur le chemin,
+                quittera avec un niveau d'erreur (errorlevel) de 1.
+    /T specfich Identique … /S sauf que seuls les niveaux d'erreur seront
+                retourn‚s.
+    /M emplact. Afficher l'espace disque libre pour l'emplacement.
+    /R requis   · utiliser conjointement avec /M pour tester si la quantit‚
+                d'espace disque requise est disponible. Requis est limit‚ …
+                65535. Mais B, K, M etc peuvent y ˆtre ajout‚s. Elle retournera
+                un niveau d'erreur de 1 quand il n'y aura pas assez d'espace.
+    /A path     Tester pour savoir s'il existe des fichiers ou dossiers sur un
+    			chemin, 0=le rep‚rtoire existe et n'est pas vide, les autres
+                valeurs sont des codes d'erreur DOS du test.
+
+                (Toujours en d‚veloppement, plus … venir)
+

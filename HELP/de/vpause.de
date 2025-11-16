@@ -1,0 +1,13 @@
+vpause [Optionen]
+
+Wartet einfach auf Tastendruck oder Timeout.
+
+    [keine]     Warte endlos auf Tastendruck.
+    (/T)        Gibt es nicht mehr. Jetzt /D.
+    /D seconds  Verz”gerung in zu wartenden Sekunden, bevor die Pause
+                zu Ende ist (gibt Errorlevel 1 aus).
+    CTRL-C      Wenn angegeben und STRG-C gedrckt wird, wird mit
+                Errorlevel 200 beendet.
+
+    tba         (Noch in der Entwicklung, mehr wird noch bekanntgegeben).
+

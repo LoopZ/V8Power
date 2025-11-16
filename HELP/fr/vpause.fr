@@ -1,0 +1,13 @@
+vpause [options]
+
+Attente simple pour l'appui d'une touche ou le d‚passement du d‚lai d'attente.
+
+    [aucun]     Attendre ind‚finiment l'appui d'une touche.
+    (/T)        ObsolŠte. D‚sormais, /D.
+    /D seconds  D‚lai en secondes avant que l'attente ne se termine. (renvoie
+                un niveau d'erreur (errorlevel) de 1)
+    CTRL-C      Lorsqu'il est sp‚cifi‚ et qu'un appui sur Control-C a lieu,
+                quittera avec un niveau d'erreur de 200.
+
+                (Toujours en d‚veloppement, plus … venir)
+

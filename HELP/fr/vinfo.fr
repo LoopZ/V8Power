@@ -1,0 +1,61 @@
+devinfo [options]
+
+Utilitaire d'informations g‚n‚rales sur le systŠme.
+
+    [aucun]     Ne fait rien.
+    /V          Mode verbeux.
+    /D a        Tester l'‚tat du lecteur.
+                Renvoie ces codes d'erreur :
+                    15 - Pas pr‚sent
+                     5 - Non format‚ (pour DOS)
+                     4 - Lecteur r‚seau (non test‚)
+                     3 - CD/DVD-ROM (MSCDEX seulement, la plupart renvoient 15)
+                     2 - Support amovible (comme une disquette)
+                     1 - (R‚serv‚)
+                     0 - Aucune condition particuliŠre
+    /M          Renvoyer le type de machine (Cela peut ne pas fonctionner sur
+                les plate-formes futures)
+                Renvoie ces codes de sortie :
+                    0 - Mat‚riel 8086 inconnu, normal ou natif.
+                    1 - 80186
+                    2 - 80286
+                    3 - 80386
+                    4 - 80486
+                    5 - 80586
+                    6 - 80686 ou sup‚rieur
+                  101 - DOSBox.
+                  102 - QEMU.
+                  103 - VirtualBox.
+                  104 - VMware.
+                  105 - Bochs.
+                  200 - G‚n‚ral, autre ‚mulateur d‚tect‚.
+    /P          Identique au commutateur /M. Cependant exclut les tests pour
+                les machines virtuelles.
+
+    /E n        Sonde le disque dur physique #n (1, 2, etc.) pour l'‚tat MBR
+                    0  - Le MBR est complŠtement vide
+                    5  - Le MBR ne contient que des informations de partition
+                    10 - Le MBR contient un chargeur d'amor‡age
+                    101 - Une erreur est survenue
+
+Davantage d'options qui sont surtout utiles aux programmeurs et pour la R&D.
+Elles ont ‚t‚ disponibles depuis un certain temps. Mais ne font pas
+officiellement partie (par moi) partie de l'API V8Power Tools et peuvent ˆtre
+modifi‚es ou enlev‚es … tout moment. Mais comme j'utilise certaines d'entre
+elles, elles pourraient ˆtre transf‚r‚es vers leurs propres utilitaires.
+
+    ASCII       Afficher toute la table ASCII.
+    RAM         Verser toute la m‚moire conventionnelle vers StdOut.
+
+    /C *        afficher les valeurs ascii pour le restant de la ligne de
+                commande
+    /R chaŒne   Rechercher la chaŒne dans toute la m‚moire conventionnelle
+    /U chaŒne   Rechercher la chaŒne de fa‡on insensible … la casse dans la
+                m‚moire (a000:0000 et plus)
+
+    /J pos *    Retourner la valeur ASCII du caractŠre … la position pos sur le
+    			restant de la ligne de commande en tant que niveau d'erreur. 0
+    			est retourn‚ si la position n'est pas trouv‚e.
+    /K pos *	Identique … /J mais converti en majuscules d'abord.
+
+               (Toujours en d‚veloppement, plus … venir)

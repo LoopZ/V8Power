@@ -1,0 +1,39 @@
+vfdutil [Optionen]
+
+Datei- und Verzeichnisdienstprogramm.
+
+  [keine]     Macht nichts.
+  /D file     Berechnet den Laufwerks-Buchstaben der Datei und gibt ihn
+              auf STDOUT aus.
+  /P file     Berechnet den Pfad der Datei und gibt ihn auf STDOUT aus.
+  /C          Vor /D oder /P verwenden um Laufwerk oder Pfad ohne Text-
+              ausgabe zu Ñndern.
+  /X          Vor /D oder /P verwenden um Errorlevel 1-26 des Laufwerks-
+              buchstabens zu erhalten.
+  /F file     Berechnet den ganzen Dateinamen und gibt ihn nach STDOUT aus.
+  /B file     Berechnet den Dateinamen mit Erweiterung und gibt ihn auf
+              STDOUT aus.
+  /N file     Berechnet  den Dateinamen ohne Erweiterung und gibt ihn auf
+              STDOUT aus.
+  /E file     Berechnet die Dateierweiterung und gibt sie nach STDOUT aus.
+  /U template Berechnet und gibt basierend auf Vorlage einen eindeutigen
+              Datei-/Verzeichnisnamen an STDOUT aus. Laufwerk und Pfad
+              mÅssen vorhanden sein.
+              Beispiel: "vfdutil /u C:\TEMP\TEST????.$$$"
+  /S filespec Durchsucht den PFAD nach einer bestimmten Dateispezifikation
+              und gibt alle passenden Dateien nach STDOUT aus. Das aktuelle
+              Verzeichnis wird nicht durchsucht. Wenn keine Spezifikation
+              gefunden wird, wird mit Errorlevel 1 beendet.
+  /T filespec Genau wie /S, au·er dass nur Errorlevel 0 oder 1 zurÅckge-
+              geben wird.
+  /M location Gibt den freien Speicherplatz auf der HD fÅr den Speicherort
+              aus.
+  /R required In Verbindung mit /M verwenden um zu testen, ob genÅgend
+              freier Plattenspeicher verfÅgbar ist. Die Zahl ist begrenzt
+              auf 65.535, es kann aber B, K, M angegeben werden. Wenn der
+              Speicher nicht ausreicht, wird der Errorlevel 1 ausgegeben.
+  /A path     Testet, ob Dateien oder Verzeichnisse in einem Pfad existie-
+              ren, 0=dir existiert und ist nicht leer, andere Werte sind
+              DOS-Fehlercodes von test.
+
+  tba         (Noch in der Entwicklung, mehr wird noch bekanntgegeben).

@@ -1,0 +1,15 @@
+vreadkey [Optionen]
+
+Wartet auf einen Tastendruck und gibt den Wert als Hexadezimalzahl ber
+das Standardausgabeger„t zurck. Ein Wert fr die Taste wird als
+%ERRORLEVEL% zurckgegeben. Ungltige Switches oder Optionen geben einen
+%ERRORLEVEL% 255 zurck. Sondertasten (z. B. Pfeile) geben einen
+%ERRORLEVEL% ber 128 zurck.
+
+  /N      Gibt den Schlsselwert nicht an das Standardausgabeger„t aus.
+  /D n    Timeout und Rckgabe des Standardcodes in n Sekunden (0-3600).
+  /R n    Legt den Standardcode fest, der zurckgegeben wird, wenn ein
+          Timeout auftritt.
+  /P      Reinigt den Eingabepuffer von allen wartenden Tastenanschl„gen.
+
+ tba     (Noch in der Entwicklung, mehr wird noch bekanntgegeben).

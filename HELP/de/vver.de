@@ -1,0 +1,12 @@
+vver [Optionen]
+
+V8Power Informationsprogramm.
+
+  [keine]     Gibt alle Informationen an STDOUT (Standardausgabe).
+  all         Gibt alle Informationen an STDOUT.
+  title       Gibt den vollen Titel an STDOUT.
+  copyright   Gibt die Copyrightmeldung an STDOUT.
+  version     Gibt die Versionsinfo an STDOUT.
+  license     Gibt die Lizenzinformation an STDOUT.
+  url         Gibt die Webseiten-URL-Information an STDOUT.
+  email       Gibt die Emailadresse an STDOUT.

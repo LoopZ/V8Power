@@ -1,0 +1,23 @@
+vmath [options]
+
+Utilitaire math‚matique trŠs simple. Ce n'est PAS une calculatrice et la
+priorit‚ est strictement de gauche … droite (je pourrais changer cela). Il
+prend en charge les math‚matiques avec des nombres entiers sur 64 bits sur un
+8086 sans n‚cessiter de coprocesseur. Utile pour les boucles, d‚terminer les
+d‚calages d'‚cran (offset), etc.
+
+    +, ADD      Ajouter le nombre suivant … la somme.
+    -, SUB      Soustraire le nombre suivant de la somme.
+    *, MUL      Multiplier la somme par le nombre suivant.
+    /, DIV      Diviser la somme par le nombre suivant.
+    \, MOD      Diviser la somme par le nombre suivant et d‚finir la somme sur
+                le reste.
+    AND         ET logique.
+    OR          OU logique.
+    XOR         OU Exclusif logique.
+    SHR         D‚calage des bits vers la droite.
+    SHL         D‚calage des bits vers la gauche.
+
+    /H          D‚finir la sortie sur hexad‚cimal.
+    /D          D‚finir la sortie sur d‚cimal.
+    /B			D‚finir la sortie sur binaire.

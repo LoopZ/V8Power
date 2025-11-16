@@ -1,0 +1,26 @@
+vcls [options]
+
+Effacer l'Çcran, une zone ou une ligne.
+
+    [aucun]     Effacer l'Çcran avec l'attribut de texte actuel.
+    n           DÇfinir l'attribut de texte sur n.
+    /A n        DÇfinir l'attribut de texte sur n.
+    /B couleur  DÇfinir l'attribut de texte d'arriäre-plan sur une couleur (ou
+                une valeur).
+    /F couleur  DÇfinir l'attribut de texte d'avant-plan sur une couleur (ou
+                une valeur).
+    /G          Effacement global de l'Çcran. (Valeur par dÇfaut)
+    /L          Effacement local de l'Çcran. DÇtecte son environnement et
+                n'efface que cela. Probablement une boåte ou une ligne. Vous
+                n'avez pas vraiment besoin de cette option. Car vous pouvez
+                simplement redessiner la boåte, peut-àtre.
+    /K n        Utiliser n au lieu des caractäres de cadre pour dÇtecter les
+                limites.
+    TEXTE       N'effacer que le texte. Laisser toutes les couleurs intactes et
+                et ignorer leurs attributs de couleur.
+    EOL         N'effacer que depuis le curseur jusqu'Ö la fin de la ligne.
+    /C code     Effacer en remplissant avec un code de caractäre ASCII.
+    /X colonne  Colonne d'Çcran absolue pour commencer Ö effacer.
+    /Y ligne    Ligne d'Çcran absolue pour commencer Ö effacer.
+    /W largeur  Largeur total de l'espace Ö effacer.
+    /H hauteur  Hauteur totale de l'espace Ö effacer.

@@ -1,0 +1,50 @@
+vinfo [Optionen]
+Dienstprogramm fÅr allgemeine Systeminformationen.
+  [keine]     Macht nichts.
+  /V          AusfÅhrlicher Modus.
+  /D a        Laufwerksteststatus.
+              Gibt folgende Errorcodes zurÅck:
+                 15 - Nicht vorhanden.
+                  5 - Nicht formatiert (fÅr DOS).
+                  4 - Netzlaufwerk (nicht getestet).
+                  3 - CD/DVD-ROM (nur MSCDEX, meistens Error 15).
+                  2 - Wechselmedium (wie z.B. Diskette).
+                  1 - (Reserviert).
+                  0 - keine speziellen Konditionen.
+  /M          RÅckgabe-Maschinentyp (Das kann bei neueren GerÑten nicht
+              funktionieren). Gibt diese Exitcodes zurÅck:
+                  0 - Unbekannte, normale oder native 8086 Hardware.
+                  1 - 80186
+                  2 - 80286
+                  3 - 80386
+                  4 - 80486
+                  5 - 80586
+                  6 - 80686 oder besser
+                101 - DOSBox.
+                102 - QEMU.
+                103 - VirtualBox.
+                104 - VMware.
+                105 - Bochs.
+                200 - Allgemein, anderer Emulator erkannt.
+  /P          Wie /M-Schalter, testet aber nicht auf virtuelle Maschinen.
+  /E n        PrÅfe physikalische Festplatte #n (1, 2, etc) auf MBR Status:
+                  0 - MBR ist komplett leer.
+                  5 - MBR enthÑlt nur Partitionsinformationen.
+                 10 - MBR enthÑlt einen Bootlader.
+                101 - Fehler aufgetreten.
+Weitere Optionen, die meist nur fÅr Programmierer und F&E nÅtzlich sind.
+Sie sind seit einiger Zeit verfÅgbar. Sind aber nicht offiziell (von mir)
+Teil der V8Power Tools API und kînnen jederzeit geÑndert oder entfernt
+werden. Aber da ich einige davon benutze, kann es sein dass sie eigene
+Utilities werden.
+  ASCII       Zeige komplette ASCII-Tabelle an.
+  RAM         Gebe den gesamten konventionellen Speicher in StdOUT aus.
+  /C *        ASCII-Werte fÅr den Rest der Befehlszeile ausgeben.
+  /R string   Durchsuche gesamten konventionellen Speicher nach "string".
+  /U string   Durchsuche Speicher (a000:0000 und hîher) nach String ohne
+              Gro·-/Kleinschreibung.
+  /J pos *    Gibt den ASCII Wert des Zeichens in pos auf dem Rest der
+              Kommandozeile als einen Errorlevel aus.
+              0 wird zurÅckgegeben wenn die Position nicht gefunden wurde.
+  /K pos *    Wie /J, aber zuvor in Gro·buchstaben umgewandelt.
+  tba         (Noch in der Entwicklung, mehr wird noch bekanntgegeben).

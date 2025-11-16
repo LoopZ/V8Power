@@ -1,0 +1,34 @@
+vecho [options] [texte]
+
+Afficher le texte sur l'‚cran.
+
+    [aucun]     Effectuer un retour chariot et un saut de ligne sur l'‚cran.
+    texte       Afficher le texte sur l'‚cran.
+    /A n        D‚finir l'attribut de texte sur n.
+    /B couleur  D‚finir l'attribut de texte d'arriŠre-plan sur la couleur (ou
+                une valeur).
+    /F couleur  D‚finir l'attribut de texte d'avant-plan sur la couleur (ou
+                une valeur).
+    /N          Ne pas ‚crire un retour chariot et un saut de ligne … la fin.
+    /P          Effectuer un retour chariot et un saut de ligne maintenant.
+    /S +        Ins‚rer un caractŠre espace entre les paramŠtres. (Valeur par
+                d‚faut)
+    /S -        Ne pas ajouter un caractŠre espace entre plusieurs paramŠtres.
+    /C code     crire un code de caractŠre ASCII.
+    /R fois     R‚p‚ter le prochain texte le nombre de fois d‚fini. (1-65535)
+    /I          crire le texte qui pourrait attendre … partir du p‚riph‚rique
+                STDIN.
+    /G          crire le texte de maniŠre globale et ignorer tout cadrage.
+    /L          crire le texte localement en prenant en compte le cadrage.
+                (Valeur par d‚faut)
+    /K n        Utiliser n au lieu du caractŠre de cadrage pour d‚tecter les
+                limites.
+    /X code     Effacer le reste de la ligne en utilisant le code ASCII, mais
+                ne pas d‚placer le curseur.
+    /E          Identique … l'utilisation de "/X 0x20" ou "/X32".
+    /T fich ID  Rechercher l'ID dans le fichier et le traiter comme des options
+                de ligne de commande. Toute option suppl‚mentaire qui suivrait
+                ce commutateur sera utilis‚ pour remplir les variables  %1-%9
+                dans la chaŒne de texte.
+
+                (Toujours en d‚veloppement, plus … venir)

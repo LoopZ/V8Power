@@ -1,0 +1,27 @@
+vgotoxy [options]
+
+D‚placer le curseur ou demander sa position.
+
+    [aucun]     N'effectue aucune action.
+    /Q x or y   Demande la position X ou Y actuelle du curseur et envoie la
+                sortie … STDOUT.
+    /X colonne  D‚placer le curseur sur la colonne.
+    /Y ligne    D‚placer le curseur sur la ligne.
+    /G          D‚placer le curseur en se basant sur tout l'‚cran. (Valeur par
+                d‚faut)
+    /L          D‚placer le curseur en se basant sur son environnement.
+    /K n        Utiliser n au lieu du caractŠre de cadrage pour d‚tecter les
+                limites.
+    direction   D‚placer le curseur d'un espace vers le haut, le bas, la gauche
+                ou la droite.
+    shift       D‚placer le curseur vers la position pr‚c‚dente ou suivante et
+                modifier les lignes si n‚cessaire.
+    position    D‚placer le curseur vers la position :
+                    SOP (Start of Page, d‚but de la page),
+                    EOP (End of Page, fin de la page),
+                    SOR (Start of Row, d‚but de la ligne),
+                    EOR (End of Row, fin de la ligne),
+                    SOL (Start of Text on Line, d‚but du texte sur la ligne),
+                    EOL (End of Text on Line, fin du texte sur la ligne),
+                    SOT (Start of All Text, d‚but de tout le texte) ou
+                    EOT (End of All Text, fin de tout le texte).

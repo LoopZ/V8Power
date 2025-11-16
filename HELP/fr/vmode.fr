@@ -1,0 +1,19 @@
+vmode [options]
+
+DÇfinir et interroger les modes vidÇo textuels actuels.
+
+    [aucun]     êmet le mode vidÇo actuel et la police vers STDOUT.
+    VESA        êmet une liste des modes VESA vers STDOUT.
+    mode        DÇfinit le mode vidÇo actuel. (0-0xffff) ou une Çtiquette du
+                mode avec un rÇglage optionnel de la police.
+
+                Modes : BW40    Noir et blanc 40 colonnes (Çgalement B40).
+                        BW80    Noir et blanc 80 colonnes (Çgalement B80, BW).
+                        CO40    Couleurs 40 colonnes (Çgalement C40).
+                        CO80    Couleurs 80 Colonnes (Çgalement C80, COLOR).
+                        MONO    Monochrome 80 colonnes.
+
+              Polices : Font8   Choisir la police 8x8 ROM. (Çgalement F8)
+                        Font14  Choisir la police 8x14 EGA ROM. (Çgalement F14)
+                        Font16  Choisir la police 8x16 VGA ROM. (Çgalement F16)
+

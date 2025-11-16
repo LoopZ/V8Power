@@ -1,0 +1,13 @@
+vline [seáenekler]
+
+Bir áizgi áizer.
+
+    [boü]       GÅncel satçrda yerel tekli baüçboü bir áizgi áizer.
+    /K n        Sçnçrlarç algçlamak iáin áeráeve karakteri yerine n kullan.
+    single      Tekli bir áizgi áizer.
+    double      Äift bir áizgi áizer.
+    hidden      GîrÅnmez bir baüçboü áizgi áizer.
+    dumb        Halihazçrda ne mevcut oldußuna bakmaksçzçn baüçboü bir áizgi
+                áizer.
+
+             (HenÅz geliütirilme aüamasçndadçr, daha fazla bilgi eklenecektir.)

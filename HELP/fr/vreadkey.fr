@@ -1,0 +1,19 @@
+vreadkey [options]
+
+Attendre l'appui sur une touche et retourner sa valeur en tant que nombre
+sur l'appareil de sortie standard et une valeur pour la touche qui sera
+retourn‚e en tant que niveau d'erreur, c'est-…-dire %ERRORLEVEL%.
+Les options ou commutateurs invalides retourneront un %ERRORLEVEL% de
+255. Les touches sp‚ciales (telles que les touches de curseur)
+retourneront un %ERRORLEVEL% au-dessus de 128.
+
+    /N      Ne pas envoyer la valeur de la touche sur l'appareil de
+            sortie standard.
+    /D n    D‚passement du d‚lai d'attente et retour du code par d‚faut
+            au bout de n secondes (0-3600).
+    /R n    D‚finir le code par d‚faut si un d‚passement du d‚lai
+            d'attente se produit.
+    /P      Purger le tampon d'entr‚e d'‚ventuels appuis en attente.
+
+               (Toujours en d‚veloppement, plus … venir)
+

@@ -1,0 +1,22 @@
+vview [options] file
+
+File viewer. Supporting files up to 2GB using CRLF, CR or LF line endings. 
+Unlike most V8Power Tools, this utility defaults to using the entire screen.
+To use VVIEW inside a VFRAME box, you will need to specify local display mode.
+
+    /A n        Set text attribute to n.
+    /B color    Set the background text attribute to color (or a value).
+    /F color    Set the forground text attribute to color (or a value).
+    /G          Use entire screen. (Default)
+    /L          Local display inside VFRAME. Detects its surroundings and only 
+                uses a portion of the display.  Probably, a box or line or 
+                something. 
+    /K n        Use n instead of frame characters to detect bounds.
+    
+While viewing a file, you can use the Up, Down, Left, Right, PgUp, PgDn, Home
+and End keys to navigate the file contents. To stop viewing a file press the 
+Escape key. If more than one file was specified, they will be viewed one at a 
+time. 
+
+   tba         (Still under development, more to be announced)
+

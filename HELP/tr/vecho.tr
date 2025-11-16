@@ -1,0 +1,26 @@
+vecho [seáenekler] [metin]
+
+Metni ekrana áçktçla.
+
+    [boü]       Ekranda satçr baüç ve yeni satçr karakterleri gîrÅntÅle.
+    metin       Metni ekrana yazar.
+    /A n        Metin îznitelißini n olarak ayarla.
+    /B renk     Arka plan metin îznitelißini renk/deßer olarak ayarla.
+    /F renk     ôn plan metin îznitelißini renk/deßer olarak ayarla.
+    /N          Tamamlandçßçnda satçr baüç ve yeni satçr (CRLF) yazma.
+    /P          ûimdi bir CRLF yaz.
+    /S +        Parametreler arasçna bir boüluk karakteri ekle (întançmlç).
+    /S -        Äoklu parametreler arasçna boüluk karakteri ekleme.
+    /C kod      Bir ASCII karakter kodu yaz.
+    /R kere     Sonraki yazmayç 'kere' kez yinele (1-65535).
+    /I          STDIN aygçtçnda beklemede olabilecek metni yaz.
+    /G          Metni genel olarak yaz ve tÅm áeráeveleri gîrmezden gel.
+    /L          Metni yerel olarak áeráeveleri dikkate alarak yaz (întançmlç).
+    /K n        Sçnçrlarç algçlamak iáin áeráeve karakteri deßil de n kullan.
+    /X kod      Satçrçn kalançnç ASCII kodu kullanarak sil; ancak imleci taüçma.
+    /E          "/X 0x20" veya "/X32" ile aynç anlama gelir.
+    /T dosya ID ID'yi dosyada ara ve komut satçrç seáeneßi olarak iüle.
+                Bu anahtarç takip eden tÅm ek seáenekler, metin dizesinde
+                %1-%9 deßiükenlerini doldurmak iáin kullançlçr.
+
+             (HenÅz geliütirilme aüamasçndadçr, daha fazla bilgi eklenecektir.)

@@ -1,0 +1,15 @@
+vinsert [options]
+
+Ins‚rer une ligne vide … l'emplacement actuel.
+
+    [aucun]     Ins‚rer une ligne vide.
+    n           Ins‚rer n lignes vides.
+    /A n        D‚finir l'attribut de texte sur n.
+    /B couleur  D‚finir l'attribut de texte d'arriŠre-plan sur la couleur (ou
+                une valeur).
+    /F couleur  D‚finir l'attribut de texte d'avant-plan sur la couleur (ou une
+                valeur).
+    /G          Insertion globale.
+    /L          Insertion locale. (Valeur par d‚faut)
+    /K n        Utiliser n au lieu du caractŠre de cadre pour d‚tecter les
+                limites.
