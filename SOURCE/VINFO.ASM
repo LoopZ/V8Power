@@ -1,4 +1,4 @@
-; Copyright (C) 2016-2022 Jerome Shidel
+; Copyright (C) 2016-2025 Jerome Shidel
 ; Open source see License file
 
 ; NASM for DOS
@@ -261,7 +261,7 @@ ShowRAMline:
 .SkipRet:
     pop     bx
     ret
-    
+
 .NoSkip:
     pop     bx
     mov     [cs:Skipper], byte 0
@@ -313,7 +313,7 @@ ShowRAMline:
     StdOutChar 13
     StdOutChar 10
     ret
-    
+
 ShowURAM:
     mov     ax, 0xa000
     xor     dx,dx
@@ -322,7 +322,7 @@ ShowURAM:
 ShowRAM:
     mov     dl, 1
     xor     ax, ax
-.Prepare:    
+.Prepare:
     mov     [cs:Skipper], byte 2
     push    ds
     mov     cx, ax
@@ -434,7 +434,7 @@ SearchRAM:
     mov     ds, ax
     call    ShowRAMline
     pop     bx
-    
+
     pop     ds
     pop     es
 .Diff:
@@ -624,7 +624,7 @@ DRIVE_ID:
     db 0
 Skipper:
     db 0
-    
+
 EndOfCode:
 
 Buffer:
