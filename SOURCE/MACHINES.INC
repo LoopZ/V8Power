@@ -78,6 +78,8 @@ NotBochs:
 
 %ifdef GenericEMU
 OtherEmulation:
+    cmp         [GeneralEM], byte 0
+    je		    SkipEM
     cld
     mov         al, 0x90
     mov         cx, 0x0008
@@ -86,6 +88,7 @@ OtherEmulation:
     jmp         VirtualMachine
     nop
     nop
+SkipEM:
 %endif
 
 DetectCPU:

@@ -129,7 +129,9 @@ SwitchD:
     ret
 
 SwitchM:
+    mov			[GeneralEM], byte 0
     ; mov         [OptionProcessed], cx
+SwitchM2:
     push ds
     push es
     DetectMachine
@@ -147,10 +149,15 @@ SwitchM:
     ret
 
 SwitchP:
+    mov			[GeneralEM], byte 0
     ; mov         [OptionProcessed], cx
     push ds
     push es
     jmp         DetectCPU
+
+SwitchT:
+    mov			[GeneralEM], byte 1
+    jmp			SwitchM2
 
 SwitchC:
 ;    StdOutStr   0x81
@@ -583,7 +590,6 @@ Msg_No_MBR_Code:
 Msg_Found_MBR_Code:
     db "MBR Code Present",0
 
-
 CommandLineSwitches:
     SwitchData  0,  0, NoSwitch
     SwitchData 'D', 1, SwitchD
@@ -597,6 +603,7 @@ CommandLineSwitches:
     SwitchData 'E', 1, SwitchE
     SwitchData 'K', 1, SwitchK
     SwitchData 'J', 1, SwitchJ
+    SwitchData 'T', 0, SwitchT
     HelpSwitchData
     SwitchData  0,  0, 0
 
@@ -624,6 +631,8 @@ DRIVE_ID:
     db 0
 Skipper:
     db 0
+GeneralEM:
+	db 0
 
 EndOfCode:
 

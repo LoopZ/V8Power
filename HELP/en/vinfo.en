@@ -3,7 +3,7 @@ General system information utility.
     [none]      Does nothing.
     /V          Verbose Mode.
     /D a        Test drive status.
-                Returns these error codes:
+                Returns these exit codes:
                    15 - Not Present
                     5 - Not Formatted (for DOS)
                     4 - Network Drive (untested)
@@ -25,8 +25,9 @@ General system information utility.
                   103 - VirtualBox.
                   104 - VMware.
                   105 - Bochs.
-                  200 - General, other emulator detected.
     /P          Same as /M switch. However, excludes test for virtual machine.
+    /T		    Same as /M switch. However, includes general emulator test.
+                  200 - General, other emulator detected.
     /E n        Probe physical Hard Disk #n (1, 2, etc) for MBR status
                     0 - MBR is completely empty
                     5 - MBR only contains partition information
