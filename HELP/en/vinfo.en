@@ -32,6 +32,18 @@ General system information utility.
                     5 - MBR only contains partition information
                    10 - MBR contains a boot code
                   101 - Error Occurred
+    /G          Graphics
+                    0 - Unknown
+                    1 - MDA
+                    2 - HGC
+                    3 - HGCPlus
+                    4 - InColor
+                    5 - CGA
+                    6 - EGA
+                    7 - MCGA
+                    8 - VGA
+                    9 - VESA/SuperVGA
+
 More options that are mostly only useful for programmers and R&D. They have
 been available for a while. But are not officially (by me) part of the
 V8Power Tools API and may change or be removed at anytime. But since I use
