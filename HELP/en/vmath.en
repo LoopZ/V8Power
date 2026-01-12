@@ -17,6 +17,7 @@ determining screen offsets and etc.
     SHR         Bit shift right.
     SHL         Bit shift left.
 
-    /H          Set output to hexadecimal.
-    /D          Set output to decimal.
-    /B		Set output to binary.
+    /H or /D    Set output to hexadecimal or binary. While calculations are
+                performed using 64-bit math, when outputting in these formats
+                the results are shortened to smallest bit size for their value.
+                For instance, 64, 32, 16 or 8 bit numbers as required.

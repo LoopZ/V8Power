@@ -1,6 +1,6 @@
 *******************************************************************************
 V8Power Tools
-Copyright 2015-2024 Jerome Shidel
+Copyright 2015-2026 Jerome Shidel
 Released under GPL v2.0 License.
 *******************************************************************************
 
@@ -31,6 +31,8 @@ Compiling V8Power Tools
         Download the latest sources from http://github.com/LoopZ/V8Power
         Run the mkV8.bat script.
         All executables will be placed in newly created BIN directory.
+
+        (V8Power Tools may also be cross compiled for DOS using mkv8.sh.)
 
     For lazy people, like me:
 

@@ -158,10 +158,10 @@ OutResult:
 OutHex:
     StdOutChar		'0'
     StdOutChar		'x'
-    sInt64_StdOutHex 	OutResult
+    sIntFlex_StdOutHex 	OutResult
     jmp     Done
 OutBin:
-    sInt64_StdOutBin 	OutResult
+    sIntFlex_StdOutBin 	OutResult
 Done:
     StdOutCRLF
     Terminate 0

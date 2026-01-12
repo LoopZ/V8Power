@@ -41,6 +41,8 @@
 
 ; Unsigned 64-bit integer function macros
 ; Ascii_uInt64		dest, address2 (convert from ascii to uInt64, CF overflow or error)
+; uIntFlex_StdOutBin	address
+; uIntFlex_StdOutHex	address
 ; uInt64_StdOutBin	address
 ; uInt64_StdOutHex	address
 ; uInt64_StdOutInt	address
@@ -100,6 +102,8 @@
 ; sInt64_NEG   		address, (CF if number was positive)
 
 ; -----------------------------------------------------------------------------
+%idefine sIntFlex_StdOutBin	uIntFlex_StdOutBin
+%idefine sIntFlex_StdOutHex	uIntFlex_StdOutHex
 %idefine sInt64_StdOutBin	uInt64_StdOutBin
 %idefine sInt64_StdOutHex 	uInt64_StdOutHex
 %idefine sInt64_Zero		uInt64_Zero
@@ -141,6 +145,32 @@
 
 ; -----------------------------------------------------------------------------
 ; macro interface calls
+
+%imacro uIntFlex_StdOutBin 1
+    %ifdef SAVE_REGS
+        push si
+    %endif
+    %ifnidni %1, si
+   	mov si, %1
+    %endif
+    call_proc uIntFlex_StdOutBin
+    %ifdef SAVE_REGS
+        pop  si
+    %endif
+%endmacro
+
+%imacro uIntFlex_StdOutHex 1
+    %ifdef SAVE_REGS
+        push si
+    %endif
+    %ifnidni %1, si
+   	mov si, %1
+    %endif
+    call_proc uIntFlex_StdOutHex
+    %ifdef SAVE_REGS
+        pop  si
+    %endif
+%endmacro
 
 %imacro uInt64_StdOutBin 1
     %ifdef SAVE_REGS
@@ -831,9 +861,71 @@ proc_uInt64_StdOutBin:
 %endif
 %endif
 
+%ifdef uIntFlex_StdOutBin_REQUIRED
+%ifndef uIntFlex_StdOutBin_DEFINED
+%define uIntFlex_StdOutBin_DEFINED
+%define uFlexBits_REQUIRED
+
+
+proc_uIntFlex_StdOutBin:
+    ; si address of Int64
+    %ifdef SAVE_REGS
+        pushf
+        push        ax
+        push	    cx
+        push	    dx
+    %endif
+    call			proc_uFlexBits
+    jnc				.DoWords
+    mov	 	    	cx, 8
+    mov				ah, al
+    call			.DoBits
+    jmp				.Done
+.DoWords:
+.RepeatWord:
+    mov             ax, [si]
+    push            cx
+    mov	 	    cx, 16
+    call		.DoBits
+    pop             cx
+    sub             si, 2
+    ; uncomment to separate words with spaces
+    ;push	    	ax
+    ;mov		ah, 0x02
+    ;mov		dl, 32
+    ;int		0x21
+    ;pop		ax
+    loop            .RepeatWord
+    jmp			.Done
+.DoBits:
+.RepeatBits:
+    mov		    dl, '0'
+    test	    ax, 0x8000
+    jz		    .ZeroBit
+    inc		    dl
+.ZeroBit:
+    push	    ax
+    mov		    ah, 0x02
+    int		    0x21
+    pop		    ax
+    shl		    ax, 1
+    loop	    .RepeatBits
+	ret
+.Done:
+    %ifdef SAVE_REGS
+    	pop	    dx
+        pop	    cx
+        pop         ax
+        popf
+    %endif
+    ret
+%endif
+%endif
+
 %ifdef uInt64_StdOutHex_REQUIRED
 %ifndef uInt64_StdOutHex_DEFINED
 %define uInt64_StdOutHex_DEFINED
+%define uFlexBits_REQUIRED
 
 proc_uInt64_StdOutHex:
     ; si address of Int64
@@ -842,8 +934,15 @@ proc_uInt64_StdOutHex:
         push        ax
         push	    cx
     %endif
+    xor				ax, ax
     mov             cx, 4   ; words in Int64
     add             si, 6   ; Offset to last word of Int64
+    cmp				[si], ax
+    jne				.Repeat
+    cmp				[si-2], ax
+    jne				.Repeat
+    ; don't need to show all 64 bits
+
 .Repeat:
     mov             ax, [si]
     push            cx
@@ -851,6 +950,102 @@ proc_uInt64_StdOutHex:
     pop             cx
     sub             si, 2
     loop            .Repeat
+    %ifdef SAVE_REGS
+        pop  	    cx
+        pop         ax
+        popf
+    %endif
+    ret
+%endif
+%endif
+
+%ifdef uFlexBits_REQUIRED
+%ifndef uFlexBits_DEFINED
+%define uFlexBits_DEFINED
+
+proc_uFlexBits:
+    mov             cx, 4   ; words in Int64
+    add             si, 6   ; Offset to highest word of Int64
+    mov 			ax, [si]
+    test 			ah, 0x80
+    jnz				.Negative
+    ; can we ignore upper 32-bits of the qword?
+    mov				ax, [si]
+    or				ax, [si-2]
+    jnz				.Done
+    mov				cx, 2
+    sub				si, 4
+    ; can we ignore upper 16-bits of the dword?
+    cmp				[si], word 0
+    jne				.Done
+    mov				cx, 1
+    sub				si, 2
+    ; can we ignore upper 8-bits of the word?
+    mov				ax, [si]
+    cmp				ah, 0
+    jne				.Done
+    ; return AL as byte and set CF to denote just a byte
+    stc
+    ret
+.Negative:
+    ; can we ignore upper 32-bits of the negative qword?
+    and 			ax, [si-2]
+    cmp				ax, 0xffff
+    jne				.Done
+    mov				ax, [si-4]
+    test			ah, 0x80
+    jz				.Done
+    mov				cx, 2
+    sub				si, 4
+	; can we ignore upper 16-bits of the negative dword?
+	cmp				ax, 0xffff
+	jne				.Done
+	mov				ax, [si -2]
+    test			ah, 0x80
+    jz				.Done
+    mov				cx, 1
+    sub				si, 2
+    ; can we ignore the upper 8-bits of the negative word?
+	cmp				ah,0xff
+	jne				.Done
+	test			al, 0x80
+	jz				.Done
+    ; return AL as byte and set CF to denote just a byte
+	stc
+	ret
+.Done:
+	; Clear CF, cannot be displayed as a single byte
+	clc
+	ret
+
+%endif
+%endif
+
+%ifdef uIntFlex_StdOutHex_REQUIRED
+%ifndef uIntFlex_StdOutHex_DEFINED
+%define uIntFlex_StdOutHex_DEFINED
+
+proc_uIntFlex_StdOutHex:
+    ; si address of Int64
+    %ifdef SAVE_REGS
+        pushf
+        push        ax
+        push	    cx
+    %endif
+    call			proc_uFlexBits
+    jnc				.DoWords
+    StdOutHexByte	al
+    jmp				.Done
+
+.DoWords:
+.Repeat:
+    mov             ax, [si]
+    push            cx
+    StdOutHexWord   ax
+    pop             cx
+    sub             si, 2
+    loop            .Repeat
+.Done:
     %ifdef SAVE_REGS
         pop  	    cx
         pop         ax
@@ -1884,6 +2079,7 @@ proc_sInt64_MUL:
     popf				; discard addition carry flag
 
     call	.MulAddTemp		; add temp result to result
+    jc		.Overflow
 
     pop		cx		; restore cx of pass count
     pop		Int64_MULB	; restore number memory start postition
