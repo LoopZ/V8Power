@@ -1,11 +1,9 @@
 vinfo [se‡enekler]
-
 Genel sistem bilgisi izlencesi.
-
     [boŸ]       Hi‡bir Ÿey yapmaz.
     /V          Ayrntl kip.
     /D a        Src durumunu sna.
-                u hata kodlarn d”ndrr:
+                u ‡kt kodlarn geri g”nderir:
                     15 - Mevcut de§il
                      5 - Bi‡imlendirilmemiŸ (DOS i‡in)
                      4 - A§ srcs (denenmemiŸtir)
@@ -13,8 +11,8 @@ Genel sistem bilgisi izlencesi.
                      2 - €karlabilir ortam (disket gibi)
                      1 - (AyrlmŸ)
                      0 - ™zel koŸul yok
-    /M          Makine trn d”ndr (ileride de§iŸebilir)
-                u ‡kŸ kodlarn d”ndrr:
+    /M          Makine trn geri g”nderir (ileride de§iŸebilir)
+                u ‡kŸ kodlarn geri g”nderir:
                     0 - Bilinmeyen, normal veya do§rudan 8086 donanm.
                     1 - 80186
                     2 - 80286
@@ -27,20 +25,30 @@ Genel sistem bilgisi izlencesi.
                   103 - VirtualBox.
                   104 - VMware.
                   105 - Bochs.
+    /P          /M se‡ene§i ile ayndr, fakat sanal makine testini hari‡ tutar.
+    /T		    /M se‡ene§i ile ayndr, fakat genel ”yknc testini i‡erir.
                   200 - Genel, baŸka bir ”yknc tespit edildi.
-    /P          /M anahtar ile ayndr. Ancak sonu‡lar dŸlar ve sanal makine
-                sonu‡lar i‡in test etmez.
-
     /E n        Fiziki sabit disk #n (1, 2, vs.)'yi MBR (Ana ™nykleme Kayd)
                 durumu i‡in incele
                     0  - MBR tamamen boŸ
                     5  - MBR sadece b”lm verileri i‡eriyor
                     10 - MBR ”n baŸlatma kodu i‡eriyor
                     101 - Hata meydana geldi
+    /G          Grafikler
+                    0 - Bilinmiyor
+                    1 - MDA
+                    2 - HGC
+                    3 - HGCPlus
+                    4 - InColor
+                    5 - CGA
+                    6 - EGA
+                    7 - MCGA
+                    8 - VGA
+                    9 - VESA/SuperVGA
 
 Bilhassa programclar ve Ar-Ge i‡in faydal olan daha fazla se‡enekleri aŸa§da
 bulabilirsiniz. Bu se‡enekler bir sredir mevcut, ancak resmi olarak V8 Power
-Tools API'nn bir par‡as de§ildirler ve ileride kaldrlabilir veya de§iŸtiri-
+Tools API'snn bir par‡as de§ildirler ve ileride kaldrlabilir veya de§iŸtiri-
 lebilir. Bu ara‡larn bazlarn kulland§mdan belki ileride ayr bir izlence
 olarak yaymlanabilirler.
 
@@ -57,4 +65,4 @@ olarak yaymlanabilirler.
     			bulunamadysa 0 geri g”nderilir.
     /K pos *	/J ile ayndr fakat ”nce byk harf olarak de§iŸtirilir.
 
-             (Henz geliŸtirilme aŸamasndadr, daha fazla bilgi eklenecektir.)
+             (Hƒlƒ geliŸtirilme aŸamasndadr, daha fazla bilgi eklenecektir.)
