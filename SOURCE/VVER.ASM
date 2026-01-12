@@ -1,4 +1,4 @@
-; Copyright (C) 2016-2025 Jerome Shidel
+; Copyright (C) 2016-2026 Jerome Shidel
 ; Open source see License file
 
 ; NASM for DOS
@@ -94,7 +94,7 @@ OptNameMsg:
 OptVerMsg:
     DB 'Version ',__DATE__,0
 OptCopyMsg:
-    DB 'Copyright (C) 2015-2025 Jerome Shidel',0
+    DB 'Copyright (C) 2015-2026 Jerome Shidel',0
 OptEmailMsg:
     DB 'mailto:V8Power@Shidel.net',0
 OptURLMsg:

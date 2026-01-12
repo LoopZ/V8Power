@@ -1,4 +1,4 @@
-; Copyright (C) 2020-2022 Jerome Shidel
+; Copyright (C) 2020-2026 Jerome Shidel
 ; Open source see License file
 
 ; NASM 2.14rc0 for DOS
