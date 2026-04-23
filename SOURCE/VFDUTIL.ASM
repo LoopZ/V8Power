@@ -304,6 +304,10 @@ SwitchU:
     je      .NotFound
     jmp     .OutOfNumbs
 .Exists:
+    ; Work-around for bug in FreeDOS Kernel 2044
+    ; Check if critical error was called
+	cmp		[Critical], byte 0
+	jne		.OutOfNumbs
     inc     cx
     cmp     cx, 0x0000
     je      .OutOfNumbs
