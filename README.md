@@ -20,7 +20,7 @@ increased functionality.
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;8086 or better cpu. <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EGA or better video adapter. <br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[FreeDOS™ 1.1](http://www.freedos.org) or higher<br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[NASM™ for DOS version 2.14.02](http://wwww.nasm.us) or newer <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[NASM™ for DOS version 2.14.02](http://www.nasm.us) or newer <br>
 
 #### &nbsp;&nbsp; Compiling ######
 
